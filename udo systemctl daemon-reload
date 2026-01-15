@@ -1,0 +1,100 @@
+-- Logs begin at Wed 2025-08-27 08:15:55 -04, end at Wed 2026-01-07 10:49:12 -04. --
+ene 07 09:49:58 ismserver systemd[1]: Started Iron Puma Server.
+ene 07 09:49:58 ismserver bash[25703]: /bin/bash: bundle: orden no encontrada
+ene 07 09:49:58 ismserver systemd[1]: [0;1;39m[0;1;31m[0;1;39miron.service: Main process exited, code=exited, status=127/n/a[0m
+ene 07 09:49:58 ismserver systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185miron.service: Failed with result 'exit-code'.[0m
+ene 07 09:49:58 ismserver systemd[1]: iron.service: Scheduled restart job, restart counter is at 1.
+ene 07 09:49:58 ismserver systemd[1]: Stopped Iron Puma Server.
+ene 07 09:49:58 ismserver systemd[1]: Started Iron Puma Server.
+ene 07 09:49:58 ismserver bash[25705]: /bin/bash: bundle: orden no encontrada
+ene 07 09:49:58 ismserver systemd[1]: [0;1;39m[0;1;31m[0;1;39miron.service: Main process exited, code=exited, status=127/n/a[0m
+ene 07 09:49:58 ismserver systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185miron.service: Failed with result 'exit-code'.[0m
+ene 07 09:49:58 ismserver systemd[1]: iron.service: Scheduled restart job, restart counter is at 2.
+ene 07 09:49:58 ismserver systemd[1]: Stopped Iron Puma Server.
+ene 07 09:49:58 ismserver systemd[1]: Started Iron Puma Server.
+ene 07 09:49:58 ismserver bash[25706]: /bin/bash: bundle: orden no encontrada
+ene 07 09:49:58 ismserver systemd[1]: [0;1;39m[0;1;31m[0;1;39miron.service: Main process exited, code=exited, status=127/n/a[0m
+ene 07 09:49:58 ismserver systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185miron.service: Failed with result 'exit-code'.[0m
+ene 07 09:49:59 ismserver systemd[1]: iron.service: Scheduled restart job, restart counter is at 3.
+ene 07 09:49:59 ismserver systemd[1]: Stopped Iron Puma Server.
+ene 07 09:49:59 ismserver systemd[1]: Started Iron Puma Server.
+ene 07 09:49:59 ismserver bash[25707]: /bin/bash: bundle: orden no encontrada
+ene 07 09:49:59 ismserver systemd[1]: [0;1;39m[0;1;31m[0;1;39miron.service: Main process exited, code=exited, status=127/n/a[0m
+ene 07 09:49:59 ismserver systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185miron.service: Failed with result 'exit-code'.[0m
+ene 07 09:49:59 ismserver systemd[1]: iron.service: Scheduled restart job, restart counter is at 4.
+ene 07 09:49:59 ismserver systemd[1]: Stopped Iron Puma Server.
+ene 07 09:49:59 ismserver systemd[1]: Started Iron Puma Server.
+ene 07 09:49:59 ismserver bash[25708]: /bin/bash: bundle: orden no encontrada
+ene 07 09:49:59 ismserver systemd[1]: [0;1;39m[0;1;31m[0;1;39miron.service: Main process exited, code=exited, status=127/n/a[0m
+ene 07 09:49:59 ismserver systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185miron.service: Failed with result 'exit-code'.[0m
+ene 07 09:49:59 ismserver systemd[1]: iron.service: Scheduled restart job, restart counter is at 5.
+ene 07 09:49:59 ismserver systemd[1]: Stopped Iron Puma Server.
+ene 07 09:49:59 ismserver systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185miron.service: Start request repeated too quickly.[0m
+ene 07 09:49:59 ismserver systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185miron.service: Failed with result 'exit-code'.[0m
+ene 07 09:49:59 ismserver systemd[1]: [0;1;31m[0;1;39m[0;1;31mFailed to start Iron Puma Server.[0m
+ene 07 10:27:54 ismserver systemd[1]: Started Iron Puma Server.
+ene 07 10:27:54 ismserver bash[26432]: /bin/bash: bundle: orden no encontrada
+ene 07 10:27:54 ismserver systemd[1]: [0;1;39m[0;1;31m[0;1;39miron.service: Main process exited, code=exited, status=127/n/a[0m
+ene 07 10:27:54 ismserver systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185miron.service: Failed with result 'exit-code'.[0m
+ene 07 10:27:54 ismserver systemd[1]: iron.service: Scheduled restart job, restart counter is at 1.
+ene 07 10:27:54 ismserver systemd[1]: Stopped Iron Puma Server.
+ene 07 10:27:54 ismserver systemd[1]: Started Iron Puma Server.
+ene 07 10:27:54 ismserver bash[26434]: /bin/bash: bundle: orden no encontrada
+ene 07 10:27:54 ismserver systemd[1]: [0;1;39m[0;1;31m[0;1;39miron.service: Main process exited, code=exited, status=127/n/a[0m
+ene 07 10:27:54 ismserver systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185miron.service: Failed with result 'exit-code'.[0m
+ene 07 10:27:54 ismserver systemd[1]: iron.service: Scheduled restart job, restart counter is at 2.
+ene 07 10:27:54 ismserver systemd[1]: Stopped Iron Puma Server.
+ene 07 10:27:54 ismserver systemd[1]: Started Iron Puma Server.
+ene 07 10:27:54 ismserver bash[26436]: /bin/bash: bundle: orden no encontrada
+ene 07 10:27:54 ismserver systemd[1]: [0;1;39m[0;1;31m[0;1;39miron.service: Main process exited, code=exited, status=127/n/a[0m
+ene 07 10:27:54 ismserver systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185miron.service: Failed with result 'exit-code'.[0m
+ene 07 10:27:55 ismserver systemd[1]: iron.service: Scheduled restart job, restart counter is at 3.
+ene 07 10:27:55 ismserver systemd[1]: Stopped Iron Puma Server.
+ene 07 10:27:55 ismserver systemd[1]: Started Iron Puma Server.
+ene 07 10:27:55 ismserver bash[26438]: /bin/bash: bundle: orden no encontrada
+ene 07 10:27:55 ismserver systemd[1]: [0;1;39m[0;1;31m[0;1;39miron.service: Main process exited, code=exited, status=127/n/a[0m
+ene 07 10:27:55 ismserver systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185miron.service: Failed with result 'exit-code'.[0m
+ene 07 10:27:55 ismserver systemd[1]: iron.service: Scheduled restart job, restart counter is at 4.
+ene 07 10:27:55 ismserver systemd[1]: Stopped Iron Puma Server.
+ene 07 10:27:55 ismserver systemd[1]: Started Iron Puma Server.
+ene 07 10:27:55 ismserver bash[26439]: /bin/bash: bundle: orden no encontrada
+ene 07 10:27:55 ismserver systemd[1]: [0;1;39m[0;1;31m[0;1;39miron.service: Main process exited, code=exited, status=127/n/a[0m
+ene 07 10:27:55 ismserver systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185miron.service: Failed with result 'exit-code'.[0m
+ene 07 10:27:55 ismserver systemd[1]: iron.service: Scheduled restart job, restart counter is at 5.
+ene 07 10:27:55 ismserver systemd[1]: Stopped Iron Puma Server.
+ene 07 10:27:55 ismserver systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185miron.service: Start request repeated too quickly.[0m
+ene 07 10:27:55 ismserver systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185miron.service: Failed with result 'exit-code'.[0m
+ene 07 10:27:55 ismserver systemd[1]: [0;1;31m[0;1;39m[0;1;31mFailed to start Iron Puma Server.[0m
+ene 07 10:34:08 ismserver systemd[1]: Started Iron Puma Server.
+ene 07 10:34:08 ismserver bash[26593]: /bin/bash: bundle: orden no encontrada
+ene 07 10:34:08 ismserver systemd[1]: [0;1;39m[0;1;31m[0;1;39miron.service: Main process exited, code=exited, status=127/n/a[0m
+ene 07 10:34:08 ismserver systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185miron.service: Failed with result 'exit-code'.[0m
+ene 07 10:34:08 ismserver systemd[1]: iron.service: Scheduled restart job, restart counter is at 1.
+ene 07 10:34:08 ismserver systemd[1]: Stopped Iron Puma Server.
+ene 07 10:34:08 ismserver systemd[1]: Started Iron Puma Server.
+ene 07 10:34:08 ismserver bash[26595]: /bin/bash: bundle: orden no encontrada
+ene 07 10:34:08 ismserver systemd[1]: [0;1;39m[0;1;31m[0;1;39miron.service: Main process exited, code=exited, status=127/n/a[0m
+ene 07 10:34:08 ismserver systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185miron.service: Failed with result 'exit-code'.[0m
+ene 07 10:34:08 ismserver systemd[1]: iron.service: Scheduled restart job, restart counter is at 2.
+ene 07 10:34:08 ismserver systemd[1]: Stopped Iron Puma Server.
+ene 07 10:34:08 ismserver systemd[1]: Started Iron Puma Server.
+ene 07 10:34:08 ismserver bash[26596]: /bin/bash: bundle: orden no encontrada
+ene 07 10:34:08 ismserver systemd[1]: [0;1;39m[0;1;31m[0;1;39miron.service: Main process exited, code=exited, status=127/n/a[0m
+ene 07 10:34:08 ismserver systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185miron.service: Failed with result 'exit-code'.[0m
+ene 07 10:34:08 ismserver systemd[1]: iron.service: Scheduled restart job, restart counter is at 3.
+ene 07 10:34:08 ismserver systemd[1]: Stopped Iron Puma Server.
+ene 07 10:34:08 ismserver systemd[1]: Started Iron Puma Server.
+ene 07 10:34:08 ismserver bash[26597]: /bin/bash: bundle: orden no encontrada
+ene 07 10:34:08 ismserver systemd[1]: [0;1;39m[0;1;31m[0;1;39miron.service: Main process exited, code=exited, status=127/n/a[0m
+ene 07 10:34:08 ismserver systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185miron.service: Failed with result 'exit-code'.[0m
+ene 07 10:34:09 ismserver systemd[1]: iron.service: Scheduled restart job, restart counter is at 4.
+ene 07 10:34:09 ismserver systemd[1]: Stopped Iron Puma Server.
+ene 07 10:34:09 ismserver systemd[1]: Started Iron Puma Server.
+ene 07 10:34:09 ismserver bash[26598]: /bin/bash: bundle: orden no encontrada
+ene 07 10:34:09 ismserver systemd[1]: [0;1;39m[0;1;31m[0;1;39miron.service: Main process exited, code=exited, status=127/n/a[0m
+ene 07 10:34:09 ismserver systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185miron.service: Failed with result 'exit-code'.[0m
+ene 07 10:34:09 ismserver systemd[1]: iron.service: Scheduled restart job, restart counter is at 5.
+ene 07 10:34:09 ismserver systemd[1]: Stopped Iron Puma Server.
+ene 07 10:34:09 ismserver systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185miron.service: Start request repeated too quickly.[0m
+ene 07 10:34:09 ismserver systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185miron.service: Failed with result 'exit-code'.[0m
+ene 07 10:34:09 ismserver systemd[1]: [0;1;31m[0;1;39m[0;1;31mFailed to start Iron Puma Server.[0m

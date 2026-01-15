@@ -1,0 +1,53 @@
+
+<table class="table"> 
+  <thead>
+    <tr>
+      <th>N°</th>
+      <th>N° Recibo</th>
+      <th>Fecha</th>     
+      <th>Total</th>
+      <th>Saldo</th>
+      <th>disc</th>
+      <th>Estado</th>
+      
+    </tr>
+  </thead>
+  <tbody>
+    <% @sales.each do |sale| %>
+      <tr>
+        <td><%= sale.number %></td>
+        <%if  sale.proformas.count > 0 %>
+           <th><%= sale.proformas.first.number_recibo %></th>
+        <%else%>
+        <td></td>
+        <%end%>
+        <td><%= sale.date.strftime("%d/%m/%Y") %></td>       
+        <td><%= number_to_currency(sale.total_final) %></td>
+        <td><%= number_to_currency(sale.saldo) %></td>
+        <td><%= number_to_percentage(sale.discount_total, precision: 1) %></td>
+        <td><% if !sale.canceled %>
+        	<% if sale.completed %>
+	        	<span class="badge bg-success"> Cancelado</span>
+	        	<% if sale.por_facturar? %>
+	        		<span class="badge bg-purple"> Sin factura</span>
+	        	<%else%>
+	        	<span class="badge bg-info"> Facturado</span>
+	        	<% end %>
+
+        	<% else %>
+	        	<span class="badge bg-warning"> Pendiente de pago</span>
+	        	<% if sale.por_facturar? %>
+	        		<span class="badge bg-purple"> Sin factura</span>
+	        	<%else%>
+	        	<span class="badge bg-info"> Factura</span>
+	        	<% end %>
+	        	<% end %>
+        	
+        	<% else %>
+        		<span class="badge bg-danger"> Anulado</span>
+        	<% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

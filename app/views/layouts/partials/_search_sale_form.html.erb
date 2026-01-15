@@ -1,0 +1,53 @@
+<section class="search-form">
+ <%= form_for search_entity, method: :get do |f| %>
+   <div class="input-group">    
+
+         <%= label_tag :keywords, nil, class: "sr-only" %>
+         <%= text_field_tag :keywords, nil, placeholder: "Buscar", class: "form-control", value: "#{@keywords}" %>    
+
+
+    
+   <!--  <div class="funkyradio">
+
+         <div class="funkyradio-default col-md-3">
+            <input type="radio" name="radio" id="radio1" />
+            <label for="radio1">First </label>
+        </div> 
+        <div class="funkyradio-primary col-md-3">
+            <input type="radio" name="radio" id="radio2" checked/>
+            <label for="radio2">Todos</label>
+        </div>
+        
+        
+        <div class="funkyradio-success col-md-3">
+            <input type="radio" name="radio" id="radio3" />
+            <label for="radio3">Activos</label>
+        </div>
+        <div class="funkyradio-danger col-md-3">
+            <input type="radio" name="radio" id="radio4" />
+            <label for="radio4">Cancelados</label>
+        </div>
+         <div class="funkyradio-warning col-md-3">
+            <input type="radio" name="radio" id="radio5" />
+            <label for="radio5">No</label>
+        </div> 
+        <div class="funkyradio-info col-md-3">
+            <input type="radio" name="radio" id="radio6" />
+            <label for="radio6">info</label>
+        </div>
+    </div> 
+          -->
+         
+         
+       <span class="input-group-btn" >
+          <%= button_tag(type: 'submit', class: "btn btn-success") do %>
+          <span class="fas fa-search"></span> Buscar <%= "#{word}" %><% end %>
+
+          <%= link_to '', "#{view_kamback}", class: "btn btn-primary pull-right fas fa-th" %>
+          <%= link_to '', "#{view_list}", class: "btn btn-info pull-right fas fa-list" %>
+          <%= link_to '', "#{url}",  remote: ban, class: "btn btn-success pull-right fas fa-plus" %>         
+       </span>
+
+   </div>
+<% end %>
+</section>

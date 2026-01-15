@@ -1,0 +1,23 @@
+<!--  -->
+
+<div class="panel panel-inf">
+  <div class="panel-head">Inventarios</div>
+    <div class="panel-wrapper collapse in" aria-expanded="true">
+      <div class="panel-body table-responsive ">
+        <%= render partial: 'layouts/partials/search_form', locals: { search_entity: 'inventories', word: "Inventario", url: new_inventory_path, view_list:'',view_kamback: '', ban: false, url_pdf:'',url_csv:'',url_xls:''} %>
+            <% if @list %>
+                <%= render partial: 'results_search_list' %>
+          <% else %> 
+                <%= render partial: 'results_search_camback' %>
+           <% end %>
+
+          <div class="col-md-5 col-md-offset-5 col-sm-5 col-sm-offset-5">
+            <p>
+              <%= button_to new_inventory_path, {method: :get, class: "btn btn-success"} do %>
+                <span class="fa fa-plus" aria-hidden="true"> </span> Realizar Inventario
+              <% end %>
+            </p>
+          </div>
+    </div>  
+  </div>
+  </div>

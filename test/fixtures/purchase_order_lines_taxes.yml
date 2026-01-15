@@ -1,0 +1,9 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  purchse_order_line_id: 1
+  tax_id: MyString
+
+two:
+  purchse_order_line_id: 1
+  tax_id: MyString

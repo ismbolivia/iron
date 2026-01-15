@@ -1,0 +1,30 @@
+ <div class="white-box">
+    <div class="table-responsive">
+        <table class="table product-overview">
+           <thead>                               
+              <tr>
+                  <th>Imagen</th>
+                  <th>Nombre</th>
+                  <th>Cantidad</th>
+                  <th>Unidad</th>
+                  <th>Producto</th>
+                  <th>Precio</th>
+                </tr>
+            </thead>
+            <tbody>
+              <% @item.presentations.each do |presentation| %>
+                <tr>
+                  <td><%= image_tag(presentation.image_presentation.midium.url, :alt => "imge-item", :style => "width: 70px;") %></td>
+                  <td><%= presentation.name %></td>
+                  <td><%= presentation.qty %></td>
+                  <td><%= presentation.unit.name  %></td>
+                  <td><%= presentation.item.name%></td> 
+                  <td><%= @mycompany.get_current_currency.symbol%> <%= presentation.price%></td>                                
+                </tr>
+              <% end %>
+            </tbody>
+         </table>
+      </div>     
+  </div>
+
+        

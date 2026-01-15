@@ -1,0 +1,99 @@
+
+    
+<div class="modal-content-payment">
+  <div class="modal-header modal-header-success">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"> [ × ] </button>
+    <h2><i class="far fa-money-bill-alt"></i> Nuevo Pago</h2>
+</div>
+
+<div class="col-md-12" id="div_hidden">
+  <div class="modal-body">
+    <div class="col-md-12"> 
+        <div id="new_payment_type_modal">
+         <%= (@payment_types.count > 0) ? render(partial: 'payment_types/index', locals: { payment_types: @payment_types, show_actions: true, sale:  @sale }) : 'No hay tipo de cuentas cargados' %>
+        </div>
+    </div>
+    <div id="payment_change">
+    
+  <%= form_for :payment, url: payments_url, method: :post, remote: true do |form| %>
+
+
+    <div id="div-errores"></div>
+      <div class="col-md-12 " > 
+        <div class="table-responsive">
+              
+                <table class="table table-condensed">
+                  <thead>
+                    <tr>
+                      <th>N° de Recibo</th>
+                      <th>Venta </th>
+                      <th>Metodo de Pago</th>
+                      <th>Cuenta</th>
+                      <th>%Descuento</th>
+                    </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                      <td>
+                         <%= form.text_field :num_payment, class: 'form-control', :autofocus => true %>
+                      </td>
+                      <td>
+                         <label class="form-control"><%= @sale.number %></label>
+                         <%= form.hidden_field :sale_id %>
+                         <%= form.hidden_field :bank_account_id %>
+                         <%= form.hidden_field :check_payment_id %>
+                         <%= form.hidden_field :payment_type_bank_accounts_id %> 
+                         <%= form.hidden_field :payment_currency_id %>                 
+                         <%= hidden_field_tag :sale_number %>                      
+                      </td>
+                      <td><%= form.hidden_field :payment_type_id, class:"form-control" %>
+                         <%= form.collection_select :id, @methods, :id, :nethod, 
+                              {selected: @payment.payment_type_id, include_blank: '¡Defina metodo de pago por favor!'},
+                              {class: "form-control", disabled: false} %>
+                      </td>
+                      <td> <%= form.collection_select :account_id, @accounts, :id, :name, 
+                              {selected: @payment.account_id, include_blank: 'Seleccioné una cuenta'},
+                              {class: "form-control"} %></td>
+                      <td>
+                          <%= form.text_field :discount, class: 'form-control', value: '0' %>
+                      </td>                       
+                  </tr>
+                </tbody>
+              </table>
+             <div class="col-md-4">
+                 <p><strong>Cliente:</strong> <span id=""><%=@sale.client.name%></span></p>
+             </div>
+             <div class="col-md-4">
+                  <p><strong>Dirección:</strong> <span id=""></span><%=@sale.client.address.get_direccion_all%></p>
+            </div>
+            <div class="col-md-4">
+                  <p><strong>Saldo:</strong> <%=@mycompany.get_current_currency.symbol %><span id="label_saldo_id"><%=@sale.saldo%></sapn></p> 
+            </div>
+            <div class="col-md-8">
+                <h4 class='grandTotal'><%= form.label :rode, 'Monto', id: 'rode_id_label' %> 
+                  <%= form.text_field :rode, class: 'form-controles m-t-50',disabled: false %>
+                </h4>
+            </div>
+            <div class="col-md-4">
+                <h4 class='grandTotal'><%= form.label :cambio, 'Cambio', id:'cambio_id_label' %> 
+                  <%= form.text_field :cambio, class: 'form-controles m-t-50' , value: '0.0', disabled: true %>
+                </h4>
+            </div>  
+              <!--   <button data-bind='click: addLine'>Add product</button>
+                     <button data-bind='click: save'>Submit order</button>
+                     <a href='#' data-bind='click: $parent.removeLine'>Remove</a> 
+              -->                        
+          </div>
+      </div><!-- ends col-12 -->
+  
+    <div class="clearfix"></div>
+        <div class="modal-footer">
+           <button type="button" class="btn btn-danger pull-left" data-dismiss="modal">Cerrar</button>
+           <%= form.submit 'Efectuar Pago', class: "btn btn-primary pull-right" %>
+        </div>
+
+    </div>    
+   <% end %>
+ </div>
+</div> 
+

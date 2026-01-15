@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  currency_id: 1
+  payment_type_id: 1
+  sale_id: 1
+
+two:
+  currency_id: 1
+  payment_type_id: 1
+  sale_id: 1

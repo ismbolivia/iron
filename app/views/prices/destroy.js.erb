@@ -1,0 +1,5 @@
+
+$("ul.errors").html("");
+	$("#panel-prices").html("<%= escape_javascript(render(partial: 'prices/index', locals: { item: @item, show_actions: true })) %>");
+	$("#new-price-modal").modal("hide");
+	   toastr.error('Precio eliminado con exito!.')

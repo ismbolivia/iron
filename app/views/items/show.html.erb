@@ -1,0 +1,82 @@
+
+<div class="row">
+   <div class="col-lg-1"></div>
+    <div class="col-lg-10">
+      <div class="white-box">
+        <div class="">
+          <div class="col-lg-12">
+            <div class="col-lg-6 col-xs-5 col-sm-5">
+                <h2 class="m-b-0 m-t-0 m-t-40"><%= @item.category.name %>/ <%= @item.name %></h2> 
+                <h4 class="text-muted db"> <i class="fas fa-barcode"></i> <%= @item.code %></h4>
+                <h6 class="text-muted db"> <i class="fas fa-tag"></i> <%= @item.brand.name %></h6>
+           </div>
+           <div class="col-lg-6 col-xs-7 col-sm-7">
+                  <a class="btn btn-app">
+                    <span class="badge bg-yellow"><%= @item.get_total_stock %></span>
+                    <i class=" fa fa-building"></i> Stock
+                  </a>
+                   <a class="btn btn-app">
+                    <span class="badge bg-green"><%= @item.getQtSalesTotal %>   </span>
+                    <i class=" fa fa-dolly-flatbed text-blue"></i> Q. Salidas
+                  </a>
+                    <a class="btn btn-app">
+                    <span class="badge bg-purple"><%=@mycompany.get_current_currency.symbol %><%=@item.totalIemSales%></span>
+                    <i class="fa fa-money-bill-alt text-success"></i> T. Ventas
+                  </a>
+                   <a class="btn btn-app">
+                    <span class="badge bg-teal"><%=@mycompany.get_current_currency.symbol %> <%= @item.getTotalCostos%></span>
+                    <i class="fa fa-dollar-sign text-orange"></i> T. Costo
+                  </a>
+                  <a class="btn btn-app">
+                    <span class="badge bg-aqua"> <%=@mycompany.get_current_currency.symbol %> <%= @item.getUtility%> </span>
+                    <i class="fa fa-hand-holding-usd text-purple"></i> Utilidad
+                  </a>
+                  <a class="btn btn-app">
+                    <span class="badge bg-red"><%= @item.priority %></span>
+                    <i class="fa fa-exclamation text-danger"></i> Prioridad
+                  </a>
+            </div>
+
+           </div>         
+          </div>
+        <div class="col-lg-12 col-md-12 col-sm-12">
+          <hr>
+        </div>
+
+       <div class="row">
+          <div class="col-lg-3 col-md-3 col-sm-4">
+            <div class=" ">               
+               <%= image_tag(@item.image.midium.url, :alt => "item-img", class: "img-responsive") %>
+            </div>
+        </div>
+       
+              <div class="col-lg-9 col-md-9 col-sm-8">
+                <h4 class=" m-t-40">Descripcción:</h4>
+                  <p> <%= @item.description %></p>
+                  <h2 class="m-t-40">$ <%= @item.price_default %><small class="">(<%= @item.unit.name %>)</small></h2>
+
+                    <ul class="list-icons">
+                        <li><h2 class="m-t-40 text-success"> Descuento: (<%= @item.discount %>%)</h2></li>
+                    </ul>
+                                             
+            </div>
+              <div class="col-lg-12 col-md-12 col-sm-12"><hr></div> 
+            </div>
+              <div class="row no-print ">
+                <div class="col-xs-12">
+                   <%= link_to 'Editar', edit_item_path(@item), {method: :get,  class: "btn btn-success  pull-right" }  %>
+                
+                   <%= link_to 'Atras', items_path,  class: "btn btn-default"  %>         
+                </div>
+              </div>
+    <hr>
+           <%= render 'item_access', item: @item %>
+
+</div>
+</div>
+</div>
+      <div class="col-lg-1">
+      </div>
+</div>
+
+

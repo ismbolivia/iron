@@ -1,0 +1,10 @@
+$("ul.errors").html("");
+<% if @reception.errors.any? %>
+  
+	$('#div-error').addClass('alert alert-danger');
+	 document.getElementById("div-error").innerHTML = "<h2><%= pluralize(@reception.errors.count, 'error') %> en los siguientes campo:</h2>"+
+	" <ul><% @reception.errors.full_messages.each do |message| %><li><%= message %></li><% end %></ul>";
+<% else %>
+	$("#purchase_order_lines").html("<%= escape_javascript(render(partial: 'purchase_orders/table', locals: { purchase_order: @purchase_order, show_actions: true })) %>");
+	$("#new-receptions-modal").modal("hide");
+<% end %>

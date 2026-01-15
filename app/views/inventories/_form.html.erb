@@ -1,0 +1,50 @@
+<%= form_with(model: inventory, local: true) do |form| %>
+  <% if inventory.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(inventory.errors.count, "error") %> prohibited this inventory from being saved:</h2>
+
+      <ul>
+      <% inventory.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+
+<div class="">
+     <h2 class="m-b-0 m-t-0 m-t-40"></h2> <h4 class="text-muted db"> <i class=" ti-angle-double-right"><%=@refe %></i> </h4>
+     <hr>
+       <div class="row">
+          <div class="col-lg-4 col-md-3 col-sm-4">
+            <div class="white-box text-center"> 
+             
+            </div>
+        </div>
+       
+        <div class="col-lg-4 col-md-4 col-sm-4">
+         <h4 class=" m-t-40"> </h4>
+          <img src="https://uploads-ssl.webflow.com/5a4e28c03c5d8600019aae5b/5adb54840c2df1a563afb9d4_Ciclos.gif" class="img-responsive" />
+            
+            
+               
+                            
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-4">
+          <div class="containeres"> 
+           <div class="field">
+            
+            <%= form.hidden_field :ref %>
+          </div>        
+          </div>  
+        </div>         
+
+      </div> 
+
+  </div>
+  <div class="actions">
+    <%= form.submit 'Generar ', class: 'btn btn-success' %>
+    
+     <%= link_to 'Back', inventories_path,  class: "btn btn-default" %>
+  </div>
+<% end %>

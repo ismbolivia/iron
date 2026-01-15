@@ -1,0 +1,56 @@
+
+
+<% if @ban %>
+	<% if @sale.saldo > 0 %>
+
+	<% if @code== "EF"%>
+	 document.getElementById("payment_id").value = "<%= @payment.payment_type_id.to_s %>";
+ 	 document.getElementById("payment_payment_type_id").value = "<%= @payment.payment_type_id.to_s %>";
+
+	<% else %>
+	$("#new-payment-modal-current").html("<%= escape_javascript(render 'form_current') %>");
+	$("#new-payment-modal-current").modal("show");
+		<% end %>
+	// $("#new-payment-type-modal").html("<%= escape_javascript(render 'payment_types/index') %>");
+	<% else %>
+	$("#new-payment-modal-current").html("<%= escape_javascript(render 'canceled') %>");
+	$("#new-payment-modal-current").modal("show");
+	<% end %>
+
+
+	
+	<% if @code== "CB"%>
+		//$("#new-payment-modal-current").html("<%= escape_javascript(render 'form_check') %>");
+	    //$("#new-payment-modal-current").modal("show");
+	// alert("CB");
+	<% end %>
+  	<% if @code== "DB"%>
+  		//$("#new-payment-modal-current").html("<%= escape_javascript(render 'form_deposit') %>");
+	    //$("#new-payment-modal-current").modal("show");
+  	// alert("DB");
+	<% end %>
+	<% if @code== "EF"%>
+		$("#new-payment-modal-current").html("<%= escape_javascript(render 'form_current') %>");
+	    $("#new-payment-modal-current").modal("show");
+	    // $("#new-payment-type-modal").modal("hide");
+
+	// alert("EF");
+	<% end %>
+	<% if @code== "GR"%>
+	alert("GR");
+	<% end %>
+  // $("#new-payment-modal-current").html("<%= escape_javascript(render 'new_current') %>");
+  // $("#new-payment-modal-current").modal("show");
+  <% else %>
+  $("#new-payment-modal").html("<%= escape_javascript(render 'new') %>");
+  $("#new-payment-modal").modal("show");
+  $('#payment_sale').val($('#sale_number_id').text());
+  
+<%end %>  
+  $('#payment_account').on('blur', function() {                       
+                  // $('#payment_cambio').val('');         
+   });
+
+
+  
+

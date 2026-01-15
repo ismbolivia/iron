@@ -1,0 +1,60 @@
+<div class="modal-body">
+<%= form_with(model: stock, remote: true) do |form| %>
+   <div class="row">
+      <div class="col-xs-12"> 
+         <div id="div-error"></div>
+      </div>
+       <div class="col-xs-12">         
+        <div class="form-group">
+           <%= form.label :warehouse_id, "Almacén", class: "sr-only" %>         
+            <div class="input-group">
+              <div class="input-group-addon"><i class=" fas fa-warehouse"></i></div>
+                <%= form.collection_select :warehouse_id, @warehouses, :id, :name,
+                  {selected: @stock.warehouse_id, include_blank: 'Seleccione Almacén'}, 
+                  {class: "form-control"} %>
+             </div>
+            </div>
+          </div>
+      <div class="col-xs-4">         
+        <div class="form-group">
+          <%= form.label :qty_in, class: "sr-only" %>
+            <div class="input-group">
+              <div class="input-group-addon"><label>Cantidad</label></div>
+              <%= form.text_field :qty_in, placeholder: "", class: "form-control" %>
+             </div>
+            </div>
+          </div>
+        <div class="col-xs-4">
+          <div id="div-error"></div>
+            <div class="form-group">
+                <%= form.label :total, class: "sr-only" %>
+                <div class="input-group">
+                  <div class="input-group-addon"><label>Total Disponible</label></div>
+                <%= form.text_field :total, placeholder: "", class: "form-control", disabled: "disabled" %>
+              </div>
+            </div>
+          </div>
+          <div class="col-xs-4">
+          <div id="div-error"></div>
+            <div class="form-group">
+                    <div class="checkbox checkbox-success">
+                        <input id="checkbox3" class="styled" type="checkbox" >
+                        <label for="checkbox3">
+                            ¿Actualizar Precio?
+                        </label>
+                    </div>
+              </div>       
+          </div>
+        </div>
+        <hr>
+        <div class="field">
+          <%= form.hidden_field :item_id %>
+          <%= form.hidden_field :purchase_order_line_id %>
+          <input type="hidden" name="option_view" value="<%= @option_view %>">
+        </div>
+        <div class="actions">
+          <%= form.submit "Guardar", class: "btn btn-primary" %>
+        </div>
+<% end %>
+</div>
+</div>

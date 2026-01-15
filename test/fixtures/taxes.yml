@@ -1,0 +1,39 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  type_tax_use: MyString
+  tax_adjustement: false
+  amount_type: MyString
+  active: false
+  company_id: 1
+  amount: 9.99
+  account_id: 1
+  refund_account_id: 1
+  description: MyText
+  price_include: false
+  include_base_amount: MyString
+  analytic: false
+  tax_exigible: MyString
+  cash_basis_account: 1
+  create_uid: 1
+  write_uid: 1
+
+two:
+  name: MyString
+  type_tax_use: MyString
+  tax_adjustement: false
+  amount_type: MyString
+  active: false
+  company_id: 1
+  amount: 9.99
+  account_id: 1
+  refund_account_id: 1
+  description: MyText
+  price_include: false
+  include_base_amount: MyString
+  analytic: false
+  tax_exigible: MyString
+  cash_basis_account: 1
+  create_uid: 1
+  write_uid: 1

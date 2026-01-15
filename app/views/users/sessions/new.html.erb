@@ -1,0 +1,58 @@
+
+<%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+ 
+<div class="container-fluid">
+ <div class="row">
+  <div class="col-md-4"></div>
+  <div class="col-md-4 ">
+   <div class="login-panel panel panel-default">    
+    <div class="panel-body">
+     <section id="wrapper" class=" ">      
+      <div class="new-login-box">
+               <div class="white-box">
+                    <h3 class="box-title m-b-0 text-center">Iniciar Session ERPIRON</h3>
+                    <small>Ingrese sus credenciales por favor:</small>
+                  <form class="form-horizontal new-lg-form" id="loginform" action="index.html">
+                    
+                    <div class="form-group  m-t-20">
+                      <div class="col-xs-12">                        
+                        <%= f.label :email %><br />
+                        <%= f.email_field :email, autofocus: true, autocomplete: "email", :class =>"form-control" %>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <div class="col-xs-12">                        
+                        <%= f.label :password %><br />
+                       <%= f.password_field :password, autocomplete: "current-password" , :class =>"form-control"%><br>
+                      </div>
+                    </div>
+
+                    <div class="form-group  m-t-20">
+                      <div class="col-xs-12">
+                        
+                          <%= f.submit "Ingrsar", class: "btn btn-info btn-lg btn-block btn-rounded text-uppercase waves-effect waves-light" %>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-xs-12 col-sm-12 col-md-12 m-t-10 text-center">
+                        <div class="social"><a href="javascript:void(0)" class="btn  btn-facebook" data-toggle="tooltip" title="" data-original-title="Login with Facebook"> <i aria-hidden="true" class="fab fa-facebook-f"></i> </a> <a href="javascript:void(0)" class="btn btn-googleplus" data-toggle="tooltip" title="" data-original-title="Login with Google"> <i aria-hidden="true" class="fab fa-google-plus-g"></i> </a> </div>
+                      </div>
+                    </div>
+                    <div class="form-group m-b-0">
+                      <div class="col-sm-12 text-center">
+                        <%= render "users/shared/links" %>
+                        
+                      </div>
+                    </div>
+                  </form>
+
+                </div>
+              </div>              
+        </section>
+    </div>
+   </div>
+  </div>
+ </div>
+</div>
+
+<% end %>

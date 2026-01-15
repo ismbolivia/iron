@@ -1,0 +1,21 @@
+$("ul.errors").html("");
+<% if @departamento.errors.any? %>
+	$("#departamento_name").val("")
+	$('#departamento_name').css('border-color', 'red');
+	$('#div-error').addClass('alert alert-danger');
+	 document.getElementById("div-error").innerHTML = "<h2><%= pluralize(@departamento.errors.count, 'error') %> prohibited this departamento from being saved:</h2>"+
+	" <ul><% @departamento.errors.full_messages.each do |message| %><li><%= message %></li><% end %></ul>";
+
+<% else %>
+	$("#address_departamento_id").html("<option value= '<%=@departamento.id %>'><%=@departamento.name %></option>")
+	$("#new-country-modal").modal("hide");
+	$("#address_province_id").html("");
+
+	$("#btn-province").html("");
+	$("#btn-province").html("<a class='btn waves-effect waves-light btn-info' data-remote='true' data-method='get' href='/provinces/new?departamento_id=<%= @departamento.id %>'><span class='fas fa-plus' aria-hidden='true'> </span></a> ");
+	$("#panel_province").removeClass('hidden');
+
+
+
+	// $("#btn-depa").html("<a class='btn waves-effect waves-light btn-info' data-remote='true' data-method='get' href='/departamentos/new?departamento_id=<%= @departamento.id %>'><span class='fas fa-plus' aria-hidden='true'> </span></a> ");
+<% end %>

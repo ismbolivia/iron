@@ -1,0 +1,19 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Item:</strong>
+  <%= @items_supplier.item_id %>
+</p>
+
+<p>
+  <strong>Supplier:</strong>
+  <%= @items_supplier.supplier_id %>
+</p>
+
+<p>
+  <strong>State:</strong>
+  <%= @items_supplier.state %>
+</p>
+
+<%= link_to 'Edit', edit_items_supplier_path(@items_supplier) %> |
+<%= link_to 'Back', items_suppliers_path %>

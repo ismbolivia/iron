@@ -1,0 +1,21 @@
+<table class="table">
+  <thead>
+    <tr>
+      <th>Fecha</th>
+      <th>Detalle</th>
+      <th>Monto</th>
+      
+     
+    </tr>
+  </thead>
+
+  <tbody>
+    <% box_details.where(state: "input").order('created_at DESC').limit(10).each do |box_detail| %>
+      <tr>
+        <td><%=box_detail.created_at.strftime("%d/%m/%Y") %></td>
+        <td><%= box_detail.reason %></td>    
+        <td><%= box_detail.amount %> (<%= box_detail.box.currency.symbol %>)</td>  
+      </tr>
+    <% end %>
+  </tbody>
+</table>

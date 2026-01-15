@@ -1,0 +1,31 @@
+<table class="table">
+  <thead>
+    <tr>
+      <th>Fecha</th>
+      <th>Operación</th>
+      <th>Detalle</th>
+      <th>Monto</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% box_details.limit(10).each do |box_detail| %>
+      <tr>
+        <td><%=box_detail.created_at.strftime("%d/%m/%Y") %></td>
+        <td>
+          <% if box_detail.input? %>
+          <span class="badge badge-pill text-uppercase text-white font-medium badge-success label-rouded">Ingreso</span>
+        <% end %>
+
+        <% if box_detail.output? %>
+          <span class="badge badge-pill text-uppercase text-white font-medium badge-danger label-rouded">Salida</span>
+        <% end %>
+
+          </td>
+        <td><%= box_detail.reason %></td>    
+        <td><%= box_detail.amount %> (<%= box_detail.box.currency.symbol %>)</td>  
+      </tr>
+      
+    <% end %>
+  </tbody>
+</table>

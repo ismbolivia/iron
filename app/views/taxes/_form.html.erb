@@ -1,0 +1,87 @@
+<%= form_with(model: tax, local: true) do |form| %>
+  <% if tax.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(tax.errors.count, "error") %> prohibited this tax from being saved:</h2>
+
+      <ul>
+      <% tax.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :name %>
+    <%= form.text_field :name, class: "form-control" , placeholder: "Iva 13% Venta" %>
+  </div>
+
+  <div class="field">
+    <%= form.label :type_tax_use %>
+    <%= form.text_field :type_tax_use , class: "form-control", placeholder: "Ventas o Compras"%>
+  </div>
+
+  <div class="field">
+    <%= form.label :tax_adjustement %>
+    <%= form.check_box :tax_adjustement %>
+  </div>
+
+  <div class="field">
+    <%= form.label :amount_type %>
+    <%= form.text_field :amount_type, class: "form-control", placeholder: "Porcentaje" %>
+  </div>
+
+  <div class="field">
+    <%= form.label :active %>
+    <%= form.check_box :active %>
+  </div>
+
+
+
+  <div class="field">
+    <%= form.label :amount %>
+    <%= form.text_field :amount, class: "form-control", placeholder: "13.000" %>
+  </div>
+
+  <div class="field">
+    <%= form.label :account_id %>
+       <%= form.collection_select :account_id, @accounts, :id, :name,
+                   {selected: @tax.account_id, include_blank: 'Seleccione una cuenta'},
+                    {class: "form-control"} %>
+  </div>
+
+ 
+
+  <div class="field">
+    <%= form.label :description %>
+    <%= form.text_area :description , class: "form-control" %>
+  </div>
+
+  <div class="field">
+    <%= form.label :price_include %>
+    <%= form.check_box :price_include %>
+  </div>
+
+  <div class="field">
+    <%= form.label :include_base_amount %>
+    <%= form.check_box :include_base_amount  %>
+  </div>
+
+  <div class="field">
+    <%= form.label :analytic %>
+    <%= form.check_box :analytic %>
+  </div>
+
+  <div class="field">
+    <%= form.label :tax_exigible %>
+    <%= form.text_field :tax_exigible  , class: "form-control", placeholder: "on invoice"%>
+  </div>
+
+
+
+
+  <div class="actions">
+    <%= form.submit "Guardar", :class => "btn btn-success" %>
+    <%= link_to 'Back', taxes_path, :class =>"btn btn-default" %>
+  </div>
+<% end %>

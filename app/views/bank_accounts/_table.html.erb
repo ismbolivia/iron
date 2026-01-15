@@ -1,0 +1,22 @@
+<table class="table product-overview">
+	<thead>                               
+	  <tr>
+	    <th>Cuenta Bancaria</th>
+	    <th>Cliente</th>
+	    <th>Monto</th>
+	    <th>Depositante</th>
+	    <th>Fecha</th>
+	 </tr>
+	</thead>
+	<tbody>
+	  <% @bank_account.deposits.each do |deposit| %>
+	 <tr>				                                   
+	    <td><%= deposit.bank_account.number %></td>
+	    <td><%= deposit.client.name  %></td>
+	    <td><%= deposit.rode %></td> 	
+	    <td><%= deposit.depositante %></td>      
+	    <td><%= deposit.created_at.strftime("%d/%m/%Y") %></td>
+	</tr>
+	   <% end %>
+	</tbody>
+</table> 

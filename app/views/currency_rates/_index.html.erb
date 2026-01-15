@@ -1,0 +1,44 @@
+ <% if @currency.currency_rates.count >0 %>                      
+    <table class="table product-overview">
+      <thead>                               
+        <tr>
+          <th>Fecha</th>
+           <th>Tasa</th>
+           <th>Estado</th>  
+           <th>Moneda</th>
+            <th colspan="3"></th>                                
+         </tr>
+      </thead>
+    <tbody>
+      <% @currency.currency_rates.each do |currency_rate| %>
+        <tr>
+           <td><%=currency_rate.name %></td>
+           <td><%=currency_rate.rate%> (<%=currency_rate.get_symbol%>)</td>
+           <td><%=currency_rate.state %></td>
+           <td><%=currency_rate.get_currency_ref %></td>  
+           <td><%= link_to 'Mostrar', currency_rate, remote: true %></td>
+           <td><%= link_to 'Desactivar', edit_currency_rate_path(currency_rate), remote: true, data: { confirm: '¿Estas seguro de desactivar?' } %></td>
+           <td><%= link_to 'Eliminar', currency_rate, method: :delete, remote: true %></td>
+                                        
+        </tr>
+        <% end %>
+     </tbody>
+   </table>   
+     <% else %> 
+        <h4>No hay tazas cargados...!</h4>
+  <% end %>  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

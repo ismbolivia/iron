@@ -1,0 +1,14 @@
+$("ul.errors").html("");
+<% if @purchase_order_line.errors.any? %>
+    $("#purchase_order_line_item").val("")
+	$('#purchase_order_line_item').css('border-color', 'red');
+	$('#div-error').addClass('alert alert-danger');
+	 document.getElementById("div-error").innerHTML = "<h2><%= pluralize(@purchase_order_line.errors.count, 'error') %> en los siguientes campo:</h2>"+
+	" <ul><% @purchase_order_line.errors.full_messages.each do |message| %><li><%= message %></li><% end %></ul>";
+<% else %>
+	$("#purchase_order_lines").html("<%= escape_javascript(render(partial: 'purchase_orders/table', locals: { purchase_order: @purchase_order, show_actions: true })) %>");
+	$("#purchase_order_lines_item").val("")
+	$("#purchase_order_lines_item_qty").val("")
+	$("#purchase_order_lines_price_unit").val("")
+	$("#purchase_order_lines_item").focus()
+<% end %>

@@ -1,0 +1,21 @@
+$("ul.errors").html("");
+<% if @check_payment.errors.any? %>
+    // $("#payment_sale").val("")
+	// $('#payment_sale').css('border-color', 'red');
+	$('#div-error-check').addClass('alert alert-danger');
+	 document.getElementById("div-error-check").innerHTML = "<h2><%= pluralize(@check_payment.errors.count, 'error') %> prohibited this tipos de pago con cheques from being saved:</h2>"+
+	" <ul><% @check_payment.errors.full_messages.each do |message| %><li><%= message %></li><% end %></ul>";
+<% else %>
+
+
+
+ document.getElementById("payment_id").value = "<%= @check_payment.payment_type_id.to_s %>";
+ document.getElementById("payment_payment_type_id").value = "<%= @check_payment.payment_type_id.to_s %>";
+ document.getElementById("payment_rode").value = "<%= @check_payment.rode %>";
+ document.getElementById("payment_check_payment_id").value = "<%= @check_payment.id %>";
+ 
+$("#new_payment_type_modal").addClass("hidden");
+$("#payment_change").removeClass("hidden");
+calcular_saldo();
+change_symbol("<%= @check_payment.check.currency.symbol %>");
+<% end %>

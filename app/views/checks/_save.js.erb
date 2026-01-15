@@ -1,0 +1,10 @@
+$("ul.errors").html("");
+	<% if @check.errors.any? %>
+	$('#div-error').addClass('alert alert-danger');
+	 document.getElementById("div-error").innerHTML = "<h2><%= pluralize(@check.errors.count, 'error') %> prohibited this check from being saved:</h2>"+
+	" <ul><% @check.errors.full_messages.each do |message| %><li><%= message %></li><% end %></ul>";
+<% else %>
+	 $("#panel-checks").html("<%= escape_javascript(render(partial: 'checks/table', locals: { checks: @check, show_actions: true })) %>");
+	 $("#new-check-modal").modal("hide");																											
+<% end %>
+	

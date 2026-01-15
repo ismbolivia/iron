@@ -1,0 +1,18 @@
+// Place all the styles related to the Boxes controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+
+// .report {
+//     position: relative;
+//     font-size: 0;
+//     white-space: nowrap;
+// }
+// .report {
+//     width: 50%;
+//     white-space: nowrap;
+//     vertical-align: middle;
+// }
+.report {
+    display: table-cell;
+}

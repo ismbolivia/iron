@@ -1,0 +1,36 @@
+
+<div class="modal-body">
+
+  <div class="panel-body">  
+    <%= form_for :country, url: countries_url, method: :post, remote: true do |f| %>
+    <div class="row">
+    <div class="col-xs-12">
+      <div class="" id="div-error">       
+      </div>
+
+      <div class="form-group">
+        <%= f.label :name,  'Nombre Del Pais', :class =>"control-label" %>
+        <%= f.text_field :name, :class =>"form-control", :placeholder =>"Bolivia" %>
+      </div>      
+
+      <div class="form-group">
+         <%= f.label :code, 'Iniciales', :class =>"control-label" %>       
+        <%= f.text_field :code, :class =>"form-control", :placeholder =>"BO" %>     
+      </div>
+      <div class="form-group">
+         <%= f.label :code_phone,'Codigo De Pais',  :class =>"control-label" %>
+        <%= f.text_field :phone_code, :class =>"form-control", :placeholder =>"+591" %>   
+      </div>
+    
+    </div>
+  </div>
+
+    <%= f.submit "Aceptar", :id => 'new_country_id',  class: "btn btn-success" %>
+   <% end %>
+  </div>
+
+</div>
+<div class="modal-footer">
+      <%= link_to "Cancelar", "#", class: "btn btn-danger", "data-dismiss": "modal" %>
+  </div>
+

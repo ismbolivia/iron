@@ -1,0 +1,29 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Sale:</strong>
+  <%= @devolution.sale_id %>
+</p>
+
+<p>
+  <strong>Sale detail:</strong>
+  <%= @devolution.sale_detail_id %>
+</p>
+
+<p>
+  <strong>Qty:</strong>
+  <%= @devolution.qty %>
+</p>
+
+<p>
+  <strong>Mount:</strong>
+  <%= @devolution.mount %>
+</p>
+
+<p>
+  <strong>Obs:</strong>
+  <%= @devolution.obs %>
+</p>
+
+<%= link_to 'Edit', edit_devolution_path(@devolution) %> |
+<%= link_to 'Back', devolutions_path %>

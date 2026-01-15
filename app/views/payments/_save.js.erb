@@ -1,0 +1,13 @@
+$("ul.errors").html("");
+<% if @payment.errors.any? %>
+    $("#payment_sale").val("")
+	$('#payment_sale').css('border-color', 'red');
+	$('#div-errores').addClass('alert alert-danger');
+	 document.getElementById("div-errores").innerHTML = "<h2><%= pluralize(@payment.errors.count, 'error') %> prohibited this zona from being saved:</h2>"+
+	" <ul><% @payment.errors.full_messages.each do |message| %><li><%= message %></li><% end %></ul>";
+<% else %>
+
+		 $("#panel_payment_sale").html("<%= escape_javascript(render(partial: 'payments/table', locals: { payments: @sale.payments, show_actions: true })) %>");
+		 $("#new-payment-modal-current").html("<%= escape_javascript(render 'show_recibo') %>");		
+<% end %>
+ 

@@ -1,0 +1,51 @@
+
+
+  <div id="panel-stock">             
+              <table class="table">
+                <thead>
+                  <tr>
+                   <th>Nombre de cliente</th>
+                    <th>Direeción</th>
+                    <th>Telefono</th>
+                    <th>Movil</th>
+                    <th>Saldo</th>
+                    <th>Descuento</th>
+                    <th>Lim Credito</th>
+                    <th>Asignado a</th>
+                    <th></th>
+                    <th colspan="4"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% @clients.each do |client| %>
+                    <tr>
+                      <td><%= client.name %></td>
+                      <td><%= client.address.get_direccion_all %></td>
+                      <td><%= client.phone %></td>
+                      <td><%= client.mobile %></td>
+                      <td><%= client.get_saldo_total %>$</td>
+                      <td><%= client.discount  %>%</td>
+                      <td><%= client.credit_limit%>$</td>
+                      <td><%= client.get_asignado%></td>
+                      <td><%= client.created_at.strftime("%d/%m/%Y") %></td>
+                      <td><%= client.updated_at.strftime("%d/%m/%Y") %></td>
+                      <td>
+                         <%= button_to client, {method: :get, class: "btn btn-success"} do %>
+                          <span class="fas fa-binoculars" aria-hidden="true"> </span> 
+                        <% end %>
+                      </td>
+                      <td>
+                        <%= button_to edit_client_path(client), {method: :get, class: "btn btn-info"} do %>
+                          <span class="fas fa-edit" aria-hidden="true"> </span> 
+                        <% end %>
+                      </td>
+                      <td>
+                        <%= button_to client, { method: :delete, data: { confirm: '¿Está seguro?' }, class: "btn btn-danger" } do %>
+                          <span class=" fas fa-trash" aria-hidden="true"> </span> 
+                        <% end %>      
+                      </td>
+                    </tr>
+                  <% end %>
+                </tbody>
+              </table>           
+             </div>    

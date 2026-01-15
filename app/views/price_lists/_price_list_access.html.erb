@@ -1,0 +1,52 @@
+
+  <div class="tab-content">
+      <div role="tabpanel" class="tab-pane active" id="ihome">
+        <div class="table-responsive"> 
+           <%= render partial: "pager", locals: { keywords: @keywords, page: @page } %>  
+          <div class="table-responsive">
+            <table class="table product-overview">
+              <thead>
+                <tr>
+               
+                </tr>
+                <tr>
+                  <th>Código</th>
+                  <th>Nombre</th>
+                  <th>Descripción</th>
+                  <th>Imagen</th>
+                  <th>Unidad</th>
+                  <th>Precio</th>
+                 <% if can? :read, Item %>
+                
+                  <th>Categoría</th>               
+                  <th>Fecha de Modificación</th>
+                  <% end %>
+                </tr>
+              </thead>
+
+              <tbody>
+                <% @items.each do |item| %>
+                  <tr>
+                    <td><%= item.code %></td>
+                    <td><%= item.name  %></td>
+                    <td><%= item.item_description %></td>
+                    <td><%= image_tag(item.image.large.url, :style =>"iwidth:100%; height:50px;") %>
+                     </td>
+                     <td><%= item.unit ? item.unit.name : '' %></td>
+                      <td><%= number_to_currency(item.getPriceAsignado(@price_list.name)) %></td>
+                     <% if can? :read, item %>
+            
+                    <td><%= item.category ? item.category.name : '' %></td>                   
+                    <td><%= item.updated_at.strftime("%d/%m/%Y") %></td>
+                   <% end %>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+      </div>   
+        </div>              
+      </div>      
+  </div>
+
+
+

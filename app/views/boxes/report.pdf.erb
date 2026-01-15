@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Productos</title>
+  <meta charset='utf-8' />
+    <%= wicked_pdf_stylesheet_link_tag "pdf/pdf" %>
+</head>
+	<body>
+	   <div class="col-md-12">
+	 	<div class=" printableArea">	        	
+	        <div class="row">
+			  <table class="table product-overview table-bordered ">
+			    <thead class="conf-pdf">
+			    	<tr><th colspan="5" class="center">
+				         	<h3><b><%=@title %></b> </h3>
+				        </th>
+				    </tr>
+				     <tr>				        
+				        <th class="text-center">Fecha </th>
+				        <th class="text-center">Tipo  de Operación</th>
+				        <th class="text-center">Detalle</th>
+				        <th class="text-center">Monto</th>				      		       	       
+				     </tr>
+				     </thead>
+				     <tbody>
+				  <% @box_details_rage.each do |box_detail| %>
+				      <tr>
+				        <td><%= box_detail.created_at.strftime("%d/%m/%Y") %></td>
+				        <td>
+				          <% if box_detail.input? %>
+				          <span class="badge badge-pill text-uppercase text-white font-medium badge-success label-rouded">Ingreso</span>
+				         <% end %>
+
+				        <% if box_detail.output? %>
+				          <span class="badge badge-pill text-uppercase text-white font-medium badge-danger label-rouded">Salida</span>
+				        <% end %>
+				          </td>
+				        <td><%= box_detail.reason %></td>    
+				        <td class="text-right"><%= box_detail.amount %> <%= box_detail.box.currency.symbol %></td> 
+				               
+				      </tr>
+				     
+				    <% end %>
+
+				     <tr><th colspan="3" class="text-center">
+				         <span><b>Total: </b> </span>
+				        </th>
+				        <% if  @box_details_rage.count>0 %>			        	
+				        
+				         <th class="text-right" colspan="2"> <%= @box_details_rage.sum(:amount) %> <%=@box_details_rage.first.box.currency.symbol %> </th>	
+				         <% else %>		
+				         <th></th>
+				          <% end %>	        
+				    </tr>
+				  </tbody>
+				</table>			    
+			  </div>
+			</div>
+		</div>
+</body>	
+</html>

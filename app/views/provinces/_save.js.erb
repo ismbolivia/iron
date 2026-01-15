@@ -1,0 +1,16 @@
+$("ul.errors").html("");
+<% if @province.errors.any? %>
+	$("#province_name").val("")
+	$('#province_name').css('border-color', 'red');
+	$('#div-error').addClass('alert alert-danger');
+	 document.getElementById("div-error").innerHTML = "<h2><%= pluralize(@province.errors.count, 'error') %> prohibited this province from being saved:</h2>"+
+	" <ul><% @province.errors.full_messages.each do |message| %><li><%= message %></li><% end %></ul>";
+
+<% else %>
+	$("#address_province_id").html("<option value= '<%=@province.id %>'><%=@province.name %></option>")
+	$("#new-country-modal").modal("hide");
+	$("#btn-zona").html("");
+	$("#address_zona_id").html("");
+	$("#btn-zona").html("<a class='btn waves-effect waves-light btn-info' data-remote='true' data-method='get' href='/zonas/new?province_id=<%= @province.id %>'><span class='fas fa-plus' aria-hidden='true'> </span></a> ");
+	$("#panel_zona").removeClass("hidden");
+<% end %>

@@ -1,0 +1,56 @@
+<div class="white-box" >
+    <div class="table-responsive" >            
+                          
+          <div id="helos">
+            <table class="table product-overview">
+              <thead>
+                <tr>
+                  <th>Código</th>
+                  <th>Nombre</th>
+                  <th>Descripción</th>              
+                  <th>Unidad</th>                
+                  <th>Categoría</th>
+                 <!--  <th>Almacen</th> -->
+                  <th>Precio</th>
+               
+                  <th colspan="2"></th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <% @pol_prices.each do |pol| %>
+                               	
+                
+                  <tr>
+                    <td><%= pol.item.code %></td>
+                    <td><%= pol.name  %></td>
+                    <td><%= pol.item.item_description %></td>
+                   
+                    <td><%= pol.item.unit ? pol.item.unit.name : '' %></td>
+                    <td><%= pol.item.category ? pol.item.category.name : '' %></td>
+                    
+                    <td><%= number_to_currency(pol.item.price) %></td>  
+                    <td><%= link_to "", edit_purchase_order_purchase_order_line_path(pol.purchase_order.id, pol.id), remote: true, class: "btn btn-danger pull-right  fas fa-power-off" %>
+                      
+
+                    </td>                
+                    <td>  <% if pol.item.price_lists.count <=0 %>  
+                    	<%= link_to "", new_price_path(item_id: pol.item.id), remote: true, class: "btn btn-primary pull-right fas fa-cog" %>
+                    	<% elsif pol.item.price_lists.count >0  && pol.item.price_lists.count < PriceList.count %>
+                    	<%= link_to "", new_price_path(item_id: pol.item.id), remote: true, class: "btn btn-info pull-right fas fa-cog" %>
+                    	<% else %>
+                    	 <% if pol.item.price_lists.count == PriceList.count %>  
+                    	<%= link_to "", new_price_path(item_id: pol.item.id), remote: true, class: "btn btn-danger pull-right fas fa-cog" %>
+                    	<% end %>
+                    	<% end %>
+                    </td>
+                   
+                  </tr>
+              
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+      </div>     
+</div>
+         

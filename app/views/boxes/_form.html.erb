@@ -1,0 +1,87 @@
+<%= form_with(model: box, local: true) do |form| %>
+  <% if box.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(box.errors.count, "error") %> prohibited this box from being saved:</h2>
+
+      <ul>
+      <% box.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+<div class="row">
+  <div class = "col-lg-12 col-md-12 col-sm-12" >
+    <div class="col-lg-2 col-md-2 col-sm-2">
+       <div class="product-img ">
+             <%= image_tag(  ActionController::Base.helpers.asset_path('box_icon.png'), :alt => "imge-item", class: "image-form") %>              
+       </div>
+      </div>
+
+     <div class="col-lg-4 col-md-4 col-sm-4">
+          <div class="form-group">                      
+              <div class="input-group">
+                <%= form.text_field :name, placeholder: "Caja ISM", class: "form-controles m-t-50" %>
+              </div>
+            
+              <div class="input-group m-t-50">
+                  <div class="input-group-addon "><i class="fas fa-list-ul"></i></div>
+                   <%= form.text_area :description, class: "form-control" %>
+                  
+              </div>
+              <div class="input-group ">
+                  <div class="input-group-addon"><i class="fas fa-diagnoses"></i></div>
+               <%= form.collection_select :currency_id, @currencies, :id, :get_full_name, 
+                      {selected: @box.currency_id, include_blank: 'Seleccione una moneda'},
+                      {class: "form-control"} %>  
+              </div>
+          </div>
+      </div>
+
+  <div class="col-lg-6 col-md-4 col-sm-6">
+      <a class="btn btn-app">
+          <span class="badge bg-yellow">3</span>
+          <i class="fa fa-bullhorn"></i> Notifications
+      </a>
+      <a class="btn btn-app">
+          <span class="badge bg-green">300</span>
+          <i class="fa fa-barcode"></i> Products
+      </a>
+      <a class="btn btn-app">
+          <span class="badge bg-purple">891</span>
+          <i class="fa fa-users"></i> Users
+      </a>
+      <a class="btn btn-app">
+          <span class="badge bg-teal">67</span>
+          <i class="fa fa-inbox"></i> Orders
+      </a>
+      <a class="btn btn-app">
+          <span class="badge bg-aqua">12</span>
+          <i class="fa fa-envelope"></i> Inbox
+      </a>
+      <a class="btn btn-app">
+          <span class="badge bg-red">531</span>
+          <i class="fa fa-thumbs-up"></i> Likes
+      </a>
+  </div>
+
+ </div>
+</div>
+  <hr>
+<div class="row no-print ">
+    <div class="col-xs-12">
+        <%= link_to 'Back', boxes_path,  class: "btn btn-default "  %>
+        <%= form.submit 'Guardar', :class => "btn btn-success  pull-right" %>
+        <%= link_to 'Show', @box,  class: "btn btn-primary pull-right" , style: "margin-right: 5px;"%>
+
+         <!--  <button type="button" class="btn btn-primary pull-right" style="margin-right: 5px;">
+            <i class="fa fa-download"></i> Generate PDF
+          </button> -->
+    </div>
+</div>
+
+
+<% end %>
+
+

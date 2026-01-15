@@ -1,0 +1,19 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Payment type:</strong>
+  <%= @payment_type_bank_account.payment_type_id %>
+</p>
+
+<p>
+  <strong>Bank account:</strong>
+  <%= @payment_type_bank_account.bank_account_id %>
+</p>
+
+<p>
+  <strong>Monto:</strong>
+  <%= @payment_type_bank_account.monto %>
+</p>
+
+<%= link_to 'Edit', edit_payment_type_bank_account_path(@payment_type_bank_account) %> |
+<%= link_to 'Back', payment_type_bank_accounts_path %>

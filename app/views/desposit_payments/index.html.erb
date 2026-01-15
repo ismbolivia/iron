@@ -1,0 +1,29 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Desposit Payments</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Payment</th>
+      <th>Deposit</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @desposit_payments.each do |desposit_payment| %>
+      <tr>
+        <td><%= desposit_payment.payment_id %></td>
+        <td><%= desposit_payment.deposit_id %></td>
+        <td><%= link_to 'Show', desposit_payment %></td>
+        <td><%= link_to 'Edit', edit_desposit_payment_path(desposit_payment) %></td>
+        <td><%= link_to 'Destroy', desposit_payment, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Desposit Payment', new_desposit_payment_path %>

@@ -1,0 +1,12 @@
+
+<% if @setting_currency_company.errors.any? %>
+	$('#div-error-setti_currency').addClass('alert alert-danger');
+	 document.getElementById("div-error-setti_currency").innerHTML = "<h2><%= pluralize(@setting_currency_company.errors.count, 'error') %> prohibited this divisa from being saved:</h2>"+
+	" <ul><% @setting_currency_company.errors.full_messages.each do |message| %><li><%= message %></li><% end %></ul>";
+
+<% else %>
+
+$("#setting_currency_companies").html("<%= escape_javascript(render(partial: 'setting_currency_companies/setting_currency_company_table', locals: { company: @company, show_actions: true })) %>");	
+$("#new-setting-currency-modal").modal("hide");
+	
+<% end %>	

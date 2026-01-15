@@ -1,0 +1,14 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Purchse order line:</strong>
+  <%= @purchase_order_lines_tax.purchase_order_line_id %>
+</p>
+
+<p>
+  <strong>Tax:</strong>
+  <%= @purchase_order_lines_tax.tax_id %>
+</p>
+
+<%= link_to 'Edit', edit_purchase_order_lines_tax_path(@purchase_order_lines_tax) %> |
+<%= link_to 'Back', purchase_order_lines_taxes_path %>

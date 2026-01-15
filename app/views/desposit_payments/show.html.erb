@@ -1,0 +1,14 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Payment:</strong>
+  <%= @desposit_payment.payment_id %>
+</p>
+
+<p>
+  <strong>Deposit:</strong>
+  <%= @desposit_payment.deposit_id %>
+</p>
+
+<%= link_to 'Edit', edit_desposit_payment_path(@desposit_payment) %> |
+<%= link_to 'Back', desposit_payments_path %>

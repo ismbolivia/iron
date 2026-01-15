@@ -1,0 +1,40 @@
+       <% if can? :read, Warehouse %> 
+        <li class="dropdown active">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Cajas <span class="caret"></span>
+
+            <span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-inbox"></span>
+            </a>
+          <ul class="dropdown-menu forAnimate" role="menu">
+             <li class="<%= current_page?(boxes_path) ? "active" : "" %>"><%= link_to 'Listar Cajas', boxes_path %>
+            </li>
+          </ul>
+        </li>
+        <% end %>
+
+      <% if can? :read, Bank %> 
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Bancos <span class="caret"></span>
+            <span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-home"></span>
+          </a>
+          <ul class="dropdown-menu forAnimate" role="menu">
+            <li class="<%= current_page?(banks_path) ? "active" : "" %>"><%= link_to 'Litar Bancos', banks_path %>
+            </li>
+            <li class="<%= current_page?(bank_accounts_path) ? "active" : "" %>"><%= link_to 'Cuentas Bancarias', bank_accounts_path %>
+            </li>
+            <li class="<%= current_page?(checks_path) ? "active" : "" %>"><%= link_to 'Cheques ', checks_path %>
+            </li>            
+          </ul>
+        </li>
+      <% end %>
+    
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+            Configuración
+            <span class="caret"></span>
+            <span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-wrench"></span>
+          </a>
+
+          <ul class="dropdown-menu forAnimate" role="menu">
+            <li class="<%= current_page?(currencies_path) ? "active" : "" %>"><%= link_to 'Divisas', currencies_path %></li>         
+          </ul>
+        </li>

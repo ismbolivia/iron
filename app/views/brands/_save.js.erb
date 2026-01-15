@@ -1,0 +1,13 @@
+
+$("ul.errors").html("");
+<% if @brand.errors.any? %>
+
+	<% @brand.errors.full_messages.each do |message| %>
+		$("ul.errors").append($("<li />").html(" <%= message.html_safe %> "));
+	<% end %>
+<% else %>
+
+
+	window.location.href = "/brands";
+	$("#new-brand-modal").modal("hide");
+<% end %>

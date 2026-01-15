@@ -1,0 +1,4 @@
+1.- logueo del primer usuario cuando esta sin datos controlar el usuario administrador en el logueo
+2.-  la creacion de comppania se debe controlar en la vista de layout
+3..- se debe mejorar los permisos.
+4.- Crear Monedas por defecto

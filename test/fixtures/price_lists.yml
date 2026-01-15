@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  utilidad: 9.99
+  state: 1
+  date: 2019-02-25
+  company_id: 1
+  user_uid: 1
+
+two:
+  name: MyString
+  utilidad: 9.99
+  state: 1
+  date: 2019-02-25
+  company_id: 1
+  user_uid: 1

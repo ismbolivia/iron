@@ -1,0 +1,45 @@
+<div class="white-box">
+    <div class="table-responsive">
+            <table class="table product-overview">
+              <thead>
+                <tr>
+                  <%= render partial: "pager", locals: { keywords: @keywords, page: @page } %>
+                </tr>
+                <tr>
+                  <th>Fecha </th>
+                  <th>Ref</th>
+                  <th>Nombrre de la compañia</th>
+                  <th>Nombre del Almacen</th>
+                  <th>Ref Del almacen</th>
+                  <th>Valor </th>                                
+                  <th colspan="2"></th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <% @inventories.each do |inventory| %>
+                  <tr>
+                    <td><%= inventory.created_at.strftime("%d/%m/%Y") %></td>
+                    <td><%= inventory.ref %></td>
+                    <td><%= inventory.name_company  %></td>
+                    <td><%= inventory.name_warehouse %></td>
+                    <td><%= inventory.ref_warehouse %></td>
+                    <td><%= @mycompany.get_current_currency.symbol%> <%= inventory.TotalAmountInventory %></td>                 
+                    
+                    <td>
+                      <%= button_to inventory, {method: :get, class: "btn btn-success"} do %>
+                        <span class="fas fa-binoculars" aria-hidden="true"> </span> 
+                      <% end %>
+                    </td>
+                    <td>
+                      <%= button_to inventory, { method: :delete, data: { confirm: '¿Está seguro?' }, class: "btn btn-warning" } do %>
+                        <span class="fa fa-trash" aria-hidden="true"> </span>
+                      <% end %>
+                    </td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+      </div>     
+</div>
+         

@@ -1,0 +1,19 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  symbol: MyString
+  rounding: 9.99
+  active: false
+  currency_unit_label: MyString
+  currency_subunit_label: MyString
+  create_uid: 1
+
+two:
+  name: MyString
+  symbol: MyString
+  rounding: 9.99
+  active: false
+  currency_unit_label: MyString
+  currency_subunit_label: MyString
+  create_uid: 1

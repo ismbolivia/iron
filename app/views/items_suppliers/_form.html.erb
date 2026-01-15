@@ -1,0 +1,105 @@
+
+<% if @suppliers.count > 0 %>
+  <div class="col-xs-12">
+     <div class="form-group">
+         <table class="table">
+          <thead>
+            <tr>     
+              <th>Proveedores</th>
+              <th>email</th>
+              <th>Phone</th>
+              <th>Cel:</th>
+              <th colspan="1"></th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <% @suppliers.each_with_index do |supplier, index| %>
+              <tr>                
+                <td><%= supplier.name %></td>
+                <td><%= supplier.email %></td>
+                <td><%= supplier.phone %></td>
+                <td><%= supplier.mobile %></td>
+                <td><%= link_to 'Desactivar', supplier, method: :delete, data: { confirm: 'Are you sure?' }, remote:true %></td>
+                <td>          
+                  <div class="group">
+                   <input class="toggle toggle-switch-success group" id="<%= index %>" type="checkbox" onclick= "add_item('<%= index %>', '<%= @items_supplier.item_id %>', '<%= supplier.id %>')"/>
+                   <label class="toggle-btn" for="<%= index %>"></label>
+                  </div>                
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+    </div>
+  </div>
+  <% end %>
+  
+  <% if @items.count > 0 %>
+
+  <div class="col-xs-12">
+     <div class="form-group">
+      
+       <table class="table">
+          <thead>
+            <tr>     
+              <th>Code</th>
+              <th>Detalle</th>
+              <th>Marca</th>
+              <th>Categoria</th>
+              <th colspan="1"></th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <%  @items.each do |item| %>
+              <tr>
+                <td><%= item.name %></td>
+                <td><%= item.description %></td>
+                <td><%= item.brand.name %></td>
+                <td><%= item.category.name %></td>
+                <td>          
+                  <div class="group">
+                   <input class="toggle toggle-switch-success group" id="<%= item.id%>" type="checkbox" onclick= "test('<%= item.id%>', '<%= @items_supplier.supplier_id %>',  '<%= item.id %>' )"/>
+                   <label class="toggle-btn" for="<%= item.id%>"></label>
+                  </div>
+                
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+    </div>
+  </div>
+  <% end %>
+  <div class="modal-footer">
+   
+  </div>
+
+</div>
+
+
+
+
+
+
+<!-- <div class="wrapper">    
+<div class="group">
+
+    <input class="toggle toggle-switch" id="switch11" type="checkbox" checked="checked"/>
+    <label class="toggle-btn" for="switch11"></label>
+</div>
+  <div class="group">
+    <input class="toggle toggle-switch" id="switch22" type="checkbox" checked="checked"/>
+    <label class="toggle-btn" for="switch22"></label>
+</div>
+  <div class="group">
+    <input class="toggle toggle-switch" id="switch33" type="checkbox" checked="checked"/>
+    <label class="toggle-btn" for="switch33"></label>
+</div>
+  <div class="group">
+    <input class="toggle toggle-switch" id="switch44" type="checkbox" checked="checked"/>
+    <label class="toggle-btn" for="switch44"></label>
+</div>
+
+</div> -->

@@ -1,0 +1,170 @@
+// Place all the styles related to the Items controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+.product-overview.table tbody tr td {
+ vertical-align:middle
+}
+.product-img {
+ text-align:center;
+ position:relative
+}
+.product-img img {
+ max-width:200px
+}
+.product-img .pro-img-overlay {
+ position:absolute;
+ width:100%;
+ height:100%;
+ top:0px;
+ left:0px;
+ display:none;
+ background:rgba(255, 255, 255, 0.8)
+}
+.product-img .pro-img-overlay a {
+ -webkit-box-shadow:0 0 10px rgba(0, 0, 0, 0.1);
+ box-shadow:0 0 10px rgba(0, 0, 0, 0.1);
+ height:40px;
+ width:40px;
+ display:inline-block;
+ border-radius:100%;
+ -webkit-border-radius:100%;
+ -o-border-radius:100%;
+ text-align:center;
+ padding:11px 0;
+ color:#ffffff;
+ margin:30% 5px
+}
+.product-img .pro-img-overlay a:hover {
+ background:#4c5667!important
+}
+.product-img:hover .pro-img-overlay {
+ display:block
+}
+.product-text {
+ border-top:1px solid rgba(120, 130, 140, 0.13);
+ padding-top:15px;
+ position:relative
+}
+.product-text .pro-price {
+ position:absolute;
+ padding:20px 0;
+ width:60px;
+ height:60px;
+ color:#ffffff;
+ text-align:center;
+ border-radius:100%;
+ -webkit-border-radius:100%;
+ -o-border-radius:100%;
+ top:-30px;
+ right:0px
+}
+
+
+.white-box {
+ background:#ffffff;
+ padding:25px;
+ margin-bottom:30px
+}
+.white-box .box-title {
+ margin:0px 0px 12px;
+ font-weight:500;
+ text-transform:uppercase;
+ font-size:16px
+}
+
+.table-rep-plugin .table-responsive {
+ border:none!important
+}
+
+.white-inactive {
+ background:#f9e7cc;
+ padding:25px;
+ margin-bottom:30px
+}
+.white-inactive .inactive-title {
+ margin:0px 0px 12px;
+ font-weight:500;
+ text-transform:uppercase;
+ font-size:16px
+}
+
+.table-rep-plugin .table-responsive {
+ border:none!important
+}
+
+
+.fw-500 {
+ font-weight:500
+}
+.bg-primary {
+ background-color:#7460ee!important
+}
+.bg-success {
+ background-color:#7ace4c!important
+}
+.bg-info {
+ background-color:#41b3f9!important
+}
+.bg-warning {
+ background-color:#ffbb44!important
+}
+.bg-danger {
+ background-color:#f33155!important
+}
+.bg-theme-alt {
+ background-color:#f33155!important
+}
+.bg-theme {
+ background-color:#2cabe3!important
+}
+.bg-theme-dark {
+ background-color:#4F5467!important
+}
+.bg-inverse {
+ background-color:#4c5667!important
+}
+.bg-purple {
+ background-color:#707cd2!important
+}
+.bg-white {
+ background-color:#ffffff!important
+}
+.bg-light {
+ background-color:#e4e7ea!important
+}
+.bg-extralight {
+ background-color:#f7fafc!important
+}
+
+
+.btn-inverse, .btn-inverse.active, .btn-inverse.focus, .btn-inverse:active, .btn-inverse:focus, .btn-inverse:hover, .open>.dropdown-toggle.btn-inverse {
+    background-color: #4c5667;
+    border: 1px solid #4c5667;
+    color: #ffffff;
+}
+
+.btn-rounded {
+    border-radius: 60px;
+}
+.m-r-5 {
+    margin-right: 5px!important;
+}
+.m-t-40 {
+    margin-top: 10px!important;
+        font-weight: 1000;
+}
+.white-box .box-title {
+    margin: 0px 0px 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    font-size: 16px;
+}
+.center {
+      // background-color: #fafafa;
+  margin: 1rem;
+  padding: 1rem;
+  border: 2px solid #ccc;
+  /* IMPORTANTE */
+  text-align: center;
+}

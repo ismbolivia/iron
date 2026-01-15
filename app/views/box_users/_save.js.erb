@@ -1,0 +1,16 @@
+$("ul.errors").html("");
+<% if @box_user.errors.any? %>
+    $("#payment_sale").val("")
+	$('#payment_sale').css('border-color', 'red');
+	$('#div-error').addClass('alert alert-danger');
+	 document.getElementById("div-error").innerHTML = "<h2><%= pluralize(@box_user.errors.count, 'error') %> prohibited this zona from being saved:</h2>"+
+	" <ul><% @box_user.errors.full_messages.each do |message| %><li><%= message %></li><% end %></ul>";
+<% else %>
+	// window.location.href = "/payments";
+
+
+	$("#panel_box_id").html("<%= escape_javascript(render(partial: 'box_users/table', locals: { box_users: @box_users, show_actions: true })) %>");
+	$("#new-payment-modal").modal("hide");
+<% end %>
+
+

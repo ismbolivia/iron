@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Extracto</title>
+  <meta charset='utf-8' />
+    <%= wicked_pdf_stylesheet_link_tag "pdf/pdf" %>
+</head>
+	<body>
+	   <div class="col-md-12">
+	 	<div class=" printableArea">	        	
+	        <div class="row">
+			  <table class="table product-overview  ">
+			    <thead class="">
+			    	<tr><th colspan="9" class="center">
+				         	<h3><b><%=@title %></b> </h3>
+				        </th>
+				    </tr>
+				     <tr>				        
+				          <th class="">N° Nota</th>
+					      <th class="">Cliente</th>
+					      <th class="">Estado</th>
+					      <th class="">Fecha</th>     
+					      <th class="">Total</th>
+					      <th class="">N° Recibo</th>
+					      <th class="">Fecha</th>
+					      <th class="">Monto</th>
+					      <th class="">Saldo</th>			      		       	       
+				     </tr>
+				     </thead>
+				      <tbody>
+					    <% disc = 0.0  
+					    @sale_report_rage.each do |sale| 
+					    	disc=disc+sale.total_des_pagos %>
+					      <tr>
+					        
+					        <%if  sale.proformas.count > 0 %>
+					           <th class="thick-line"><%= sale.proformas.first.number_recibo %></th>
+					        <%else%>
+					        <td></td>
+					        <%end%>
+					        <td class="thick-line"> <%=sale.client.name %></td>  
+					        <td class="thick-line"><%= sale.state %></td>
+					        <td class="thick-line"><%= sale.date.strftime("%d/%m/%Y") %></td>
+					              
+					        <td class="thick-line"> <%= @mycompany.get_current_currency.symbol%><%= sale.total_final %></td> 
+					        <% if sale.payments.count < 1%>
+					        <td class="thick-line"></td>
+					        <td class="thick-line"></td>
+					        <td class="thick-line"></td>
+					        <td class="thick-line"><%= @mycompany.get_current_currency.symbol%><%= sale.saldo %></td>
+					        <% end %>
+					        <% sale.payments.each_with_index do |payment, index| %>
+					        	 <% if index < 1 %>      	 
+					        	 		
+					        		<td class="thick-line"><%= payment.get_num_payment %></td>
+					        		<td class="thick-line"><%= payment.created_at.strftime("%d/%m/%Y") %></td>
+					        		<td class="thick-line"><%= @mycompany.get_current_currency.symbol%><%= payment.rode %></td>
+					        		<% if sale.payments.count <= 1 %>
+					        		<td class="thick-line"><%= @mycompany.get_current_currency.symbol%><%= sale.saldo %></td>
+					        		<% else %>
+					        		<th class="thick-line"></th>
+					        		<% end %>
+					        		
+					        	<% else %>
+					        	<tr>
+					        	 	<td></td>
+					        	 	<td><%=sale.client.name %></td>
+					        	 	<td></td>
+					        	 	<td></td>
+					            <td></td>
+					        		<td ><%= payment.get_num_payment %></td>
+					        		<td><%= payment.created_at.strftime("%d/%m/%Y") %></td>
+					        		<td><%= @mycompany.get_current_currency.symbol%><%= payment.rode %></td>
+					        		<% if sale.payments.count == index+1 %>
+					        		<td ><%= @mycompany.get_current_currency.symbol%><%= sale.saldo %></td>
+					        		<% else %>
+					        		<td></td>
+					        		<% end %>
+					        	</tr>
+					        	<% end %>
+					        	
+					        <% end %>         
+					      
+					      </tr>
+					    <% end %>
+					    <tr>
+					      <td class="thick-line"></td>
+					      <td class="thick-line">Totales</td>
+					      <td class="thick-line"></td>
+					        <td class="thick-line"></td>
+					      <td class="thick-line"><%= @mycompany.get_current_currency.symbol%><%= @sale_report_rage.sum(:total) %></td>
+					      <td class="thick-line"></td>
+					      <td class="thick-line"></td>
+					      <td class="thick-line">  <%= @mycompany.get_current_currency.symbol%><%= Payment.where(sale_id: @sale_report_rage.ids).sum(:rode) %></td>
+					      <td class="thick-line"> <%= @mycompany.get_current_currency.symbol%><%= @sale_report_rage.sum(:total) - Payment.where(sale_id: @sale_report_rage.ids).sum(:rode) - disc %></td>
+					    </tr>
+					  </tbody>
+				</table>			    
+			  </div>
+			</div>
+		</div>
+</body>	
+</html>

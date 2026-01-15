@@ -1,0 +1,13 @@
+<div class="modal-content-payment">
+  <div class="modal-header modal-header-success " >
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"> [ × ] </button>
+    <h2><i class=" fa fa-cart-plus "></i> <%= title %></h2>
+</div>
+  <div class="modal-body">
+    <%= render partial: 'layouts/partials/activity_pdf', locals: { url_pdf: clients_sales_pdf_path(client_id: @client.id), url_csv: items_path(format: "csv"), url_xls: items_path(format: "xls") } %>
+    <hr>
+   <%= render(partial: 'tables_sales', locals: { sales: @sales, title: @title }) %>
+
+
+ </div>       
+</div>    

@@ -1,0 +1,46 @@
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type tax use</th>
+      <th>Tax adjustement</th>
+      <th>Amount type</th>
+      <th>Active</th>
+      <th>Company</th>
+      <th>Amount</th>
+      <th>Refund account</th>
+      <th>Description</th>
+      <th>Price include</th>
+      <th>Include base amount</th>
+      <th>Tax exigible</th>
+      <th>Cash basis account</th>
+      <th colspan="2"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @taxes.each do |tax| %>
+      <tr>
+        <td><%= tax.name %></td>
+        <td><%= tax.type_tax_use %></td>
+        <td><%= tax.tax_adjustement %></td>
+        <td><%= tax.amount_type %></td>
+        <td><%= tax.active %></td>
+        <td><%= tax.company_id %></td>
+        <td><%= tax.amount %></td>
+        <td><%= tax.refund_account_id %></td>
+        <td><%= tax.description %></td>
+        <td><%= tax.price_include %></td>
+        <td><%= tax.include_base_amount %></td>
+        <td><%= tax.tax_exigible %></td>
+        <td><%= tax.cash_basis_account %></td>
+
+
+
+        <td><%= link_to 'Editar', edit_tax_path(tax),  :class=>"btn btn-success" %></td>
+        <td><%= link_to 'Eliminar', tax, method: :delete, data: { confirm: 'Are you sure?' } ,  :class=>"btn btn-danger"%></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

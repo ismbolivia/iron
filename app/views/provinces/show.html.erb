@@ -1,0 +1,63 @@
+<div class="panel panel-inf">
+	<div class="panel-head">   <%= @province.name %></div>
+	  <div class="panel-wrapper collapse in" aria-expanded="true">
+	  	<div class="panel-body">
+	  	  <div class="form-body">
+	  	  	 <h3 class="box-title text-center">Zonas</h3><hr>
+
+
+				<div class="col-md-12">
+
+				<table class="table table-bordered">
+
+					  <thead>
+					    <tr>
+					      <th>Nombre </th>
+					      <th>privincia_zonas</th>
+					      <th colspan="5"></th>
+					    </tr>
+					  </thead>
+
+					  <tbody>
+					    <% @province.zonas.each do |zona| %>
+					      <tr>
+					        <td><%= zona.name %></td>
+					        <td>
+					        	<select name="province_id" class="form-control" id="<%= zona.id%>" onclick="changeProvince(<%= zona.id %>);">
+							     <% @provinces.each do |provi| %>
+							     <% if provi.id == @province.id %>
+							     <option value="<%=provi.id%>" selected><%= provi.name%></option>
+							     <% else %>
+								  <option value="<%=provi.id%>"><%= provi.name%>
+								  </option>
+								<% end %>
+								<% end%>
+								</select>
+					        </td>
+					        <td><% zona.avenidas.each do |avenida| %>
+					          <span class="badge bg-purple"><%=avenida.name %></span>
+					          <% end %>
+					      </td>
+								<td> <%= button_to "/to_zona/"+zona.id.to_s , {method: :get, class: "btn btn-purple"} do %>
+							            <span class="fas fa-chart-area" aria-hidden="true"> </span>
+							          <% end %>
+								</td>
+					        <td><%= link_to 'Ver', zona, class: "btn btn-success" %></td>
+					        <td><%= link_to 'Editar', edit_zona_path(zona), class: "btn btn-info" %></td>
+					        <td><%= link_to 'Eliminar', zona, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-danger" %></td>
+					      </tr>
+					    <% end %>
+					  </tbody>
+
+
+				</table>
+				</div>
+
+
+	      </div>
+		</div>
+ 	</div>
+  </div>
+
+<%= link_to 'Edit', edit_province_path(@province) %> |
+<%= link_to 'Back', provinces_path %>

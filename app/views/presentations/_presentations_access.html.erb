@@ -1,0 +1,21 @@
+<ul class="nav nav-tabs" role="tablist">
+    <li role="presentation" class="active"><a href="#ihome" aria-controls="home" role="tab" data-toggle="tab" aria-expanded="false"><span><i class="fa fa-box text-info"></i></span> Producto</a></li>
+</ul>
+    <div class="tab-content">
+      <div role="tabpanel" class="tab-pane active" id="ihome">
+        <div class="table-responsive"> 
+               <!-- crear presentacionen el los modelos -->
+          <div class="col-xs-12" id="presentation_id">  
+           <%= render(partial: 'items_presentations', locals: { item: @presentation.item, show_actions: true })  %>
+
+          </div>
+           <hr>   
+           <div class="row no-print ">
+              <div class="col-xs-12">                   
+                    
+              </div>
+           </div>
+           <hr>
+        </div>            
+      </div>            
+</div>

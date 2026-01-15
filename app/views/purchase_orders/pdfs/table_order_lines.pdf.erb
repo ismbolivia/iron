@@ -1,0 +1,69 @@
+ 
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Orden Compra</title>
+  <meta charset='utf-8' />
+    <%= wicked_pdf_stylesheet_link_tag "pdf/pdf" %>
+</head>
+	<body>
+	   <div class="col-md-12">
+	 	<div class=" printableArea">	        	
+	        <div class="row">
+	        	<h3 class="text-center"><b><%=@title %></b></h3>
+	        	<h4><b>Provehedor: </b> <%=@purchase_order.supplier.name %></h4>
+			  <table class="table product-overview  ">
+			    <thead class="conf-pdf">
+			    	<tr><th colspan="5" class="center">
+				         	<h6><b>Dir.: </b> <%=@purchase_order.supplier.address.get_direccion_all %></h6>
+				        </th>				        
+				        <th  class="center">
+				         	<h6 class="pull-right"><b>Fecha: </b><%=@purchase_order.created_at.strftime("%d/%m/%Y") %></h6>
+				        </th>
+				    </tr>
+				      <tr>
+				      	  <th class="text-left">N°</th>
+			              <th class="text-left">Código</th>	
+			              <th  class="text-left">Cantidad</th>			
+						  <th  class="text-left">Descripción</th>					      	     	      
+					      <th  class="text-left">Precio unitario</th>			     
+					  	  	    	
+					      <th  class="text-left">Subtotal</th>		    
+			           </tr>
+				     </thead>
+				     <tbody>
+				       <% @purchase_order.purchase_order_lines.order(:item_id).each_with_index do |purchase_order_line, index| %>
+				        <tr>
+				        <td><%= index+1 %></td>
+				        <td><%= purchase_order_line.item.code %></td>
+				        <td><%= purchase_order_line.item_qty %> <%= purchase_order_line.item.unit.name %></td>  
+				        <td><%= purchase_order_line.item.name %></td>				                   
+				        <td> <%=@mycompany.get_current_currency.symbol %> <%= purchase_order_line.price_unit %></td>
+				        
+				        <td class="text-right"> <%=@mycompany.get_current_currency.symbol %>  <%= purchase_order_line.subtotal %></td>
+				      </tr>	   
+				    <% end %>	
+
+				    <tr>
+						<td class="thick-line"></td>
+						<td class="thick-line"></td>
+						<td class="thick-line"></td>
+						<td class="thick-line"></td>
+						<td class="thick-line"></td>
+						<td class="thick-line"></td>										
+					</tr>		  
+				  </tbody>
+				</table>	
+				<div class="pull-right m-t-30 text-right">
+		          <p>Sub total: <%=@mycompany.get_current_currency.symbol %> <%= @purchase_order.subtotal %></p>
+		          <p>Iva: <%= @mycompany.get_current_currency.symbol%> <%= @purchase_order.total_tax %></p>
+		          <h3><b>Total :</b> <%= @mycompany.get_current_currency.symbol%> <%= @purchase_order.total %></h3> 
+		      </div>		    
+			</div>
+				
+		</div>
+	</div>
+
+</body>
+	
+</html>

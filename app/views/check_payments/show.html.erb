@@ -1,0 +1,14 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Check:</strong>
+  <%= @check_payment.check_id %>
+</p>
+
+<p>
+  <strong>Payment:</strong>
+  <%= @check_payment.payment_id %>
+</p>
+
+<%= link_to 'Edit', edit_check_payment_path(@check_payment) %> |
+<%= link_to 'Back', check_payments_path %>

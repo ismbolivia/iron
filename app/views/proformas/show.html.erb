@@ -1,0 +1,14 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Number:</strong>
+  <%= @proforma.number %>
+</p>
+
+<p>
+  <strong>Sale:</strong>
+  <%= @proforma.sale_id %>
+</p>
+
+<%= link_to 'Edit', edit_proforma_path(@proforma) %> |
+<%= link_to 'Back', proformas_path %>

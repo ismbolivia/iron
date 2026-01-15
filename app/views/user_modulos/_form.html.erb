@@ -1,0 +1,32 @@
+<%= form_with(model: user_modulo, local: true) do |form| %>
+  <% if user_modulo.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(user_modulo.errors.count, "error") %> prohibited this user_modulo from being saved:</h2>
+
+      <ul>
+      <% user_modulo.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :user_id %>
+    <%= form.number_field :user_id %>
+  </div>
+
+  <div class="field">
+    <%= form.label :modulo_id %>
+    <%= form.number_field :modulo_id %>
+  </div>
+
+  <div class="field">
+    <%= form.label :state %>
+    <%= form.check_box :state %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>

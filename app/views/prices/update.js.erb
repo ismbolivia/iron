@@ -1,0 +1,12 @@
+$("ul.errors").html("");
+<% if @price.errors.any? %>
+  
+	$('#div-error-price').addClass('alert alert-danger');
+	 document.getElementById("div-error-price").innerHTML = "<h2><%= pluralize(@price.errors.count, 'errores') %> al intentar establecer el precio:</h2>"+
+	" <ul><% @price.errors.full_messages.each do |message| %><li><%= message %></li><% end %></ul>";
+<% else %>
+	$("#panel-prices").html("<%= escape_javascript(render(partial: 'prices/index', locals: { item: @item, show_actions: true })) %>");
+ 	$("#panel-new-prices").html("<%= escape_javascript(render(partial: 'home/items_prices', locals: { pol_order: @pol_prices, show_actions: true })) %>");
+	$("#new-price-modal").modal("hide");
+	 toastr.success('Precio actualizado!.');
+<% end %>

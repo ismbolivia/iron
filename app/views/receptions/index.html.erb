@@ -1,0 +1,43 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Receptions</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th></th>
+      <th>Qty in</th>
+      <th>Total</th>
+      <th>Fecha</th>
+      <th>Ob</th>
+      <th>Warehouse</th>
+      <th>User</th>
+      <th>Company</th>
+      <th>Purchase order line</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @receptions.each do |reception| %>
+      <tr>
+        <td><%= reception.purchase_order_line.purchase_order.name %></td>
+        <td><%= reception.qty_in %></td>
+        <td><%= reception.total %></td>
+        <td><%= reception.fecha %></td>
+        <td><%= reception.ob %></td>
+        <td><%= reception.warehouse_id %></td>
+        <td><%= reception.user_id %></td>
+        <td><%= reception.company_id %></td>
+        <td><%= reception.purchase_order_line_id %></td>
+        <td><%= link_to 'Show', reception %></td>
+        <td><%= link_to 'Edit', edit_reception_path(reception) %></td>
+        <td><%= link_to 'Destroy', reception, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Reception', new_reception_path %>

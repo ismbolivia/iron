@@ -1,0 +1,133 @@
+
+
+<div class="row">
+   <div class="col-lg-1"> </div>
+    <div class="col-lg-10 panel panel-purchase">
+       <div class="">
+         <div class="">
+          <div class="row">
+            <div class = "col-lg-12 col-md-12 col-sm-12" >
+              <div class="col-lg-2 col-md-2 col-sm-2">
+                 <div class="product-img ">
+                    <%= image_tag(@supplier.imagesupplier.thumb.url, :alt => "imge-item", class: "image-form") %>      
+                       <div class="fileupload btn btn-info waves-effect waves-light"><span><i class="ion-upload m-r-5"></i>Subir una imagen </span>                       
+                      </div>
+                 </div>                 
+                </div>
+            
+               <div class="col-lg-4 col-md-4 col-sm-4">
+                    <div class="form-group">
+                        <span  class = "form-label-control m-t-50"><%=@supplier.name %></span>                  
+                    </div>
+                      <div class="form-group ">
+                        <label ><%=@supplier.address.get_direccion_all %></label>
+                      </div>
+                  </div>
+                  <div class="col-lg-6 col-md-4 col-sm-6">                    
+                      
+                        <a class="btn btn-app">
+                          <span class="badge bg-yellow">3</span>
+                          <i class="fa fa-bullhorn"></i> Notifications
+                        </a>
+                        <a class="btn btn-app">
+                          <span class="badge bg-green">300</span>
+                          <i class="fa fa-barcode"></i> Products
+                        </a>
+                        <a class="btn btn-app">
+                          <span class="badge bg-purple">891</span>
+                          <i class="fa fa-users"></i> Users
+                        </a>
+                        <a class="btn btn-app">
+                          <span class="badge bg-teal">67</span>
+                          <i class="fa fa-inbox"></i> Orders
+                        </a>
+                        <a class="btn btn-app">
+                          <span class="badge bg-aqua">12</span>
+                          <i class="fa fa-envelope"></i> Inbox
+                        </a>
+                        <a class="btn btn-app">
+                          <span class="badge bg-red">531</span>
+                          <i class="fa fa-thumbs-up"></i> Likes
+                        </a>                    
+            </div>
+
+          </div>
+          </div>
+    <hr>
+
+    <div class="row">
+          <div class="col-lg-12 col-md-12 col-sm-12">
+              
+              <div class="col-sm-6 col-lg-4">
+                  <div class="form-group row">
+                    <%= label :nit, 'NIT: ', class: "col-sm-3 text-left control-label col-form-label" %> 
+                     <div class="col-sm-9">
+                        <%= @supplier.nit %>
+                     </div>
+                 </div>
+              </div>
+              <div class="col-sm-6 col-lg-4">
+                  <div class="form-group row">
+                     <%= label :phone, 'Telefono:', class: "col-sm-3 text-left control-label col-form-label" %>
+                     <div class="col-sm-9">
+                          <%= @supplier.phone %>
+                     </div>
+                  </div>
+              </div>
+              <div class="col-sm-6 col-lg-4">
+                  <div class="form-group row">
+                     <%= label :mobile, 'Celular:', class: "col-sm-3 text-left control-label col-form-label" %>
+
+                     <div class="col-sm-9">
+                          <%= @supplier.mobile %>
+
+                     </div>
+                  </div>
+              </div>
+             
+              <div class="col-sm-6 col-lg-4">
+                  <div class="form-group row">
+                     <%= label :email, 'Correo Electronico:', class: "col-sm-3 text-left control-label col-form-label" %>
+
+                     <div class="col-sm-9">
+                          <%= @supplier.email %>
+
+                     </div>
+                  </div>
+              </div>
+             
+               <div class="col-sm-6 col-lg-4">
+                  <div class="form-group row">
+                     <%= label :web_syte, 'Sitio Web:',class: "col-sm-3 text-left control-label col-form-label" %>
+
+                     <div class="col-sm-9">
+                          <%= @supplier.web_syte %>
+
+                     </div>
+                  </div>
+              </div>
+               
+              <div class="col-sm-6 col-lg-4">
+                  <div class="form-group row">
+
+                     <%= label :description, 'Descripción:', class: "col-sm-3 text-left control-label col-form-label" %>
+
+                     <div class="col-sm-9">
+                          <%= @supplier.description %>
+
+                     </div>
+                  </div>
+              </div>            
+            </div>              
+          </div>
+        </div>
+</div>
+<hr>
+ <div class="row no-print ">
+        <div class="  col-lg-12">        
+          <%= link_to 'Atras', suppliers_path,  class: "btn btn-default "  %>
+          <%= link_to  'Edit', edit_supplier_path(@supplier),  class: "btn btn-primary pull-right" , style: "margin-right: 5px;"%>
+        </div>
+</div>
+<hr>
+<%= render 'suppliers/supplier_access', supplier: @supplier  %>

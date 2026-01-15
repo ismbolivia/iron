@@ -1,0 +1,65 @@
+
+<div class="panel panel-success">
+  <div class="panel-head">Ventas</div>
+  <div class="panel-wrapper collapse in">
+    <div class="panel-body table-responsive ">
+      <div class="col-md-12">
+      <div class="col-md-6">        
+        <%= render partial: 'layouts/partials/search_sale_form', locals: { search_entity: 'sales', word: "Venta", view_kamback: '', view_list: '', url_pdf: '', url_csv: '', url_xls: '', url: new_sale_path, ban: false } %>        
+      </div>
+
+      <div class="col-md-6"> 
+          <% content_for :filter do %>
+            <select name="filter" id="filters" class="form-control">
+              <option value="">Todos</option>
+              <% Sale.states.keys.each do |state| %>
+                <option value="<%= state %>" <%= 'selected' if params[:filter] == state %>><%= t("activerecord.attributes.sale.states.#{state}") %></option>
+              <% end %>
+            </select>
+            
+          <% end %>
+           <%= render partial: 'layouts/partials/report_form', locals: { report_entity: 'report', state: '' } %> 
+      </div>
+      </div>
+     
+      <div class="col-md-12 ">
+      <div class="filter-pills-container" style="margin-top: 10px;">
+     <%= link_to "Todos", sales_path(filter: nil), class: "btn btn-default btn-sm #{(params[:filter].blank? ? 'active' : '')}" %>
+     <% Sale::PAYMENT_STATUSES.each_value do |status| %>
+       <%= link_to status, sales_path(filter: status), class: "btn #{status_color_class(status)} btn-sm #{(params[:filter] == status ? 'active' : '')}" %>
+     <% end %>
+      <%= link_to clients_path, {method: :get, class: "btn btn-purple btn-sm pull-right"} do %>
+              <span class="fa fa-shopping-cart" aria-hidden="true"> </span> Nueva Venta
+              <% end %>
+  
+   </div>
+        <%= render partial: 'results_search' %>
+      </div>        
+    </div>
+  </div>
+</div>
+<script>
+  var ranges = {
+  "Ultimos 7 dias": ["<%= format_date(Date.current - 7)%>", "<%=  format_date(Date.current + 1)%>"],
+  "Ultimos 30 dias": ["<%= format_date(Date.current - 30)%>", "<%=  format_date(Date.current)%>"],  
+  "Este mes": ["<%= format_date(Date.current.beginning_of_month)%>", "<%=  format_date(Date.current) %>"],
+  "Mes pasado": ["<%= format_date(1.month.ago.beginning_of_month)%>", "<%=  format_date(1.month.ago.end_of_month)%>"],
+  "Este año": ["<%= format_date(Date.current.beginning_of_year)%>", "<%=  format_date(Date.current)%>"],
+  "Año pasado": ["<%= format_date(1.year.ago.beginning_of_year)%>", "<%=  format_date(1.year.ago.end_of_year)%>"]
+};
+
+  $('input[name="dateranges"]').daterangepicker({
+      startDate: moment("<%= l @data_init, format:'%Y-%m-%d' %>"),
+      endDate: moment("<%= l @data_limit, format:'%Y-%m-%d' %>"),
+      ranges: ranges,
+      alwaysShowCalendars: true
+
+  }, function(start, end, label){
+    $("#data_init").val(start.format('YYYY-MM-DD'));
+    $("#data_limit").val(end.format('YYYY-MM-DD'));
+    // $("#state").val('input');
+   // $("#submit-button").click();
+  });
+
+</script>
+

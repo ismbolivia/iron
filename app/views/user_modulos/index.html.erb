@@ -1,0 +1,31 @@
+<p id="notice"><%= notice %></p>
+
+<h1>User Modulos</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>User</th>
+      <th>Modulo</th>
+      <th>State</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @user_modulos.each do |user_modulo| %>
+      <tr>
+        <td><%= user_modulo.user_id %></td>
+        <td><%= user_modulo.modulo_id %></td>
+        <td><%= user_modulo.state %></td>
+        <td><%= link_to 'Show', user_modulo %></td>
+        <td><%= link_to 'Edit', edit_user_modulo_path(user_modulo) %></td>
+        <td><%= link_to 'Destroy', user_modulo, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New User Modulo', new_user_modulo_path %>

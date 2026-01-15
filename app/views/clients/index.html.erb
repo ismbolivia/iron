@@ -1,0 +1,63 @@
+
+
+<div class="panel panel-inf">
+  <div class="panel-head">Clientes</div>
+    <div class="panel-wrapper collapse in" aria-expanded="true">
+      <div class="panel-body table-responsive ">
+         <div class="col-md-12 col-sm-12">
+          <div class="col-md-6 col-sm-6">
+            <%= render partial: 'layouts/partials/search_form', locals: { search_entity: 'clients', url_pdf: '', url_csv:'', url_xls:'', word: "Cliente", view_kamback: '', view_list: '', url: new_client_path, ban:false } %>          
+           </div>
+             <div class="col-md-6 col-sm-6">
+               <% content_for :filter do %>
+                <select name="filter" id="filters" class="form-control ">
+                 <option value="" >All</option>
+                  <% Sale.states.flat_map do |s| %> 
+                <option value="<%= s[0]%>" > <%= s[0]%></option>                  
+                   <% end %>
+                 </select> 
+              <% end %>
+               <%= render partial: 'layouts/partials/report_form', locals: { report_entity: 'report', state: '' } %> 
+             </div>
+          </div>        
+           <div class="col-md-12 col-sm-12">
+            <div id="">
+
+         <%= (@clients.count > 0) ? render(partial: 'results_search', locals: { clients: @clietns }) : 'No hay usuarios asignados a la caja' %>
+       </div>
+     </div>  
+          <div class="col-md-5 col-md-offset-5 col-sm-5 col-sm-offset-5">
+            <p>
+              <%= button_to new_client_path, {method: :get, class: "btn btn-success"} do %>
+                <span class="glyphicon glyphicon-plus" aria-hidden="true"> </span> Nuevo Cliente
+              <% end %>
+            </p>
+          </div>
+    </div>  
+  </div>
+  </div>
+<script>
+  var ranges = {
+  "Ultimos 7 dias": ["<%= format_date(Date.current - 7)%>", "<%=  format_date(Date.current + 1)%>"],
+  "Ultimos 30 dias": ["<%= format_date(Date.current - 30)%>", "<%=  format_date(Date.current)%>"],  
+  "Este mes": ["<%= format_date(Date.current.beginning_of_month)%>", "<%=  format_date(Date.current) %>"],
+  "Mes pasado": ["<%= format_date(1.month.ago.beginning_of_month)%>", "<%=  format_date(1.month.ago.end_of_month)%>"],
+  "Este año": ["<%= format_date(Date.current.beginning_of_year)%>", "<%=  format_date(Date.current)%>"],
+  "Año pasado": ["<%= format_date(1.year.ago.beginning_of_year)%>", "<%=  format_date(1.year.ago.end_of_year)%>"]
+};
+
+  $('input[name="dateranges"]').daterangepicker({
+      startDate: moment("<%= l @data_init, format:'%Y-%m-%d' %>"),
+      endDate: moment("<%= l @data_limit, format:'%Y-%m-%d' %>"),
+      ranges: ranges,
+      alwaysShowCalendars: true
+
+  }, function(start, end, label){
+
+    $("#data_init").val(start.format('YYYY-MM-DD'));
+    $("#data_limit").val(end.format('YYYY-MM-DD'));
+    // $("#state").val('input');
+   // $("#submit-button").click();
+  });
+
+</script>

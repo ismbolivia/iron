@@ -1,0 +1,29 @@
+// Place all the styles related to the Contacts controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+.rounded-circle {
+    border-radius: 50%!important;
+}
+
+.img-fluid, .img-thumbnail {
+    max-width: 100%;
+    height: auto;
+}
+img {
+    border-style: none;
+}
+.fa-stack, img, svg {
+    vertical-align: middle;
+}
+* {
+    outline: 0;
+}
+*, ::after, ::before {
+    box-sizing: border-box;
+}
+.bordes {
+  border-style: solid;
+  border-color: #edf0f5;
+  background-color: #fff;
+  border-width: 5px;
+}

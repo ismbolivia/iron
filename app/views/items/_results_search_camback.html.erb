@@ -1,0 +1,56 @@
+
+  <div class="table-responsive">
+            <table class="table product-overview">
+              <thead>
+                <tr>
+                  <%= render partial: "pager", locals: { keywords: @keywords, page: @page } %>
+                </tr>                
+              </thead>
+            </table>
+  </div>     
+<div class="row page-wrapper" >
+  <br>
+   <% @items.each do |item| %>
+  <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" >
+      <% if item.active %>
+        <div class="white-box">
+          <div class="product-img" > 
+             <%= image_tag(item.image.large.url, :style => "iwidth:100%; height:200px;") %>
+               <div class="pro-img-overlay">                       
+                  <%= link_to '', item, class: "bg-success fas fa-binoculars" %>
+                     <%= link_to edit_item_path(item), {method: :get, class: "bg-info fas fa-pencil-alt "} do %>
+                        <span  aria-hidden="true"> </span> 
+                      <% end %>
+                  <%= link_to '', item, method: :delete,class:"bg-danger  fas fa-trash", data: { confirm: 'Are you sure?' } %>
+              </div>
+          </div>
+          <div class="product-text" style="iwidth:100%; height:100px;">
+              <span class="pro-price bg-success"><%=@mycompany.get_current_currency.symbol %> <%= item.price_default %></span>
+                  <h3 class="box-title m-b-0 "><%=item.category.name %>/<br><%= item.name%></h3>
+                  <small class="text-muted db"><%= item.description %></small>
+          </div>
+        </div>
+        <% else%>
+           <div class="white-inactive">
+          <div class="product-img" > 
+             <%= image_tag(item.image.large.url, :style => "iwidth:100%; height:200px;") %>
+               <div class="pro-img-overlay">                       
+                  <%= link_to '', item, class: "bg-success fas fa-binoculars" %>
+                     <%= link_to edit_item_path(item), {method: :get, class: "bg-info fas fa-pencil-alt "} do %>
+                        <span  aria-hidden="true"> </span> 
+                      <% end %>
+                  <%= link_to '', item, method: :delete,class:"bg-danger  fas fa-trash", data: { confirm: 'Are you sure?' } %>
+              </div>
+          </div>
+          <div class="product-text" style="iwidth:100%; height:100px;">
+              <span class="pro-price bg-success"><%=@mycompany.get_current_currency.symbol %> <%= item.price_default %></span>
+                  <h3 class="box-title m-b-0 "><%=item.category.name %>/<br><%= item.name%></h3>
+                  <small class="text-muted db"><%= item.description %></small>
+          </div>
+        </div>
+
+        <% end %>
+
+      </div>
+     <% end %>
+</div>

@@ -1,0 +1,12 @@
+<% if @box_purchase_order_payment.errors.any? %>	
+	$('#div-error').addClass('alert alert-danger');
+	 document.getElementById("div-error").innerHTML = "<h2><%= pluralize( @box_purchase_order_payment.errors.count, 'error') %> prohibited this avenida from being saved:</h2>"+
+	" <ul><% @box_purchase_order_payment.errors.full_messages.each do |message| %><li><%= message %></li><% end %></ul>";
+<% else %>			
+	$("#panel_box_details_id_output").html("<%= escape_javascript(render(partial: 'box_details/table_output', locals: { box_details: @box_details_rage })) %>");	
+	toastr.success('Pago efectuado con exito verifique en la pestaña salidas')	;
+
+	$("#new-purchase-order-payment-modal").html("<%= escape_javascript(render 'view_ticket') %>");
+	// $("#new-report-modal").modal("hide");
+
+<% end %>

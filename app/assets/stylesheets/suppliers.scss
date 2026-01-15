@@ -1,0 +1,73 @@
+// Place all the styles related to the Suppliers controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+.panel-morado .panel-head, .panel-purchase .panel-head {
+    border-color: #5c1269;
+    color: white;
+    background-color: #300538;
+
+}
+.form-label-control {
+    
+    width: 100%;
+    height: 50px;
+    padding: 6px 12px;
+    font-size: 40px;
+    line-height: 1.428571429;
+    color: #000000;
+    background-image: none;
+    -webkit-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+    -o-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+    transition: border-color ease-in-out 0.15s, box-shadow;
+}
+
+
+
+.form-controles {
+    display: block;
+    width: 100%;
+    height: 50px;
+    padding: 6px 12px;
+    font-size: 40px;
+    line-height: 1.428571429;
+    color: #000000;
+    background-color: #fcf8e3;
+    background-image: none;
+       border: 1px solid #afafaf;
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    -webkit-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+    -o-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+    transition: border-color ease-in-out 0.15s, box-shadow
+}
+ .form-controles{
+    border-bottom-left-radius: 0;
+    border-top-left-radius: 0;
+}
+.m-t-50 {
+    /* margin-top: 10px !important; */
+    font-weight: 1000;
+}
+
+.input-group-addones {
+    padding: 6px 12px;
+    font-size: 30px;
+    font-weight: normal;
+    line-height: 1;
+    color: #757575;
+    text-align: center;
+    background-color: #eeeeee;
+    border: 1px solid #ccc;
+    border-radius: 2px;
+}
+
+.input-group-addones {
+    width: 1%;
+    white-space: nowrap;
+    vertical-align: middle;
+}
+.input-group-addones {
+    display: table-cell;
+}

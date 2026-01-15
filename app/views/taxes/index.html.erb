@@ -1,0 +1,51 @@
+
+
+<div class="panel panel-inf">
+  <div class="panel-head">Tazas</div>
+    <div class="panel-wrapper collapse in" aria-expanded="true">
+      <div class="panel-body table-responsive ">
+         <div class="col-md-12 col-sm-12">
+         
+          </div>        
+           <div class="col-md-12 col-sm-12">
+            <div id="">
+
+         <%= (@taxes.count > 0) ? render(partial: 'table', locals: { taxes: @taxes }) : 'No hay tasas impositivas en el sistema' %>
+       </div>
+     </div>  
+          <div class="col-md-5 col-md-offset-5 col-sm-5 col-sm-offset-5">
+            <p>
+              <%= button_to new_tax_path, {method: :get, class: "btn btn-success"} do %>
+                <span class="glyphicon glyphicon-plus" aria-hidden="true"> </span> Nuevo tasa
+              <% end %>
+            </p>
+          </div>
+    </div>  
+  </div>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

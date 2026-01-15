@@ -1,0 +1,34 @@
+
+<div class="panel panel-success">
+  <div class="panel-head">Bancos</div>
+    <div class="panel-wrapper collapse in" aria-expanded="true">
+      <div class="panel-body table-responsive ">
+        <div class="table-responsive">
+        <table class="table product-overview">
+          <thead>
+            <tr>
+              <th>Banco</th>
+              <th>Detalle</th>
+              <th>Titular</th>
+              <th colspan="3"></th>
+            </tr>
+          </thead>
+          <tbody>
+             <% @banks.each do |bank| %>
+              <tr>
+                <td><%= bank.name %></td>
+                <td><%= bank.description %></td>                
+                <td><%= link_to 'Show', bank, class:'btn btn-info' %></td>
+                <td><%= link_to 'Edit', edit_bank_path(bank), class: 'btn btn-success' %></td>
+                <td><%= link_to 'Destroy', bank, method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-danger' %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+        <br>
+        <%= link_to 'Nuevo Banco', new_bank_path , class: "btn btn-primary"%>
+        </div>
+      </div>
+    </div>
+  </div>
+ 

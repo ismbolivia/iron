@@ -1,0 +1,19 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  ref: MyString
+  name_company: MyString
+  name_warehouse: MyString
+  ref_warehouse: MyString
+  warehouse_id: 1
+  quantity: 1
+  sales_value: 1.5
+
+two:
+  ref: MyString
+  name_company: MyString
+  name_warehouse: MyString
+  ref_warehouse: MyString
+  warehouse_id: 1
+  quantity: 1
+  sales_value: 1.5

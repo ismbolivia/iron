@@ -1,0 +1,49 @@
+<ul class="nav nav-tabs" role="tablist">
+     <li role="presentation" class="active"><a href="#product_item" aria-controls="profile" role="tab" data-toggle="tab" aria-expanded="true"><span><i class="fa fa-box"></i></span> Productos</a></li>
+
+     <li role="presentation" class=""><a href="#ihome" aria-controls="home" role="tab" data-toggle="tab" aria-expanded="false"><span><i class="far fa-building text-info"></i></span> Pedidos</a></li>
+
+</ul>
+<div class="tab-content">
+<div role="tabpanel" class="tab-pane active" id="product_item">
+   <div class="col-md-12 col-sm-12">
+     <div class="white-box">
+      <div class="row no-print ">
+            <div class="col-xs-12">            
+                    <label class="btn btn-success" > <input class=" " id="select_all" type="checkbox" />
+                  Añadir varios productos</label>     
+                              
+                <%= link_to "Añadir Producto", new_items_supplier_path(supplier_id: supplier.id), remote: true, class: "btn btn-info pull-right" %>
+            </div>
+        </div>
+        <hr> 
+        <div class="table-responsive">
+          <div id="item_supplier">
+          <%= (supplier.items_suppliers.count > 0) ? render(partial: 'suppliers/tables_items', locals: { items_suppliers: supplier.items_suppliers, show_actions: true }) : 'No hay Proveedores asignados a este producto...!' %>
+          </div>
+        </div>
+         <hr>  
+     </div>
+   </div>
+      <div class="clearfix"></div>
+</div>
+
+   <div role="tabpanel" class="tab-pane" id="ihome">
+       <div class="col-md-12 col-sm-12">
+         <div class="white-box">
+
+            <div class="table-responsive">
+              <div id="item_supplier">
+              <%= (supplier.purchase_orders.count > 0) ? render(partial: 'suppliers/table_purchase_orders', locals: { purchase_orders: supplier.purchase_orders, show_actions: true }) : 'No hay Ordenes de compras...!' %>
+              </div>
+            </div>
+             <hr>              
+
+         </div>
+    </div>
+   </div>
+</div>
+
+
+
+

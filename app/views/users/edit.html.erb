@@ -1,0 +1,59 @@
+
+<br>
+<div class="panel panel-default">
+   <div class="col-12">
+     <div class="card">
+       <div class="card-body">
+        <h1 class="card-title"><strong><%= @user.name %></strong> </h1>
+
+            <%= form_with(model: @user, local: true) do |form| %>
+              <% if @user.errors.any? %>
+                <div id="error_explanation">
+                  <h2>Oh No !</h2>
+                    <p>Ha ocurrido un error</p>
+                  <ul>
+                  <% @user.errors.full_messages.each do |message| %>
+                    <li><%= message %></li>
+                  <% end %>
+                  </ul>
+                </div>
+              <% end %>
+
+
+      <form class="forms-sample">
+        <div class="row">
+            <% if current_user.id.equal? @user.id %>
+             <div class="col-12" align="center">             
+                 <div class="product-img">                  
+                    <%= image_tag(@user.avatar.medium.url class: "col-sm-12") %><br>                   
+                      <div class="fileupload btn btn-info "><span><i class="ion-upload m-r-5"></i>Selecionar Imagen</span>                        
+                           <%= form.file_field :avatar, class: "upload" %>
+                      </div>
+                 </div>
+             
+            <% else %>   
+            <div class="col-sm-1" ></div>          
+                <%= form.label :permission  ,class: "col-sm-2 "%>
+                 <div class="col-sm-4">
+                   <%= form.collection_select :rol_id, @rols, :id, :name,
+                        {selected: @user.rol_id, include_blank: 'Seleccione un Rol'},
+                        {class: "form-control"} %>
+
+                </div>      
+            <% end %>
+             
+              <div class="actions ">
+                <%= form.submit 'Guardar',  :class=> "btn btn-success mr-2" %>
+              
+            <% end %>
+
+            <%= link_to 'Ver', @user, :class=> "btn btn-info" %> |
+            <%= link_to 'Atras', users_path , :class=> "btn btn-light"%>
+            </div>
+             </div>
+         </div> 
+       </div>
+      </form>   
+     </div>
+   </div>
+</div>

@@ -1,0 +1,19 @@
+$("ul.errors").html("");
+<% if @country.errors.any? %>
+
+	$("#country_name").val("")
+	$('#country_name').css('border-color', 'red');
+	$('#div-error').addClass('alert alert-danger');
+	 document.getElementById("div-error").innerHTML = "<h2><%= pluralize(@country.errors.count, 'error') %> prohibited this country from being saved:</h2>"+
+	" <ul><% @country.errors.full_messages.each do |message| %><li><%= message %></li><% end %></ul>";
+
+	 // $("#div-error").html("Hello <b>world</b>!");
+<% else %>
+	$("#address_country_id").html("<option value= '<%=@country.id %>'><%=@country.name %></option>");
+	$("#panel_departamento").removeClass("hidden"); 
+
+	$("#address_departamento_id").html(" <% @departamentos.each do |departamento| %><option value= '<%=departamento.id %>'><%=departamento.name %></option> <% end %>");
+	$("#btn-depa").html("<a class='btn waves-effect waves-light btn-info' data-remote='true' data-method='get' href='/departamentos/new?country_id=<%= @country.id %>'><span class='fas fa-plus' aria-hidden='true'> </span></a> ");
+			                 
+	$("#new-check-modal").modal("hide");
+<% end %>

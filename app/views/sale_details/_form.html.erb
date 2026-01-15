@@ -1,0 +1,133 @@
+
+    <div class="modal-body">
+      <%= form_for :sale_details, url: sale_sale_details_url, method: :post, remote: true do |f| %>
+        <div class="row">
+          <div class="col-xs-12">            
+          </div>
+          <div class="col-xs-12">
+            <div class="col-xs-9">
+              <div class="form-group">
+                  <label>Buscar producto:  </label>
+                
+                  <div class="input-group ">
+                    <div class="input-group-addon">
+                      <i class="fab fa-apple"></i>                    
+                    </div>
+                  <%= f.text_field :item, placeholder: "Artículo", class: "form-control", value: nil %>
+                </div>
+                  <%= f.hidden_field :item_id %>
+                  <%= hidden_field_tag :item_description  %>
+               </div>
+            </div>
+            <div class="col-xs-3">
+              <div class="form-group">
+                <label>Cantidad disponible: </label>
+                  <div class="input-group">
+                     <div class="input-group-addon"><i class=" fa fa-building"></i></div>
+                     <label class="form-control" id="stock_current"></label>                    
+                  </div>
+              </div>
+            </div>
+          </div>
+
+        <div class="col-xs-12 ">
+          <div class="col-xs-6">
+            <div class="form-group"  id="sale_item_presentations">
+              <label>Selecione presentación: </label>
+               <div class="input-group">
+               <div class="input-group-addon"><i class="fas fa-boxes"></i></div>
+              <select class="form-control" id="sel_presentation_id" onclick=change_qty(value)></select> 
+            </div>
+            </div>
+          </div>
+          <div class="col-xs-3">
+            <div class="form-group">
+              <label>Cant. presentación: </label>
+               <div class="input-group">
+               <div class="input-group-addon"><i class="fas fa-braille"></i></div>
+                  <input type="number" name="" class="form-control" id="qty_presentation_id"  >
+               </div>
+            </div>
+          </div>
+           <div class="col-xs-3">
+            <div class="form-group">
+                <label>Base unitaria( <strong id="unit_item_id"> </strong>)</label>
+                 <div class="input-group">
+                  <div class="input-group-addon"><i class="fas fa-braille"></i></div>
+                 <%= f.text_field :qty, placeholder: "Cant.", class: "form-control" %>
+              </div>
+               
+            </div>
+          </div>
+           
+        </div>
+
+        <div class="col-xs-12" >         
+          <div class="col-xs-2">
+            <div class="form-group">
+                <label>Precio de lista</label>
+                 <div class="input-group">
+                  <div class="input-group-addon"><i class="fas fa-dollar-sign"></i></div>
+                 <%= f.text_field :price, placeholder: "Precio lista", class: "form-control" , disabled: false%>
+              </div>
+                
+            </div>
+          </div>
+         
+          <div class="col-xs-2">
+            <div class="form-group">
+               <label>Definir descuento</label>
+                <div class="input-group">
+                  <div class="input-group-addon"><i class="fas fa-cut">%</i></div>
+                  <%= f.text_field :discount, placeholder: "0", class: "form-control", disabled: false %>
+              </div>
+                
+            </div>
+          </div>
+
+           <div class="col-xs-2">
+            <div class="form-group">
+                <label>Precio de venta</label>
+                 <div class="input-group">
+                  <div class="input-group-addon"><i class="fas fa-dollar-sign"></i></div>
+                 <%= f.text_field :price_sale, placeholder: "Precio", class: "form-control" %>
+              </div>
+            </div>
+          </div>
+
+           <div class="col-xs-2">
+            <div class="form-group">
+              <label>Sub total</label>
+                <div class="input-group">
+                  <div class="input-group-addon"><i class="far fa-money-bill-alt"></i></div>
+                   <%= f.text_field :subtotal, placeholder: "0", class: "form-control", disabled: true %>
+              </div>
+             
+            </div>
+          </div>
+          <div class="col-xs-4">
+            <div class="form-group" id="div_prices">
+                <label>Cambiar lista</label>
+                <div class="input-group">
+                  <div class="input-group-addon"><i class="far fa-money-bill-alt"></i></div>
+                   <%= f.collection_select :price_id,[], :Object, :name,
+                   {include_blank: 'Seleccione precio'},
+                    {class: "form-control"} %>                  
+              </div>
+             
+            </div>
+          </div>
+       </div>
+
+      </div>
+        
+        <%= f.submit "Aceptar", class: "btn btn-primary" %>
+          <% end %>
+
+    </div>
+    <div class="modal-footer">
+       
+      <%= link_to "Cancelar", "#", class: "btn btn-danger", "data-dismiss": "modal" %>
+    </div>
+        
+        

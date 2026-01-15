@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  payment_type_id: 1
+  bank_account_id: 1
+  monto: 9.99
+
+two:
+  payment_type_id: 1
+  bank_account_id: 1
+  monto: 9.99

@@ -1,0 +1,214 @@
+<hr>
+
+<div class="row ">
+        <div class="">
+            <div class="credit-card-div">
+                <div class="panel panel-info">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12"><br></div>
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="col-md-5 col-sm-5 col-xs-5 ">
+                                    <div class="table-responsive">
+                                      <table class="table table-bordered">
+                                        <thead class=" bg-primary text-white ">
+                                            <tr class="">
+                                                <th scope="col">Dia</th>  
+                                                <th scope="col">Mes</th>  
+                                                <th scope="col">Año</th>                                              
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <th><input type="text" class="form-control" value="<%= @payment.created_at.strftime("%d") %>" /></th>
+                                                <th><input type="text" class="form-control" value="<%= @payment.created_at.strftime("%m") %>" /></th>
+                                                <th><input type="text" class="form-control" value="<%= @payment.created_at.strftime("%Y") %>" /></th>                                                    
+                                            </tr>                                         
+                                        </tbody>
+                                    </table>                                                                 
+                                   </div> 
+
+                                </div>
+                                <div class="col-md-3 col-sm-3 col-xs-3">
+                                    <h1 class=""><strong>RECIBO</strong> </h1>
+                                </div>
+                                <div class="col-md-4 col-sm-4 col-xs-4">
+                                      <h2 class="text-danger"><strong>N°: <%=@payment.get_num_payment %></strong></h2>   
+                                   <div class="col-md-12 col-sm-12 col-xs-12 ">
+                                     <h4 class=""><strong>Saldo: </strong><strong><%= @mycompany.get_current_currency.symbol %><%= @payment.saldo %></strong></h4>
+                                    </div>                              
+                                </div>
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <h4 class=""><strong>Recibi del Sr.(es): </strong><%=@payment.sale.client.name %></h4>
+                            </div>
+                             <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="table-responsive">
+                                <table class="table table-bordered">
+                                        <thead class=" bg-primary text-white ">
+                                            <tr>
+                                                <th scope="col">CONCEPTO</th>
+                                                <th scope="col">N° NOTA</th>
+                                                <th scope="col">IMPORTE</th>
+                                                 <th scope="col">OBSERVACIONES</th>                                                
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <th><input type="text" class="form-control" value="<%=@payment.get_concepto %>" /></th>
+                                                <td><input type="text" class="form-control" value=" <%= @payment.sale.proformas.first.number_recibo %>" /></td>
+                                                <td><input type="text" class="form-control" value=" <%=@mycompany.get_current_currency.symbol%><%= @payment.rode%>" /></td>  
+                                                <% if@payment.obs == '' %>                                                 
+                                               
+                                                <th><input type="text" class="form-control" value="" /></th> 
+                                                <% else %>
+                                                    <th><input type="text" class="form-control" value="<%=@payment.obs %><%=@mycompany.get_current_currency.symbol%>" /></th> 
+                                                <% end %>                                             
+                                            </tr>                                           
+                                        </tbody>
+                                    </table>
+                                  </div>
+                            </div>                         
+                       
+                       
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <h5 ><strong>Total:</strong><%=@mycompany.get_current_currency.montoLiteral(@payment.rode) %></h5>
+                            </div>
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                              <% if @payment.check_payment_id.present? %>                                                           
+                                <label>Tipo de Pago: <%= @payment.getToStringCheckPayment %></label>
+                                <%end%>
+                                <% if @payment.payment_currency_id.present? %>                                                    
+                                <label>Tipo de Pago: <%= @payment.getToStringPaymentCurrency %></label>
+                                <%end%> 
+                                  <% if @payment.bank_account_id.present? %>                                                    
+                                <label>Tipo de Pago: <%= @payment.getToStringPaymentTypes %></label>
+                            <%end%> 
+                            </div>  
+                           
+                                                                        
+                        
+                             <div class="col-md-12 col-sm-12 col-xs-12">
+                                  <div class="col-md-6 col-sm-6 col-xs-6 text-center">
+                                     <span>___________________________</span><br>
+                                      <label>Entregué Conforme</label>
+                                  </div>
+                                  <div class="col-md-6 col-sm-6 col-xs-6 text-center">
+                                      <span>___________________________</span><br>
+                                      <label>Recibi Conforme</label>
+                                  </div>
+                            </div>
+
+                             <div class="col-md-12 col-sm-12 col-xs-12"><br></div>
+                       </div>                   
+                  </div>
+             </div>
+        </div>
+    </div>
+</div>
+</div>
+
+<hr>
+<div class="row ">
+        <div class=" col-md-offset-4">
+            <div class="credit-card-div">
+                <div class="panel panel-success">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12"><br></div>
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="col-md-5 col-sm-5 col-xs-5 ">
+                                    <div class="table-responsive">
+                                      <table class="table table-bordered">
+                                        <thead class=" bg-info text-white ">
+                                            <tr class="">
+                                                <th scope="col">Dia</th>  
+                                                <th scope="col">Mes</th>  
+                                                <th scope="col">Año</th>                                              
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <th><input type="text" class="form-control" value="<%= @payment.created_at.strftime("%d") %>" /></th>
+                                                <th><input type="text" class="form-control" value="<%= @payment.created_at.strftime("%m") %>" /></th>
+                                                <th><input type="text" class="form-control" value="<%= @payment.created_at.strftime("%Y") %>" /></th>                                                     
+                                            </tr>                                         
+                                        </tbody>
+                                    </table>                                                                 
+                                   </div> 
+
+                                </div>
+                                <div class="col-md-3 col-sm-3 col-xs-3">
+                                    <h1 class=""><strong>RECIBO</strong> </h1>
+                                </div>
+                                <div class="col-md-4 col-sm-4 col-xs-4">
+                                    <h2 class="text-danger"><strong>N°: <%=@payment.get_num_payment %></strong></h2>   
+                                    <div class="col-md-12 col-sm-12 col-xs-12 ">
+                                        <h4 class=""><strong>Saldo: <%= @mycompany.get_current_currency.symbol%><%=@payment.saldo %></strong></h4>                                                                  
+                                </div>                                
+                            </div>
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <h4><strong>Recibi del Sr.(es): </strong><%=@payment.sale.client.name %></h4>
+                            </div>
+                             <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered">
+                                        <thead class=" bg-info text-white ">
+                                            <tr>
+                                                <th scope="col">CONCEPTO</th>
+                                                <th scope="col">N° NOTA</th>
+                                                <th scope="col">IMPORTE</th>
+                                                 <th scope="col">OBSERVACIONES</th>                                                
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <th><input type="text" class="form-control" value="<%= @payment.get_concepto %>" /></th>
+                                                <td><input type="text" class="form-control" value=" <%= @payment.sale.proformas.first.number_recibo %>" /></td>
+                                                <td><input type="text" class="form-control" value="<%= @mycompany.get_current_currency.symbol%><%= @payment.rode%>" /></td>  
+                                                <% if@payment.obs == '' %>                                                 
+                                               
+                                                <th><input type="text" class="form-control" value="" /></th> 
+                                                <% else %>
+                                                    <th><input type="text" class="form-control" value="<%=@payment.obs %><%=@mycompany.get_current_currency.symbol%>" /></th> 
+                                                <% end %>    
+                                            </tr>                                           
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>                         
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <h5 ><strong>Total:</strong><%=@mycompany.get_current_currency.montoLiteral(@payment.rode) %></h5>
+                            </div>
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                  <% if @payment.check_payment_id.present? %>                                                           
+                                <label>Tipo de Pago: <%= @payment.getToStringCheckPayment %></label>
+                                <%end%>
+                                <% if @payment.payment_currency_id.present? %>                                                    
+                                <label>Tipo de Pago: <%= @payment.getToStringPaymentCurrency %></label>
+                                <%end%> 
+                                  <% if @payment.bank_account_id.present? %>                                                    
+                                <label>Tipo de Pago: <%= @payment.getToStringPaymentTypes %></label>
+                            <%end%>
+
+                            </div>
+                                             
+                        
+                             <div class="col-md-12 col-sm-12 col-xs-12">
+                                  <div class="col-md-6 col-sm-6 col-xs-6 text-center">
+                                     <span>___________________________</span><br>
+                                      <label>Entregué Conforme</label>
+                                  </div>
+                                  <div class="col-md-6 col-sm-6 col-xs-6 text-center">
+                                      <span>___________________________</span><br>
+                                      <label>Recibi Conforme</label>
+                                  </div>
+                            </div>
+                              <div class="col-md-12 col-sm-12 col-xs-12"><br></div>
+                       </div>                   
+                  </div>
+             </div>
+        </div>
+    </div>
+</div>
+</div>
+<hr>

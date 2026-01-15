@@ -1,0 +1,43 @@
+         <% if can? :read, Item %>
+        <li class="<%= current_page?(root_path) ? "active" : "" %>">
+          <a href="<%= items_path %>">
+            Productos
+            <span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-blackboard"></span>
+          </a>
+        </li>
+        <% end %>
+        <% if can? :read, Warehouse %>
+        <li class="<%= current_page?(warehouses_path) ? "active" : "" %>">
+          <a href="<%= warehouses_path %>">
+            Alamacenes
+            <span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-shopping-cart"></span>
+          </a>
+        </li>      
+        <% end %>
+        <% if can? :read, Warehouse %>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Almacén <span class="caret"></span>
+            <span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-home"></span>
+          </a>
+          <ul class="dropdown-menu forAnimate" role="menu">
+            <li class="<%= current_page?(items_path) ? "active" : "" %>"><%= link_to 'Artículos', items_path %>
+            </li>
+            <li class="<%= current_page?(warehouses_path) ? "active" : "" %>"><%= link_to 'Almacenes', warehouses_path %>
+            </li>
+          </ul>
+        </li>
+        <% end %>
+        <% if can? :read, Account %>
+         <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Divisas <span class="caret"></span>
+            <span style="font-size:16px;" class="pull-right hidden-xs showopacity fa fa-donate"></span>
+          </a>
+          <ul class="dropdown-menu forAnimate" role="menu">
+            <li class="<%= current_page?(accounts_path) ? "active" : "" %>"><%= link_to 'Cuentas', accounts_path %>
+            </li>
+            <li class="<%= current_page?(currencies_path) ? "active" : "" %>"><%= link_to 'Monedas', currencies_path %>
+            </li>
+          </ul>
+        </li>
+        <% end %>
+

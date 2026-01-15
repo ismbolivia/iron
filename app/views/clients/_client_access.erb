@@ -1,0 +1,179 @@
+<ul class="nav nav-tabs" role="tablist">
+    <li role="presentation" class="active"><a href="#iprofile" aria-controls="profile" role="tab" data-toggle="tab" aria-expanded="true"><span><i class="far fa-money-bill-alt"></i></span> Ventas</a></li>
+    <li role="presentation" class=""><a href="#payment" aria-controls="home" role="tab" data-toggle="tab" aria-expanded="false"><span><i class=" fas fa-donate text-info"></i></span>Pagos</a></li>
+    <li role="presentation" class=""><a href="#list" aria-controls="list" role="tab" data-toggle="tab" aria-expanded="false"><span><i class="fas fa-list-alt text-info"></i></span> Listas </a></li>
+    <li role="presentation" class=""><a href="#contacts" aria-controls="home" role="tab" data-toggle="tab" aria-expanded="false"><span><i class=" fas fa-phone text-info"></i></span> Contactos </a></li>
+    <li role="presentation" class=""><a href="#asig" aria-controls="home" role="tab" data-toggle="tab" aria-expanded="false"><span><i class="fas fa-chevron-circle-right text-info"></i></span> Asignado a:</a></li> 
+    <li role="presentation" class=""><a href="#sumary" aria-controls="home" role="tab" data-toggle="tab" aria-expanded="false"><span><i class=" fas fa-ellipsis-h text-info"></i></span> Resumen:</a></li>   
+</ul>
+<div class="tab-content">
+         <div role="tabpanel" class="tab-pane" id="ihome">
+
+         </div>
+
+         <div role="tabpanel" class="tab-pane" id="contacts">
+          <div class="table-responsive">    
+	          <div id="panel-stock">              
+             <div class="page-content container-fluid">
+                <!-- ============================================================== -->
+                <!-- Start Page Content -->
+                <!-- ============================================================== -->
+                 <%= render partial: 'contacts/card' %>                
+                <div class="clearfix"></div>
+                 <hr>
+                 <div class="text-right">                                                                           
+                    <%= link_to  new_contact_path(:client_id => @client.id), {method: :get, class: "btn btn-success", remote: true} do %>
+                    <span class="fas fa-plus" aria-hidden="true"> </span>
+                    <% end %>     
+                </div>
+                <!-- ============================================================== -->
+                <!-- End PAge Content -->
+                <!-- ============================================================== -->
+            </div>   	           	            
+	          </div>          	              
+          </div>
+         </div>
+         <div role="tabpanel" class="tab-pane active" id="iprofile">
+              <div class="col-md-12 col-sm-12">                                      
+                 <div class="white-box">
+                    <div class="table-responsive">
+                      <table class="table product-overview">
+                              <thead>                               
+                                <tr>
+                                  <th>Fecha</th>
+                                  <th>Numero</th>
+                                  <th>Usuario</th>
+                                  <th>Cliente</th>
+                                  <th>Monto</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <% @client.sales.where(canceled: false).limit(20). each do |sale| %>
+                                  <tr>
+                                    <td><%= sale.created_at.strftime("%d/%m/%Y") %></td>
+                                    <td><%= sale.number %></td>
+                                    <td><%= sale.user.email  %></td>
+                                    <td><%= sale.client.name%></td> 
+                                    <td><%= sale.total_final%> <%= @mycompany.get_current_currency.symbol%> </td>                       
+                                  </tr>
+                                <% end %>
+                              </tbody>
+                            </table>    
+                     </div>     
+                </div>
+              </div>
+           <div class="clearfix"></div>
+		 </div>
+<div role="tabpanel" class="tab-pane" id="payment">
+   <div class="table-responsive">
+        <div class="col-md-12 col-sm-12">
+
+            <%=(@client.payments_all.count > 0) ? render(partial: 'payments/table_all', locals: { payments: @client.payments_all }) : 'No hay pagos Efectuados' %>                     
+        </div>
+    </div> 
+</div>
+<div role="list" class="tab-pane" id="list">
+   <div class="table-responsive">
+        <div class="col-md-12 col-sm-12">
+           <div class="white-box">
+             <div class="table-responsive" id="action_price_list_client">  
+              <%=(@client.price_lists.count > 0) ? render(partial: 'price_lists/table_price_list', locals: { client: @client }) : 'No hay lista de precios' %>
+
+              
+             </div>
+              <div class="table-responsive">                
+                 <%= link_to "Añadir Lista", new_client_price_list_path(client_id: @client.id), remote: true, class: "btn btn-info pull-right" %>        
+              </div>
+          </div>  
+        </div>
+    </div> 
+</div>
+<!-- init asig user perfil se debe factorizar -->
+  <div role="tabpanel" class="tab-pane" id="asig">
+     <div class="col-md-12 col-sm-12">                                      
+        <div class="white-box">
+           <div class="table-responsive">
+            <div class="col-lg-3 col-xlg-4 col-md-1"> </div> 
+            <div class="col-lg-6 col-xlg-8 col-md-10">
+                <div class="card">
+                    <div class="card-body">
+                        <center class="mt-4"><%= image_tag(@user_asig.avatar.large.url, :alt => "imge-item", class: "rounded-circle", width: "") %> 
+                          <h4 class="card-title mt-2"><%=@user_asig.name %></h4>
+                          <h6 class="card-subtitle"><%=@user_asig.rol.name %></h6>
+                          <div class="row text-center justify-content-md-center">
+                            <div class="col-4"><a href="javascript:void(0)" class="link"><i class="icon-people"></i> <font class="font-medium"><%=@user_asig.initials %></font></a>
+                            </div>                                       
+                          </div>
+                        </center>
+                    </div>
+                     <div></div>
+                    <div class="card-body"> <small class="text-muted">Dirección de correo electronico </small>
+                        <h6><%=@user_asig.email %></h6> <small class="text-muted pt-4 db">Telefono</small>
+                        <h6>+591 65316013</h6> <small class="text-muted pt-4 db">Dirección</small>
+                        <h6>Km 6 Blanco Galindo OTB sausalito calle uno</h6>
+                    <div class="map-box">
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15230.310944028117!2d-66.19730164562988!3d-17.384040460083806!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0xae9781e7423dbe95!2sColegio+Sausalito!5e0!3m2!1ses!2sin!4v1557926624545!5m2!1ses!2sin" width="100%" height="150" frameborder="0" style="border:0" allowfullscreen></iframe>
+                                   
+                     </div> <small class="text-muted pt-4 db">Redes Sociales</small>
+                      <br>
+                      <button class="btn btn-circle btn-secondary"><i class="fab fa-facebook-f"></i></button>
+                      <button class="btn btn-circle btn-secondary"><i class="fab fa-twitter"></i></button>
+                      <button class="btn btn-circle btn-secondary"><i class="fab fa-youtube"></i></button>
+                    </div>
+                  </div>
+              </div>
+            </div>
+           </div>
+        </div>
+     </div>
+     <div role="tabpanel" class="tab-pane" id="sumary">
+      <div class="col-md-12 col-sm-12">                                      
+        <div class="white-box">
+          
+            <div class="col-md-12 col-sm-12">
+
+               <% content_for :filter do %>
+                <select name="filter" id="filters" class="form-control ">
+                 <option value="" >All</option>
+                  <% Sale.states.flat_map do |s| %> 
+                <option value="<%= s[0]%>" > <%= s[0]%></option>                  
+                   <% end %>
+                 </select> 
+              <% end %>
+               <%= render partial: 'layouts/partials/report_form', locals: { report_entity: 'report', state: '' } %> 
+
+             </div>
+
+
+        </div>
+      </div>
+    </div>
+
+     <!-- end user asig perfil -->
+  </div>     
+
+<script>
+  var ranges = {
+  "Ultimos 7 dias": ["<%= format_date(Date.current - 7)%>", "<%=  format_date(Date.current + 1)%>"],
+  "Ultimos 30 dias": ["<%= format_date(Date.current - 30)%>", "<%=  format_date(Date.current)%>"],  
+  "Este mes": ["<%= format_date(Date.current.beginning_of_month)%>", "<%=  format_date(Date.current) %>"],
+  "Mes pasado": ["<%= format_date(1.month.ago.beginning_of_month)%>", "<%=  format_date(1.month.ago.end_of_month)%>"],
+  "Este año": ["<%= format_date(Date.current.beginning_of_year)%>", "<%=  format_date(Date.current)%>"],
+  "Año pasado": ["<%= format_date(1.year.ago.beginning_of_year)%>", "<%=  format_date(1.year.ago.end_of_year)%>"]
+};
+
+  $('input[name="dateranges"]').daterangepicker({
+      startDate: moment("<%= l @data_init, format:'%Y-%m-%d' %>"),
+      endDate: moment("<%= l @data_limit, format:'%Y-%m-%d' %>"),
+      ranges: ranges,
+      alwaysShowCalendars: true
+
+  }, function(start, end, label){
+
+    $("#data_init").val(start.format('YYYY-MM-DD'));
+    $("#data_limit").val(end.format('YYYY-MM-DD'));
+    // $("#state").val('input');
+   // $("#submit-button").click();
+  });
+
+</script>

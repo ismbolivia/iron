@@ -1,0 +1,28 @@
+
+<% show_actions = show_actions.nil? ? false : show_actions %>
+ <div class="table-responsive m-t-40" style="clear: both;">
+                <table class="table table-hover">
+                    <thead>			
+                        <tr>
+                          <th class="text-center">N°</th>
+                          <th>Description</th>
+                          <th class="text-right">Cantidad</th>
+                          <th class="text-right">precio unitario</th>
+                          <th class="text-right">Total</th>
+                        </tr>
+                    </thead>
+             <tbody>
+         	<div id="sale-details-index">
+				      <%= render partial: "sale_details/index", locals: {show_actions: show_actions} %>
+				   </div>
+        <tr>
+               	<td class="thick-line"></td>
+						<td class="thick-line"></td>
+						<td class="thick-line"></td>
+						<td class="thick-line "></td>
+						<td class="thick-line "></td>			 
+        </tr>                   
+      </tbody>
+    </table>
+  </div>
+

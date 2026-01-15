@@ -1,0 +1,40 @@
+// Place all the styles related to the Brands controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+.new-login-register .lg-info-panel .inner-panel {
+ position:absolute;
+ height:100%;
+ width:100%;
+ background:rgba(0, 0, 0, 0.5)
+}
+.new-login-register .lg-info-panel .lg-content {
+ margin-top:50%;
+ text-align:center;
+ padding:0 50px
+}
+.new-login-register .lg-info-panel .lg-content h2 {
+ color:#ffffff
+}
+.new-login-register .lg-info-panel .lg-content p {
+ padding:20px 0;
+ color:rgba(255, 255, 255, 0.7);
+ font-style:italic
+}
+.new-login-register .new-login-box {
+ 
+ margin-top:10%;
+ width:400px
+}
+.new-login-register .new-login-box .new-lg-form {
+ padding-top:20px
+}
+.new-login-register .new-login-box .new-lg-form label {
+ text-transform:uppercase;
+ font-size:12px
+}
+.new-login-register .new-login-box .social {
+ display:block;
+ margin-bottom:30px
+}
+

@@ -1,0 +1,15 @@
+$("ul.errors").html("");
+
+<% if @account_expense.errors.any? %>
+	$('#div-error').addClass('alert alert-danger');
+	document.getElementById("div-error").innerHTML = "<h2><%= pluralize(@account_expense.errors.count, 'error') %> prohibited this account_expense from being saved:</h2>"+
+	" <ul><% @account_expense.errors.full_messages.each do |message| %><li><%= message %></li><% end %></ul>";
+
+<% else %>
+<% if @ban %>
+	$("#panel-account-expenses").html("<%= escape_javascript(render(partial: '/accounts/access/table_expenses', locals: { accounts: @accounts, show_actions: true })) %>");
+	$("#new-payment-modal").modal("hide");	
+	<% else %>
+		 toastr.error("No cuenta con suficientes fondos en su cuenta");
+	<% end %>
+<% end %>

@@ -1,0 +1,27 @@
+<table class="table product-overview">
+    <thead>             
+      <tr>
+        <th>Fecha</th>
+        <th>Cantidad Recibida</th>
+        <th>Cantidad asignada almacen</th>
+        <th>Cantidad Disponible</th>
+        <th>Pu</th>
+        <th>purchase_order_id</th>
+      </tr>
+    </thead>
+    <tbody>
+        <% @item.purchase_order_lines.each do |pol| %>
+          <% if pol.asignado?    %>
+            <tr>
+              <td><%= pol.updated_at.strftime("%d/%m/%Y") %></td>
+              <td><%= pol.qty_received %></td>
+              <th><%= pol.get_total_warehouse_stock %></th>
+              <th><%= pol.get_available_line_item %></th>
+              <td><%= pol.price_unit  %></td>
+              <td><%= pol.purchase_order.name %></td>
+              <td> <%= link_to '', new_stock_path(item_id: @item.id, total: pol.get_available_line_item, my_pol: pol.id,  option_view: 0 ), remote:true, class: "   far fa-hand-point-down" %></td>                     
+            </tr>
+            <% end %>
+           <% end %>
+          </tbody>
+       </table>

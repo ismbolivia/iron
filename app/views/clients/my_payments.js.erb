@@ -1,0 +1,3 @@
+$("#my_activity").html("<%= escape_javascript(render(partial: 'payments', locals: { payments: @payments, title: @title })) %>");
+$("#my_activity").modal("show");
+

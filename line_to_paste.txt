@@ -1,0 +1,1 @@
+0 0 * * * cd /home/ismserver/sistema/iron && /usr/bin/env /home/ismserver/.rbenv/shims/bundle exec rails tasks:update_sale_statuses --silent >> log/cron.log 2>&1

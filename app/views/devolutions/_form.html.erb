@@ -1,0 +1,35 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="panel-body">
+    
+         <%= form_with(model: devolution, method: :post, remote: true) do |form| %>
+
+        <% if devolution.errors.any? %>
+          <div id="error_explanation">
+            <h2><%= pluralize(devolution.errors.count, "error") %> prohibited this devolution from being saved:</h2>
+
+            <ul>
+            <% devolution.errors.full_messages.each do |message| %>
+              <li><%= message %></li>
+            <% end %>
+            </ul>
+          </div>
+        <% end %>
+          <%= form.hidden_field :sale_id %>        
+          <%= form.hidden_field :sale_detail_id %>
+        <div class="col-xs-12">
+        <div class="form-group">
+          <%= form.number_field :qty, autofocus: true, placeholder: "Cantidad", class: "form-control" %>
+        </div>
+        <div class="form-group">
+          <%= form.text_area :obs, autofocus: true, placeholder: "Observación", class: "form-control" %>
+        </div>
+            <div class="actions">
+          <%= form.submit  'Guardar', class: 'btn btn-info' %>
+        </div>
+      </div>
+        
+      <% end %>
+    </div>
+  </div>
+</div>

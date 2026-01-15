@@ -1,0 +1,120 @@
+datos del video
+
+
+
+-	conjunto de medios y materiales 
+
+
+-	medios de información 
+-	evolucción
+-	 soporte fisico que no esta alamcenada en la emnte humana
+
+		registro del pendamiento
+		arte rupestre
+
+-	Registrar pensamiento humano (escritura)
+-	codificación y decodificación
+-	EDAD MEDIA
+
+-	escritura en los MONATERIOS
+-	invento	imprenta
+
+		expandir ideas democratización de ideas libros que se utiliza en el contexto escolar
+
+-	XIX cultura audio visual
+-	invento cinematografico
+forma de codificar rovolucionaria  no se codifica con simbolos abstractos mediante signos  similares
+
+CULTURA DE MASAS
+	- Tv
+	- XXI Digitalización de la información 
+		TIC 
+		
+pertmite almacenar gran canridad de información representar con multiples formas -conextada - comunicación entre nosotros
+
+-	medios de enseñanzza
+
+	- cualquier recurso tecnologico 
+		- papel disco pantalla
+		-	 contenido información mensaje
+		-	 inf. simbnolica representación de repe inf.
+		- 
+
+Tipos de Medios
+		- Segun Soporte sistema simbolos
+-	
+MEdios Didactico
+ 
+MEdios manipulativos - Medios impresos - Medios iconicos - medios auditivos - medios Digitales
+
+					imagen fija - imaen en movimiento
+
+
+
+
+MEDIOS PARA ALUMNO
+MEDIOS PARA DOCENTE
+
+
+METERIALES INFANTIL 
+
+PRINCIPPIOS DE USO PEDAGOGICO
+
+DEBE PARTIR TOMANDO ENCUENA EN FUNCIONS DE LA CARACTERISITICAS
+
+DEBE PLANIFICAR E INTEGRASE CURRICULARMENTE CADA MEDIO DE ENSEÑANZA CON OS OBJETIVOS
+
+
+DEBEN ENSEÑANRSE TANTO LAS HABILIDADES DE COMPRENCIÓN DE MENSJAES COMO CAPACIDADES .
+
+
+DEBE DESARROLAR UN PROESO DE ENSEÑANZA MULTIMEDIDO  USAR OTRO GAMA DE VARIDADES UNA RIQUEZA DE MEDIOS DISTINTOS
+
+
+	
+
+
+ <div class="col-md-6">
+          <div class="form-group">
+            <%= form.label :price_list_id,'Lista de precio', :class =>"control-label" %>   
+               <%= fields_for(@client_price_list) do |pl| %>
+                  <div class="form-group row">                   
+                      <div class="col-sm-12">
+                        <%= collection_select(:price_lists, :ids, @all_price_lists, :id, :name,{selected: @client.price_lists.ids, include_blank: 'Seleccione una lista'}, 
+                        {:multiple => true, class: "form-control", id: "select-price-list" , disabled: false}) %>
+                      </div>
+                  </div>
+                <% end %>
+          </div>
+        </div>
+
+
+
+          <div class="col-md-4">
+            <div class="form-group">
+                <%= form.label :nit,  :class =>"control-label" %>
+                <%= form.text_field :nit, :class =>"form-control", :placeholder =>"935553011" %>
+            </div>
+          </div>   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+           <div id="loader" class="">
+    <h1>Cargando</h1>
+    <div class="spinner"></div>
+    <div class="spinner2"></div>
+  </div>

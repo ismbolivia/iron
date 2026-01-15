@@ -1,0 +1,34 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Bank:</strong>
+  <%= @check.bank_id %>
+</p>
+
+<p>
+  <strong>Number:</strong>
+  <%= @check.number %>
+</p>
+
+<p>
+  <strong>Date giro:</strong>
+  <%= @check.date_giro %>
+</p>
+
+<p>
+  <strong>Date payment:</strong>
+  <%= @check.date_payment %>
+</p>
+
+<p>
+  <strong>Titular:</strong>
+  <%= @check.titular %>
+</p>
+
+<p>
+  <strong>Amount:</strong>
+  <%= @check.amount %>
+</p>
+
+<%= link_to 'Edit', edit_check_path(@check) %> |
+<%= link_to 'Back', checks_path %>

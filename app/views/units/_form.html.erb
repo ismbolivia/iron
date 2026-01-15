@@ -1,0 +1,28 @@
+
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="panel-body">
+     <%= form_with(model: unit, local: true) do |f| %>
+        <% if unit.errors.any? %>
+          <div id="error_explanation">
+            <h2><%= pluralize(unit.errors.count, "error") %> prohibited this unit from being saved:</h2>
+
+            <ul>
+            <% unit.errors.full_messages.each do |message| %>
+              <li><%= message %></li>
+            <% end %>
+            </ul>
+          </div>
+        <% end %>
+
+        <div class="form-group">
+          <%= f.text_field :name, autofocus: true, placeholder: "Nombre", class: "form-control" %>
+        </div>
+
+        <%= f.submit "Aceptar", class: "btn btn-success" %>
+         <%= link_to 'Back', units_path,  class: "btn btn-default "  %>
+      <% end %>
+    </div>
+  </div>
+</div>

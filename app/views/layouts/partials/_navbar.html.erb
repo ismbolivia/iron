@@ -1,0 +1,56 @@
+<nav class="navbar navbar-inverse navbar-fixed-top" style="height: 60px;">
+ <div class="container-fluid">
+   <div class="navbar-header">
+     <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+       <span class="sr-only">Toggle navigation</span>
+       <span class="icon-bar"></span>
+       <span class="icon-bar"></span>
+       <span class="icon-bar"></span>
+     </button>
+     <a class="navbar-brand" href="#">IRON SYSTEM </a>
+   </div>
+   <div id="navbar" class="navbar-collapse collapse">
+ <% if user_signed_in? %>
+     <%= render 'modulos/partial/modulos' %>
+
+<ul class="nav navbar-nav navbar-right">                                 
+   <li></li>
+      <li class="dropdown">
+          <a data-toggle="dropdown" href="#" aria-expanded="false" class="dropdown-toggle profile-pic" style="  padding-bottom: 9px;    padding-top: 9px;   ">    <%= image_tag(current_user.avatar.medium.url, :alt => "user-img", class: "img-circle",  width: "36",  height: "36") %><b class="hidden-xs">
+                            <%= current_user.email %></b><span class="caret"></span> </a>
+                      <ul class="dropdown-menu dropdown-user animated flipInY" style=" left: 13.484;  left: 15.484; left: 15px;
+">
+                            <li>
+                                <div class="dw-user-box">
+                                    <div class="u-img"><!-- <img src="https://wrappixel.com/ampleadmin/ampleadmin-html/plugins/images/users/varun.jpg" alt="user"> -->
+                                      <%= image_tag(current_user.avatar.medium.url, :alt => "user") %>
+                                    </div>
+                                    <div class="u-text">
+                                        <h4> <%= current_user.name %></h4>
+                                        <p class="text-muted"><%= current_user.rol.name %></p>
+                                        <%= button_to edit_user_path(current_user), {method: :get, class: "btn btn-rounded btn-danger btn-sm"} do %>
+                                        <span class="" aria-hidden="true">Editar Perfil </span> 
+
+                                    </div>
+                                </div>
+                            </li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="/users/<%= current_user.id %>"><i class="fa fa-user text-primary "></i> Mi Perfil</a>
+                            </li>
+                      <% end %>
+                           
+                            <li><a href="#"><i class="fa fa-envelope text-success"></i> Inbox</a></li>
+                         
+                            <li role="separator" class="divider"></li>
+                            <li><a href="#"></i>  <%= link_to "Salir", destroy_user_session_path, method: :delete %></a></li>
+
+                        </ul>
+                        <!-- /.dropdown-user -->
+                    </li>
+       <% end %>
+     </ul>
+  </div>
+ </div>
+</nav>
+
+

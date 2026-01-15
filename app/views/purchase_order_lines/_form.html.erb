@@ -1,0 +1,87 @@
+
+
+    <div class="modal-body">
+      <%= form_for :purchase_order_lines, url:  purchase_order_purchase_order_lines_url, method: :post, remote: true do |f| %>
+
+      <div class="row">
+          <div class="col-xs-12">
+            <div id="div-error"></div>
+            <div class="form-group">
+                <%= f.label :name, class: "sr-only" %>
+                <div class="input-group">
+                  <div class="input-group-addon"><i class="fab fa-apple"></i></div>
+                <%= f.text_field :item, placeholder: "Artículo", class: "form-control m-t-50", value: nil %>
+              </div>
+                <%= f.hidden_field :item_id %>
+                <%= hidden_field_tag :item_description  %>
+                <%= f.hidden_field :purchase_order_id %>
+                <input type="hidden" name="" id="supplier_id_pucahse" value="<%= @supplier_id %>">
+            </div>
+          </div>
+          <div class="col-xs-12">
+          <div class="col-xs-3">
+            <div class="form-group">
+              <label id="label_unit_id"></label>
+                <%= f.label :item_qty, class: "sr-only" %>
+                 <div class="input-group">
+                  <div class="input-group-addon"><i class="fas fa-braille"></i></div>
+                 <%= f.text_field :item_qty, placeholder: "Cant.", class: "form-control", disabled: true %>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-xs-3">
+            <div class="form-group">
+              <label for="">$</label>
+                <%= f.label :price_unit, class: "sr-only" %>
+                <div class="input-group">
+                  <div class="input-group-addon"><i class="fas fa-dollar-sign"></i></div>
+                  <%= f.text_field :price_unit, placeholder: "Pu", class: "form-control", disabled: true %>
+              </div>
+
+            </div>
+          </div>
+            <div class="col-xs-4">
+            <div class="form-group">
+              <label for="">Fecha</label>
+                <%= f.label :date_planned, class: "sr-only" %>
+                <div class="input-group">
+                  <div class="input-group-addon"><i class="far fa-calendar-plus"></i></div>
+                  <%= f.date_field :date_planned, placeholder: "0", class: "form-control", disabled: false %>
+              </div>
+
+            </div>
+          </div>
+           <div class="col-xs-2">
+            <div class="form-group">
+              <label for="">Total</label>
+                <%= f.label :subtotal, class: "sr-only" %>
+                <div class="input-group">
+                  <div class="input-group-addon"><i class="far fa-money-bill-alt"></i></div>
+                   <%= f.text_field :subtotal, placeholder: "0", class: "form-control", disabled: true %>
+              </div>
+
+            </div>
+          </div>
+        </div>
+            <div class="col-xs-12 hidden">
+            <div class="form-group">
+              <label>Seleccione tarifas impositivas:</label>
+
+                  <%= fields_for(@purchase_order_lines_tax) do |ab| %>
+                  <div class="form-group row">
+                      <div class="col-sm-12">
+                        <%= collection_select(:taxes, :id, @all_taxes, :id, :name, {}, {:multiple => true, class: "form-control", id: "select-prices" , disabled: false}) %>
+                      </div>
+                  </div>
+                    <% end %>
+            </div>
+          </div>
+        </div>
+        <%= f.submit "Aceptar", class: "btn btn-primary t" %>
+    </div>
+    <% end %>
+    <div class="modal-footer">
+
+      <%= link_to "Cancelar", "#", class: "btn btn-danger", "data-dismiss": "modal" %>
+    </div>

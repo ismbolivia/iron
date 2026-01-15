@@ -1,0 +1,26 @@
+<table class="table danger">
+  <thead>
+    <tr>
+
+      <th>Cantidad</th>
+      <th>Producto</th>
+      <th>Obs</th>
+      <th>Fecha</th>
+      <th colspan="1"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% devolutions.each do |devolution| %>
+      <tr>
+        <td><%= devolution.qty %></td>
+        <td><%= devolution.sale_detail.item.description %></td>
+        <td><%= devolution.obs %></td>
+        <td><%= devolution.created_at %></td>
+          <td><%= @mycompany.get_current_currency.symbol %><%= devolution.mount_devolution %></td>
+        <td><%= link_to 'Destroy', devolution, method: :delete, data: { confirm: 'Are you sure?' }, remote: true, class: 'btn btn-danger' %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<br>

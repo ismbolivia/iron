@@ -1,0 +1,132 @@
+
+
+<div class="row">
+  <div class="col-sm-2 col-xs-2"></div>
+    <div class="col-sm-8">
+        <div class="white-box">
+          <div class="row">
+            <div class="col-sm-12 col-xs-12">
+              <%= form_for :address, url: addresses_url, method: :post, remote: true do |form| %>
+                  <div id="div-error-address"></div>
+              <!-- <form> -->
+                <div class="form-group" >
+                    <%= form.label :country_id, "Pais", :class =>"control-label" %>
+                      <div class="input-group m-t-10">
+                        <span class="input-group-btn">
+                          <%= link_to '#', {method: :get, remote: true, class: "btn waves-effect waves-light btn-default"} do %>
+                            <span class="fas fa-flag" aria-hidden="true"> </span>
+                          <% end %>
+
+                        </span>
+                        <%= form.collection_select :country_id, @countries, :id, :name,
+                        {selected: @address.country_id, include_blank: 'Seleccione Pais'},
+                        {class: "form-control"} %>
+                       <span class="input-group-btn">
+                       <%= link_to new_country_path, {method: :get, remote: true, class: "btn waves-effect waves-light btn-info"} do %>
+                      <span class="fas fa-plus" aria-hidden="true"> </span>
+                       <% end %>
+                      </span>
+                    </div>
+                 <div class="hidden" id="panel_departamento">
+                      <%= form.label :departamento_id, "Departamento", :class =>"control-label" %>
+                    <div class="input-group m-t-10">
+                      <span class="input-group-btn">
+                          <%= link_to '#', {method: :get, remote: true, class: "btn waves-effect waves-light btn-default"} do %>
+                            <span class="fas fa-map" aria-hidden="true"> </span>
+                          <% end %>
+                        </span>
+
+                          <%= form.collection_select :departamento_id, [], :id, :name,
+                        {selected: @address.departamento_id},
+                        {class: "form-control"} %>
+                        <span class="input-group-btn" id="btn-depa">
+                          
+
+                        </span>
+                    </div>
+               </div>
+                    
+                  <div class="hidden" id="panel_province">
+                     <%= form.label :province_id, "Provincia", :class =>"control-label" %>
+                    <div class="input-group m-t-10">
+                      <span class="input-group-btn">
+                          <%= link_to '#', {method: :get, remote: true, class: "btn waves-effect waves-light btn-default"} do %>
+                            <span class="far fa-hand-point-right" aria-hidden="true"> </span>
+                          <% end %>
+                        </span>
+                        <%= form.collection_select :province_id, @provinces, :id, :name,
+                        {selected: @address.province_id, include_blank: 'Seleccione Provincia'},
+                        {class: "form-control"} %>
+                        <span class="input-group-btn" id="btn-province">                          
+
+                        </span>
+                    </div>
+                  </div>
+                    <div class="hidden" id="panel_zona">
+                    <%= form.label :zona_id, "Zona", :class =>"control-label" %>
+                    <div class="input-group m-t-10">
+                      <span class="input-group-btn">
+                          <%= link_to '#', {method: :get, remote: true, class: "btn waves-effect waves-light btn-default"} do %>
+                            <span class="fas fa-map-marker-alt" aria-hidden="true"> </span>
+                          <% end %>
+
+                        </span>
+                        <%= form.collection_select :zona_id, @zonas, :id, :name,
+                        {selected: @address.zona_id, include_blank: 'Seleccione una zona'},
+                        {class: "form-control"} %>
+                        <span class="input-group-btn" id="btn-zona">
+                         
+
+                        </span>
+                    </div>
+                  </div>
+                    <div class="hidden" id="panel_avenida">
+                    <%= form.label :avenida_id, "Avenida", :class =>"control-label" %>
+                    <div class="input-group m-t-10">
+                      <span class="input-group-btn">
+                          <%= link_to '#', {method: :get, remote: true, class: "btn waves-effect waves-light btn-default"} do %>
+                            <span class="fas fa-road" aria-hidden="true"> </span>
+                          <% end %>
+
+                        </span>
+                        <%= form.collection_select :avenida_id, @avenidas, :id, :name,
+                        {selected: @address.avenida_id, include_blank: 'Seleccione una avenida'},
+                        {class: "form-control"} %>
+                        <span class="input-group-btn" id="btn-avenida">
+                          
+                        </span>
+                    </div>
+                  </div>
+                   <div class="hidden" id="panel_calles">
+                    <%= form.label :calle, "Calles", :class =>"control-label" %>
+                    <div class="input-group m-t-10">
+                      <span class="input-group-btn">
+                          <%= link_to '#', {method: :get, remote: true, class: "btn waves-effect waves-light btn-default"} do %>
+                            <span class="fas fa-compress" aria-hidden="true"> </span>
+                          <% end %>
+                      </span>
+                       <%= form.text_field :calles, class: "form-control " %>
+                    </div>
+                     <%= form.label :description, "Descripción", :class =>"control-label" %>
+                    <div class="input-group m-t-10">
+                      <span class="input-group-btn">
+                            <span class="  btn waves-effect" aria-hidden="true"> </span>
+                      </span>
+                      <%= form.text_area :description, class: "form-control " %>
+                    </div>
+               
+               </div>
+
+                </div>
+                  <%= form.submit class: "btn btn-success waves-effect waves-light m-r-10" %>
+                  <%= link_to 'Back', addresses_path, class: "btn btn-default waves-effect waves-light m-r-10" %>
+           
+           </div>
+           <% end %>
+        </div>
+     </div>
+      <div class="col-sm-2 col-xs-2"></div>
+   </div>
+</div>
+
+

@@ -1,0 +1,31 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Account Expenses</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Account</th>
+      <th>Amount</th>
+      <th>Description</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @account_expenses.each do |account_expense| %>
+      <tr>
+        <td><%= account_expense.account_id %></td>
+        <td><%= account_expense.amount %></td>
+        <td><%= account_expense.description %></td>
+        <td><%= link_to 'Show', account_expense %></td>
+        <td><%= link_to 'Edit', edit_account_expense_path(account_expense) %></td>
+        <td><%= link_to 'Destroy', account_expense, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Account Expense', new_account_expense_path %>

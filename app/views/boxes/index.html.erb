@@ -1,0 +1,18 @@
+<div class="panel panel-success">
+  <div class="panel-head">Cajas</div>
+  <div class="panel-wrapper collapse in">
+    <div class="panel-body table-responsive ">  
+
+      <%= render partial: 'results_search' %>
+    <div class="col-md-5 col-md-offset-5 col-sm-5 col-sm-offset-5">
+      <p>
+          <%= button_to new_box_path, {method: :get, class: "btn btn-success"} do %>
+          <span class="glyphicon glyphicon-plus" aria-hidden="true"> </span> Nueva Caja
+          <% end %>
+      </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+

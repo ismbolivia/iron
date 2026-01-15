@@ -1,0 +1,176 @@
+
+<div class="row completed">
+    <div class="col-md-12">
+      <div class="white-box printableArea">
+        <h3> <%= wicked_pdf_image_tag 'logo_pd.png'  %><span class="text-center"> <b> COTIZACIÓN - PROFORMA </b></span> <span class="pull-right text-danger "><strong> N° <%= @sale.proformas.first.number_recibo %></strong></span></h3>      
+         <div class="row">
+            <div class="col-md-12">
+              <div class="col-md-4">
+               <div class="pull-left">
+                 <address>               
+                    <p class="m-t-30"> Cochabamba - <%= @mycompany.country.name %>
+                     <br> <b>Vendedor:</b> <%= @sale.get_user.initials %>
+                     <br> <b>Fecha em.:</b> <%= @sale.date.strftime("%d/%m/%Y") %> ,
+                     <br> <b>Fecha de venc.:</b>  <%= @sale.credit_expiration.strftime("%d/%m/%Y") %></p>                   
+                  </address>
+              </div>
+            </div>
+            <div class="col-md-8">
+               <div class=" text-left">
+             <label>Señor(es):  <%= @sale.client.name.upcase %></label>
+              </div>
+              <div class=" text-right">
+                 <address>                 
+                   <p class="text-muted m-l-30"><label>Dir.:</label> <%= @sale.client.address.get_direccion_cli %>               
+                   <br> Telefono: <%= @sale.client.phone %> | 
+                    Celular: <%= @sale.client.mobile %> </p>
+                </address>
+              </div>
+            </div>
+            </div>
+             <div class="text-center text-danger"><strong><%=@sale.iscredit%></strong></div>
+
+            <div class="col-md-12 ">
+             <div class=" m-t-40" style="clear: both;">
+                <table class="tables table-hover">
+                    <thead>     
+                      <tr>
+                        <th style="width:50px">Cant.</th>
+                        <th style="width:150px">Un.</th>      
+                        <th style="width:350px">Descripcción</th>
+                        <th style="width:50px">P/u</th>
+                        <th style="width:50px">Des.</th>
+                        <th style="width:100px">P/v</th>
+                           
+                        <th class="text-right" style="width:100px">Total</th>
+                      </tr>
+                   </thead>
+                <tbody>
+          <div id="sale-details-index">
+            <% @sale.sale_details.order(:priority).each do |detail| %>
+            <% if detail.todiscount%>          
+            <tr>
+              <td style="width:50px"><%= detail.get_qty_total %></td>
+              <td style="width:75px"><%= detail.item.unit.name %></td>           
+              <td style="width:400px"><small><%= detail.item.name %> </small></td>
+              <td style="width:100px"><%= @mycompany.get_current_currency.symbol%><%=detail.price %></td>
+              <td style="width:50px" ><%= number_to_percentage(detail.discount, precision: 0) %></td>
+              <td style="width:100px"><%= @mycompany.get_current_currency.symbol%><%= detail.price_sale %> </td>
+              <td class="text-right" style="width:100px"><%= @mycompany.get_current_currency.symbol%><%= detail.subtotal %></td>
+ 
+            </tr>  
+             <% end %>                     
+          <% end %>
+           </div>
+        <tr>
+            <td ></td>
+            <td ></td>
+            <td ></td>
+            <td ></td>
+            <td ></td> 
+            <td ></td> 
+            <td class="thick-line"></td>   
+            <td class="thick-line"></td>      
+        </tr>                   
+      </tbody>
+    </table>
+  </div>
+  </div>
+  
+    <div class="">
+      <div class="col-md-6 pull-left m-t-30 text-left">
+        <br>
+        <table class="text-danger ">
+          <thead>
+            <tr>
+              <th> CAJAS:</th>
+              <th>_______</th>  
+              <th>BOLSAS:</th> 
+              <th>_______</th>  
+              <th>MALLAS:</th> 
+              <th>_______</th>
+            </tr>
+            <tr>
+              <th>ALQUI:</th>
+              <th>_______</th>  
+              <th>CARB:</th> 
+              <th>_______</th>  
+              <th>ROLLOS:</th> 
+              <th>_______</th>
+            </tr>
+            <tr>
+              <th>OTROS:</th>
+              <th></th>
+            </tr>
+          </thead>       
+         </table> 
+       
+        </div>
+
+       <div class="col-md-6 pull-right m-t-30 text-right">
+          <p>Sub total: <%=@mycompany.get_current_currency.symbol %><%= @sale.sub_total_before_devolution %> </p>
+          <p>Descuentos(<%= number_to_percentage(@sale.discount_total, precision: 1) %>): <%= @mycompany.get_current_currency.symbol%><%= (@sale.duscount_mount_all_final) %></p>
+          <p><b>Total parcial :</b> <%= @mycompany.get_current_currency.symbol%><%= (@sale.total_final_afther) %></p> 
+        
+      </div>
+  </div>
+      <br>
+      <div class="col-md-12 ">
+        <table class="tables table-hover">                    
+        <tbody>
+
+          <div id="sale-details-index">
+            <% @sale.sale_details.order(:priority).each do |detail| %>
+             <% if !detail.todiscount%>    
+            <tr>
+              <td style="width:50px"><%= detail.get_qty_total %></td>
+              <td style="width:75px"><%= detail.item.unit.name %>
+              </td>               
+              <td style="width:250px"><small><%= detail.item.name %> </small></td>
+              <td style="width:100px"><%= @mycompany.get_current_currency.symbol%><%=detail.price %></td>
+              <td style="width:50px"><%= number_to_percentage(detail.discount, precision: 0) %></td>
+              <td style="width:100px"><%= @mycompany.get_current_currency.symbol%><%= detail.price_sale %> </td>
+              <td class="text-right" style="width:100px"><%= @mycompany.get_current_currency.symbol %><%= detail.sTotal %></td>
+              <td class="text-right" style="width:100px"><%= @mycompany.get_current_currency.symbol%><%= detail.subtotal %></td> 
+            </tr>  
+            <tr>
+              <td class=""></td>
+              <td class=""></td>
+              <td class=""></td>
+              <td class=""></td>
+              <td class=""></td> 
+              <td class=""></td> 
+              <td class=""></td>      
+              <td class=""></td>   
+                  
+            </tr>   
+            <% end %>                     
+          <% end %>
+        
+           </div>
+                           
+      </tbody>
+    </table>
+    <div class="pull-right m-t-30 text-right">          
+          <h4><b>Total :</b> <%= @mycompany.get_current_currency.symbol%><%= (@sale.total_final) %></h4> 
+    </div>
+  </div>
+    
+          <div class="clearfix"></div>            
+          <div class="text-left">
+             <p>SON:  <%=@mycompany.get_current_currency.montoLiteral(@sale.total_final) %></p>
+          </div>
+         <table class=" ">
+          <thead>
+            <tr>
+              <th scope="col">Responsable: _____________________________  </th>
+              <th scope="col">Recibi Conforme: ______________________________  </th>      
+            </tr>
+          </thead>       
+         </table>     
+    
+
+</div>
+</div>
+</div>
+</div>

@@ -1,0 +1,19 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Box:</strong>
+  <%= @box_user.box_id %>
+</p>
+
+<p>
+  <strong>User:</strong>
+  <%= @box_user.user_id %>
+</p>
+
+<p>
+  <strong>Acction:</strong>
+  <%= @box_user.acction %>
+</p>
+
+<%= link_to 'Edit', edit_box_user_path(@box_user) %> |
+<%= link_to 'Back', box_users_path %>

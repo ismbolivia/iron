@@ -1,0 +1,50 @@
+<div class="modal-content">
+	<div class="modal-header modal-header-primary">
+	    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"> [ × ] </button>
+	    <h2><i class="fas fa-donate"></i> Pago con deposito bancario</h2>
+	</div>
+                
+	<div class="modal-body">   
+	      <%= form_for :deposit, url: deposits_url, method: :post, remote: true do |form| %>
+	        <% if @deposit.errors.any? %>
+	          <div id="error_explanation">
+	              <h2><%= pluralize(@deposit.errors.count, "error") %> prohibited this deposit from being saved:</h2>
+	            <ul>
+	              <% @deposit.errors.full_messages.each do |message| %>
+	              <li><%= message %></li>
+	            <% end %>
+	            </ul>
+	          </div>
+	        <% end %>
+	      <div class="row">
+	         <div class="col-xs-12"> 
+	           <div id="div-error"></div>
+	         </div>
+	        <div class="col-xs-12">  
+	           <div class="form-group">                    
+	             <%= form.text_field :client_id, placeholder: "", class: "form-control hidden", value:@sale.client.id %>   
+	             <div class="input-group">
+	                  <div class="input-group-addon"><i class="fas fa-diagnoses"></i></div>
+	               <%= form.collection_select :bank_account_id, @bank_accounts, :id, :fullName, 
+	                      {selected: @deposit.bank_account_id, include_blank: 'Seleccione el numero de cuenta'},
+	                      {class: "form-control"} %>  
+	              </div>
+	            </div>
+	        </div>
+	      </div>
+	      <div class="col-xs-12">         
+	            <div class="form-group">
+	                <%= form.label :rode, class: "sr-only" %>
+	                <div class="input-group">
+	                  <div class="input-group-addon"><i class="far fa-credit-card"></i></div>
+	                  <%= form.text_field :rode, placeholder: "", class: "form-control", placeholder: "Ingrese el monto del deposito" %>
+	                </div>
+	            </div>
+	      </div>    
+	      <div class="actions">
+	          <%= form.submit "Guardar", class: "btn btn-primary" %>
+	      </div>
+	      <% end %>
+	   </div>
+</div>
+

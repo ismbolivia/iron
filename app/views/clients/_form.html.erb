@@ -1,0 +1,114 @@
+ <%= form_for(@client) do |form| %>
+  <% if client.errors.any? %>
+    <div class="alert alert-danger " id="error_explanation" >
+      <h2><%= pluralize(client.errors.count, "errores") %> al intentar guardar el cliente:</h2>
+
+      <ul>
+      <% client.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+<div class="row">
+   <div class = "col-lg-12 col-md-12 col-sm-12" >
+     <div class="col-lg-2 col-md-2 col-sm-2">
+        <div class="product-img "> 
+          <%= image_tag(client.photo.large.url, :alt => "imge-item", class: "image-form") %>
+             <div class="fileupload btn btn-info waves-effect waves-light"><span><i class="ion-upload m-r-5"></i>Subir una imagen </span>
+                 <%= form.file_field :photo, :class =>"upload"%>
+              </div>
+        </div>
+      </div>
+       <div class="col-lg-4 col-md-4 col-sm-4">
+            <div class="form-group">                 
+                <div class="input-group">
+                  <%= form.text_field :name, placeholder: "Nombre Cliente", class: "form-controles m-t-50" %>
+                </div>
+            <div class="input-group m-t-50">
+                <div class="input-group-addon "><i class="fas fa-map-marker-alt"></i></div>
+                  <%= form.collection_select :address_id, @addresses, :id, :get_direccion_all,
+                      {selected: @client.address_id,  include_blank: 'Introduce una dirrección '},
+                      {class: "form-control"} %>
+                      <span class="input-group-btn">
+                        <%= link_to '/addresses/new?', {method: :get, remote: true, class: "btn waves-effect waves-light btn-success"} do %>
+                      <span class="fas fa-plus" aria-hidden="true"> </span>
+                      <% end %>
+                     </span>
+            </div>
+              <div class="input-group m-t-50">         
+                  <div class="input-group-addon "><i class="fas fa-envelope-square"></i></div>
+                  <%= form.email_field :email, :class =>"form-control", :placeholder =>"ferreteria@gmail.com" %>
+              </div>
+            </div>
+        </div>
+           <div class="col-lg-6 col-md-4 col-sm-6">
+              <a class="btn btn-app">
+                <span class="badge bg-yellow"><%=@client.get_sale_total %><%= @mycompany.get_current_currency.symbol%></span>
+                <i class=" fa fa-cart-plus text-purple"></i> Total ventas
+              </a>
+              <a class="btn btn-app">
+                <span class="badge bg-green"><%= @client.getTotalPayments %><%= @mycompany.get_current_currency.symbol%></span>
+                <i class="fa fa-money-bill-alt text-success"></i> Total pagos
+              </a>
+              <a class="btn btn-app">
+                <span class="badge bg-purple"><%= @client.totalContacts %></span>
+                <i class="fa fa-users"></i> Contactos
+              </a>
+              <a class="btn btn-app">
+                <span class="badge bg-teal"><%=@client.getTotalACobrar %><%= @mycompany.get_current_currency.symbol%></span>
+                <i class="fa fa-hand-holding-usd text-danger"></i> Por cobrar
+              </a>
+              <a class="btn btn-app">
+                <span class="badge bg-aqua"><%=@client.getTotalInvoced %><%= @mycompany.get_current_currency.symbol%></span>
+                <i class="fa fa-clipboard-list"></i> Facturados
+              </a>
+              <a class="btn btn-app">
+                <span class="badge bg-red"><%= @client.getTotalNotInvoced %><%= @mycompany.get_current_currency.symbol%></span>
+                <i class="fa fa-clipboard"></i> Po facturar
+              </a>
+           </div>
+   </div>
+</div>
+<hr>
+ <div class="row">
+  <div class="col-md-12">
+        <div class="col-md-6">
+          <div class="form-group">
+            <%= form.label :phone, 'Telefono',  :class =>"control-label" %>
+            <%= form.text_field :phone, :class =>"form-control", :placeholder =>"+591-35125441" %>
+            </div>
+          </div>                                                <!--/span-->
+          <div class="col-md-6">
+            <div class="form-group">
+                <%= form.label :mobile, 'Celular', :class =>"control-label" %>
+                <%= form.text_field :mobile, :class =>"form-control", :placeholder =>"+591- 65316013" %>
+            </div>
+          </div>
+                                                          <!--/span-->
+         
+        <div class="col-md-6">
+          <div class="form-group">
+            <%= form.label :discount,'Descuento maximo',  :class =>"control-label" %>
+            <%= form.text_field :discount, :class =>"form-control", :placeholder =>" 20%" %>
+            </div>
+        </div>                                                <!--/span-->
+        <div class="col-md-6">
+              <div class="form-group">
+                  <%= form.label :credit_limit,'Limite de credito',  :class =>"control-label" %> <%= @mycompany.get_current_currency.symbol %> 
+                  <%= form.text_field :credit_limit, :class =>"form-control", :placeholder =>"" %>
+             </div>
+        </div>
+       
+   </div>
+</div>
+<hr> 
+<div class="row no-print ">
+    <div class="col-xs-12">
+      <%= link_to 'Back', clients_path,  class: "btn btn-default "  %>
+      <%= form.submit 'Guardar', :class => "btn btn-success  pull-right" %>
+    </div>
+</div>
+    <hr> 
+<% end %>

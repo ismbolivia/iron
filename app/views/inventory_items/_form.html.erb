@@ -1,0 +1,67 @@
+<%= form_with(model: inventory_item, local: true) do |form| %>
+  <% if inventory_item.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(inventory_item.errors.count, "error") %> prohibited this inventory_item from being saved:</h2>
+
+      <ul>
+      <% inventory_item.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :inventory_id %>
+    <%= form.number_field :inventory_id %>
+  </div>
+
+  <div class="field">
+    <%= form.label :item_id %>
+    <%= form.number_field :item_id %>
+  </div>
+
+  <div class="field">
+    <%= form.label :code_item %>
+    <%= form.text_field :code_item %>
+  </div>
+
+  <div class="field">
+    <%= form.label :name_item %>
+    <%= form.text_field :name_item %>
+  </div>
+
+  <div class="field">
+    <%= form.label :description_item %>
+    <%= form.text_field :description_item %>
+  </div>
+
+  <div class="field">
+    <%= form.label :quantity_product %>
+    <%= form.number_field :quantity_product %>
+  </div>
+
+  <div class="field">
+    <%= form.label :price_purchase_total %>
+    <%= form.text_field :price_purchase_total %>
+  </div>
+
+  <div class="field">
+    <%= form.label :price_sale_total %>
+    <%= form.text_field :price_sale_total %>
+  </div>
+
+  <div class="field">
+    <%= form.label :variance %>
+    <%= form.text_field :variance %>
+  </div>
+
+  <div class="field">
+    <%= form.label :user_id %>
+    <%= form.number_field :user_id %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>

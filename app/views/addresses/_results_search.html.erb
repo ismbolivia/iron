@@ -1,0 +1,47 @@
+
+<table class="table">
+  <thead>
+    <tr>
+ <%= render partial: "pager", locals: { keywords: @keywords, page: @page } %> 
+    </tr>
+    <tr>
+     <th>Country</th>
+      <th>Departamento</th>
+      <th>Province</th>
+      <th>Zona</th>
+      <th>Avenida</th>
+      <th>Calles</th>
+      <th>Coordenadas</th>
+      <th>Description</th>
+      <th></th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+  <tbody>
+      <% @addresses.each do |address| %>
+      <tr>
+        <td><%= address.country.name %></td>
+        <td><%= address.departamento.name %></td>
+        <td><%= address.province.name %></td>
+        <td><%= address.zona.name %></td>
+        <td><%= address.avenida.name %></td>
+        <td><%= address.calles %></td>
+        <td><%= address.coordenadas %></td>
+        <td><%= address.description %></td> 
+        <td><%= address.created_at.strftime("%d/%m/%Y") %></td>
+        <td><%= address.updated_at.strftime("%d/%m/%Y") %></td>
+        <td><%= link_to 'Show', address %></td>
+        <td>
+          <%= button_to edit_address_path(address), {method: :get, class: "btn btn-info"} do %>
+            <span class="glyphicon glyphicon-pencil" aria-hidden="true"> </span> 
+          <% end %>
+        </td>
+        <td>
+          <%= button_to address, { method: :delete, data: { confirm: '¿Está seguro?' }, class: "btn btn-danger" } do %>
+            <span class="glyphicon glyphicon-trash" aria-hidden="true"> </span> 
+          <% end %>      
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

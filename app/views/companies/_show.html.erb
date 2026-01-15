@@ -1,0 +1,95 @@
+
+<div class="row">
+   <div class = "col-lg-12 col-md-12 col-sm-12" >
+     <div class="col-lg-2 col-md-2 col-sm-2">
+        <div class="product-img "> 
+           <%= image_tag(@company.logo.large.url, :alt => "imge-logo", class: "image-form") %>   
+        </div>
+      </div>
+       <div class="col-lg-4 col-md-4 col-sm-4">
+              <div class="form-group">                 
+                  <div class="input-group">
+                  	<h2 class="m-b-0 m-t-0 m-t-40"><%= @company.name%></h2>
+                <h4 class="text-muted db"> <i class="fas fa-anchor"></i> <%= @company.sigla %></h4>
+                <h6 class="text-muted db"> <i class="fas fa-code-branch"></i> <%= @company.nit %></h6>
+                <h6 class="text-muted db"> <i class="fas fa-envelope"></i> <%= @company.email %></h6>   
+                  </div>            
+
+              </div>
+        </div>
+           <div class="col-lg-6 col-md-4 col-sm-6">
+              <a class="btn btn-app">
+                <span class="badge bg-yellow">50</span>
+                <i class=" fa fa-building"></i> Stock
+              </a>
+              <a class="btn btn-app">
+                <span class="badge bg-green">300</span>
+                <i class="fa fa-barcode"></i> Products
+              </a>
+              <a class="btn btn-app">
+                <span class="badge bg-purple">891</span>
+                <i class="fa fa-users"></i> Users
+              </a>
+              <a class="btn btn-app">
+                <span class="badge bg-teal">67</span>
+                <i class="fa fa-inbox"></i> Orders
+              </a>
+              <a class="btn btn-app">
+                <span class="badge bg-aqua">12</span>
+                <i class="fa fa-envelope"></i> Inbox
+              </a>
+              <a class="btn btn-app">
+                <span class="badge bg-red">531</span>
+                <i class="fa fa-thumbs-up"></i> Likes
+              </a>
+           </div>
+   </div>
+</div>
+<hr>
+
+<div class="row">
+  <div class="col-md-12">
+        
+
+        <div class="col-md-6">
+          <div class="form-group">
+          	<label class="control-label">Telefono:</label>
+            <span class=""><%= @company.phone%></span>            
+
+            </div>
+          </div>
+                                                <!--/span-->
+          <div class="col-md-6">
+            <div class="form-group">
+	            <label class="control-label">Numerode registro de la compania:</label>
+	            <span class=""><%= @company.company_registration%></span>         
+                </div>
+           </div>
+
+                                                      <!--/span-->
+          <div class="col-md-6">
+              <div class="form-group">
+              		<label class="control-label">Pais:</label>
+            		<span class=""><%= Country.find(@company.country_id).name %></span> 
+              </div>
+           </div>
+
+        <div class="col-md-6">
+          <div class="form-group">
+          	<label class="control-label">Pie de Pagina para los informe:</label>
+            <span class=""><%= @company.report_footer%></span> 
+          </div>
+          </div>                                                <!--/span-->
+          
+
+   </div>
+
+</div>
+<hr>
+ <div class="row no-print ">
+        <div class="col-xs-12">
+          <%= link_to 'Back', companies_path,  class: "btn btn-default "  %>
+            <%= link_to 'Editar', edit_company_path(@company), class: "btn btn-success  pull-right"  %>         
+        </div>
+      </div>
+    <hr> 

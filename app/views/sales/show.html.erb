@@ -1,0 +1,134 @@
+<div class="row">
+  <div class="col-lg-1"></div>
+  <div class="col-lg-10">
+      <div class="white-box">
+        <div class="">
+          <h2 class="m-b-0 m-t-0 m-t-40">Venta N° <span id = "sale_number_id"><%= @sale.number %></span></h2> 
+          <h4 class="text-muted db"> <i class="fas fa-calendar-check"></i> <%= @sale.date.to_formatted_s(:rfc822)  %></h4>
+          <hr>
+        <div class="row">
+            <div class="col-lg-3 col-md-3 col-sm-4">
+              <div class="white-box text-center">               
+                   <%= image_tag(@sale.client.photo.large.url, :alt => "client-img", class: "img-responsive") %>
+              </div>
+            </div>       
+            <div class="col-lg-4 col-md-4 col-sm-4">
+             <h4 class=" m-t-40"><i class="fas fa-user"></i><span id="client_sale_name_id"><%= @sale.client.name %></span> </h4>
+                <p>Dirección: <%= @sale.client.address.get_direccion_all %></p>
+                <h4 class="m-t-40">Total: <%=@mycompany.get_current_currency.symbol %> <%= @sale.total_final %></h4>
+                <h4 class="m-t-40">Venta: <%= @sale.iscredit %></h4>
+                <h4 class="m-t-40">Saldo: <%=@mycompany.get_current_currency.symbol %> <%= @sale.saldo %></h4>
+                  <ul class="list-icons">
+                      <li>Vencimiento:<i class="fas fa-calendar text-success"></i> <%= @sale.credit_expiration.strftime("%d/%m/%Y") %></li>
+                  </ul>
+            </div>
+            <div class="col-lg-5 col-md-4 col-sm-4">                
+                <a class="btn btn-app"><span class="badge bg-green"><%= @sale.sale_details.count %></span><i class="fa fa-barcode"></i> Items </a>
+                <a class="btn btn-app"><span class="badge bg-purple"><%= @sale.payments.count %></span><i class=" fa fa-hand-holding-usd"></i> Pagos </a>
+                  <%if @sale.canceled %>
+                     <a  class="btn btn-app btn-danger" onclick="canceled('<%= @sale.id %>', false);"><span class="badge bg-teal">+1</span><i class="fa fa-trash"></i> Anulado </a>
+                  <%else%>
+                     <a  class="btn btn-app" onclick="canceled('<%= @sale.id %>', true);"><span class="badge bg-teal">-1</span><i class="fa fa-trash-alt"></i> Anular </a>
+                  <%end%>
+                <% if @sale.penalty %>
+                    <a href="#" class="btn btn-app btn-danger" onclick="penalty('<%= @sale.id %>', false);"> <span class="badge bg-purple">-  <%=@sale.discount_total %>%</span><i class=" fa fa-ban"></i> Penalizado </a>   
+                <% else %>
+                <a href="#" class="btn btn-app "  onclick="penalty('<%= @sale.id %>', true);"><span class="badge bg-aqua">+ <%=@sale.discount_total %>%</span><i class=" fa fa-balance-scale"></i> Penalizar </a>
+                <% end %>                               
+            </div>       
+      </div>
+    <hr>
+ <div class="row no-print ">
+        <div class="  col-lg-12">        
+          <%= link_to 'Back', sales_path,  class: "btn btn-default btn-rounded"  %> 
+           <% if @sale.proformas.count > 0 %>
+          <%= link_to 'Imprimir', sale_path(@sale, format: 'pdf'), class: "btn btn-warning "  %>         
+          <% end %>
+           <% if @sale.proformas.count == 0 %>
+           <%= link_to 'Crear Recibo', new_proforma_path(sale_id: @sale.id), remote:true, id:"id_crear_recibo", class: "btn btn-warning "  %> 
+           <% end %>
+          
+           <%= link_to edit_sale_path(@sale), {method: :get, class: "btn btn-primary  pull-right"} do %><i class="ti-marker-alt" aria-hidden="true"> </i> 
+           <% end %>
+          
+          <% if @sale.canceled %>
+             <div class="centrado canceled">ANULADO</div>
+          <%end %>
+          <% if @sale.completed %>
+             <div class="centrado complet">CANCELADO</div>
+          <%end %>       
+        
+        </div>
+  </div>
+<hr>
+<ul class="nav nav-tabs" role="tablist">
+   <li role="presentation" class="active"><a href="#iprofile" aria-controls="profile" role="tab" data-toggle="tab" aria-expanded="true"><span><i class="fas fa-cart-plus"></i></span> Detalle de venta</a></li>
+   <li role="presentation" class=""><a href="#return_sales" aria-controls="profile" role="tab" data-toggle="tab" aria-expanded="true"><span><i class="far fa-money-bill-alt"></i></span> Devoluciones</a></li>
+   <li role="presentation" class=""><a href="#ihome" aria-controls="home" role="tab" data-toggle="tab" aria-expanded="false"><span><i class="far fa-building text-info"></i></span> Pagos</a></li>
+   <li role="presentation" class=""><a href="#note" aria-controls="home" role="tab" data-toggle="tab" aria-expanded="false"><span><i class="far fa-building text-info"></i></span>Proforma</a></li>
+</ul>
+<div class="tab-content">
+  <div role="tabpanel" class="tab-pane" id="ihome">                
+       <div class="table-responsive">
+           <div class="col-md-12 col-sm-12">
+            <div id="panel_payment_sale">
+               <%= (@sale.payments.count > 0) ? render(partial: 'payments/table', locals: { payments: @sale.payments }) : 'No hay pagos Efectuados' %>
+            </div>              
+               <div class="col-md-12">
+                    <div class="pull-right m-t-30 text-right">
+                       <p>Total venta: <%=@mycompany.get_current_currency.symbol %> <strong><%=@sale.total_final %></strong>  </p>               
+                       <p>Total desc.: -<%=@mycompany.get_current_currency.symbol %><%=@sale.total_des_pagos %> </p>
+                       <h3><b>Total pagado: </b> <%= @mycompany.get_current_currency.symbol %><%=@sale.total_pagos %></h3> 
+                    </div>
+                    <div class="clearfix"></div>
+                    <hr>
+                    <div class="text-right">                                                                         
+                      <% if @sale.proformas.count >0 %>                                                            
+                        <%= link_to new_payment_path(:current_sale_id => @sale.id), {method: :get, class: "btn btn-success", remote: true} do %>
+                           <span class="fas fa-hand-holding-usd" aria-hidden="true"> </span>
+                        <% end %>  
+                            <%= link_to payments_path(:current_sale_id => @sale.id), {method: :get, class: "btn btn-default btn-outline", remote: true} do %>
+                             <span class="fa fa-print" aria-hidden="true"> </span>
+                          <% end %> 
+                        <% end %>                          
+                    </div>
+                </div>                                
+           </div>
+      </div>         
+  </div>
+<div id="return_sales" class="tab-pane">
+      <div class="table-responsive">
+           <div class="col-md-12 col-sm-12" >
+            <div id="panel_sale_detail_devolution">
+              <%= (@sale.devolutions.count > 0) ? render(partial: 'devolutions/index', locals: { devolutions: @sale.devolutions }) : 'No hay devoluciones Efectuados' %>
+              <div class="pull-right m-t-30 text-right">                 
+                 <h3><b>Total Devolución :</b> <%= @mycompany.get_current_currency.symbol %><%=@sale.total_devolutions_mount %></h3> 
+              </div>
+            </div>
+              <div class="clearfix"></div>
+                 <hr>
+                 <div class="text-right">                                                                           
+                    <%= link_to  sale_details_sale_path(:current_sale_id => @sale.id), {method: :get, class: "btn btn-warning", remote: true} do %>
+                    <span class="fas fa-plus" aria-hidden="true">Añadir </span>
+                    <% end %>     
+                    <button id="print" class="btn btn-default btn-outline" type="button"> <span><i class="fa fa-print"></i> Print</span> </button>
+                </div>
+        </div>
+    </div>
+ </div>
+
+    <div role="tabpanel" class="tab-pane" id="note">            
+        <%= (@sale.proformas.count > 0) ? render(partial: 'proformas/table', locals: { sale: @sale, show_actions: false }) : 'No hay proformas creados' %>     
+    </div>
+    <div role="tabpanel" class="tab-pane active" id="iprofile">
+         <div class="col-md-12 col-sm-12">
+           <%= (@sale.sale_details.count > 0) ? render(partial: 'table', locals: { sale: @sale, show_actions: false }) : 'No hay detalles cargados' %>                                          
+         </div>              
+           <div class="clearfix"></div>    
+    </div>
+</div>
+</div>
+</div>
+</div>
+      <div class="col-lg-1"></div>
+</div>

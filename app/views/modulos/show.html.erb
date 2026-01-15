@@ -1,0 +1,43 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @modulo.name %>
+</p>
+
+<p>
+  <strong>Active:</strong>
+  <%= @modulo.active %>
+</p>
+
+<p>
+  <strong>Color:</strong>
+  <%= @modulo.color %>
+</p>
+
+<p>
+  <strong>Icon:</strong>
+  <%= @modulo.icon %>
+</p>
+
+<p>
+  <strong>Installed:</strong>
+  <%= @modulo.installed %>
+</p>
+
+<p>
+  <strong>User:</strong>
+  <%= @modulo.user_id %>
+</p>
+<p>
+  <strong>user_user
+  :</strong>
+  <% current_user.modulos do |modulo| %>
+   <li><%= modulo.name %></li>
+  <% end %>
+</p>
+
+<%= link_to 'Edit', edit_modulo_path(@modulo) %> |
+<%= link_to 'Back', modulos_path %>
+
+

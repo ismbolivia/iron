@@ -1,0 +1,27 @@
+<div class="table-responsive">
+  <table class="table product-overview">
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Precio de compra</th>
+        <th>% Utilidad</th>
+        <th>Precio de venta</th>
+        <th colspan="3"></th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% @item.prices.each do |price| %>
+        <tr>
+          <td><%= price.name %></td>
+          <td><%= price.price_purchase %></td>
+          <td><%= price.utility %></td>
+          <td><%= price.price_sale %></td>
+          <td><%= price.active %></td>
+          <td><%= link_to 'Actualizar', edit_price_path(price), class:"btn btn-primary",  remote: true%></td>
+          <td><%= link_to 'Destroy', price, method: :delete, remote: true, data: { confirm: 'Are you sure?' }, class:"btn btn-danger" %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

@@ -1,0 +1,37 @@
+<section class="report-form">
+ <%= form_for report_entity, method: :get, remote: true do |f| %>
+           
+            <%= hidden_field_tag :data_init, '', placeholder: "Buscar", value: "#{@data_init}" %>
+
+            
+            <%= hidden_field_tag :data_limit, '', placeholder: "Buscar",  value: "#{@data_limit}" %>
+
+            <%= hidden_field_tag :state, '', placeholder: "estado", value: "#{state}" %>
+  
+  <div class="col-md-11">
+      <div class="form-group">
+     
+        <div class="col-md-7">               
+            <input type="" name="dateranges" class="form-control" >
+            </div>
+    <div class="col-md-5">
+      <%= yield :filter %>
+      
+    </div>
+  </div>           
+     
+  </div>
+   <div class="col-md-1">
+      <div class="form-group">
+        <div class="">               
+           <%= button_tag(type: 'submit', id: 'submit-button', class: "btn btn-success") do %>
+      <span class="fas fa-search"></span> 
+      <% end %>    
+    </span>
+        </div>               
+          
+      </div>
+  </div>
+<% end %>
+</section>
+

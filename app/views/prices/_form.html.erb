@@ -1,0 +1,62 @@
+ <div class="modal-body">
+ <%= form_for :price, url: prices_url, method: :post, remote: true do |form| %>
+      <div class="row">
+        <div class="col-xs-12">
+           <div id="div-error-price-new"></div>
+        </div>
+          <div class="col-xs-12">
+
+          <div class="alert alert-info "> <strong>Precio de compra de la anterior operación: </strong><%= @mycompany.get_current_currency.symbol %> <%=@price.price_last %>   </div>
+
+         <div class="form-group">
+            <%= form.label :price_list_id, "Lista", :class =>"control-label" %>
+                <div class="input-group">
+                <div class="input-group-addon"><i class="fas fa-list-ol"></i></div>
+                <%= form.collection_select :price_list_id, @price_lists, :id, :name,
+                  {selected: @price.price_list_id, include_blank: 'Seleccione una lista'},
+                  {class: "form-control",  onchange: 'loadDataPrice('+@item_id+');'} %>
+                  </div>
+          </div>
+        </div>
+
+        <div class="col-xs-6">
+            <div class="form-group">
+                <%= form.label :utility, class: "sr-only" %>
+                <div class="input-group">
+                  <div class="input-group-addon"><label>% utilidad</label></div>
+                <%= form.text_field :utility, placeholder: "", class: "form-control" %>
+              </div>
+            </div>
+        </div>
+
+          <div class="col-xs-6">
+            <div class="form-group">
+                <%= form.label :price_purchase, class: "sr-only" %>
+                <div class="input-group">
+                  <div class="input-group-addon"><label>P. Compra</label></div>
+                <%= form.text_field :price_purchase, placeholder: "", class: "form-control" %>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-xs-6">
+            <div id="div-error"></div>
+            <div class="form-group">
+                <%= form.label :price_sale, class: "sr-only" %>
+                <div class="input-group">
+                  <div class="input-group-addon"><label>P. Venta</label></div>
+                <%= form.text_field :price_sale, autofocus: true, class: "form-control" %>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-xs-12">
+            <div class="form-group">
+               <%= form.hidden_field :item_id %>
+            </div>
+          </div>
+        </div>
+            <%= form.submit "Guardar", class: "btn btn-primary " %>
+            <%= link_to "Cancelar", "#", class: "btn btn-danger", "data-dismiss": "modal" %>
+   </div>
+<% end %>

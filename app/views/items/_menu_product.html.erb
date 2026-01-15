@@ -1,0 +1,60 @@
+     <% if can? :read, Item %> 
+        <li class="<%= current_page?(items_path) ? "active" : "" %>">
+          <a href="<%= items_path %>">
+            Productos
+            <span style="font-size:16px;" class="pull-right hidden-xs showopacity fas fa-box"></span>
+          </a>
+        </li>
+      <% end %>  
+       <% if can? :read, Warehouse %> 
+        <li class="<%= current_page?(warehouses_path) ? "active" : "" %>">
+          <a href="<%= warehouses_path %>">
+            Alamacenes
+            <span style="font-size:16px;" class="pull-right hidden-xs showopacity fas fa-database"></span>
+          </a>
+        </li>
+      <% end %>  
+       <% if can? :read, inventories_path %>
+       <li class="<%= current_page?(inventories_path) ? "active" : "" %>">
+          <a href="<%= inventories_path %>">
+            Inventarios
+            <span style="font-size:16px;" class="pull-right hidden-xs showopacity far fa-building "></span>
+          </a>
+        </li>   
+        <% end %>
+        <% if can? :read, PriceList.all.first %>
+       <li class="<%= current_page?(price_lists_path) ? "active" : "" %>">
+          <a href="<%= price_lists_path %>">
+            Lista de precios
+            <span style="font-size:16px;" class="pull-right hidden-xs showopacity fas fa-list "></span>
+          </a>
+        </li>  
+        <% end %>
+           
+             
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+            Configuración
+            <span class="caret"></span>
+            <span style="font-size:16px;" class="pull-right hidden-xs showopacity fas fa-wrench"></span>
+          </a>
+          <ul class="dropdown-menu forAnimate" role="menu">
+               <% if can? :read, categories_path %>
+            <li class="<%= current_page?(categories_path) ? "active" : "" %>"><%= link_to 'Categorías', categories_path %></li>
+            <% end %>
+            <% if can? :read, brands_path %>
+            <li class="<%= current_page?(brands_path) ? "active" : "" %>"><%= link_to 'Marcas', brands_path %></li>
+            <% end %>
+            <% if can? :read, Presentation.all.first %>
+            <li class="<%= current_page?(presentations_path) ? "active" : "" %>"><%= link_to 'Presentacciones', presentations_path %></li>
+            <% end %>
+             <% if can? :read, units_path %>
+            <li class="<%= current_page?(units_path) ? "active" : "" %>"><%= link_to 'Unidades', units_path %></li>
+            <% end %>
+            <% if can? :read, towns_path %>
+            <li class="<%= current_page?(towns_path) ? "active" : "" %>"><%= link_to 'Localidades', towns_path %></li>
+            <% end %>
+            
+          </ul>
+        </li>
+

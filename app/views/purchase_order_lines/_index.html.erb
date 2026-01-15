@@ -1,0 +1,56 @@
+
+
+  <tbody>
+    <% @purchase_order.purchase_order_lines.order(:id).each do |purchase_order_line| %>
+        <tr>
+        <td><%= purchase_order_line.item.code %></td>
+        <td><%= purchase_order_line.item.name %></td>
+        <td><%= purchase_order_line.item_qty %></td>
+        <td><%= @mycompany.get_current_currency.symbol%> <%= purchase_order_line.price_unit %> </td>
+         <% if @purchase_order.borrador? || @purchase_order.confirmado?%>
+
+         <% if purchase_order_line.borrador?%>
+         <td><%= link_to purchase_order_line.state, purchase_order_purchase_order_line_path(purchase_order_line.purchase_order.id, purchase_order_line.id,  state: true), method: :delete,  remote: true, class: "btn btn-danger" %></td>
+          <% end %>
+           <% if purchase_order_line.parcial?%>
+        <td>
+           <span class="btn btn-warning"> <%= purchase_order_line.state  %>  </span>
+        </td>
+         <% end %>
+         <% if purchase_order_line.confirmado?%>
+        <td>
+           <span class="btn btn-info"> <%= purchase_order_line.state  %>  </span>
+        </td>
+         <% end %>
+         <% if purchase_order_line.recivido?%>
+        <td>
+           <span class="btn btn-primary"> <%= purchase_order_line.state  %>  </span>
+        </td>
+         <% end %>
+           <% if purchase_order_line.asignado?%>
+        <td>
+           <span class="btn btn-success"> <%= purchase_order_line.state %>  </span>
+        </td>
+         <% end %>
+         <% end %>
+
+        <td><%= purchase_order_line.qty_received %></td>
+        <td  class=" text-right"><%= @mycompany.get_current_currency.symbol%> <%= purchase_order_line.subtotal %></td>
+
+         <% if show_actions %>
+
+         <td>
+        <% if purchase_order_line.confirmado? || purchase_order_line.parcial?%>
+          <%= link_to '', new_reception_path(purchase_order_line_id: purchase_order_line.id), remote:true, class: " fas fa-truck-loading btn btn-success" %>
+        <% end %>
+        </td>
+        <td><% if purchase_order_line.borrador?%>
+          <%= link_to '', purchase_order_purchase_order_line_path(purchase_order_line.purchase_order.id, purchase_order_line.id), method: :delete,  remote: true,  class: " fas fa-trash btn btn-danger"  %>
+<% end %>
+         </td>
+         <% end %>
+      </tr>
+
+
+    <% end %>
+  </tbody>

@@ -1,0 +1,19 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Box:</strong>
+  <%= @box_purchase_order_payment.box_id %>
+</p>
+
+<p>
+  <strong>Purchase order:</strong>
+  <%= @box_purchase_order_payment.purchase_order_id %>
+</p>
+
+<p>
+  <strong>Amount:</strong>
+  <%= @box_purchase_order_payment.amount %>
+</p>
+
+<%= link_to 'Edit', edit_box_purchase_order_payment_path(@box_purchase_order_payment) %> |
+<%= link_to 'Back', box_purchase_order_payments_path %>

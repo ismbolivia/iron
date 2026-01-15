@@ -1,0 +1,4 @@
+
+ $("ul.errors").html("");
+ $("#currency_rates_id").html("<%= escape_javascript(render(partial: 'currency_rates/index', locals: { currency: @currency, show_actions: true })) %>");
+

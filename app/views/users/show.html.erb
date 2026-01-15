@@ -1,0 +1,53 @@
+<div class="page-content container-fluid">
+                <div class="row">
+                    <!-- Column -->
+                    <div class="col-lg-4 col-xlg-3 col-md-5 ">
+                        <div class="card">
+                            <div class="card-body">
+                                <center class="mt-4">
+                                	<%= image_tag(@user.avatar.medium.url, :class => "rounded-circle", :style => "width: 150px; ") %>
+                                    <h4 class="card-title mt-2"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;"><%=@user.name%></font></font></h4>
+                                    <h6 class="card-subtitle"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;"><%= @user.rol.name %> de la <%=@mycompany.name %></font></font></h6>
+                                   
+                                </center> 
+                            </div>
+                            <div>
+                                <hr> </div>
+                            <div class="card-body"> <small class="text-muted"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Dirección de correo electrónico </font></font></small>
+                                <h6><font style="vertical-align: inherit;"><font style="vertical-align: inherit;"><%=@user.email %></font></font></h6>
+                             
+                               <small class="text-muted pt-4 db"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Perfil social</font></font></small>
+                                <br>
+                                <button class="btn btn-circle btn-secondary"><i class="fab fa-facebook-f text-primary"></i></button>
+                                <button class="btn btn-circle btn-secondary"><i class="fab fa-twitter text-info"></i></button>
+                                <button class="btn btn-circle btn-secondary"><i class="fab fa-youtube text-danger"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                
+                    <div class="col-lg-8 col-xlg-9 col-md-7 ">
+                        <div class="card">
+                            <!-- Tabs -->
+                            
+                            <!-- Tabs -->
+                            <div class="tab-content" id="pills-tabContent">
+                                <div class="" aria-labelledby="pills-timeline-tab">
+                                    <div class="card-body">
+                                        <div class="steamline mt-0">
+                                            <h3 class="text-center">Actividades</h3>
+                                            <hr>
+                                            
+                                            <hr>
+                                            
+                                            <hr>
+                                           
+                                        </div>
+                                    </div>
+                                </div>                                                              
+                            </div>
+                        </div>
+                    </div>
+                  
+                </div>
+                
+            </div>

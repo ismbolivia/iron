@@ -1,0 +1,15 @@
+<div class="modal-content">
+    <div class="modal-header modal-header-primary">
+      <button type="button" class="close" data-dismiss="modal" aria-hidden="true"> [ × ] </button>
+      <h2><i class="far fa-money-bill-alt"></i> Nuevo Pago </h2>
+    </div>
+    
+    <% if  @sale.saldo >0 and @sale.proformas.count>0%>
+	<%= render 'form_current' %>
+	<% else %>
+		<div class="alert alert-danger">
+			<h3> ¡La cuenta ya fue cancelada selecione la siguiente cuenta porfavor!</h3>
+			<span>Oh: debe generar un recibo para poder realizar el pago </span>
+		</div>
+	<% end %>
+</div>

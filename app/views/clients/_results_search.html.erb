@@ -1,0 +1,64 @@
+
+<table class="table">
+  <thead>
+    <tr>
+ <%= render partial: "pager", locals: { keywords: @keywords, page: @page } %> 
+    </tr>
+    <tr>
+     <th>Nombre de cliente</th>
+      <th>Direeción</th>
+      <th>Telefono</th>
+      <th>Movil</th>
+      <th>Total</th>
+      <th>Desc</th>
+      <th>Saldo</th>
+      <th>Lim Credito</th>
+      <th>Asignado a</th>
+      <th colspan="5"></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @clients.each do |client| %>
+      <tr>
+        <td><%= client.name %></td>
+        <td><%= client.address.get_direccion_all %></td>
+        <td><%= client.phone %></td>
+        <td><%= client.mobile %></td>
+        <td><%= client.get_sale_total %><%= @mycompany.get_current_currency.symbol %></td>
+        <td><%= client.discount  %>%</td>
+        <td><%= client.get_saldo_total %><%= @mycompany.get_current_currency.symbol %></td>
+        <td><%= client.credit_limit%><%= @mycompany.get_current_currency.symbol %></td>
+        <td><%= client.get_asignado%></td>
+        <% if can? :create, Sale %>
+        <td>
+           <%= link_to new_sale_path(client: client), {method: :get, class: "btn btn-purple"} do %>
+            <span class="fas fa-cart-plus" aria-hidden="true"> </span> 
+          <% end %>
+           
+        </td>
+        <% end %>
+        <% if can? :read, Client %>
+        <td>
+           <%= button_to client, {method: :get, class: "btn btn-success"} do %>
+            <span class="fas fa-binoculars" aria-hidden="true"> </span> 
+          <% end %>
+        </td>
+        <% end %>
+        <% if can? :update, Client %>
+        <td>
+          <%= button_to edit_client_path(client), {method: :get, class: "btn btn-info"} do %>
+            <span class="fas fa-edit" aria-hidden="true"> </span> 
+          <% end %>
+        </td>
+        <% end %>
+        <% if can? :destroy, Client %>
+        <td>
+          <%= button_to client, { method: :delete, data: { confirm: '¿Está seguro?' }, class: "btn btn-danger" } do %>
+            <span class=" fas fa-trash" aria-hidden="true"> </span> 
+          <% end %>      
+        </td>
+        <% end %>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

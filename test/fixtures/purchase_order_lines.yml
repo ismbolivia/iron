@@ -1,0 +1,27 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  item_qty: 1
+  date_planned: 2019-01-11
+  item_id: MyString
+  price_unit: 
+  price_tax: 
+  purchase_order: 1
+  company_id: 1
+  state: 1
+  qty_received: 
+  purchase_order_id: 1
+
+two:
+  name: MyString
+  item_qty: 1
+  date_planned: 2019-01-11
+  item_id: MyString
+  price_unit: 
+  price_tax: 
+  purchase_order: 1
+  company_id: 1
+  state: 1
+  qty_received: 
+  purchase_order_id: 1

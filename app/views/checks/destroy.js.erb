@@ -1,0 +1,5 @@
+ $("ul.errors").html("");
+ $("#panel-checks").html("<%= escape_javascript(render(partial: 'checks/table', locals: { checks: @check, show_actions: true })) %>");
+ $("#new-check-modal").modal("hide");																									
+
+	

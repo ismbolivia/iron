@@ -1,0 +1,37 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Modulos</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Active</th>
+      <th>Color</th>
+      <th>Icon</th>
+      <th>Installed</th>
+      <th>User</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @modulos.each do |modulo| %>
+      <tr>
+        <td><%= modulo.name %></td>
+        <td><%= modulo.active %></td>
+        <td><%= modulo.color %></td>
+        <td><%= modulo.icon %></td>
+        <td><%= modulo.installed %></td>
+        <td><%= modulo.user_id %></td>
+        <td><%= link_to 'Show', modulo %></td>
+        <td><%= link_to 'Edit', edit_modulo_path(modulo) %></td>
+        <td><%= link_to 'Destroy', modulo, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Modulo', new_modulo_path %>

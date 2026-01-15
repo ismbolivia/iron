@@ -1,0 +1,65 @@
+<ul class="nav nav-tabs" role="tablist">
+     <li role="presentation" class="active"><a href="#product_item" aria-controls="profile" role="tab" data-toggle="tab" aria-expanded="true"><span><i class="fa fa-box"></i></span> Productos</a></li>
+
+     <li role="presentation" class=""><a href="#ihome" aria-controls="home" role="tab" data-toggle="tab" aria-expanded="false"><span><i class="far fa-building text-info"></i></span> Pedidos</a></li>
+
+</ul>
+<div class="tab-content">
+<div role="tabpanel" class="tab-pane active" id="product_item">
+   <div class="col-md-12 col-sm-12">       
+        <div class="table-responsive">
+          <div id="item_supplier" class="pre-scrollable">
+         	
+                <table class="table product-overview">
+              <thead>
+                <tr>
+                  <th>Código</th>
+                  <th>Nombre</th>
+                  <th>Descripción</th>
+                  <th>Unidad</th>
+                  <th>Stock</th>
+           
+                  <th>Categoría</th>
+                 <!--  <th>Almacen</th> -->
+                  <th>Precio</th>
+                  
+                </tr>
+              </thead>
+
+              <tbody>
+                <%  warehouse.items.each do |item| %>
+                  <tr>
+                    <td><%= item.code %></td>
+                    <td><%= item.name  %></td>
+                    <td><%= item.item_description %></td>                   
+                    <td><%= item.unit ? item.unit.name : '' %></td>
+                    <td><%= item.get_total_stock %></td>               
+                    <td><%= item.category ? item.category.name : '' %></td>                    
+                    <td><%= number_to_currency(item.price) %></td>                  
+                    
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+         <hr>  
+     
+   </div>
+      <div class="clearfix"></div>
+</div>
+
+   <div role="tabpanel" class="tab-pane" id="ihome">
+       <div class="col-md-12 col-sm-12">        
+            <div class="table-responsive">
+              <div id="item_supplier">
+              	
+               <%= (@warehouse.items.count > 0) ? render(partial: 'warehouses/reports/table', locals: { warehouse: @warehouse, show_actions: false }) : 'No hay items en el el almacen' %>     
+
+              </div>
+            </div>
+             <hr>                                 
+    </div>
+       <div class="clearfix"></div>
+   </div>
+</div>

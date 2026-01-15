@@ -1,0 +1,57 @@
+<div class="row">
+  <div class = "col-lg-12 col-md-12 col-sm-12" >
+    <div class="col-lg-2 col-md-2 col-sm-2">
+       <div class="product-img ">
+             <%= image_tag(  ActionController::Base.helpers.asset_path('box_icon.png'), :alt => "imge-item", class: "image-form") %>              
+       </div>
+      </div>
+
+     <div class="col-lg-4 col-md-4 col-sm-4">
+          <div class="form-group">                      
+                              
+                  <div class="input-group">
+                    <h2 class="m-b-0 m-t-0 m-t-40"><%= @box.name%></h2>
+                    <h4 class="text-muted db"> <i class="fas fa-list-ul"></i> <%= @box.description %></h4>
+                    <h4 class="text-muted db"> <i class="far fa-money-bill-alt"></i> <%= @box.currency.get_full_name %></h4>
+                                   
+                  </div>            
+          </div>
+      </div>
+
+  <div class="col-lg-6 col-xs-4 col-sm-6">
+      <a class="btn btn-app">
+          <span class="badge bg-yellow"><%=@box.saldo %><%= @box.currency.symbol %></span>
+          <i class="fa fa-money-bill-alt"></i>Saldo total en caja
+      </a>
+      <a class="btn btn-app">
+          <span class="badge bg-green"><%=@box.totalInput %><%= @box.currency.symbol %></span>
+          <i class="fa fa-upload"></i>Total entradas en cajas
+      </a>
+      <a class="btn btn-app">
+          <span class="badge bg-purple"><%=@box.totalOutput %><%= @box.currency.symbol %></span>
+          <i class="fa fa-download text-info"></i> Total salidas en caja
+      </a>
+     
+      <a class="btn btn-app">
+          <span class="badge bg-aqua"><%=@box.box_users.count %></span>
+          <i class="fa fa-users"></i> Total cajeros asignado
+      </a>
+     
+  </div>
+
+ </div>
+</div>
+  <hr>
+     <div class="row no-print ">
+        <div class="col-xs-12">
+          <%= link_to  boxes_path,  {method: :get, class: "btn btn-default "} do %>
+          <span class=" fas fa-reply" aria-hidden="true"> </span> 
+          <% end %>
+    
+
+            <%= link_to edit_box_path(@box), {method: :get, class: "btn btn-success  pull-right"} do %>
+            <span class=" fas fa-pencil-alt" aria-hidden="true"> </span> 
+          <% end %>
+        </div>
+      </div>
+    <hr> 

@@ -1,0 +1,58 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Productos</title>
+  <meta charset='utf-8' />
+    <%= wicked_pdf_stylesheet_link_tag "pdf/pdf" %>
+</head>
+	<body>
+	   <div class="col-md-12">
+	 	<div class=" printableArea">	        	
+	        <div class="row">
+			  <table class="table product-overview table-bordered ">
+			    <thead class="conf-pdf">
+			    	<tr><th colspan="6" class="center">
+				         	<h3><b><%=@title %></b> </h3>
+				        </th>
+				    </tr>
+				     <tr>
+				        <th class="center">N° Prof</th>
+				        <th class="cenetr">Fecha</th>
+				        <th class="center">Cliente</th>
+				        <th class="center">Desc</th>
+				        <th class="center">Total</th>
+				        <th class="center">Saldo</th>		                    
+				     </tr>
+				     </thead>
+				     <tbody>
+				        <% @sales.each do |sale| %>
+				      <tr>
+				        <%if  sale.proformas.count > 0 %>
+           			  <td><%= sale.proformas.first.number_recibo %></td>
+        			    <% else %>
+        			  <td></td>
+        			    <% end %>
+				      <td><%= sale.date.strftime("%d/%m/%Y") %></td>
+				      <td><%= sale.client.name %></td>
+				      <td><%= number_to_percentage(sale.discount_total, precision: 1) %></td>	
+      				  <td><%= sale.total_final %> <%= @mycompany.get_current_currency.symbol%></td>          
+      				  <td><%= sale.saldo %> <%= @mycompany.get_current_currency.symbol%></td> 
+				      </tr>
+				        <% end %>
+				        <tr><th colspan="4"  class="text-center">
+				         	<span><b>Total: </b> </span>
+				        </th>
+				         <th> <%= @client.get_sale_total %> <%= @mycompany.get_current_currency.symbol%></th>
+				         <th> <%= @client.get_saldo_total %> <%= @mycompany.get_current_currency.symbol%></th>
+				       
+				    </tr>
+				  </tbody>
+				</table>			    
+			</div>
+		</div>
+	</div>
+
+</body>
+	
+</html>

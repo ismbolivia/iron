@@ -1,0 +1,70 @@
+       <% if can? :read, Warehouse %> 
+        <li class="dropdown active">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Compras <span class="caret"></span>
+            <span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-shopping-cart"></span>
+            </a>
+          <ul class="dropdown-menu forAnimate" role="menu">
+            <li class="<%= current_page?(items_path) ? "active" : "" %>"><%= link_to 'Proveedores', suppliers_path %>
+            </li>
+            <li class="<%= current_page?(warehouses_path) ? "active" : "" %>"><%= link_to 'Ordenes de Compra', purchase_orders_path %>
+            </li>
+          </ul>
+        </li>
+
+        <% end %>
+
+      <% if can? :read, Sale %> 
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Ventas <span class="caret"></span>
+            <span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-home"></span>
+          </a>
+          <ul class="dropdown-menu forAnimate" role="menu">
+            <li class="<%= current_page?(sales_path) ? "active" : "" %>"><%= link_to 'Vender', sales_path %>
+            </li>
+            <li class="<%= current_page?(clients_path) ? "active" : "" %>"><%= link_to 'Clientes', clients_path %>
+            </li>
+            <li class="<%= current_page?(payments_path) ? "active" : "" %>"><%= link_to 'Pagos', payments_path %>
+            </li>
+          </ul>
+        </li>
+      <% end %>
+
+      <% if can? :read, Warehouse %> 
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Almacén <span class="caret"></span>
+            <span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-home"></span>
+          </a>
+          <ul class="dropdown-menu forAnimate" role="menu">
+            <li class="<%= current_page?(items_path) ? "active" : "" %>"><%= link_to 'Artículos', items_path %>
+            </li>
+            <li class="<%= current_page?(warehouses_path) ? "active" : "" %>"><%= link_to 'Almacenes', warehouses_path %>
+            </li>
+          </ul>
+        </li>
+        <% end %>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+            Configuración
+            <span class="caret"></span>
+            <span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-wrench"></span>
+          </a>
+
+          <ul class="dropdown-menu forAnimate" role="menu">
+            <li class="<%= current_page?(payment_types_path) ? "active" : "" %>"><%= link_to 'Tipos de pago', payment_types_path %></li>
+               <% if can? :read, Category %>
+            <li class="<%= current_page?(categories_path) ? "active" : "" %>"><%= link_to 'Categorías', categories_path %></li>
+            <% end %>
+            <% if can? :read, Brand %>
+            <li class="<%= current_page?(brands_path) ? "active" : "" %>"><%= link_to 'Marcas', brands_path %></li>
+            <% end %>
+            <% if can? :read, Presentation %>
+            <li class="<%= current_page?(presentations_path) ? "active" : "" %>"><%= link_to 'Presentacciones', presentations_path %></li>
+            <% end %>
+             <% if can? :read, Unit %>
+            <li class="<%= current_page?(units_path) ? "active" : "" %>"><%= link_to 'Unidades', units_path %></li>
+            <% end %>
+            <% if can? :read, Town %>
+            <li class="<%= current_page?(towns_path) ? "active" : "" %>"><%= link_to 'Localidades', towns_path %></li>
+            <% end %>            
+          </ul>
+        </li>

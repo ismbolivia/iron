@@ -1,0 +1,45 @@
+
+<table class="table">
+  <thead>
+    <tr>
+ <%= render partial: "pager", locals: { keywords: @keywords, page: @page } %> 
+    </tr>
+    <tr>
+      <th>Referencia</th>
+      <th>Nombre del almacen</th>
+      <th>Descripción</th>
+      <th>Cantidad</th> 
+      <th>Precio total</th>
+           
+      <th colspan="4"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @warehouses.each do |warehouse| %>
+      <tr>
+        <td><%= warehouse.ref %></td>
+        <td><%= warehouse.name %></td>
+        <td><%= warehouse.description %></td>
+        <td><%= warehouse.total_quantity %></td>   
+        <th><%= number_to_currency(warehouse.total_price) %></th>     
+        <td><%= warehouse.created_at.strftime("%d/%m/%Y") %></td>
+        <td><%= warehouse.updated_at.strftime("%d/%m/%Y") %></td>
+        <td><%= button_to warehouse, {method: :get, class: "btn btn-success"} do %>
+                 <span class="fas fa-binoculars" aria-hidden="true"> </span> 
+                 <% end %>
+        </td>
+        <td>
+          <%= button_to edit_warehouse_path(warehouse), {method: :get, class: "btn btn-info"} do %>
+            <span class=" fas fa-pencil-alt" aria-hidden="true"> </span> 
+          <% end %>
+        </td>
+        <td>
+          <%= button_to warehouse, { method: :delete, data: { confirm: '¿Está seguro?' }, class: "btn btn-danger" } do %>
+            <span class="fas fa-trash" aria-hidden="true"> </span> 
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

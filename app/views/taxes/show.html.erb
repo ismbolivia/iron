@@ -1,0 +1,89 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @tax.name %>
+</p>
+
+<p>
+  <strong>Type tax use:</strong>
+  <%= @tax.type_tax_use %>
+</p>
+
+<p>
+  <strong>Tax adjustement:</strong>
+  <%= @tax.tax_adjustement %>
+</p>
+
+<p>
+  <strong>Amount type:</strong>
+  <%= @tax.amount_type %>
+</p>
+
+<p>
+  <strong>Active:</strong>
+  <%= @tax.active %>
+</p>
+
+<p>
+  <strong>Company:</strong>
+  <%= @tax.company_id %>
+</p>
+
+<p>
+  <strong>Amount:</strong>
+  <%= @tax.amount %>
+</p>
+
+<p>
+  <strong>Account:</strong>
+  <%= @tax.account_id %>
+</p>
+
+<p>
+  <strong>Refund account:</strong>
+  <%= @tax.refund_account_id %>
+</p>
+
+<p>
+  <strong>Description:</strong>
+  <%= @tax.description %>
+</p>
+
+<p>
+  <strong>Price include:</strong>
+  <%= @tax.price_include %>
+</p>
+
+<p>
+  <strong>Include base amount:</strong>
+  <%= @tax.include_base_amount %>
+</p>
+
+<p>
+  <strong>Analytic:</strong>
+  <%= @tax.analytic %>
+</p>
+
+<p>
+  <strong>Tax exigible:</strong>
+  <%= @tax.tax_exigible %>
+</p>
+
+<p>
+  <strong>Cash basis account:</strong>
+  <%= @tax.cash_basis_account %>
+</p>
+
+<p>
+  <strong>Create uid:</strong>
+  <%= @tax.create_uid %>
+</p>
+
+<p>
+  <strong>Write uid:</strong>
+  <%= @tax.write_uid %>
+</p>
+
+<%= link_to 'Edit', edit_tax_path(@tax) %> |
+<%= link_to 'Back', taxes_path %>

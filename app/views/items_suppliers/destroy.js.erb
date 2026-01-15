@@ -1,0 +1,27 @@
+ // $("ul.errors").html("");
+ // 
+
+
+if ($('#id_item_supplier').length) {
+	Swal({
+		  position: 'center',
+		  type: 'success',
+		  title: '¡Se elimino correctamente el producto del proveedor!',
+		  showConfirmButton: false,
+		  timer: 1500
+		});
+	$("#item_supplier").html("<%= escape_javascript(render(partial: 'suppliers/tables_items', locals: { items_suppliers: @supplier.items_suppliers, show_actions: true })) %>");
+	// alert('bien');
+
+}
+if ($('#id_supplier_item').length) {
+	Swal({
+		  position: 'center',
+		  type: 'success',
+		  title: '¡Se elimino correctamente el provehedor dle producto!',
+		  showConfirmButton: false,
+		  timer: 1500
+		});
+	$("#panel-supplier").html("<%= escape_javascript(render(partial: 'items_suppliers/index', locals: { item: @item, show_actions: true })) %>");
+	// alert('nooo');
+}

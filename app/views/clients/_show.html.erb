@@ -1,0 +1,111 @@
+<div class="row">
+   <div class = "col-lg-12 col-md-12 col-sm-12" >
+     <div class="col-lg-2 col-md-2 col-sm-2">
+        <div class="product-img "> 
+          <%= image_tag(@client.photo.large.url, :alt => "imge-item", class: "image-form") %>             
+        </div>
+      </div>
+       <div class="col-lg-4 col-md-4 col-sm-4">
+              <div class="form-group">                 
+                  <div class="input-group">
+                  	<h2 class="m-b-0 m-t-0 m-t-40"><%= @client.name%></h2>
+                    <h6 class="text-muted db"> <i class="fas fa-map-marker-alt"></i> <%= @client.address.get_direccion_all %></h6>
+                    <h6 class="text-muted db"> <i class="fas fa-envelope"></i> <%= @client.email %></h6>                   
+                  </div>            
+
+              </div>
+        </div>
+        <div class="col-lg-6 col-md-4 col-sm-6">
+          <%= link_to  mySales_path("client_id"=>@client.id), {class: "btn btn-app", remote:true} do %>
+            <span class="badge bg-yellow"><%=@client.get_sale_total %><%= @mycompany.get_current_currency.symbol%></span>
+               <i class=" fa fa-cart-plus text-purple"></i> Total ventas
+              <% end %>
+            
+             <%= link_to  my_payments_path("client_id"=>@client.id), {class: "btn btn-app", remote:true} do %>
+             <span class="badge bg-green"><%= @client.getTotalPayments %><%= @mycompany.get_current_currency.symbol%></span>
+              <i class="fa fa-money-bill-alt text-success"></i> Total pagos
+              <% end %>
+              <a class="btn btn-app">
+                <span class="badge bg-purple"><%= @client.totalContacts %></span>
+                <i class="fa fa-users"></i> Contactos
+              </a>
+              <%= link_to  to_payments_path("client_id"=>@client.id), {class: "btn btn-app", remote:true} do %>
+             <span class="badge bg-teal"><%=@client.getTotalACobrar %><%= @mycompany.get_current_currency.symbol%></span>
+                <i class="fa fa-hand-holding-usd text-danger"></i> Por cobrar
+              <% end %>
+
+              <%= link_to  to_invocings_path("client_id"=>@client.id, "invoiced" => "facturado"), {class: "btn btn-app", remote:true} do %>
+             <span class="badge bg-aqua"><%=@client.getTotalInvoced %><%= @mycompany.get_current_currency.symbol%></span>
+                <i class="fa fa-clipboard-list"></i> Facturados
+              <% end %>
+
+            <%= link_to  to_invocings_path("client_id"=>@client.id, "invoiced" => "por_facturar"), {class: "btn btn-app", remote:true} do %>
+             <span class="badge bg-red"><%= @client.getTotalNotInvoced %><%= @mycompany.get_current_currency.symbol%></span>
+                <i class="fa fa-clipboard"></i> Por facturar
+              <% end %>
+           </div>
+   </div>
+</div>
+<hr>
+
+<div class="row">
+  <div class="col-md-12">       
+
+        <div class="col-md-4">
+          <div class="form-group">
+          	<label class="control-label">Telefono:</label>
+            <span class=""><%= @client.phone%></span>            
+
+            </div>
+          </div>
+                                                <!--/span-->
+          <div class="col-md-4">
+            <div class="form-group">
+	            <label class="control-label">Celular:</label>
+	            <span class=""><%= @client.mobile%></span>         
+                </div>
+           </div>
+                                                      <!--/span-->
+        <div class="col-md-4">
+          <div class="form-group">
+          	<label class="control-label">Descuento max:</label>
+            <span class=""><%= number_to_percentage(@client.discount.round, precision: 0)%></span> 
+          </div>
+          </div>                                                <!--/span-->
+          <div class="col-md-4">
+              <div class="form-group">
+              	<label class="control-label">Limite de Credito:</label>
+            	<span class=""><%= @client.credit_limit%> <%= @mycompany.get_current_currency.symbol%></span> 
+                       
+             </div>
+           </div>
+
+           <div class="col-md-4">
+              <div class="form-group">
+                <label class="control-label">Credito disponible:</label>
+              <span class=""><%= @client.line_credit_available%> <%= @mycompany.get_current_currency.symbol%></span> 
+                       
+             </div>
+           </div>
+
+          <div class="col-md-4">
+          <div class="form-group" id="price_list_client_id">
+          		
+              <% @client.price_lists.each do |pl| %>
+            	<span class="badge bg-purple"><%= pl.name%></span>                
+               <% end %>    
+
+
+          </div>
+        </div>
+
+   </div>
+
+</div>
+<hr>
+ <div class="row no-print ">
+        <div class="col-xs-12">
+          <%= link_to 'Back', clients_path,  class: "btn btn-default "  %>          
+        </div>
+ </div>
+ <hr> 

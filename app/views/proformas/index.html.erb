@@ -1,0 +1,29 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Proformas</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Number</th>
+      <th>Sale</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @proformas.each do |proforma| %>
+      <tr>
+        <td><%= proforma.number %></td>
+        <td><%= proforma.sale_id %></td>
+        <td><%= link_to 'Show', proforma %></td>
+        <td><%= link_to 'Edit', edit_proforma_path(proforma) %></td>
+        <td><%= link_to 'Destroy', proforma, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Proforma', new_proforma_path %>

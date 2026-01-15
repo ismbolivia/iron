@@ -1,0 +1,126 @@
+<div class="row">
+   <div class="col-lg-1"> </div>
+    <div class="col-lg-10 panel panel-purchase">
+       <div class="">
+         <div class="">
+          <div class="row">
+            <div class = "col-lg-12 col-md-12 col-sm-12" >
+              <div class="col-lg-2 col-md-2 col-sm-2">
+                 <div class="product-img ">
+                    <%= image_tag(  ActionController::Base.helpers.asset_path('order.png'), :alt => "imge-item", class: "image-form") %>
+                 </div>                 
+                </div>            
+                 <div class="col-lg-4 col-md-4 col-sm-4">
+                    <div class="form-group"> 
+                        <div class="input-group">
+                           <span  class = "form-label-control m-t-50"><%= @purchase_order.name  %></span>
+                        </div>
+                        <div class="input-group m-t-50">
+                            <div class="input-group-addon "><i class="fas fa-address-card"></i></div>
+                            <span  class = "form-control"> <%= @purchase_order.date_order %></span>
+                        </div>
+                        <div class="input-group m-t-50">
+                            <div class="input-group-addon "><i class="fas fa-address-card"></i></div>
+                              <span  class = "form-control">  <%= @purchase_order.supplier.name %> </span>
+                        </div>
+                    </div>
+                 </div>
+                  <div class="col-lg-6 col-md-4 col-sm-6">                    
+                        <a class="btn btn-app">
+                          <span class="badge bg-yellow"><%= @mycompany.currencies.first.symbol %> <%= @purchase_order.total%></span>
+                          <i class="fa fa-money-bill-alt"></i> Total
+                        </a>
+                        <a class="btn btn-app">
+                          <span class="badge bg-green"><%= @mycompany.currencies.first.symbol %> <%= @purchase_order.total_payment_purchase_order%></span>
+                          <i class=" fa fa-hand-holding-usd"></i> Total pagos
+                        </a>
+                        <a class="btn btn-app">
+                          <span class="badge bg-purple"><%= @mycompany.currencies.first.symbol %> <%= @purchase_order.saldo%></span>
+                          <i class="fa fa-piggy-bank"></i> Saldo
+                        </a>
+                        <a class="btn btn-app">
+                         <!--  <span class="badge bg-teal">67</span>
+                          <i class="fa fa-inbox"></i> Orders -->
+                        </a>
+                        <a class="btn btn-app">
+                          <!-- <span class="badge bg-aqua">12</span>
+                          <i class="fa fa-envelope"></i> Inbox -->
+                        </a>
+                        <a class="btn btn-app">
+                          <!-- <span class="badge bg-red">531</span>
+                          <i class="fa fa-thumbs-up"></i> Likes -->
+                        </a>
+                </div>
+          </div>
+        </div>
+    <hr>
+    <div class="row">
+          <div class="col-lg-12 col-md-12 col-sm-12">              
+            <div class="col-sm-12 col-lg-6">
+                <div class="form-group row">
+                  <%= label :nit, 'Termino de Pago: ', class: "col-sm-3 text-left control-label col-form-label" %> 
+                  <div class="col-sm-9">
+                     <%= @purchase_order.payment_term.name %>
+                  </div>
+                </div>
+          </div>
+          <div class="col-sm-12 col-lg-6">
+              <div class="form-group row">
+                <%= label :phone, 'Nota :', class: "col-sm-3 text-left control-label col-form-label" %>
+                <div class="col-sm-9">
+                  <%=@purchase_order.note %>
+                </div>
+              </div>
+          </div>                              
+      </div>              
+    </div>
+  </div>
+</div>
+<hr>
+ <div class="row no-print ">
+        <div class="  col-lg-12">
+        <%= link_to 'Atras', purchase_orders_path, class: "btn btn-default btn-outline "  %>
+        <%= link_to  'Editar', edit_purchase_order_path(@purchase_order),  class: "btn btn-primary pull-right" , style: "margin-right: 5px;"%>     
+        
+        </div>
+      </div>
+      <hr>
+          <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active"><a href="#iprofile" aria-controls="profile" role="tab" data-toggle="tab" aria-expanded="true"><span><i class="fa fa-box"></i></span> Linea de Productos</a></li>
+            <li role="presentation" class=""><a href="#payment_purchase_order" aria-controls="profile" role="tab" data-toggle="tab" aria-expanded="true"><span><i class="fa fa-box"></i></span> Pagos</a></li>
+            <li role="presentation" class=""><a href="#purchase_order_pdf" aria-controls="profile" role="tab" data-toggle="tab" aria-expanded="true"><span><i class="fa fa-box"></i></span> Reporte</a></li>            
+          </ul>
+          <div class="tab-content">
+            <div role="tabpanel" class="tab-pane" id="payment_purchase_order">
+                <div class="table-responsive">
+                  <div class="panel-body">       
+                      <%= (@purchase_order.box_purchase_order_payments.count > 0) ? render(partial: 'box_purchase_order_payments/index', locals: { box_purchase_order_payments: @purchase_order.box_purchase_order_payments, show_actions: false }) : 'No hay linea de productos cargados' %>
+                 </div>
+                </div>
+           </div>
+          <div role="tabpanel" class="tab-pane" id="purchase_order_pdf">
+                <div class="table-responsive">
+                  <div class="modal-content">       
+                   <embed src= "<%= purchase_order_path(@purchase_order, format: 'pdf')%> " type="application/pdf" width="100%" height="400px" />
+                 </div>
+                </div>
+           </div>
+              <div role="tabpanel" class="tab-pane active" id="iprofile">
+                <div class="col-md-12 col-sm-12">                
+                  <div class="table-responsive">
+                    <div class="panel-body" id="purchase_order_lines">                            
+                        <%= (@purchase_order.purchase_order_lines.count > 0) ? render(partial: 'table', locals: { purchase_order: @purchase_order, show_actions: false }) : 'No hay linea de productos cargados' %>
+                    </div>                                 
+                  </div>              
+                </div>         
+              </div>
+          </div>
+          </div>
+        </div>
+          <div class="col-lg-1">
+          </div>
+    </div>
+
+
+
+

@@ -1,0 +1,34 @@
+<table class="table">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Simbolo</th>
+      <th>Redondeo</th>
+      <th>Activo</th>
+      <th>Etiqueta de la unidad monetaria</th>
+      <th>Etiqueta sub unidad Monetaria</th>
+      
+      <th colspan="4"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+   <% @currencies.each do |currency| %>
+      <tr>
+        <td><%= currency.name %></td>
+        <td><%= currency.symbol %></td>
+        <td><%= currency.rounding %></td>
+        <td><%= currency.active %></td>
+        <td><%= currency.currency_unit_label %></td>
+        <td><%= currency.currency_subunit_label %></td>
+      
+        <td><%= link_to '', currency , class: 'btn btn-info  ti-zoom-in' %></td>
+        <td><%= link_to '', edit_currency_path(currency), class: 'btn btn-success ti-pencil' %></td>
+        <td><%= link_to '', currency, method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-danger ti-trash' %></td>
+        <th><%= button_to new_currency_rate_path, {method: :get, class: "btn btn-purple", remote: true} do %>
+          <span class="ti-settings" aria-hidden="true"> </span>
+          <% end %> </button></th>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

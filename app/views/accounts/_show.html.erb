@@ -1,0 +1,76 @@
+<div class="row">
+   <div class = "col-lg-12 col-md-12 col-sm-12" >
+     <div class="col-lg-2 col-md-2 col-sm-2">
+        <div class="product-img "> 
+             <!-- IMAGEN DE LA CUENTA O SIMBOLO -->
+        </div>
+      </div>
+       <div class="col-lg-4 col-md-4 col-sm-4">
+              <div class="form-group">                 
+                  <div class="input-group">
+                  	<h2 class="m-b-0 m-t-0 m-t-40"><%= @account.name%></h2>
+                    <h4 class="text-muted db"> <i class="fas fa-money-bill-alt"></i> <%= @account.currency.get_full_name %></h4>
+                    <h6 class="text-muted db"> <i class="fas fa-user"></i> <%= @account.user.name %></h6>                   
+                  </div>           
+
+              </div>
+        </div>
+           <div class="col-lg-6 col-md-4 col-sm-6">
+              <a class="btn btn-app">
+                <span class="badge bg-yellow"><%= @account.currency.symbol %> <%= @account.total %></span>
+                <i class="  fa fa-dollar-sign"></i> Total
+              </a>
+              <a class="btn btn-app">
+                <span class="badge bg-green"><%= @account.currency.symbol %> <%= @account.total_exenses %></span>
+                <i class="fa fa-barcode"></i> Gastos
+              </a>
+              <a class="btn btn-app">
+                <!-- <span class="badge bg-purple">891</span>
+                <i class="fa fa-users"></i> Users -->
+              </a>
+              <a class="btn btn-app">
+                <!-- <span class="badge bg-teal">67</span>
+                <i class="fa fa-inbox"></i> Orders -->
+              </a>
+              <a class="btn btn-app">
+               <!--  <span class="badge bg-aqua">12</span>
+                <i class="fa fa-envelope"></i> Inbox -->
+              </a>
+              <a class="btn btn-app">
+               <!--  <span class="badge bg-red">531</span>
+                <i class="fa fa-thumbs-up"></i> Likes -->
+              </a>
+           </div>
+   </div>
+</div>
+<hr>
+<div class="row">
+  <div class="col-md-12">        
+        <div class="col-md-6">
+          <div class="form-group">
+            <label class="control-label">Tipo Interno:</label>
+            <span class=""><%= @account.internal_type%></span>            
+
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="control-label">Nota:</label>
+              <span class=""><%= @account.note%></span>         
+                </div>
+           </div>       
+   </div>
+</div>
+<hr>
+ <div class="row no-print ">
+      <div class="col-xs-12">
+          <%= link_to 'Back', accounts_path,  class: "btn btn-default " %>  
+          <%= link_to 'Edit', edit_account_path(@account), class: "btn btn-success pull-right" %>         
+      </div>
+</div>
+<hr> 
+
+
+
+

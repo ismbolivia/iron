@@ -1,0 +1,46 @@
+<hr>
+<ul class="nav nav-tabs" role="tablist">
+    <li role="presentation" class="active"><a href="#iprofile" aria-controls="profile" role="tab" data-toggle="tab" aria-expanded="true"><span><i class="far fa-money-bill-alt"></i></span> Divisas</a></li>
+    <li role="presentation" class=""><a href="#sales" aria-controls="home" role="tab" data-toggle="tab" aria-expanded="false"><span><i class=" ti-shopping-cart text-info"></i></span>Ventas </a></li>
+    <li role="presentation" class=""><a href="#ihome" aria-controls="home" role="tab" data-toggle="tab" aria-expanded="false"><span><i class="far fa-building text-info"></i></span> Cuentas por cobrar </a></li>
+    <li role="presentation" class=""><a href="#note" aria-controls="home" role="tab" data-toggle="tab" aria-expanded="false"><span><i class="far fa-building text-info"></i></span> Cuentas por pagar </a></li>
+     <li role="presentation" class=""><a href="#clients" aria-controls="home" role="tab" data-toggle="tab" aria-expanded="false"><span><i class=" fa fa-people-carry text-info"></i></span> Clientes </a></li>    
+</ul>
+<div class="tab-content">
+         <div role="tabpanel" class="tab-pane" id="ihome">
+
+         </div>
+
+         <div role="tabpanel" class="tab-pane" id="note">
+          <div class="table-responsive">    
+	          <div id="panel-stock">
+	           <!-- body panel secction  -->	            
+	           </div>          	              
+          </div>
+         </div>
+      <div role="tabpanel" class="tab-pane active" id="iprofile">
+            <div class="col-md-12 col-sm-12">                                      
+                   <div class="white-box" id="setting_currency_companies">
+                      <%= (@company.setting_currency_companies.count > 0) ? render(partial: 'setting_currency_companies/setting_currency_company_table', locals: { company: @company, show_actions: true }) : 'No hay divisas asiganadas ' %>                        
+                  </div>
+               </div>                     
+                 <%= link_to 'Añadir divisa', new_setting_currency_company_path(company_id: @company.id), remote: true, class: "btn btn-info pull-right" %>
+           <div class="clearfix"></div>
+		 </div>
+      <div role="tabpanel" class="tab-pane" id="sales">
+        <div class="white-box">
+          <div class="table-responsive">
+              <%= (@company.get_sales_year.count > 0) ? render(partial: 'table_sale', locals: { company: @company, show_actions: true }) : 'No hay ventas efectuadas ' %>                
+          </div>
+          </div>
+       </div>
+
+        <div role="tabpanel" class="tab-pane" id="clients">
+          <div class="white-box">
+          <div class="table-responsive">    
+              <%= (@clients.count > 0) ? render(partial: 'table_client', locals: { clietns: @clients, show_actions: true }) : 'No hay clientes registrados ' %>                
+
+          </div>
+        </div>
+      </div>
+</div>

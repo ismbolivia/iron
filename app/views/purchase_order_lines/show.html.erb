@@ -1,0 +1,59 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @purchase_order_line.name %>
+</p>
+
+<p>
+  <strong>Item qty:</strong>
+  <%= @purchase_order_line.item_qty %>
+</p>
+
+<p>
+  <strong>Date planned:</strong>
+  <%= @purchase_order_line.date_planned %>
+</p>
+
+<p>
+  <strong>Item:</strong>
+  <%= @purchase_order_line.item_id %>
+</p>
+
+<p>
+  <strong>Price unit:</strong>
+  <%= @purchase_order_line.price_unit %>
+</p>
+
+<p>
+  <strong>Price tax:</strong>
+  <%= @purchase_order_line.price_tax %>
+</p>
+
+<p>
+  <strong>Purchase order:</strong>
+  <%= @purchase_order_line.purchase_order %>
+</p>
+
+<p>
+  <strong>Company:</strong>
+  <%= @purchase_order_line.company_id %>
+</p>
+
+<p>
+  <strong>State:</strong>
+  <%= @purchase_order_line.state %>
+</p>
+
+<p>
+  <strong>Qty received:</strong>
+  <%= @purchase_order_line.qty_received %>
+</p>
+
+<p>
+  <strong>Purchase order:</strong>
+  <%= @purchase_order_line.purchase_order_id %>
+</p>
+
+<%= link_to 'Edit', edit_purchase_order_line_path(@purchase_order_line) %> |
+<%= link_to 'Back', purchase_order_lines_path %>

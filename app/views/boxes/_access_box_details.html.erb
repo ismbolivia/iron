@@ -1,0 +1,54 @@
+<div class="modal-content-payment">
+  <div class="modal-header modal-header-success " >
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"> [ × ] </button>
+    	<h2><i class=" fa fa-cart-plus "></i> <%= @title %></h2>
+  </div>
+
+  <div class="modal-body">
+  	<ul class="nav nav-tabs" role="tablist">
+	    <li role="pre" class="active"><a href="#movement" aria-controls="movement" role="tab" data-toggle="tab" aria-expanded="true"><span><i class="fas fa-upload text-warning"></i></span> Movimientos</a></li>
+	    <li role="pre" class=""><a href="#column" aria-controls="column" role="tab" data-toggle="tab" aria-expanded="false"><span><i class="fas fa-download text-primary"></i></span> Reporte</a></li>
+	    <li role="pre" class=""><a href="#pie" aria-controls="pie" role="tab" data-toggle="tab" aria-expanded="false"><span><i class="fas fa-users text-success"></i></span> Reporte</a></li>
+	    <li role="pre" class=""><a href="#pdf" aria-controls="pdf" role="tab" data-toggle="tab" aria-expanded="false"><span><i class="fas fa-chart-bar text-red"></i></span> Pdf</a></li>
+	</ul>
+	<div class="tab-content">
+	    <div role="tabpanel" class=" tab-pane active" id="movement">
+	        <div class="table-responsive">
+	           <div class="col-md-12 col-sm-12">   
+				<br>
+	            <%= render(partial: 'box_details/table_all', locals: { box_details: @box_details_rage, title: @title }) %>           
+	         </div>
+	    </div>
+	</div>
+
+	<div role="tabpanel" class="tab-pane" id="column">
+	      <div class="table-responsive">
+	           <div class="col-md-12 col-sm-12">                 
+	             <br>              	                                                               
+	               <%= column_chart @column_data, stacked: true, prefix: @box.currency.symbol, thousands: "," %>                                              
+	            </div>
+	        </div> 
+	</div>
+
+	<div role="tabpanel" class="tab-pane " id="pie">                   
+	        <div class="table-responsive">
+	        	<div class="col-md-12 col-sm-12"> 
+	        	<br>
+	            <%= pie_chart  @pie_chart %>
+	           
+
+	         </div>              
+	     </div>
+	 </div>  
+	 <div role="tabpanel" class="tab-pane" id="pdf">
+	      <div class="table-responsive">
+	           <div class="col-md-12 col-sm-12">                 
+	             <br>              	                                                               
+	              <embed src="<%= @url_pdfs %>" type="application/pdf" width="100%" height="400px" />                                            
+	            </div>
+	        </div> 
+	</div>
+
+	</div>    
+  </div>
+</div>

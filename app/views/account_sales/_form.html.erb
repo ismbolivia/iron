@@ -1,0 +1,37 @@
+<%= form_with(model: account_sale, local: true) do |form| %>
+  <% if account_sale.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(account_sale.errors.count, "error") %> prohibited this account_sale from being saved:</h2>
+
+      <ul>
+      <% account_sale.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :account_id %>
+      <%= form.collection_select :account_id, Account.all, :id, :name,
+      {selected: @account_sale.account_id, include_blank: 'Seleccione una cuenta'},
+      {class: "form-control"} %>
+  </div>
+
+  <div class="field">
+    <%= form.label :sale_id %>
+    <%= form.collection_select :sale_id, Sale.all, :id, :number,
+      {selected: @account_sale.sale_id, include_blank: 'Seleccione numero de venta'},
+      {class: "form-control"} %>
+  </div>
+
+  <div class="field">
+    <%= form.label :amount %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>
+
+

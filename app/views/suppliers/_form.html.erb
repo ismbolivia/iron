@@ -1,0 +1,194 @@
+
+  <%= form_for(@supplier) do |form| %>
+  <% if @supplier.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@supplier.errors.count, "error") %> prohibited this supplier from being saved:</h2>
+
+      <ul>
+      <% @supplier.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+<div class="row">
+  <div class = "col-lg-12 col-md-12 col-sm-12" >
+    <div class="col-lg-2 col-md-2 col-sm-2">
+       <div class="product-img ">
+             <%= image_tag(supplier.imagesupplier.thumb.url, :alt => "imge-item", class: "image-form") %>
+                 <div class="fileupload btn btn-info waves-effect waves-light"><span><i class="ion-upload m-r-5"></i>Subir una imagen </span>
+                         <%= form.file_field :imagesupplier, :class =>"upload"%>
+                  </div>
+       </div>
+      </div>
+
+     <div class="col-lg-4 col-md-4 col-sm-4">
+          <div class="form-group">
+
+             <label> <%= form.radio_button :is_company, 'individual', :checked => true %> Individual |</label>
+             <label> <%= form.radio_button :is_company, 'company' %> Compañia</label>
+              <div class="input-group">
+
+                <%= form.text_field :name, placeholder: "Nombre", class: "form-controles m-t-50" %>
+              </div>
+              <div class="input-group m-t-50">
+                  <div class="input-group-addon "><i class="fas fa-address-card"></i></div>
+                <%= form.collection_select :address_id, @addresses, :id, :get_direccion_all,
+                        {selected: @supplier.address_id},
+                        {class: "form-control"} %>
+                       <span class="input-group-btn">
+                       <%= link_to '/addresses/new?', {method: :get, remote: true, class: "btn waves-effect waves-light btn-default"} do %>
+                      <span class="fas fa-plus" aria-hidden="true"> </span>
+                       <% end %>
+                      </span>
+
+              </div>
+
+          </div>
+        </div>
+        <div class="col-lg-6 col-md-4 col-sm-6">
+
+
+              <!-- <a class="btn btn-app">
+                <i class="fa fa-edit"></i> Edit
+              </a> -->
+              <!-- <a class="btn btn-app">
+                <i class="fa fa-play"></i> Play
+              </a>
+              <a class="btn btn-app">
+                <i class="fa fa-repeat"></i> Repeat
+              </a>
+              <a class="btn btn-app">
+                <i class="fa fa-pause"></i> Pause
+              </a>
+              <a class="btn btn-app">
+                <i class="fa fa-save"></i> Save
+              </a> -->
+              <a class="btn btn-app">
+                <span class="badge bg-yellow">3</span>
+                <i class="fa fa-bullhorn"></i> Notifications
+              </a>
+              <a class="btn btn-app">
+                <span class="badge bg-green">300</span>
+                <i class="fa fa-barcode"></i> Products
+              </a>
+              <a class="btn btn-app">
+                <span class="badge bg-purple">891</span>
+                <i class="fa fa-users"></i> Users
+              </a>
+              <a class="btn btn-app">
+                <span class="badge bg-teal">67</span>
+                <i class="fa fa-inbox"></i> Orders
+              </a>
+              <a class="btn btn-app">
+                <span class="badge bg-aqua">12</span>
+                <i class="fa fa-envelope"></i> Inbox
+              </a>
+              <a class="btn btn-app">
+                <span class="badge bg-red">531</span>
+                <i class="fa fa-thumbs-up"></i> Likes
+              </a>
+
+
+  </div>
+
+</div>
+</div>
+    <hr>
+
+    <div class="row">
+          <div class="col-lg-12 col-md-12 col-sm-12">
+
+
+              <div class="row">
+                  <div class="col-sm-12 col-lg-6">
+                     <div class="form-group row">
+                       <%= form.label :nit, 'NIT', class: "col-sm-3 text-left control-label col-form-label" %>
+
+
+                     <div class="col-sm-9">
+                        <%= form.text_field :nit, class: "form-control" %>
+
+                     </div>
+                     </div>
+                  </div>
+              <div class="col-sm-12 col-lg-6">
+                  <div class="form-group row">
+                     <%= form.label :phone, 'Telefono', class: "col-sm-3 text-left control-label col-form-label" %>
+
+                     <div class="col-sm-9">
+                          <%= form.text_field :phone,   class: "form-control" %>
+
+                     </div>
+                  </div>
+              </div>
+
+              <div class="col-sm-12 col-lg-6">
+                  <div class="form-group row">
+                     <%= form.label :mobile, 'Celular:', class: "col-sm-3 text-left control-label col-form-label" %>
+
+                     <div class="col-sm-9">
+                          <%= form.text_field :mobile,  class: "form-control" %>
+
+                     </div>
+                  </div>
+              </div>
+
+              <div class="col-sm-12 col-lg-6">
+                  <div class="form-group row">
+                     <%= form.label :email, 'Correo Electronico', class: "col-sm-3 text-left control-label col-form-label" %>
+
+                     <div class="col-sm-9">
+                          <%= form.email_field :email,  class: "form-control" %>
+
+                     </div>
+                  </div>
+              </div>
+
+               <div class="col-sm-12 col-lg-6">
+                  <div class="form-group row">
+                     <%= form.label :web_syte, 'Sitio Web',class: "col-sm-3 text-left control-label col-form-label" %>
+
+                     <div class="col-sm-9">
+                          <%= form.text_field :web_syte,  class: "form-control" %>
+
+                     </div>
+                  </div>
+              </div>
+
+              <div class="col-sm-12 col-lg-6">
+                  <div class="form-group row">
+
+                     <%= form.label :description, 'Descripción', class: "col-sm-3 text-left control-label col-form-label" %>
+
+                     <div class="col-sm-9">
+                          <%= form.text_area :description,  class: "form-control" %>
+
+                     </div>
+                  </div>
+              </div>
+
+              </div>
+        </div>
+</div>
+
+
+<hr>
+ <div class="row no-print ">
+        <div class="col-xs-12">
+
+
+          <%= link_to 'Back', suppliers_path,  class: "btn btn-default "  %>
+
+           <%= form.submit 'Guardar', :class => "btn btn-success  pull-right" %>
+            <%= link_to 'Show', @supplier,  class: "btn btn-primary pull-right" , style: "margin-right: 5px;"%>
+
+         <!--  <button type="button" class="btn btn-primary pull-right" style="margin-right: 5px;">
+            <i class="fa fa-download"></i> Generate PDF
+          </button> -->
+        </div>
+      </div>
+<hr>
+<% end %>
+

@@ -1,0 +1,58 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Productos</title>
+    <meta charset='utf-8' />
+    <%= wicked_pdf_stylesheet_link_tag "pdf/pdf" %>
+</head>
+	<body>		
+	    	<div class="col-md-12">
+	      		<div class=" printableArea">        		
+	        	
+	         		<div class="row">
+				            <table class="table product-overview table-bordered ">
+				              <thead class="conf-pdf">
+				              	<tr><th colspan="8" class="center">
+				              		<h3><b>LISTA DE PRECIOS GENERALES</b> </h3>
+				              	</th></tr>
+				                <tr>
+				                  <th>Cod.</th>
+				                  <th>Nombre</th>
+				                  <th>Descripción</th>
+				                  <th>Imagen</th>
+				                  <th>Unidad.</th>
+				                  <th>Precio.</th>
+				                		                
+				                </tr>
+				              </thead>
+				              <tbody>
+
+				              		  <% @price_lists.each do |item| %>
+					                  <tr>
+					                    <td><%= item.code %></td>
+					                    <td><%= item.name  %></td>
+					                    <td><%= item.item_description %> </td>
+					                    <td><% if item.image.present?  %>
+				                    	 <%= wicked_pdf_image_tag item.image.large.url, :alt => "imge-item", :width => "50" %>	               				              <% end %>
+							                  <% if !item.image.present?  %>
+							                    	 <%= wicked_pdf_image_tag 'default_image.jpg', :alt => "imge-item", :width => "50" %>	    
+							                  <% end %>	
+					                     </td>
+					                     <td><%= item.unit ? item.unit.name : '' %></td>
+					                     <td><%= number_to_currency(item.getPriceAsignado(item.price_lists.where(default: true).first.name)) %></td>
+					                     
+					                  </tr>
+					                <% end %>
+
+				              
+				              </tbody>
+				            </table>			    
+
+					</div>
+				</div>
+			</div>
+
+	</body>
+	
+</html>

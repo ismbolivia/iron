@@ -1,0 +1,33 @@
+<div class="modal-body">
+
+  <div class="panel-body">
+  
+    <%= form_for :brand, url: brands_url, method: :post, remote: true do |f| %>
+    <div class="row">
+    <div class="col-xs-12">
+      <div class="form-group">
+        <%= f.text_field :name, autofocus: true, placeholder: "Marca", class: "form-control" %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :country_id, "Pais", :class =>"control-label" %>
+              <%= f.collection_select :country_id, @countries, :id, :name, 
+                  {selected: @brand.country_id, include_blank: 'Seleccione Pais'},
+                  {class: "form-control"} %>               
+
+      </div>
+
+
+
+    </div>
+  </div>
+
+    <%= f.submit "Aceptar", class: "btn btn-success" %>
+   <% end %>
+  </div>
+
+</div>
+<div class="modal-footer">
+      <%= link_to "Cancelar", "#", class: "btn btn-danger", "data-dismiss": "modal" %>
+      
+    </div>

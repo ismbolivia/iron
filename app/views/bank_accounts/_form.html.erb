@@ -1,0 +1,59 @@
+
+  <div class="modal-body">  
+       <%= form_for :bank_account, url: bank_accounts_url, method: :post, remote: true do |form| %>
+      
+
+        <% if bank_account.errors.any? %>
+          <div id="error_explanation">
+            <h2><%= pluralize(bank_account.errors.count, "error") %> prohibited this bank_account from being saved:</h2>
+            <ul>
+            <% bank_account.errors.full_messages.each do |message| %>
+              <li><%= message %></li>
+            <% end %>
+            </ul>
+          </div>
+        <% end %>
+        <div class="row">
+          <div class="col-xs-12"> 
+             <div id="div-error"></div>
+           </div>
+         <div class="col-xs-12">        
+           <div class="form-group">
+             <%= form.hidden_field :bank_id, placeholder: "", class: "form-control", placeholder: "id banco" %>          
+            </div>
+          </div>        
+        <div class="col-xs-6">         
+              <div class="form-group">
+                  <%= form.label :number, class: "sr-only" %>
+                  <div class="input-group">
+                    <div class="input-group-addon"><i class="far fa-credit-card"></i></div>
+                  <%= form.text_field :number, placeholder: "", class: "form-control", placeholder: "Numero de cuenta" %>
+                </div>
+              </div>
+        </div>
+       <div class="col-xs-6">         
+            <div class="form-group">
+                  <%= form.label :titular, class: "sr-only" %>
+                  <div class="input-group">
+                    <div class="input-group-addon"><i class="fas fa-diagnoses"></i></div>
+                  <%= form.text_field :titular, placeholder: "", class: "form-control", placeholder:"Nombre del titular" %>
+                </div>
+              </div>
+        </div>
+        <div class="col-xs-12">         
+            <div class="form-group">
+                  <%= form.label :currency_id, class: "sr-only" %>
+                  <div class="input-group">
+                    <div class="input-group-addon"><i class="fas fa-diagnoses"></i></div>
+                    <%= form.collection_select :currency_id, @currencies, :id, :get_full_name,
+                    {selected: bank_account.currency_id, include_blank: 'Seleccione Moneda'}, {class: "form-control"} %>
+                </div>
+              </div>
+        </div>
+        <div class="col-xs-12"><hr></div>
+        <div class="actions col-xs-12">
+          <%= form.submit "Guardar", class: "btn btn-primary pull-right" %>
+        </div>
+      <% end %>
+      </div>
+  </div>

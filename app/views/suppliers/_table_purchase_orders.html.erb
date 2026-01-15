@@ -1,0 +1,29 @@
+<table class="table">
+  <thead>
+    <tr>
+      <th>Fecha </th>
+      <th>Nombre</th>
+      <th>Cliente</th>
+      <th>Estado</th>
+      <th>Note</th>
+      <th>Total</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+   <% purchase_orders.each do |po| %>
+      <tr>
+      <td><%= po.date_order %></td>
+       <td><%= po.name %></td>
+        <td><%= po.supplier.name %></td>
+        <td><%= po.state %></td>
+        <td><%= po.note %></td>
+        <td><%= po.subtotal %></td>
+        <td><%= link_to 'Ver', po, class: "btn btn-success", remote: true %></td>
+        <td><%= link_to 'Editar', edit_purchase_order_path(po), class: "btn btn-info" %></td>
+        <td><%= link_to 'Eliminar', po, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-danger" %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

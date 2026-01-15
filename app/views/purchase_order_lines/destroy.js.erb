@@ -1,0 +1,4 @@
+
+$("ul.errors").html("");
+ $("#purchase_order_lines").html("<%= escape_javascript(render(partial: 'purchase_orders/table', locals: { purchase_order: @purchase_order, show_actions: true })) %>");
+$("#new-purchaseorderlines-modal").modal("hide");

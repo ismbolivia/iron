@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Productos</title>
+  <meta charset='utf-8' />
+    <%= wicked_pdf_stylesheet_link_tag "pdf/pdf" %>
+</head>
+	<body>
+	   <div class="col-md-12">
+	 	<div class=" printableArea">	        	
+	        <div class="row">
+			  <table class="table product-overview table-bordered ">
+			    <thead class="conf-pdf">
+			    	<tr><th colspan="6" class="center">
+				         	<h3><b><%=@title %></b> </h3>
+				        </th>
+				    </tr>
+				     <tr>
+				        <th class="center">N° Recibo </th>
+				        <th class="cenetr">Fecha pago</th>
+				        <th class="center">Metodo</th>
+				         <th class="center">N° Prof</th>
+				        <th class="center">Monto</th>
+				        <th class="center">Desc.</th>			       	       
+				     </tr>
+				     </thead>
+				     <tbody>
+				  <% @payments.each do |payment| %>
+				      <tr>
+				        <td><%= payment.get_num_payment %></td>
+				         <td><%= payment.created_at.strftime("%d/%m/%Y") %></td>
+				         <td>
+				        <% if payment.payment_type.code == "EF" %>
+				          <span class="badge bg-purple"> <%= payment.payment_type.nethod %></span>
+				            <% end %>
+				        <% if payment.payment_type.code == "DB" %>
+				          <span class="badge bg-info"> <%= payment.payment_type.nethod %></span>
+				            <% end %>
+				        <% if payment.payment_type.code == "CB" %>
+				         <span class="badge bg-success"> <%= payment.payment_type.nethod %></span>
+				       <% end %>    
+
+				        </td>
+				         <td><%= payment.sale.proformas.first.number_recibo %> </td>	
+				        <td><%= payment.rode %> <%= @mycompany.get_current_currency.symbol%></td>
+				        <td><%= number_to_percentage(payment.discount, precision: 1) %> </td>
+				               
+				      </tr>
+				     
+				    <% end %>
+
+				     <tr><th colspan="4" class="text-center">
+				         <span><b>Total: </b> </span>
+				        </th>
+				         <th colspan="2"><%= @payments.sum(&:rode) %> <%= @mycompany.get_current_currency.symbol%></th>			        
+				    </tr>
+				  </tbody>
+				</table>			    
+			  </div>
+			</div>
+		</div>
+</body>	
+</html>

@@ -1,0 +1,23 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  currency_id: 1
+  code: MyString
+  deprecated: false
+  internal_type: MyString
+  reconcile: false
+  note: MyText
+  company_id: 1
+  create_uid: 1
+
+two:
+  name: MyString
+  currency_id: 1
+  code: MyString
+  deprecated: false
+  internal_type: MyString
+  reconcile: false
+  note: MyText
+  company_id: 1
+  create_uid: 1

@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  bank_id: MyString
+  number: 1
+  date_giro: 2019-07-12
+  date_payment: 2019-07-12
+  titular: MyString
+  amount: 9.99
+
+two:
+  bank_id: MyString
+  number: 1
+  date_giro: 2019-07-12
+  date_payment: 2019-07-12
+  titular: MyString
+  amount: 9.99

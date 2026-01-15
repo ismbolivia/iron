@@ -1,0 +1,18 @@
+$("ul.errors").html("");
+<% if @avenida.errors.any? %>
+	$("#avenida_name").val("")
+	$('#avenida_name').css('border-color', 'red');
+	$('#div-error').addClass('alert alert-danger');
+	 document.getElementById("div-error").innerHTML = "<h2><%= pluralize(@avenida.errors.count, 'error') %> prohibited this avenida from being saved:</h2>"+
+	" <ul><% @avenida.errors.full_messages.each do |message| %><li><%= message %></li><% end %></ul>";
+
+<% else %>
+	$("#address_avenida_id").html("<option value= '<%=@avenida.id %>'><%=@avenida.name %></option>")
+	$("#new-country-modal").modal("hide");
+
+	$("#address_calles").val(" ");
+	$("#address_description").val(" ");	
+	$("#panel_calles").removeClass('hidden');
+	
+
+<% end %>

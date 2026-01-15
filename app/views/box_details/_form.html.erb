@@ -1,0 +1,30 @@
+
+
+ <%= form_for :box_detail, url: box_details_url, method: :post, remote: true do |form| %>
+
+    <div id="div-error">
+     
+    </div>
+ 
+<div class="modal-body">
+    <%= form.hidden_field :box_id %> 
+    <%= form.hidden_field :payment_id %>
+    <%= form.hidden_field :state %>
+
+
+  <div class="col-md-12">
+    <label><%= form.label :amount %> (<%= @box.currency.symbol%>)</label> 
+    <%= form.number_field :amount, class: "form-controles m-t-50", placeholder: "Ingrese el monto",  autofocus: true %>
+  </div>
+  <div class="col-md-12">
+    <%= form.label :reason %>
+    <%= form.text_area :reason,  class: "form-control"%>
+  </div>
+
+  </div>
+  <div class="clearfix"></div>
+      <div class="modal-footer">
+      <button type="button" class="btn btn-danger pull-left" data-dismiss="modal">Cerrar</button>
+      <%= form.submit 'Registrar', class: "btn btn-primary pull-right" %>
+        </div>
+<% end %>

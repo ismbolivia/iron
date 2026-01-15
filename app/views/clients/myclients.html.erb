@@ -1,0 +1,97 @@
+
+<div class="row">
+    <% @myclients.each do |client| %>   
+       <%= link_to new_sale_path(client: client), {method: :get, class: ""} do %>
+        <div class="col-md-4 ">
+            <div class="card">
+              <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4 text-center">                       
+                       <%= image_tag(client.photo.medium.url, :alt => "client-img", class: "rounded-circle img-fluid") %>
+                    </div>
+                    <div class="col-md-8">
+                        <h3 class="box-title m-b-0"><%= client.name %></h3> <small>Dirección</small>
+                        <address>
+                             <%= client.address.get_direccion_all %>
+                            <br>
+                            <br>
+                            <abbr title="Credito Disponible"><%= @mycompany.get_current_currency.symbol%></abbr> <%= client.line_credit_available %>
+                        </address>
+                    </div>
+                </div>
+             </div>
+            </div>
+        </div>
+       <% end%>
+    <% end %>
+</div>
+    
+
+<!-- 
+<div class="row">
+<div class="col-md-12 col-lg-4">
+                        <div class="card">
+                            <div class="p-4">
+                                <div class="d-flex flex-row">
+                                    <div class=""><img src="https://www.ampleadmin.wrappixel.com/assets/images/users/1.jpg" alt="user" class="rounded-circle" width="100"></div>
+                                    <div class="pl-4">
+                                        <h3>Daniel Kristeen</h3>
+                                        <h4>UIUX Designer</h4>
+                                        <button class="btn btn-success btn-rounded text-white text-uppercase font-14"><i class="ti-plus mr-2"></i> Follow</button>
+                                    </div>
+                                </div>
+                                <div class="row mt-5">
+                                    <div class="col border-right text-center">
+                                        <h2 class="font-light">14</h2>
+                                        <h4 class="text-uppercase">Photos</h4></div>
+                                    <div class="col border-right text-center">
+                                        <h2 class="font-light">54</h2>
+                                        <h4 class="text-uppercase">Videos</h4></div>
+                                    <div class="col text-center">
+                                        <h2 class="font-light">145</h2>
+                                        <h4 class="text-uppercase">Tasks</h4></div>
+                                </div>
+                            </div>
+                            <div class="card-body border-top">
+                                <p class="text-center aboutscroll">
+                                    Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore
+                                </p>
+                                <hr>
+                                <h4 class="font-medium text-center mt-4">Followers</h4>
+                                <ul class="list-style-none list-icons d-flex flex-item text-center pt-2">
+                                    <li class="col px-2">
+                                        <a href="javascript:void(0)" data-toggle="tooltip" title="" data-original-title="Shaina Chhatraliya">
+                                            <img src="https://www.ampleadmin.wrappixel.com/assets/images/users/1.jpg" alt="user" class="rounded-circle" width="50">
+                                        </a>
+                                    </li>
+                                    <li class="col px-2">
+                                        <a href="javascript:void(0)" data-toggle="tooltip" title="" data-original-title="Nirav Joshi">
+                                            <img src="https://www.ampleadmin.wrappixel.com/assets/images/users/1.jpg" alt="user" class="rounded-circle" width="50">
+                                        </a>
+                                    </li>
+                                    <li class="col px-2">
+                                        <a href="javascript:void(0)" data-toggle="tooltip" title="" data-original-title="Vishal Bhatt">
+                                            <img src="https://www.ampleadmin.wrappixel.com/assets/images/users/1.jpg" alt="user" class="rounded-circle" width="50">
+                                        </a>
+                                    </li>
+                                    <li class="col px-2">
+                                        <a href="javascript:void(0)" data-toggle="tooltip" title="" data-original-title="More">
+                                            <button class="btn btn-circle btn-info text-white btn-lg" href="javascript:void(0)">
+                                                5 +
+                                            </button>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="card-body border-top">
+                                <ul class="list-style-none list-icons d-flex flex-item text-center">
+                                    <li class="col"><a href="javascript:void(0)" class="text-muted" data-toggle="tooltip" title="" data-original-title="Website"><i class="fa fa-globe font-20"></i></a></li>
+                                    <li class="col"><a href="javascript:void(0)" class="text-muted" data-toggle="tooltip" title="" data-original-title="twitter"><i class="fab fa-twitter font-20"></i></a></li>
+                                    <li class="col"><a href="javascript:void(0)" class="text-muted" data-toggle="tooltip" title="" data-original-title="Facebook"><i class="fab fa-facebook-square font-20"></i></a></li>
+                                    <li class="col"><a href="javascript:void(0)" class="text-muted" data-toggle="tooltip" title="" data-original-title="Youtube"><i class="fab fa-youtube font-20"></i></a></li>
+                                    <li class="col"><a href="javascript:void(0)" class="text-muted" data-toggle="tooltip" title="" data-original-title="Linkdin"><i class="fab fa-linkedin font-20"></i></a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    </div> -->

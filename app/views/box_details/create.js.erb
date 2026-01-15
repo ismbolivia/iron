@@ -1,0 +1,16 @@
+$("ul.errors").html("");
+<% if @box_detail.errors.any? %>
+    $("#payment_sale").val("")
+	$('#payment_sale').css('border-color', 'red');
+	$('#div-error').addClass('alert alert-danger');
+	 document.getElementById("div-error").innerHTML = "<h2><%= pluralize(@box_detail.errors.count, 'error') %> prohibited this box_detail from being saved:</h2>"+
+	" <ul><% @box_detail.errors.full_messages.each do |message| %><li><%= message %></li><% end %></ul>";
+<% else %>
+	// window.location.href = "/payments";
+
+
+	$("#panel_box_details_id").html("<%= escape_javascript(render(partial: 'box_details/table', locals: { box_details: @box_details, show_actions: true })) %>");
+	$("#panel_box_details_id_output").html("<%= escape_javascript(render(partial: 'box_details/table_output', locals: { box_details: @box_details, show_actions: true })) %>");
+	$("#new-payment-modal").modal("hide");
+
+<% end %>

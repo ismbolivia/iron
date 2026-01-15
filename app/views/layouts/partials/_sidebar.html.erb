@@ -1,0 +1,52 @@
+
+<nav class="navbar navbar-default sidebar" role="navigation">
+
+<br>
+
+ <div class="container-fluid">
+  <div class="navbar-header">
+   <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-sidebar-navbar-collapse-1">
+    <span class="sr-only">Toggle navigation</span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+   </button> 
+  </div>
+  <div class="collapse navbar-collapse" id="bs-sidebar-navbar-collapse-1">
+    <div class="dropdown user-pro-body">
+     <div>
+       <%= image_tag(@mycompany.logo.medium.url, :alt => "user-img", :class => "") %>
+      <!-- <img src="=" alt="user-img" > -->
+    </div>
+    <div class="text-center">
+      <h4><%= @mycompany.sigla %> </h4>
+      <p class="text-center"><small><strong><%= @mycompany.name %></strong></small></p>
+    </div>
+</div>
+     <ul class="nav navbar-nav">
+      <% if can? :read, @current_modulo%>
+         <% if @current_modulo.name == 'Inicio' %>
+           <%= render 'home/menu_home' %>
+        <% end %>  
+        <% if @current_modulo.name == 'Productos' %>
+          <%= render  'items/menu_product'%>
+        <% end %>
+        <% if @current_modulo.name == 'Comercial' %>
+           <%= render  'sales/menu_comercial'%>
+        <% end %>
+        <% if @current_modulo.name == 'Financiero' %>
+           <%= render  'banks/menu_financiero'%>
+        <% end %>
+        <% if @current_modulo.name == 'Contabilidad' %>
+          <%= render  'accounts/menu_contabilidad'%>
+        <% end %>
+        <% if @current_modulo.name == 'Ajustes' %>
+            <%= render  'home/menu_setting'%>
+        <% end %>
+      <% end %>
+       
+           
+      </ul>
+ </div>
+ </div>
+</nav>

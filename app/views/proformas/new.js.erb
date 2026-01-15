@@ -1,0 +1,3 @@
+$("#new-pdf-modal").html("<%= escape_javascript( render 'new_proforma', proforma: @proforma) %>");
+$("#id_crear_recibo").addClass('disabled');
+$("#new-pdf-modal").modal("show");

@@ -1,0 +1,141 @@
+
+  <%= form_with(model: company, local: true) do |form| %>
+  <% if company.errors.any? %>
+    <div id="error_explanation" class="col-md-12">
+      <h2><%= pluralize(company.errors.count, "error") %> prohibited this company from being saved:</h2>
+
+      <ul>
+      <% company.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+    <div class="row">
+       <div class = "col-lg-12 col-md-12 col-sm-12" >
+         <div class="col-lg-2 col-md-2 col-sm-2">
+            <div class="product-img "> 
+              <%= image_tag(company.logo.large.url, :alt => "imge-logo", class: "image-form") %>
+                 <div class="fileupload btn btn-info waves-effect waves-light"><span><i class="ion-upload m-r-5"></i>Subir logo </span>
+                     <%= form.file_field :logo, :class =>"upload"%>
+                  </div>
+            </div>
+          </div>
+           <div class="col-lg-4 col-md-4 col-sm-4">
+              <div class="form-group">                 
+                  <div class="input-group">
+                    <%= form.text_field :name, placeholder: "Nombre de la Empresa", class: "form-controles m-t-50" %>
+                  </div>
+                <div class="input-group m-t-50">
+                 <div class="input-group-addon "><i class="fas fa-anchor"></i></div>
+                      <%= form.text_field :sigla, :class =>"form-control", :placeholder =>"ISM" %>
+
+              </div>  
+              <div class="input-group m-t-50">
+                 <div class="input-group-addon "><i class="ti-layout-cta-left"></i></div>
+                      <%= form.text_field :nit, :class =>"form-control", :placeholder =>"Nit de la Empresa" %>
+
+              </div>
+                  <div class="input-group m-t-50">         
+                      <div class="input-group-addon "><i class="fas fa-envelope-square"></i></div>
+                      <%= form.email_field :email, :class =>"form-control", :placeholder =>'email.@gmail.com' %>                                               
+                  </div>
+
+              </div>
+        </div>
+        <div class="col-lg-6 col-md-4 col-sm-6">
+              <a class="btn btn-app">
+                <span class="badge bg-yellow">50</span>
+                <i class=" fa fa-dollar-sign"></i> Caja
+              </a>
+               <a class="btn btn-app">
+                <span class="badge bg-teal"><%=@company.get_sales_year.count %></span>
+                <i class="fa fa-shopping-cart"></i> Ventas
+              </a>
+              <a class="btn btn-app">
+                <span class="badge bg-green">2555</span>
+                <i class="fa fa-barcode"></i> Products
+              </a>
+              <a class="btn btn-app">
+                <span class="badge bg-purple">891</span>
+                <i class="fa fa-users"></i> Users
+              </a>
+              <a class="btn btn-app">
+                <span class="badge bg-aqua">12</span>
+                <i class=" fa fa-people-carry"></i> Clientes
+              </a>
+              <a class="btn btn-app">
+                <span class="badge bg-red">531</span>
+                <i class="fa fa-thumbs-up"></i> Likes
+              </a>
+           </div>
+
+        </div>
+      </div>
+      <hr>
+
+<div class="row">
+  <div class="col-md-12">    
+     
+                                                <!--/span-->
+          <div class="col-md-6">
+            <div class="form-group">
+                <%= form.label :phone, 'Telefono',  :class =>"control-label" %>
+                <%= form.text_field :phone, :class =>"form-control", :placeholder =>"44444444" %> 
+                </div>
+        </div>  
+        <div class="col-md-6">
+          <div class="form-group">
+            <%= form.label :company_registration,'Numero de registro de la compania', :class =>"control-label" %>
+            <%= form.text_field :company_registration, :class =>"form-control", :placeholder =>"2548841" %>
+              
+            </div>
+          </div>                                                <!--/span-->
+          <div class="col-md-6">
+              <div class="form-group">
+                    <%= form.label :my_company,'Compania', :class =>"control-label" %>
+                <div class="checkbox  ">
+                      <!-- <input id="checkbox-10" type="checkbox" checked=""> -->
+                      <%= form.check_box :mycompany, :id=>"checkbox-10"  %>
+                        <label for="checkbox-10"> ¿Es mi compañia? </label>
+                      </div>  
+             </div>
+           </div>
+       
+            <div class="col-md-6">
+              <div class="form-group">
+                
+                  <%= form.label :country_id, 'Pais', :class =>"control-label" %>
+                  <%= form.collection_select :country_id, @countries, :id, :name,
+                  {selected: @company.country_id, include_blank: 'Seleccione pais'}, 
+                  {class: "form-control"} %>
+               </div>
+
+              </div>           
+                <div class="col-md-12 ">
+                  <div class="form-group">
+                    <h3 class="box-title m-t-40"> <%= form.label :report_footer,'Pie de Pagina para los informe',  :class =>"control-label" %></h3>
+                     <%= form.text_area(:report_footer, class: "form-control") %>
+                  </div>
+                </div>                         
+            </div>
+         </div> 
+            <hr>
+        
+           <div class="row no-print ">
+        <div class="col-xs-12">
+          <%= link_to 'Back', companies_path,  class: "btn btn-default "  %>
+
+           <%= form.submit 'Guardar', :class => "btn btn-success  pull-right" %>
+        </div>
+      </div>          
+   <% end %>
+
+
+
+
+
+
+
+
+

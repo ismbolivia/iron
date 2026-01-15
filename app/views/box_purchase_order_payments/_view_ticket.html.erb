@@ -1,0 +1,133 @@
+<div class="modal-content">
+    <div class="modal-header modal-header-primary">
+      <button type="button" class="close" data-dismiss="modal" aria-hidden="true"> [ × ] </button>
+      <h2><i class="fa fa-handshake"></i>Comprovante de pago</h2>
+    </div>
+  <div class="col-md-12">
+  	<div class="col-md-2"></div>
+  		<div class="col-md-8">
+			  <div class="ticket" id="ticket">
+			  	 <div class="center_ticket">
+			  	     <%= image_tag(@mycompany.logo.medium.url, :alt => "user-img", :class =>"image-form") %> 
+			     </div>
+			     <p class="center_ticket"><%= @mycompany.sigla %> 
+			                <br><%= @mycompany.name %>
+			                <br>Bolivia Cochabamba Av: Blanco galindo km 6 1/2
+			                <br>Fecha de emisión: <%= @box_purchase_order_payment.created_at.to_formatted_s(:long)    %></p>
+			            <table class="t_ticket">
+			                <thead>
+			                    <tr class="t_ticket">
+			                        <th class="cantidad"></th>
+			                        <th class="producto"></th>
+			                        <th class="precio"></th>
+			                    </tr>
+			                </thead>
+			                <tbody>
+			                    
+			                </tbody>
+			            </table>	      
+			            <p class="center_ticket"> <strong> <%= @box_purchase_order_payment.purchase_order.supplier.name %> </strong>
+			                <br> <strong>Dir:</strong>  <%= @box_purchase_order_payment.purchase_order.supplier.address.get_direccion_all %> 
+			            </p>
+			                 <p class="center_ticket"> <strong>DETALLES</strong>  </p>
+			                  <p class="">
+			                 	<%= @box_purchase_order_payment.purchase_order.getReasonTostring %>                   
+			                 </p>
+			                 <p align="right">Total: <%= @box_purchase_order_payment.amount %> <%= @box_purchase_order_payment.box.currency.symbol %> </p>
+
+			                 <p class=""> <strong>Son:. </strong> <%= @box_purchase_order_payment.box.currency.montoLiteral(@box_purchase_order_payment.amount) %>  </p>	        
+
+			            <p class="center_ticket">¡GRACIAS POR SU PREFERENCIA!
+			                <br>dev.sejas.con.bo</p>
+			        </div>
+			        <div class="center_ticket"> <button  class="oculto-impresion btn btn-warning fas fa-print " onclick="imprimir('ticket')"></button></div>
+	       
+	    </div>
+	       <div class="col-md-2"></div>
+    </div>
+      <div class="col-md-12">
+      	<br>
+      </div>
+  </div>
+   
+    <script>    	
+		function imprimir(el) {
+			var restorepage = $('body').html();
+			var printcontent = $('#' + el).clone();
+			var enteredtext = $('#text').val();
+			$('body').empty().html(printcontent);
+			window.print();
+			$('body').html(restorepage);
+			$('#text').html(enteredtext);		
+			$("#new-purchase-order-payment-modal").modal("show");
+			 // setInterval("actualizar()",4000);
+			document.location.reload();
+			
+			return true;
+		}
+    </script>
+
+
+
+
+      <!-- <div class="col-md-12">
+  	<div class="col-md-4"></div>
+  		<div class="col-md-4">
+	  <div class="ticket" id="ticket">
+	  				  <p class="center_ticket"><%= image_tag(@mycompany.logo.medium.url, :alt => "user-img", :class =>"image-form") %> </p>
+	           
+	              
+	            <p class="center_ticket">Parzibyte's blog
+	                <br>New New York
+	                <br>23/08/2017 08:22 a.m.</p>
+	            <table class="t_ticket">
+	                <thead>
+	                    <tr class="t_ticket">
+	                        <th class="cantidad"></th>
+	                        <th class="producto">PRODUCTO</th>
+	                        <th class="precio">$$</th>
+	                    </tr>
+	                </thead>
+	                <tbody>
+	                    <tr class="t_ticket">
+	                        <td class="cantidad">1.00</td>
+	                        <td class="producto">CHEETOS VERDES 80 G</td>
+	                        <td class="precio">$8.50</td>
+	                    </tr>
+	                    <tr class="t_ticket">
+	                        <td class="cantidad">2.00</td>
+	                        <td class="producto">KINDER DELICE</td>
+	                        <td class="precio">$10.00</td>
+	                    </tr>
+	                    <tr class="t_ticket">
+	                        <td class="cantidad">1.00</td>
+	                        <td class="producto">COCA COLA 600 ML</td>
+	                        <td class="precio">$10.00</td>
+	                    </tr>
+	                    <tr class="t_ticket">
+	                        <td class="cantidad"></td>
+	                        <td class="producto">TOTAL</td>
+	                        <td class="precio">$28.50</td>
+	                    </tr>
+	                </tbody>
+	            </table>
+	            <p class="center_ticket">¡GRACIAS POR SU COMPRA!
+	                <br>parzibyte.me</p>
+	        </div>
+	        <button class="oculto-impresion" onclick="imprimir('ticket')">Imprimir</button>
+	    </div>
+	       <div class="col-md-4"></div>
+    </div>
+    <script>    	
+		function imprimir(el) {
+			var restorepage = $('body').html();
+			var printcontent = $('#' + el).clone();
+			var enteredtext = $('#text').val();
+			$('body').empty().html(printcontent);
+			window.print();
+			$('body').html(restorepage);
+			$('#text').html(enteredtext);
+			$("#new-report-modal").modal("show")
+			return true;
+		}
+    </script> -->

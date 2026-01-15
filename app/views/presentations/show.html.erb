@@ -1,0 +1,19 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @presentation.name %>
+</p>
+
+<p>
+  <strong>Qty:</strong>
+  <%= @presentation.qty %>
+</p>
+
+<p>
+  <strong>Unit:</strong>
+  <%= @presentation.unit_id %>
+</p>
+
+<%= link_to 'Edit', edit_presentation_path(@presentation) %> |
+<%= link_to 'Back', presentations_path %>

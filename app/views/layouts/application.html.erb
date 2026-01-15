@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Iron</title>
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+   
+    <%= favicon_link_tag 'logo1.png' %>
+    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+  </head>
+  <body class="coll-body">
+ <%= render 'layouts/partials/navbar' %>
+    <% if user_signed_in? %>
+    <div class="page-wrapper">
+      <div class="container-fluid ">
+        <div class="row ">
+            <%= render 'layouts/partials/sidebar' %>
+          <div class="main">
+            <div class="">
+              <div style="margin-left: 10px;margin-right: 10px;">
+                <div class="col-md-12">
+                 <%= render 'layouts/partials/alerts' %>                
+                 </div>
+                  <div class="col-md-12">
+                    <%= yield %>
+                     <footer class="footer text-center"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
+                Todos los derechos reservados 2020 &copy; dev-sejas.cbba.bo.com
+            </font></font></footer>  
+                  </div>
+                  <div class="modal fade" id="new-address-modal" title="Modal"></div>
+                  <div class="modal fade" id="new-purchaseorderlines-modal" title="Modal"></div>
+                  <div class="modal fade" id="new-receptions-modal" title="Modal"></div>
+                  <div class="modal fade" id="new-stock-modal" title="Modal"></div>
+                  <div class="modal fade" id="new-price-modal" title="Modal"></div>
+                  <div class="modal fade" id="new-payment-modal" title="Modal"></div>
+                  <div class="modal fade" id="new-payment-modal-current" title="Modal"></div>
+                  <div class="modal fade" id="new-currency_rates-modal" title="Modal"></div>
+                  <div class="modal fade" id="new-setting-currency-modal" title="Modal"></div>
+                  <div class="modal fade" id="new-country-modal" title="Modal"></div> 
+                  <div class="modal fade" id="new-supplier-modal" title="Modal"></div> 
+                  <div class="modal fade" id="new-pdf-modal" title="Modal"></div> 
+                  <div class="modal fade" id="new-presentation-modal" title="Modal"></div> 
+                  <div class="modal fade" id="new-devolution-modal" title="Modal"></div>
+                  <div class="modal fade" id="new-check-modal" title="Modal"></div>
+                  <div class="modal fade" id="new-payment-type-modal" title="Modal"></div> 
+                  <div class="modal fade" id="new-report-modal" title="Reporte"></div>
+                  <div class="modal fade" id="new-purchase-order-payment-modal" title="purchase Order payment"></div>                    
+                   <div class="modal fade" id="my_activity" title="Modal"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      </div>
+    <% else %>
+      <br>
+      <div class="row">
+        <div class="col-md-4 col-md-offset-4 col-sm-4 col-sm-offset-4">
+          <%= render 'layouts/partials/alerts' %>
+        </div>
+      </div>
+      <%= yield %>   
+       <footer class="footer text-center"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
+                Todos los derechos reservados 2020 &copy; dev-sejas.cbba.bo.com
+            </font></font></footer>   
+    <% end %>
+   
+  </body>
+</html>

@@ -1,0 +1,31 @@
+ <div class="white-box">
+    <div class="table-responsive">
+        <table class="table product-overview">
+           <thead>                               
+              <tr>
+                  <th>Imagen</th>
+                  <th>Code</th>
+                  <th>Nombre</th>
+                  <th>Descripción</th>
+                  <th>Unidad</th>
+                  <th>Precio</th>
+               
+                </tr>
+            </thead>
+            <tbody>
+          
+                <tr>
+                  <td><%= image_tag(item.image.medium.url, :alt => "imge-item", :width => "80") %></td>
+                  <td><%= item.code%></td>
+                  <td><%= item.name %></td>
+                  <td><%= item.description %></td>
+                  <td><%= item.unit.name  %></td>
+                  <td><%=@mycompany.get_current_currency.symbol %> <%= item.price_default %></td>                   
+                           
+                </tr>
+            
+            </tbody>
+         </table>
+      </div>     
+  </div>
+

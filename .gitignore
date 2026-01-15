@@ -1,0 +1,73 @@
+# Ignore all logfiles and tempfiles.
+/log/*
+/tmp/*
+!/log/.keep
+!/tmp/.keep
+
+# Ignore database files
+/db/*.sqlite3
+/db/*.sqlite3-journal
+/db/*.sqlite3-[0-9]*
+
+# Ignore configuration files that may contain sensitive information
+config/master.key
+.env
+.env*.local
+# config/secrets.yml # Only include if you have production secrets in this file, which is no longer a Rails default
+
+# Ignore Ruby environment files
+/.bundle
+/vendor/bundle
+# .ruby-version # Often committed to ensure consistent Ruby versions across environments, uncomment to ignore if desired
+.rvmrc
+
+# Ignore Node.js and Yarn related files
+node_modules/
+/public/packs
+/public/packs-test
+/public/assets
+/yarn-error.log
+yarn-debug.log*
+.yarn-integrity
+
+# Ignore uploaded files in development
+/storage/*
+!/storage/.keep
+/public/uploads
+
+# Ignore test and coverage related files
+/coverage/
+/spec/tmp
+.rspec
+capybara-*.html
+rerun.txt
+pickle-email-*.html
+
+# Ignore editor/IDE specific files
+.idea/
+.DS_Store
+*.tmproj
+/nbproject/
+*.orig # SCM revert files
+
+# Ignore byebug history file
+.byebug_history
+
+# Ignore compiled Ruby files
+*.rbc
+
+# Ignore sass cache
+.sass-cache/
+
+# Ignore documentation
+/doc/api/
+/doc/app/
+/doc/features.html
+/doc/specs.html
+
+# Ignore public cache
+/public/cache
+
+# Ignore system files
+/public/system/*
+!/public/system/.keep

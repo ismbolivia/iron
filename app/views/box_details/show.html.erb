@@ -1,0 +1,19 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Box:</strong>
+  <%= @box_detail.box_id %>
+</p>
+
+<p>
+  <strong>Payment:</strong>
+  <%= @box_detail.payment_id %>
+</p>
+
+<p>
+  <strong>Amount:</strong>
+  <%= @box_detail.amount %>
+</p>
+
+<%= link_to 'Edit', edit_box_detail_path(@box_detail) %> |
+<%= link_to 'Back', box_details_path %>

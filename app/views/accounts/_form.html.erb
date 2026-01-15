@@ -1,0 +1,108 @@
+<%= form_with(model: account, local: true) do |form| %>
+  <% if account.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(account.errors.count, "error") %> prohibited this account from being saved:</h2>
+
+      <ul>
+      <% account.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+<div class="row">
+   <div class = "col-lg-12 col-md-12 col-sm-12" >
+     <div class="col-lg-2 col-md-2 col-sm-2">
+        <div class="product-img "> 
+         
+
+        </div>
+      </div>
+       <div class="col-lg-4 col-md-4 col-sm-4">
+              <div class="form-group">                 
+                  <div class="input-group">
+                    <%= form.text_field :name, placeholder: "Nombre Cuenta", class: "form-controles m-t-50" %>
+                  </div>
+              <div class="input-group m-t-50">
+                 <div class="input-group-addon "><i class="fas fa-money-bill-alt"></i></div>
+                    <%= form.collection_select :currency_id, @currencies, :id, :get_full_name,
+                    {selected: @account.currency_id, include_blank: 'Seleccione Moneda'},
+          {class: "form-control"} %>
+              </div>
+                  <div class="input-group m-t-50">         
+                      <div class="input-group-addon "><i class="fas fa-user"></i></div>
+                        <%= form.collection_select :user_id, @users, :id, :name,
+                        {selected: @account.user_id, include_blank: 'Seleccione un usuario'},
+                        {class: "form-control"} %>                          
+                  </div>
+              </div>
+        </div>
+
+           <div class="col-lg-6 col-md-4 col-sm-6">
+              <a class="btn btn-app">
+                <span class="badge bg-yellow">50</span>
+                <i class=" fa fa-building"></i> Stock
+              </a>
+              <a class="btn btn-app">
+                <span class="badge bg-green">300</span>
+                <i class="fa fa-barcode"></i> Products
+              </a>
+              <a class="btn btn-app">
+                <span class="badge bg-purple">891</span>
+                <i class="fa fa-users"></i> Users
+              </a>
+              <a class="btn btn-app">
+                <span class="badge bg-teal">67</span>
+                <i class="fa fa-inbox"></i> Orders
+              </a>
+              <a class="btn btn-app">
+                <span class="badge bg-aqua">12</span>
+                <i class="fa fa-envelope"></i> Inbox
+              </a>
+              <a class="btn btn-app">
+                <span class="badge bg-red">531</span>
+                <i class="fa fa-thumbs-up"></i> Likes
+              </a>
+           </div>
+   </div>
+</div>
+<hr>
+
+  <div class="row">
+      <div class="col-md-12">
+        <div class="col-md-6">
+            <div class="form-group">
+                <%= form.label :internal_type,  :class =>"control-label" %>
+                <%= form.text_field :internal_type, :class =>"form-control", :placeholder =>"C100" %>
+            </div>
+         </div>
+
+         <div class="col-md-6">
+          <div class="form-group">
+              <%= form.label :deprecated,  :class =>"control-label" %>
+              <%= form.check_box :deprecated %> |
+              <%= form.label :reconcile, :class =>"control-label"%>
+              <%= form.check_box :reconcile %>           
+            </div>
+          </div>
+                                                <!--/span-->
+      </div>
+      <div class="col-md-12">
+         <div class="form-group">
+          <%= form.label :note %>
+          <%= form.text_area :note , class: "form-control" %>
+       </div>
+
+      </div>
+  </div>
+  <hr>
+      <div class="row no-print ">
+        <div class="col-xs-12">
+          <%= link_to 'Back', accounts_path,  class: "btn btn-default "  %>
+           <%= form.submit 'Guardar', :class => "btn btn-success pull-right" %>
+        </div>
+      </div>
+   <hr>
+<% end %>
+

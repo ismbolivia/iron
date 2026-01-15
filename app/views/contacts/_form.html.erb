@@ -1,0 +1,79 @@
+
+
+<div class="row">   
+
+ <%= form_for :contact, url: contacts_url, method: :post, remote: true do |form| %>
+ 
+    <div class="col-md-12" id="div-error">
+      
+    </div>
+
+       <div class="col-md-8">      
+          <div class="col-md-6">    
+          <div class="form-group">    
+            <%= form.label :name,'Nombre',  :class =>"control-label" %>          
+              <%= form.text_field :name, :class =>"form-control", :placeholder =>"Manuel Vallejos" %>
+              
+          </div>
+          </div>   
+          <div class="col-md-6">    
+          <div class="form-group">    
+            <%= form.label :nit,'Nit',  :class =>"control-label" %>          
+              <%= form.text_field :nit, :class =>"form-control", :placeholder =>" ingrese su nit o ci." %>
+              
+          </div>
+          </div>   
+          <div class="col-md-6">
+            <div class="form-group">
+                <%= form.label :title,'Cargo',  :class =>"control-label" %>
+                <%= form.text_field :title, :class =>"form-control", :placeholder =>" Ventas" %>
+             
+            </div>
+          </div>
+      
+          <div class="col-md-6">
+            <div class="form-group">
+            <%= form.label :job,'Profección', :class =>"control-label" %>
+            <%= form.text_field :job, :class =>"form-control", :placeholder =>"Ing. Comercial" %>
+                
+                </div>
+              </div>
+          <div class="col-md-6">
+          <div class="form-group">
+            <%= form.label :mobile,'Mobil ', :class =>"control-label" %>
+            <%= form.text_field :mobile, :class =>"form-control", :placeholder =>"65316013" %>
+            <%= form.hidden_field :client_id, :class =>"form-control", :placeholder =>"..." %>
+              
+            </div>
+          </div>
+           <div class="col-md-6">
+          <div class="form-group">
+            <%= form.label :email,  :class =>"control-label" %>
+                <%= form.email_field :email, :class =>"form-control", :placeholder =>"contacto@gmail.com" %> 
+              
+            </div>
+          </div>
+
+          </div>
+          <div class="col-md-4">                
+              <div class="product-img"> 
+                 <%= image_tag(contact.profile.large.url, :alt => "logo-img") %>
+                  <br>
+                   <div class="fileupload btn btn-info waves-effect waves-light"><span><i class="ion-upload m-r-5"></i>Subir un foto del contacto...</span>
+                   <%= form.file_field :profile, :class =>"upload"%>
+                  
+                </div>
+                </div>
+          </div>
+          <div class="col-md-12"> 
+           <div class="form-actions m-t-40 ">
+             <%= form.submit 'Crear', :class => "btn btn-success" %>             
+            
+           </div> 
+          </div>
+          </div>
+         
+
+       <% end %>
+
+    

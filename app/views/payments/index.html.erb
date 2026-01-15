@@ -1,0 +1,89 @@
+<div class="panel panel-info">
+  <div class="panel-heading">Pagos efectuados</div>
+  <div class="panel-body">
+    <div class="col-md-6 col-sm-6">
+    <%= render partial: 'layouts/partials/search_form', locals: { search_entity: 'payments', word: "Pagos", view_kamback: '', view_list: '', url_pdf: '/get_payment_pdf',url:  new_payment_path, ban: false, url_csv: '', url_xls:'' } %>
+    </div>
+     <div class="col-md-6 col-sm-6">
+
+       <% content_for :filter do %>
+         <select name="filter" id="filters" class="form-control ">
+        <option value="0" >All</option>
+            
+            
+        </select> 
+          <% end %>
+          <%= render partial: 'layouts/partials/report_form', locals: { report_entity: 'report', state: '' } %> 
+
+      </div>
+    <br>
+    <div class="col-md-5 col-md-offset-5 col-sm-5 col-sm-offset-5">
+      <p>
+        <%= button_to new_payment_path, {method: :get, class: "btn btn-success", remote: true} do %>
+          <span class="glyphicon glyphicon-plus" aria-hidden="true"> </span> Nuevo Pago
+        <% end %>
+      </p>
+    </div>
+
+    <div class="col-md-12"> <%= render partial: 'results_search' %></div>
+  </div>
+ 
+  <div class="modal fade" id="new-payment-modal" title="Modal"></div>
+</div>
+<script>
+  var ranges = {
+  "Ultimos 7 dias": ["<%= format_date(Date.current - 7)%>", "<%=  format_date(Date.current + 1)%>"],
+  "Ultimos 30 dias": ["<%= format_date(Date.current - 30)%>", "<%=  format_date(Date.current)%>"],  
+  "Este mes": ["<%= format_date(Date.current.beginning_of_month)%>", "<%=  format_date(Date.current) %>"],
+  "Mes pasado": ["<%= format_date(1.month.ago.beginning_of_month)%>", "<%=  format_date(1.month.ago.end_of_month)%>"],
+  "Este año": ["<%= format_date(Date.current.beginning_of_year)%>", "<%=  format_date(Date.current)%>"],
+  "Año pasado": ["<%= format_date(1.year.ago.beginning_of_year)%>", "<%=  format_date(1.year.ago.end_of_year)%>"]
+};
+
+  $('input[name="dateranges"]').daterangepicker({
+      startDate: moment("<%= l @data_init, format:'%Y-%m-%d' %>"),
+      endDate: moment("<%= l @data_limit, format:'%Y-%m-%d' %>"),
+      ranges: ranges,
+      alwaysShowCalendars: true
+
+  }, function(start, end, label){
+
+    $("#data_init").val(start.format('YYYY-MM-DD'));
+    $("#data_limit").val(end.format('YYYY-MM-DD'));
+    // $("#state").val('input');
+   // $("#submit-button").click();
+  });
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

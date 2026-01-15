@@ -1,0 +1,21 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  qty_in: 1
+  total: 1
+  fecha: 2019-02-12
+  ob: MyText
+  warehouse_id: 1
+  user_id: 1
+  company_id: 1
+  purchase_order_line_id: 1
+
+two:
+  qty_in: 1
+  total: 1
+  fecha: 2019-02-12
+  ob: MyText
+  warehouse_id: 1
+  user_id: 1
+  company_id: 1
+  purchase_order_line_id: 1

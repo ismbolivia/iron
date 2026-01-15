@@ -1,0 +1,263 @@
+      
+<% if current_user.is_invited? %>
+<div class="row">
+    <div class="col-md-12 col-lg-12">
+        <div class="alert alert-warning center">
+            <h3>¡ Debe pedir al adimistrador que le asigne un rol..!</h3>
+        </div>
+        
+    </div>
+</div>
+<% end %>
+
+<% if current_user.is_client? %>
+<div class="row">
+  <div class="col-md-12 col-lg-12">
+      <div class="alert alert-info ">
+         <h3> Lista de precios </h3>          
+      </div>
+    <div class="white-box">
+          <%= render 'price_lists/price_list_access', price_list: @price_list %>
+    </div>
+        
+  </div>
+</div>
+<% end %>
+<% if current_user.is_seller? %>            
+            <div class="">
+                <div class="row">
+                     
+                  <% if @current_modulo.name == "Comercial" %> 
+                    <div class="col-xs-6 col-lg-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title text-uppercase">Clientes</h5>
+                                <div class="d-flex align-items-center mb-2 mt-4">
+                                    <h2 class="mb-0 display-10"><i class=" fas fa-people-carry text-primary"></i></h2>
+                                    <div class="ml-auto">
+                                        <h4 class="mb-0 display-6"><span class="font-normal"><%= current_user.my_clients %></span></h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-6 col-lg-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title text-uppercase">Total Ventas</h5>
+                                <div class="d-flex align-items-center mb-2 mt-4">
+                                    <h2 class="mb-0 display-10"><i class="fas fa-cart-plus text-purple"></i></h2>
+                                    <div class="ml-auto">
+                                        <h4 class="mb-0 display-6"><span class="font-normal"><%=current_user.totalVentas %>(<%= @mycompany.get_current_currency.symbol %>)</span></h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-6 col-lg-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title text-uppercase">Total Cobros</h5>
+                                <div class="d-flex align-items-center mb-2 mt-4">
+                                    <h2 class="mb-0 display-10"><i class="fas fa-money-bill-alt text-success"></i></h2>
+                                    <div class="ml-auto">
+                                        <h4 class="mb-0 display-6"><span class="font-normal"><%= current_user.totalPagos %>(<%= @mycompany.get_current_currency.symbol %>) </span></h4> 
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-6 col-lg-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title text-uppercase">Por cobrar</h5>
+                                <div class="d-flex align-items-center mb-2 mt-4">
+                                    <h2 class="mb-0 display-10"><i class="fas fa-hand-holding-usd text-danger"></i></h2>
+                                    <div class="ml-auto">
+                                        <h4 class="mb-0 display-6"><span class="font-normal"><%= current_user.totalPorCobrar %>(<%= @mycompany.get_current_currency.symbol %>) </span></h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                     
+                     <div class="col-md-12 col-lg-12 ">
+                       <div class=" card">
+
+                         <h4 class="card-title text-uppercase text-center"><strong>Modulo Comercial</strong></h4>
+                         </div> 
+                     </div>
+
+                    <div class="col-md-4 col-lg-4 ">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <h3 class="card-title ">Ventas</h3>
+                                <div>                                             
+                      
+                                     <a class="btn btn-app" href="/clients">
+                                     <!-- <span class="badge bg-yellow">3</span> -->
+                                     <i class=" fa fa-people-carry text-primary"></i> Clientes
+                                     </a>
+
+                                     <a class="btn btn-app" href="/sales">
+                                       <!-- <span class="badge bg-green">300</span> -->
+                                       <i class="fa fa-cart-plus text-purple"></i> Ventas
+                                     </a>
+                                     <a class="btn btn-app" href="/payments">
+                                       <!-- <span class="badge bg-purple">891</span> -->
+                                       <i class="fa fa-hand-holding-usd text-green"></i> Pagos
+                                     </a>
+                                         
+                                     <a class="btn btn-app" href="/presentations">
+                                        <!-- <span class="badge bg-red">531</span> -->
+                                        <i class="fa fa-box text-yellow"></i> Present.
+                                     </a>     
+                                     <h3></h3>                                             
+                                
+                            </div>
+                        </div>
+                    </div>
+                     
+                </div>      
+
+                 <div class="col-lg-4 col-md-4 col-sm-4 "> 
+                     <div class="card">
+                        <div class="card-body text-center">
+                    <h3 class="card-title ">Configuraciones</h3>
+                        <a class="btn btn-app" href="/price_lists">
+                           <!-- <span class="badge bg-teal">67</span> -->
+                          <i class="fa fa-list-ol text-success"></i> Listas
+                        </a>
+                        <a class="btn btn-app" href="/accounts">
+                         <!-- <span class="badge bg-aqua">12</span> -->
+                            <i class="fa fa-suitcase text-danger"></i> Cuentas 
+                        </a>
+                        <a class="btn btn-app">
+                           <!-- <span class="badge bg-teal">67</span> -->
+                          <!-- <i class="fa fa-inbox"></i> Listas -->
+                        </a>
+                        <a class="btn btn-app">
+                         <!-- <span class="badge bg-aqua">12</span> -->
+                            <!-- <i class="fa fa-envelope"></i> Productos -->
+                        </a>
+                        <h3></h3>
+                    </div>
+                </div>
+                </div>
+
+
+
+                <div class="col-lg-4 col-md-4 col-sm-4 "> 
+                     <div class="card">
+                        <div class="card-body text-center">
+                    <h3 class="card-title ">Compras</h3>
+                        <a class="btn btn-app" href="/purchase_orders">
+                          <!-- <span class="badge bg-yellow">3</span> -->
+                          <i class="fa fa-truck-loading text-purple"></i> O. Compra
+                        </a>
+                        <a class="btn btn-app" href="/suppliers">
+                            <!-- <span class="badge bg-green">300</span> -->
+                            <i class="fa fa-home text-light-blue"></i> Proveedores
+                        </a>
+                        <a class="btn btn-app" href="/payment_terms">
+                            <!-- <span class="badge bg-purple">891</span> -->
+                            <i class="fa fa-credit-card text-red"></i> T. pagos
+                        </a>
+                        <a class="btn btn-app">
+                            <!-- <span class="badge bg-teal">67</span> -->
+                            <!-- <i class="fa fa-inbox"></i> Orders -->
+                        </a><h3></h3>
+                    </div>
+                </div>
+                </div>
+                <%end%>
+          </div>
+        </div>
+<% end %>
+<% if current_user.is_warehouser? %>   
+    <div class="">
+      <div class="row">
+            <% if @current_modulo.name == "Inicio" %>     
+           
+                <div class="panel panel-inf">
+                  <div class="panel-head">Productos a recibir </div>
+                    <div class="panel-wrapper collapse in" aria-expanded="true">
+                      <div class="panel-body table-responsive ">
+                            <div id="panel-stock">
+                              <%= (@purchase_order_lines.count > 0) ? render(partial: '/items/access/table_pol', locals: { show_actions: true }) : 'No hay productos recividos' %>    
+                            </div>  
+                      </div>
+                   </div>
+                </div>   
+            <% end %>
+      </div>
+    </div>
+<% end%>
+
+
+ <% if current_user.is_manager? %>  
+ <div class="">
+
+           <div class="">
+                <div class="row">
+                     
+                  <% if @current_modulo.name == "Financiero" %> 
+                     <div class="col-md-12 col-lg-12">
+                    <%  Box.all.each do |box| %> 
+                    <a href="<%= box_path(box)%> ">
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title text-uppercase"><%= box.name %></h5>
+                                <div class="d-flex align-items-center mb-2 mt-4">
+                                    <h2 class="mb-0 display-10"><i class=" fas fa-inbox text-success"></i></h2>
+                                    <div class="ml-auto">
+                                        <h4 class="mb-0 display-6"><span class="font-normal"><%=box.currency.symbol %> <%= box.saldo %></span></h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>   
+                    </a>              
+                    <% end %>
+                  </div>
+                <div class="col-md-12 col-lg-12">
+                     <%  Bank.all.each do |bank| %> 
+                    <a href="<%= bank_path(bank)%> "><div class="col-md-6 col-lg-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title text-uppercase"><%= bank.name %></h5>
+                                <div class="d-flex align-items-center mb-2 mt-4">
+                                    <h2 class="mb-0 display-10"><i class=" f fas fa-credit-card text-purple"></i></h2>
+                                    <div class="ml-auto">
+                                        <h4 class="mb-0 display-6"><span class="font-normal"><%= bank.saldo %></span></h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        </a>
+                    </div>
+                    <% end %>
+                  </div>
+                    <% end %>
+                  </div>
+                </div>
+
+
+
+      
+         <% if @current_modulo.name == "Productos" %> 
+             <div class="panel panel-inf">
+                  <div class="panel-head">Establecer Precios  </div>
+                    <div class="panel-wrapper collapse in" aria-expanded="true">
+                      <div class="panel-body table-responsive ">
+                            <div id="panel-new-prices">
+                                <%= (@pol_prices.count > 0) ? render(partial: 'items_prices', locals: { show_actions: true }) : 'No hay productos pedidos ' %>  
+                            </div>  
+                      </div>
+                   </div>
+                </div> 
+         <% end %>       
+   
+  </div>
+ <% end %>

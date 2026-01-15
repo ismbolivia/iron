@@ -1,0 +1,11 @@
+
+<% if @address.errors.any? %>
+	$('#div-error-address').addClass('alert alert-danger');
+	 document.getElementById("div-error-address").innerHTML = "<h2><%= pluralize(@address.errors.count, 'error') %> prohibited this avenida from being saved:</h2>"+
+	" <ul><% @address.errors.full_messages.each do |message| %><li><%= message %></li><% end %></ul>";
+
+<% else %>
+	$("#client_address_id").html("<option value= '<%=@address.id %>'><%=@address.get_direccion_all %></option>")
+	$("#supplier_address_id").html("<option value= '<%=@address.id %>'><%=@address.get_direccion_all %></option>")
+	$("#new-address-modal").modal("hide");
+<% end %>

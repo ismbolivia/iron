@@ -1,0 +1,53 @@
+
+
+ <%= form_for :currency_rate, url: currency_rates_url, method: :post, remote: true do |form| %>
+
+    
+  <% if @currency_rate.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@currency_rate.errors.count, "error") %> prohibited this currency_rate from being saved:</h2>
+
+      <ul>
+      <% @currency_rate.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+
+
+      <div class="row">
+        <div class="col-sm-1 col-lg-1">
+        </div>
+        <div class="col-sm-4 col-lg-4">
+          <div class="form-group row">
+            <%= form.label :rate, 'Taza de cambio', class: "col-sm-3 text-left control-label col-form-label" %>
+            <div class="col-sm-9">
+              <%= form.text_field :rate , class: "form-control" %>
+               <%= form.hidden_field :currency_id, class: "form-control"%>
+
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-4 col-lg-4">
+            <div class="form-group row">
+              <%= form.label :currency_ref, 'Moneda de referencia', class: "col-sm-3 text-left control-label col-form-label" %>
+              <div class="col-sm-9">
+                 <%= form.collection_select :currency_ref, @currencies, :id, :symbol,
+                            {selected: @currency_rate.currency_ref},
+                            {class: "form-control"} %>
+              </div>
+            </div>
+        </div>
+       
+    </div>
+
+
+<div class="modal-footer">
+      <%= link_to "Cancelar", "#", class: "btn btn-danger ", "data-dismiss": "modal" %>
+       <%= form.submit 'Guardar', :class => "btn btn-success  pull-right" %>
+    </div>
+
+ 
+<% end %>

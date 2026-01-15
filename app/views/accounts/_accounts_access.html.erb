@@ -1,0 +1,54 @@
+<ul class="nav nav-tabs" role="tablist">
+    <li role="presentation" class="active"><a href="#iprofile" aria-controls="profile" role="tab" data-toggle="tab" aria-expanded="true"><span><i class=" fas fa-donate"></i></span> Cobros</a></li>
+
+    <li role="presentation" class=""><a href="#payment" aria-controls="home" role="tab" data-toggle="tab" aria-expanded="false"><span><i class=" fas fa-hand-holding-usd text-info"></i></span>Gastos</a></li>
+
+    <li role="presentation" class=""><a href="#ihome" aria-controls="home" role="tab" data-toggle="tab" aria-expanded="false"><span><i class=" fas fa-hands-helping text-info"></i></span> Transferencia</a></li>     
+</ul>
+<div class="tab-content">
+        <div role="tabpanel" class="tab-pane" id="ihome">
+          <div class="col-md-12 col-sm-12">                                      
+            <div class="white-box">
+                <div class="table-responsive">
+                   <table class="table product-overview">
+                       <h1>trasferencia</h1>
+                        </table>    
+                   </div>     
+                </div>
+              </div>
+           <div class="clearfix"></div>
+
+         </div>
+
+         <div role="tabpanel" class="tab-pane" id="payment">
+          <div class="col-md-12 col-sm-12">                                      
+            <div class="white-box">
+                <div class="table-responsive" id="panel-account-expenses">
+                   <%= render partial: 'accounts/access/table_expenses' %>    
+                   </div>     
+                </div>
+              </div>
+           <div class="clearfix"></div>
+         </div>
+
+    <div role="tabpanel" class="tab-pane active" id="iprofile">
+        <div class="col-md-12 col-sm-12">                                      
+            <div class="white-box">
+                <div class="table-responsive">
+                   <%= render partial: 'accounts/access/table_payments' %> 
+                   </div>     
+                </div>
+              </div>
+           <div class="clearfix"></div>
+		</div>
+
+
+<div role="tabpanel" class="tab-pane" id="payment">
+   <div class="table-responsive">
+           <div class="col-md-12 col-sm-12">
+                                                            
+           </div>
+    </div> 
+</div>
+
+</div>     

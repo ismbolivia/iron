@@ -1,0 +1,46 @@
+<div class="white-box">
+    <div class="table-responsive">
+            <table class="table product-overview">
+              <thead>
+                <tr>
+                  <%= render partial: "pager", locals: { keywords: @keywords, page: @page } %>
+                </tr>
+                <tr>
+                  <th>Inventory</th>
+			      <th>Item</th>
+			      <th>Code item</th>
+			      <th>Name item</th>
+			      <th>Description item</th>
+			      <th>Quantity product</th>
+			      <th>Price purchase total</th>
+			      <th>Price sale total</th>
+			      <th>Variance</th>
+			      <th>User</th>
+			      <th colspan="3"></th>
+                </tr>
+              </thead>
+
+              <tbody>
+               
+                  <% @inventory_items.each do |inventory_item| %>
+		      <tr>
+		        <td><%= inventory_item.inventory_id %></td>
+		        <td><%= inventory_item.item_id %></td>
+		        <td><%= inventory_item.code_item %></td>
+		        <td><%= inventory_item.name_item %></td>
+		        <td><%= inventory_item.description_item %></td>
+		        <td><%= inventory_item.quantity_product %></td>
+		        <td><%= inventory_item.price_purchase_total %></td>
+		        <td><%= inventory_item.price_sale_total %></td>
+		        <td><%= inventory_item.variance %></td>
+		        <td><%= inventory_item.user_id %></td>
+		        <td><%= link_to 'Show', inventory_item %></td>
+		        <td><%= link_to 'Edit', edit_inventory_item_path(inventory_item) %></td>
+		        <td><%= link_to 'Destroy', inventory_item, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+		      </tr>
+                <% end %>
+              </tbody>
+            </table>
+      </div>     
+</div>
+         

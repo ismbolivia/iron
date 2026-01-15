@@ -1,0 +1,87 @@
+<ul class="nav nav-tabs" role="tablist">
+  <li role="presentation" class="active"><a href="#ihome" aria-controls="home" role="tab" data-toggle="tab" aria-expanded="false"><span><i class="fas fa-boxes text-info"></i></span> Cuentas Bancarias</a></li>
+  <li role="presentation" class=""><a href="#checks" aria-controls="profile" role="tab" data-toggle="tab" aria-expanded="true"><span><i class=" fas fa-chart-line text-info"></i></span> Cheques</a></li>
+</ul>
+    <div class="tab-content">
+          <div role="tabpanel" class="tab-pane active" id="ihome">
+            <div class="table-responsive"> 
+               <!-- crear presentacionen el los modelos -->
+             <div id="account_bancks_id">  
+              <table class="table product-overview">
+        				<thead>                               
+        				   <tr>
+        				    <th>Cuenta Bancaria</th>
+        				    <th>Titular</th>
+                    <th>Monto</th>
+        				    <th>Fecha de creación</th>
+        				    <th scope="3"></th>     
+        				   </tr>
+        				</thead>
+        			  <tbody>
+        			  <% bank_accounts.each do |bank_account| %>
+        			      <tr>				                                   
+        			        <td><%= bank_account.number %></td>
+        			        <td><%= bank_account.titular %></td>
+                      <td><%= bank_account.currency.symbol %>(<%= bank_account.total_deposits %>) </td>
+        			        <td><%= bank_account.created_at.strftime( "%m/%d/%Y") %></td>     
+        			        <td><%= link_to 'Show', bank_account, class:'btn btn-info' %></td>                    	
+                      <td><%= link_to 'Destroy', bank_account, method: :delete,  data: { confirm: 'Are you sure?' }, class: 'btn btn-danger' %></td>                
+        				  </tr>
+        				<% end %>
+        			</tbody>
+        		  </table>  
+              </div>
+               <hr>   
+                <div class="row no-print ">
+                  <div class="col-xs-12">                   
+                     <%= link_to 'Back', banks_path, class: 'btn btn-warning'%>		
+      					     <%= link_to 'Registrar cuenta', new_bank_account_path(bank:@bank), class: 'btn btn-success  pull-right ', remote:true %> 
+                  </div>
+                </div>
+              <hr>
+            </div>            
+           </div>
+         <div role="tabpanel" class="tab-pane" id="checks">
+          <div class="table-responsive">    
+             <div class="white-box">
+               <div id="panel-checks">
+                <table class="table product-overview">
+                <thead>                               
+                   <tr>
+                    <th>Nombre del titular</th>
+                    <th>Fecha del giro</th>
+                    <th>Monto</th>
+                    <th>Fecha de creación</th>
+                    <th scope="3"></th>     
+                   </tr>
+                </thead>
+                <tbody>
+                <% @bank.checks.each do |check| %>
+                    <tr>                                           
+                      <td><%= check.titular %></td>
+                      <td><%= check.date_giro %></td>
+                      <td><%= check.amount %></td>
+                      <td><%= check.created_at.strftime( "%m/%d/%Y") %></td>   
+                             
+                      <td><%= link_to 'Destroy', check, method: :delete,  data: { confirm: 'Are you sure?' }, class: 'btn btn-danger', remote:true %></td>                
+                  </tr>
+                <% end %>
+              </tbody>
+              </table> 
+              </div>   
+           
+                <div class="row no-print ">
+                  <div class="col-xs-12">                   
+                     <%= link_to 'Back', banks_path, class: 'btn btn-warning'%>   
+                     <%= link_to 'Registrar Cheque', new_check_path(bank:@bank), class: 'btn btn-success  pull-right ', remote:true %> 
+                  </div>
+                </div>
+              <hr>
+
+            </div>  
+         <!--    <div class="clearfix"></div>   -->   	              
+          </div>
+      </div> 
+</div>
+
+

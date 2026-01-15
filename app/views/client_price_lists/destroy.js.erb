@@ -1,0 +1,4 @@
+$("#price_list_client_id").html('<% @client.price_lists.each do |pl| %><span class="badge bg-purple"><%= pl.name%></span><% end %> ');
+$("#action_price_list_client").html("<%= escape_javascript(render(partial: 'price_lists/table_price_list', locals: { client: @client, show_actions: true })) %>");
+$("#new-payment-modal").modal("hide");
+ toastr.error('¡Lista derogado con exito!');

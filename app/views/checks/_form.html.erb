@@ -1,0 +1,37 @@
+
+<%= form_for :check, url: checks_url, method: :post, remote: true do |form| %>
+      <div id="div-error"></div>
+          <%= form.hidden_field :bank_id, :class =>"form-control" %>
+
+           
+      <div class="form-group">
+        <%= form.label :currency_id, class: "sr-only" %>
+          <div class="input-group">
+             <div class="input-group-addon"><i class="fas fa-diagnoses"></i></div>
+                <%= form.collection_select :currency_id, @currencies, :id, :get_full_name,
+                  {selected: check.currency_id, include_blank: 'Seleccione Moneda'}, {class: "form-control"} %>
+        </div>
+      </div>
+         
+      <div class="form-group">
+            <%= form.label :number, "Numero de Cheque" %>
+            <%= form.number_field :number, :class =>"form-control", placeholder: "000013584276" %>
+      </div>
+      <div class="form-group">
+           <%= form.label :date_giro, "Fecha de Emision " %>
+           <%= form.date_field :date_giro, :class =>"form-control" %>
+      </div>
+      <div class="form-group">
+            <%= form.label :titular, "Nombre del abonado" %>
+            <%= form.text_field :titular, :class =>"form-control" , placeholder: "Luis Cesar Ferrufino"%>
+      </div>
+
+      <div class="form-group">
+            <%= form.label :amount, "Monto a Cobrar" %>
+            <%= form.text_field :amount , :class =>"form-control", placeholder: "250"%>
+      </div>
+
+      <div class="actions">
+            <%= form.submit 'Guardar', :class=>"btn btn-info" %>
+      </div>
+<% end %>

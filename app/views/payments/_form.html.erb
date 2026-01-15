@@ -1,0 +1,65 @@
+
+<!--========== Third Modal ==========-->
+ <%= form_for :payment, url: payments_url, method: :post, remote: true do |form| %>
+<div class="modal-body">
+    <div class="col-md-12">
+      
+       
+           
+    <div class="table-responsive">
+       <div id="div-error"></div>
+         <table class="table table-condensed"><thead>
+        <tr>
+        <th>N° Recibo</th>
+        <th>Venta </th>
+        <th>Metodo de Pago</th>
+        <th>%Descuento</th>
+        </tr></thead>
+            <tbody>
+                <tr>
+                   <td>
+                     <%= form.text_field :num_payment, class: 'form-control', disabled: true %>
+                    </td>
+                    <td>
+                      <%= form.text_field :sale, class: 'form-control' %>
+                      <%= form.hidden_field :sale_id %>
+                      <%= hidden_field_tag :sale_number, :autofocus => true  %>
+                    </td>
+                    <td>
+                     <%= form.collection_select :payment_type_id, @methods, :id, :nethod, 
+                        {selected: @payment.payment_type_id, include_blank: 'Seleccione El Metodo de Pago'},
+                        {class: "form-control"} %>
+                    </td>
+                    <td>
+                         <%= form.text_field :discount, class: 'form-control', value: '0' %>
+                    </td>                       
+                    </tr>
+                    </tbody></table>
+                      <div class="col-md-4"> <p><label>Cliente:</label> <span id="client_id"></span></p></div>
+                         <div class="col-md-4"><p><label>Dirección:</label> <span id="client_dir"></span></p></div>
+                         <div class="col-md-4"><p><label>Saldo:</label> <span id="client_saldo"></span></p></div>
+                            <div class="col-md-8">
+                            <p class='grandTotal'><%= form.label :account, 'Monto' %> $
+                              <%= form.text_field :account, class: 'form-controles m-t-50' , value: '0.0' %>
+                           </p>
+                           </div>
+                           <div class="col-md-4">
+                            <p class='grandTotal'><%= form.label :cambio, 'Cambio' %> $
+                              <%= form.text_field :cambio, class: 'form-controles m-t-50' , value: '0.0', disabled: true %>
+                           </p>
+                           </div>
+                           
+                         <!--   <button data-bind='click: addLine'>Add product</button>
+                           <button data-bind='click: save'>Submit order</button>
+                           <a href='#' data-bind='click: $parent.removeLine'>Remove</a> -->
+                           
+                        
+                      </div>
+                    </div><!-- ends col-12 -->
+
+                </div><div class="clearfix"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger pull-left" data-dismiss="modal">Cerrar</button>
+                   <%= form.submit 'Efectuar Pagoses', class: "btn btn-primary pull-right" %>
+                </div>
+ <% end %>

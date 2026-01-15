@@ -1,0 +1,48 @@
+
+
+<div class="table-responsive ">
+	<table class="table product-overview">
+		<thead>
+            <tr>
+              <th class="text-left">Código</th>				
+			  <th  class="text-left">Descripción</th>
+		      <th  class="text-left">Cant.</th>		     	      
+		      <th  class="text-left">P. Unit</th>
+		      <th  class="text-left">Estado</th>
+		         	      
+		      <th  class="text-left">Cant. Recibida</th>
+		      <th  class="text-left">Subtotal</th>		   
+		       <% if show_actions %>  
+		      <th colspan="2"></th>
+		      <% end %>
+            </tr>
+		</thead>
+		<tbody>
+			<div id="sale-details-index">
+				<%= render partial: "purchase_order_lines/index", locals: {show_actions: show_actions} %>
+			</div>
+			<tr>
+				<td class="thick-line"></td>
+				<td class="thick-line"></td>
+				<td class="thick-line"></td>
+				<td class="thick-line"></td>
+				<td class="thick-line"></td>
+				<td class="thick-line"></td>
+				<td class="thick-line"></td>
+			
+				 <% if show_actions %>
+				 <td class="thick-line"></td>
+				 <td class="thick-line"></td>
+				 <% end %>
+				
+			
+			</tr>
+			
+		</tbody>
+	</table>
+	<div class="pull-right m-t-30 text-right">
+		<p>Sub total: <%=@mycompany.get_current_currency.symbol %> <%= @purchase_order.subtotal %></p>
+		<p>Tarifas impositivas: <%= @mycompany.get_current_currency.symbol%> <%= @purchase_order.total_tax %></p>
+		<h3><b>Total :</b> <%= @mycompany.get_current_currency.symbol%> <%= @purchase_order.total %></h3> 
+	</div>
+</div>

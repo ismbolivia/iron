@@ -1,0 +1,26 @@
+<p id="notice"><%= notice %></p>
+<h1>Payment Type Bank Accounts</h1>
+<table class="table">
+  <thead>
+    <tr>
+      <th>Payment type</th>
+      <th>Bank account</th>
+      <th>Monto</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @payment_type_bank_accounts.each do |payment_type_bank_account| %>
+      <tr>
+        <td><%= payment_type_bank_account.payment_type_id %></td>
+        <td><%= payment_type_bank_account.bank_account_id %></td>
+        <td><%= payment_type_bank_account.monto %></td>
+        <td><%= link_to 'Show', payment_type_bank_account %></td>
+        <td><%= link_to 'Edit', edit_payment_type_bank_account_path(payment_type_bank_account) %></td>
+        <td><%= link_to 'Destroy', payment_type_bank_account, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<br>
+<%= link_to 'New Payment Type Bank Account', new_payment_type_bank_account_path %>

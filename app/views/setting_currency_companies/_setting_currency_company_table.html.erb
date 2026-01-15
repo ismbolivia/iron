@@ -1,0 +1,32 @@
+
+<div class="table-responsive">
+    <table class="table product-overview">
+        <thead>                               
+           <tr>
+            <th>Nombre</th>
+            <th>simbolo</th>
+            <th>Unidad Monetaria</th>
+            <th>Subunidad Monetaria</th>
+            <th>Tipo de cambio</th>
+         
+            </tr>
+        </thead>
+        <tbody>
+        <% @company.currencies.each do |currency| %>
+            <tr>
+                <td><%= currency.name %></td>
+                <td><%= currency.symbol %></td>
+                <td><%= currency.currency_unit_label  %></td>
+                <td><%= currency.currency_subunit_label%></td>   
+                <th><% if currency.currency_rates.count > 0 %>
+                    <%= currency.get_current_currency_rate.rate %>(<%= currency.get_current_currency_rate.get_symbol %>)
+                    <% else %>
+                    Sin registro
+                    <% end %>
+                </th>   
+                                           
+            </tr>
+        <% end %>
+        </tbody>
+    </table>  
+</div> 

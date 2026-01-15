@@ -1,0 +1,28 @@
+<table class="table product-overview">
+  	<thead>             
+        <tr>
+            <th>Fecha</th>
+            <th>Producto</th>
+            <th>Cant Recibida</th>
+            <th>Cant asignada almacen</th>
+            <th>Cant Disponible</th>
+            <th>Pu</th>
+            <th>Orden de compra</th>
+        </tr>
+        </thead>
+        <tbody>
+            <% @purchase_order_lines.each do |pol| %>                
+		        <tr>
+		            <td><%= pol.updated_at.strftime("%d/%m/%Y") %></td>
+		            <td><%= pol.name %></td>
+		            <td><%= pol.qty_received %></td>
+		            <th><%= pol.get_total_warehouse_stock %></th>
+		            <th><%= pol.get_available_line_item %></th>
+		            <td><%= pol.price_unit  %></td>
+		            <td><%= pol.purchase_order.name %></td>
+		            <td> <%= link_to '', new_stock_path(item_id: pol.item.id, total: pol.get_available_line_item, my_pol: pol.id, option_view: 1 ), remote:true, class: "btn btn-success far fa-hand-point-down" %></td>                     
+		        </tr>            
+            <% end %>
+        </tbody>
+       </table>
+

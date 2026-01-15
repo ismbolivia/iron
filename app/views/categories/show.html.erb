@@ -1,0 +1,69 @@
+
+<div class="row">
+	<div class="col-lg-12">
+    <div class="col-lg-1"> </div>
+<div class="col-lg-10">
+<div class="panel panel-inf">
+	<div class="panel-head">Categoria (<%= @category.name %>)</div>
+	  <div class="panel-wrapper collapse in" aria-expanded="true">
+	  	<div class="panel-body">
+	  	  <div class="form-body">
+	  	  	<div align="center" class="text-info">
+  				<h4 ><strong>PRODUCTOS DE LA CATEGORIA (<%= @category.name %>)</strong></h4>
+  				
+			</div>
+				<table class="table table-bordered text-center">
+					<thead>
+					   <tr>
+					    	<% @category.items.limit(3).each_with_index do |item, index| %>
+					    	<% if index == 1 %>
+					    		<th><%= image_tag(item.image.large.url, :alt => "imge-item",  :style => "iwidth:100%; height:350px;") %></th>
+					    	<% else %>
+						    		<th><%= image_tag(item.image.large.url, :alt => "imge-item",  :style => "iwidth:100%; height:200px;") %></th>
+						    	<% end%>
+						    <%end%> 			    
+					    </tr>
+					  </thead>					
+				</table>
+	  	  	 <hr>		       
+			<table class="table">
+			    <thead>
+				    <tr>
+				      <th>Nombre</th>
+				      <th>Descripción</th>
+				      <th>Marca</th>
+				      <th>Fecha</th>
+				      <th colspan="1"></th>
+					</tr>
+					  </thead>
+					  <tbody>
+					    <% @category.items.each do |item| %>
+					      <tr>
+					        <td><%= item.name %></td>
+					        <td><%= item.description %></td>
+					        <td><%= item.brand.name %></td>
+					        <td><%= item.created_at %></td>					   
+					        <td>
+					        <% if can? :read, Item %>
+					        	  <%= link_to 'Ver', item, class: "btn btn-info" %>
+					        <% end %>
+					        </td>
+					      
+					      </tr>
+					    <% end %>
+					  </tbody>
+					</table>
+	
+	      </div>
+		</div>
+ 	</div>
+  </div>
+  </div>
+ <div class="col-lg-1">
+        </div>
+        </div>
+</div>
+
+
+<%= link_to 'Edit', edit_category_path(@category) %> |
+<%= link_to 'Back', categories_path %>

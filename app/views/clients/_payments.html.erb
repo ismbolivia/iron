@@ -1,0 +1,17 @@
+<div class="modal-content-payment">
+  <div class="modal-header modal-header-primary ">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"> [ × ] </button>
+    <h2><i class=" fa fa-money-bill-alt "></i> <%= title %> </h2>
+</div>
+<div class="modal-body">
+
+  <div class="table-responsive">
+  	 <%= render partial: 'layouts/partials/activity_pdf', locals: { url_pdf: clients_payments_pdf_path(client_id: @client.id), url_csv: items_path(format: "csv"), url_xls: items_path(format: "xls") } %>
+  	 <hr>
+        <div class="col-md-12 col-sm-12">
+         	<%=(payments.count > 0) ? render(partial: 'payments/table_all', locals: { payments: payments }) : 'No hay pagos Efectuados' %>                                              
+        </div>
+  </div>
+
+</div>
+</div>

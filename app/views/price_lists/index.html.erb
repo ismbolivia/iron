@@ -1,0 +1,19 @@
+<div class="panel panel-success">
+  <div class="panel-head">Lista de Precios</div>
+  <div class="panel-wrapper collapse in">
+    <div class="panel-body table-responsive ">  
+
+      <%= render partial: 'results_search' %>
+    <div class="col-md-5 col-md-offset-5 col-sm-5 col-sm-offset-5 ">
+      
+          <%= link_to new_price_list_path, {method: :get, class: "btn btn-success"} do %>
+          <span class="glyphicon glyphicon-plus" aria-hidden="true"> </span>
+          <% end %>
+          <%= link_to price_list_for_sale_path(:format => :pdf), {method: :get, class: "btn btn-primary"} do %>
+          <span class="fas fa-download" aria-hidden="true"> </span> 
+          <% end %>
+      
+      </div>
+    </div>
+  </div>
+</div>

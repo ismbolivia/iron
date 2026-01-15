@@ -1,0 +1,23 @@
+ <table class="table product-overview">
+          <thead>                               
+                   <tr>
+                    <th>Nombre del titular</th>
+                    <th>Fecha del giro</th>
+                    <th>Monto</th>
+                    <th>Fecha de creación</th>
+                    <th scope="3"></th>     
+                   </tr>
+                </thead>
+                <tbody>
+                <% @checks.each do |check| %>
+                    <tr>                                           
+                      <td><%= check.titular %></td>
+                      <td><%= check.date_giro %></td>
+                      <td><%= check.amount %></td>
+                      <td><%= check.created_at.strftime( "%m/%d/%Y") %></td>   
+                             
+                      <td><%= link_to 'Destroy', check, method: :delete,  data: { confirm: 'Are you sure?' }, class: 'btn btn-danger', remote:true %></td>                
+                  </tr>
+                <% end %>
+              </tbody>
+        </table>

@@ -1,0 +1,15 @@
+
+    <ul class="navbar-nav navbar-nav-left header-links d-none d-md-flex">
+          <% @modulos_intalled.each do |modulo| %>    
+            <% if can? :read, modulo %>        
+            <a href="/modulos/<%= modulo.id %>" class="<%= modulo.color %> 
+              <% if modulo.active %>
+                <%= "active" %>
+              <% else %><%= "" %>
+              <% end %>">
+              <i class="<%= modulo.icon %>"></i>
+              <h6 class="ajust"><%= modulo.name %></h6>
+            </a>  
+            <% end %>                
+          <% end %>                       
+    </ul>

@@ -1,0 +1,72 @@
+<div class="panel panel-inf">
+	<div class="panel-head">  <%= @country.name %></div>
+	  <div class="panel-wrapper collapse in" aria-expanded="true">
+	  	<div class="panel-body">
+	  	  <div class="form-body">
+	  	  	 <h3 class="box-title text-center">Paices</h3><hr>
+				<div class="col-md-12">
+				<table class="table table-bordered">
+				  <thead>
+				    <tr>
+				      <th>Departamento</th>
+				      <th>Pais_departam</th>
+
+				      <th colspan="4"></th>
+				    </tr>
+				  </thead>
+
+				  <tbody>
+				    <% @country.departamentos.each do |departamento| %>
+				      <tr>
+				        <td><%= departamento.name %></td>
+				        <td>
+				        <select name="country_id" class="form-control" id="<%= departamento.id%>" onclick="changeCountry(<%= departamento.id %>);">
+				        	<% @countries.each do |country| %>
+				        	<% if @country.id == country.id %>
+				        		<option value="<%=country.id%>" selected ><%= country.name%></option>
+				        	<% else %>
+				        		<option value="<%=country.id%>" ><%= country.name%></option>
+						  	<% end %>
+						<% end %>
+						</select>
+				        </td>
+				       	<td>
+				       		 <% departamento.provinces.each do |provi| %>
+					          <span class="badge bg-purple"><%=provi.name %></span>
+					          <% end %>
+				       	</td>
+								<td>    <%= button_to "/to_departamento/"+departamento.id.to_s , {method: :get, class: "btn btn-purple"} do %>
+					            <span class="fas fa-chart-area" aria-hidden="true"> </span>
+					          <% end %></td>
+				        <td><%= link_to '', departamento, :class => "btn btn-success fas fa-eye" %></td>
+				        <td><%= link_to '', edit_departamento_path(departamento), class: "btn btn-primary fas fa-pen-square" %></td>
+				        <td><%= link_to '', departamento, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-danger fas fa-trash" %></td>
+				      </tr>
+				    <% end %>
+				  </tbody>
+				</table>
+				</div>
+
+
+	      </div>
+		</div>
+ 	</div>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<%= link_to 'Edit', edit_country_path(@country) %> |
+<%= link_to 'Back', countries_path %>

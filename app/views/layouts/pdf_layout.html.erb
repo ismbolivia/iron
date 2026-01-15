@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <title>PDF</title>
+ 
+  <%= wicked_pdf_stylesheet_link_tag "pdf/pdf" %>
+  <%= wicked_pdf_javascript_include_tag "number_pages" %>
+</head>
+<body onload='number_pages'>
+  <div class='container' id="content">
+    <%= yield %>
+  </div>
+
+</body>
+</html>

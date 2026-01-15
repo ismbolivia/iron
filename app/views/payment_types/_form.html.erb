@@ -1,0 +1,43 @@
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="panel-body">   
+     <%= form_for :payment_type, url: payment_types_url, method: :post, remote: true do |form| %>  
+          <div id="div-error">           
+          </div>
+
+        <div class="col-xs-12">
+            <div class="form-group">
+              <%= form.label :nethod, 'Nombre del metodo de pago' %>
+              <%= form.text_field :nethod, autofocus: true, placeholder: "Efectivo", class: "form-control" %>
+            </div>
+
+            <div class="form-group">
+               <%= form.label :description, 'Descripción del tipo de pago' %>
+              <%= form.text_area :description, autofocus: false, placeholder: "Detalle las caracteristicas", class: "form-control" %>
+            </div>
+
+
+            <div class="form-group">  
+             <%= form.label :code, 'Codigo interno' %>      
+              <select name="payment_type[code]" class="form-control">
+                <option value="">Selecione una opcción</option>
+                <option value="EF" selected="selected">Efectivo (EF)</option>
+                <option value="CB">Cheque bancario (CB)</option>
+                <option value="DB">Deposito bancario (DB)</option>
+
+              </select>
+            </div>             
+      </div>
+
+      <div class="col-xs-12">
+        <div class="product-img ">        
+           <%= form.submit "Aceptar", class: "btn btn-success" %>     
+
+            <%= link_to 'Back', payment_types_path, class: "btn btn-warning" %>                       
+        </div>
+      </div>       
+      <% end %>
+    </div>
+  </div>
+</div>

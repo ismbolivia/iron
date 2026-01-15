@@ -1,0 +1,19 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: 2019-01-19
+  rate: 9.99
+  currency_id: 1
+  company_id: 1
+  create_uid: 1
+  currency_ref: 1
+  state: false
+
+two:
+  name: 2019-01-19
+  rate: 9.99
+  currency_id: 1
+  company_id: 1
+  create_uid: 1
+  currency_ref: 1
+  state: false

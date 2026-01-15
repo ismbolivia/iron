@@ -1,0 +1,25 @@
+<section class="search-form">
+ <%= form_for search_entity, method: :get do |f| %>
+   <div class="input-group">     
+         <%= label_tag :keywords, nil, class: "sr-only" %>
+         <%= text_field_tag :keywords, nil, placeholder: "Buscar", class: "form-control", value: "#{@keywords}" %>    
+
+         
+         <%= link_to '', "#{url_pdf}", remote:true, class: "btn btn-danger fa fa-file-pdf pull-left  "%>      
+         <%= link_to '', "#{url_csv}", remote:false, class: "btn btn-primary fa fa-file-alt pull-left  "%>  
+         <%= link_to '', "#{url_xls}", remote:false, class: "btn btn-success fa fa-file-excel pull-left  "%>      
+         <%= link_to '', "",  :onclick => 'to_printer();', class: "btn btn-info  fas fa-print pull-left  "%>  
+         
+         
+       
+       <span class="input-group-btn" >
+          <%= button_tag(type: 'submit', class: "btn btn-success") do %>
+          <span class="fas fa-search"></span> Buscar <%= "#{word}" %><% end %>
+          <%= link_to '', "#{view_kamback}", class: "btn btn-primary pull-right fas fa-th" %>
+          <%= link_to '', "#{view_list}", class: "btn btn-info pull-right fas fa-list" %>
+          <%= link_to '', "#{url}",  remote: ban, class: "btn btn-success pull-right fas fa-plus" %>         
+       </span>
+
+   </div>
+<% end %>
+</section>

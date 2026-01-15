@@ -1,0 +1,49 @@
+
+
+<%= form_for :payment_type_bank_account, url: payment_type_bank_accounts_url, method: :post, remote: true do |form| %>
+
+    <div id="div-error-type">
+      
+    </div>
+
+
+<div class="row">
+    <div class="col-xs-12"> 
+      <div id="div-error"></div>
+    </div>
+    <div class="col-xs-12">  
+      <div class="form-group">                    
+       <%= form.hidden_field :payment_type_id, placeholder: "", class: "form-control", placeholder: "Ingrese el monto del deposito" %>
+        <div class="input-group">
+          <div class="input-group-addon"><i class="fas fa-diagnoses"></i></div>
+          <%= form.collection_select :bank_account_id, @bank_accounts, :id, :fullName, 
+              {selected: @payment_type_bank_account.bank_account_id, include_blank: 'Seleccione el numero de cuenta'},
+                          {class: "form-control"} %>  
+        </div>
+      </div>
+    </div>
+</div>
+
+<div class="col-xs-12">         
+      <div class="form-group">
+              <%= form.label :monto, class: "sr-only" %>
+      <div class="input-group">
+         <div class="input-group-addon"><i class="far fa-credit-card"></i></div>
+         <%= form.text_field :monto, placeholder: "", class: "form-control", placeholder: "Ingrese el monto del deposito" %>
+      </div>
+    </div>
+     <div class="form-group">
+              <%= form.label :sale_id, class: "sr-only" %>
+      <div class="input-group">
+        
+         <%= form.hidden_field :sale_id, placeholder: "", class: "form-control", placeholder: "Ingrese el monto del deposito" %>
+      </div>
+    </div>
+</div> 
+<div class="field">
+    <%= form.hidden_field :payment_type_id %>
+</div>
+<div class="actions">
+    <%= form.submit 'Efectuar pago', class: "btn btn-success" %>
+</div>
+<% end %>

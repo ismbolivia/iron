@@ -1,0 +1,82 @@
+<div class="panel panel-inf">
+	<div class="panel-head">   <%= @departamento.name %></div>
+	  <div class="panel-wrapper collapse in" aria-expanded="true">
+	  	<div class="panel-body">
+	  	  <div class="form-body">
+	  	  	 <h3 class="box-title text-center">Provincias</h3><hr>
+
+
+				<div class="col-md-12">
+
+
+				<table class="table table-bordered">
+
+					  <thead>
+					    <tr>
+					      <th>Provincia</th>
+					      <th>departamento</th>
+
+					      <th colspan="4"></th>
+					    </tr>
+					  </thead>
+   						<% @departamento.provinces.each do |province| %>
+					      <tr>
+					        <td><%= province.name %></td>
+					         <td>
+					         	<select name="departamento_id" class="form-control" id="<%= province.id%>" onclick="changeDepartamento(<%= province.id %>);">
+							       <% @departamentos.each do |depa| %>
+							       <% if @departamento.id == depa.id %>
+							       	<option value="<%=depa.id%>" selected><%= depa.name%></option>
+							       <% else %>
+									  <option value="<%=depa.id%>" ><%= depa.name%></option>
+									 <% end %>
+									<% end%>
+								</select>
+					         </td>
+					        <td> <% province.zonas.each do |zona| %>
+					          <span class="badge bg-purple"><%=zona.name %></span>
+					          <% end %></td>
+					          <td>
+						  <%= button_to "/to_province/"+province.id.to_s , {method: :get, class: "btn btn-purple"} do %>
+						            <span class="fas fa-chart-area" aria-hidden="true"> </span>
+						          <% end %>
+
+							 </td>
+					        <td><%= link_to 'Ver', province, :Class => "btn btn-success" %></td>
+					        <td><%= link_to 'Editar', edit_province_path(province), :Class => "btn btn-primary"%></td>
+					        <td><%= link_to 'Eliminar', province, method: :delete, data: { confirm: 'Are you sure?' }, :Class => "btn btn-danger" %></td>
+					      </tr>
+					    <% end %>
+
+					  <tbody>
+
+					  </tbody>
+
+				</table>
+				</div>
+
+	      </div>
+		</div>
+ 	</div>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<%= link_to 'Edit', edit_departamento_path(@departamento) %> |
+<%= link_to 'Back', departamentos_path %>

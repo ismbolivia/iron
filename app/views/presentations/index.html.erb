@@ -1,0 +1,72 @@
+
+
+<div class="card">
+  <div class="card-body">
+  
+      <h2 class="text-center"><strong>PRESENTACIONES DE LOS PRODUCTOS</strong> </h2>
+    <div class="table-responsive">
+      <div id="zero_config_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4 no-footer">
+        <div class="row">
+
+          <div class="col-sm-12">
+            <table class="table product-overview dataTable no-footer" id="zero_config" role="grid" aria-describedby="zero_config_info">
+                <thead>
+                 <tr role="row">
+                  <th class="sorting_asc" tabindex="0" aria-controls="zero_config" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Customer: activate to sort column descending" style="width: 0px;">Nombre</th>
+                  <th class="sorting" tabindex="0" aria-controls="zero_config" rowspan="1" colspan="1" aria-label="Order ID: activate to sort column ascending" style="width: 0px;">Cantidad</th>
+                  <th class="sorting" tabindex="0" aria-controls="zero_config" rowspan="1" colspan="1" aria-label="Status: activate to sort column ascending" style="width: 0px;">Item</th>
+                  <th class="sorting" tabindex="0" aria-controls="zero_config" rowspan="1" colspan="1" aria-label="Photo: activate to sort column ascending" style="width: 0px;">Photo</th>
+                  <th class="sorting" tabindex="0" aria-controls="zero_config" rowspan="1" colspan="1" aria-label="Product: activate to sort column ascending" style="width: 0px;">Unnidad</th>
+                  <th class="sorting" tabindex="0" aria-controls="zero_config" rowspan="1" colspan="1" aria-label="Product: activate to sort column ascending" style="width: 0px;">Precio</th>
+
+               
+                  <th class="sorting" tabindex="0" aria-controls="zero_config" rowspan="1" colspan="1" aria-label="Actions: activate to sort column ascending" style="width: 0px;">Actions</th></tr>
+                </thead>
+                <tbody>   
+                  <% @presentations.each do |presentation| %>                                                                                                                                        
+                <tr role="row" class="odd">
+                    <td class="sorting_1"><%= presentation.name %></td>
+                    <td><%= presentation.qty %></td>
+                     <td> <span class="label label-success font-weight-100"><%= presentation.item.name %></span> </td>
+                    <td><%= image_tag(presentation.image_presentation.medium.url, :alt => "imge-item", :style => "width: 70px;") %></td>
+                    <td><%= presentation.unit.name %></td>
+                    <td><%=@mycompany.get_current_currency.symbol %> <%= presentation.price %></td>
+                   
+                    <td>
+                    <% if can? :update, presentation %>
+                    <%= link_to edit_presentation_path(presentation), {method: :get, class: "text-inverse  btn btn-default"} do %><i class="ti-marker-alt" aria-hidden="true"> </i> 
+                        <% end %>  
+                    <% end %>
+                    <% if can? :read, presentation %>
+                         <%= link_to  presentation, class: "text-inverse btn btn-default " do %>
+                         <i class="ti-eye" aria-hidden="true"> </i> 
+                          <% end %> 
+                    <% end %>
+                    <% if can? :destroy, presentation %>
+                        <%= link_to presentation, { method: :delete, data: { confirm: '¿Está seguro?' }, class: "text-inverse btn btn-default" } do %>
+                        <span class="ti-trash" aria-hidden="true"> </span> 
+                        <% end %> 
+                    <% end %>
+                    </td>                           
+                </tr>
+                 <% end %>
+               </tbody>                                                                               
+            </table>
+  </div>
+</div>
+    <div class="row">
+      <div class="col-sm-12 col-md-5">
+        <div class="dataTables_info" id="zero_config_info" role="status" aria-live="polite">Showing 1 to 8 of 8 entries</div>
+      </div>
+      <div class="col-sm-12 col-md-7">
+        <div class="dataTables_paginate paging_simple_numbers" id="zero_config_paginate"><ul class="pagination"><li class="paginate_button page-item previous disabled" id="zero_config_previous"><a href="#" aria-controls="zero_config" data-dt-idx="0" tabindex="0" class="page-link">Previous</a></li><li class="paginate_button page-item active"><a href="#" aria-controls="zero_config" data-dt-idx="1" tabindex="0" class="page-link">1</a></li><li class="paginate_button page-item next disabled" id="zero_config_next"><a href="#" aria-controls="zero_config" data-dt-idx="2" tabindex="0" class="page-link">Next</a></li>
+          <li class="paginate_button page-item active info"><%= link_to 'Nueva presentación', new_presentation_path, remote:true, class: 'paginate_button page-item active' %></li>
+        </ul>
+        </div>
+      </div>
+    </div>
+</div>
+</div>    
+
+</div>                                                                  
+</div>

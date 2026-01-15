@@ -1,0 +1,27 @@
+<%= form_with(model: desposit_payment, local: true) do |form| %>
+  <% if desposit_payment.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(desposit_payment.errors.count, "error") %> prohibited this desposit_payment from being saved:</h2>
+
+      <ul>
+      <% desposit_payment.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :payment_id %>
+    <%= form.text_field :payment_id %>
+  </div>
+
+  <div class="field">
+    <%= form.label :deposit_id %>
+    <%= form.text_field :deposit_id %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>

@@ -1,0 +1,16 @@
+
+
+<div class="panel panel-success">
+  <div class="panel-head">Cuentas Bancarias</div>
+    <div class="panel-wrapper collapse in" aria-expanded="true">
+      <div class="panel-body table-responsive ">
+        <div class="table-responsive" id="bank_accounts_id">
+             <%= render 'index', bank_accounts: @bank_accounts %>
+        <br>
+        <%= link_to 'Neva Cuenata', new_bank_account_path , class: "btn btn-primary" , remote: true%>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+

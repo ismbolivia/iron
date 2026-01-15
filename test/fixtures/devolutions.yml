@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  sale_id: 1
+  sale_detail_id: 
+  qty: 1
+  mount: 9.99
+  obs: MyText
+
+two:
+  sale_id: 1
+  sale_detail_id: 
+  qty: 1
+  mount: 9.99
+  obs: MyText

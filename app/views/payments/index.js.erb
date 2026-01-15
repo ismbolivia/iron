@@ -1,0 +1,9 @@
+<% if @filter.to_s != "0"%>
+$("#new-pdf-modal").html("<%= escape_javascript(render 'new_payment_pdf') %>");
+
+<% else %> 
+$("#new-pdf-modal").html("<%= escape_javascript(render 'access_payment_report') %>");
+
+
+<% end %>
+$("#new-pdf-modal").modal("show");

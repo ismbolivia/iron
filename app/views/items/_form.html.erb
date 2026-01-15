@@ -1,0 +1,179 @@
+
+ 
+      <%= form_with(model: item, local: true) do |f| %>
+        <% if item.errors.any? %>
+          <div id="error_explanation">
+            <h2><%= pluralize(item.errors.count, "error") %> prohibited this item from being saved:</h2>
+
+            <ul>
+            <% item.errors.full_messages.each do |message| %>
+              <li><%= message %></li>
+            <% end %>
+            </ul>
+          </div>
+        <% end %>
+
+  <div class="row">
+      <div class = "col-lg-12 col-md-12 col-sm-12" >
+        <div class="col-lg-2 col-md-2 col-sm-2">
+           <div class="product-img "> 
+                 <%= image_tag(item.image.thumb.url, :alt => "imge-item", class: "image-form") %>
+                     <div class="fileupload btn btn-info waves-effect waves-light"><span><i class="ion-upload m-r-5"></i>Subir una imagen </span>
+                             <%= f.file_field :image, :class =>"upload"%>
+                    </div>
+           </div>
+          </div>  
+          <div class="col-lg-4 col-md-4 col-sm-4">
+              <div class="form-group">                 
+                  <div class="input-group">
+                    <%= f.text_field :name, placeholder: "Nombre", class: "form-controles m-t-50" %>
+                  </div>
+                   <div class="input-group m-t-50">
+                    <div class="input-group-addon "><i class="fas fa-barcode"></i></div>
+                    <%= f.text_field :code, placeholder: "1010214555", class: "form-control" %>
+                   </div>
+                  <div class="input-group m-t-50">         
+                      <div class="input-group-addon "><i class="fas fa-bookmark"></i></div>
+
+                     <%= f.text_field :brand, placeholder: "Marca", class: "form-control", :placeholder =>"DEBOR" %>                           
+                     <div style="display: none">
+                        <%= f.text_field :brand_id %>
+                     </div>
+                     <div style="display: none">
+                        <%= f.text_field :brand_name %>
+                     </div>
+                  </div>
+
+              </div>
+        </div>
+
+           <div class="col-lg-6 col-md-4 col-sm-6">
+
+              <a class="btn btn-app">
+                <span class="badge bg-yellow"><%= @item.get_total_stock %></span>
+                <i class=" fa fa-building"></i> Stock
+              </a>
+              <a class="btn btn-app">
+                <span class="badge bg-green">300</span>
+                <i class="fa fa-barcode"></i> Products
+              </a>
+              <a class="btn btn-app">
+                <span class="badge bg-purple">891</span>
+                <i class="fa fa-users"></i> Users
+              </a>
+              <a class="btn btn-app">
+                <span class="badge bg-teal">67</span>
+                <i class="fa fa-inbox"></i> Orders
+              </a>
+              <a class="btn btn-app">
+                <span class="badge bg-aqua">12</span>
+                <i class="fa fa-envelope"></i> Inbox
+              </a>
+              <a class="btn btn-app">
+                <span class="badge bg-red">531</span>
+                <i class="fa fa-thumbs-up"></i> Likes
+              </a>
+           </div>
+
+         </div>
+      </div> 
+      <hr>     
+
+        <div class="row">
+
+         <div class="col-md-8">
+        
+        <div class="row">
+        <div class="col-md-6">
+             <div class="form-group">
+               <%= f.label :category_id, "Categoría",  :class =>"control-label"  %>
+                <div class="input-group">
+                  <div class="input-group-addon"><i class="fas fa-pallet"></i></div>
+                 <%= f.collection_select :category_id, @categories, :id, :name,
+                  {selected: @item.category_id, include_blank: 'Seleccione Categoría'}, 
+                  {class: "form-control"} %>
+              </div>               
+          
+             </div>
+           </div>
+                                                <!--/span-->
+          <div class="col-md-6">
+            <div class="form-group">
+               <%= f.label :unit_id, "Unidad", :class =>"control-label" %>
+                   <div class="input-group">
+                      <div class="input-group-addon"><i class="fas fa-chess-pawn"></i></div>
+                      <%= f.collection_select :unit_id, @units, :id, :name, 
+                      {selected: @item.unit_id, include_blank: 'Seleccione Unidad'},
+                      {class: "form-control"} %>  
+                  </div>                       
+
+                </div>
+              </div>
+          </div>
+        
+         <div class="row">
+           
+           <div class="col-md-6">
+             <div class="form-group">
+                <%= f.label :discount, "Descuento al Producto", class: "control-label" %>
+                <div class="input-group">
+                  <div class="input-group-addon"><i class="fas fa-cut">%</i></div>
+                <%= f.number_field :discount, placeholder: "10", class: "form-control" %>
+              </div>
+             </div>
+           </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <%= f.label :description,  :class =>"control-label" %>
+                <div class="input-group">
+                  <div class="input-group-addon"><i class="fas fa-cut">%</i></div>
+                  <%= f.text_area(:description, class: "form-control", :placeholder =>"") %>
+                  </div>
+              </div>
+            </div> 
+         </div>         
+      </div>
+
+      <div class="col-md-4">
+        <div class="row">
+          <div class="col-md-12">            
+             <div class="form-group">
+                <%= f.label :activo, "Opciones", class: "control-label" %>
+                <div class="checkbox">
+                <%= f.check_box :active, :id=>"checkbox-10" %>
+                <label for="checkbox-10"> ¿Activo? </label>                
+              </div>
+              <div class="checkbox">
+                <%= f.check_box :todiscount, :id=>"checkbox-10" %>
+                <label for="checkbox-10"> ¿Aplica descuento? </label>                
+              </div>
+              <div class="checkbox">
+                <%= f.check_box :sold, :id=>"checkbox-10" %>
+                <label for="checkbox-10"> ¿Puede ser vendido? </label>                
+              </div>
+               <div class="checkbox">
+                <%= f.check_box :bought, :id=>"checkbox-10" %>
+                <label for="checkbox-10"> ¿Puede ser comprado? </label>                
+              </div>
+
+              
+             </div>
+           </div>
+          </div>
+         </div> 
+       </div>
+       <hr>
+
+    
+      <div class="row no-print ">
+        <div class="col-xs-12">
+          <%= link_to 'Back', items_path,  class: "btn btn-default "  %>
+
+           <%= f.submit 'Guardar', :class => "btn btn-success  pull-right" %>
+        </div>
+      </div>
+    <hr> 
+  
+      <% end %>
+    
+ 

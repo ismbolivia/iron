@@ -1,0 +1,54 @@
+
+    <div class="row">
+      <div class = "col-lg-12 col-md-12 col-sm-12" >
+        <div class="col-lg-2 col-md-2 col-sm-2">
+           <div class="product-img "> 
+             <%= image_tag(  ActionController::Base.helpers.asset_path('list_prices.png'), :alt => "imge-item", class: "image-form") %>
+                     
+           </div>
+          </div>  
+         <div class="col-lg-4 col-md-4 col-sm-4">
+              <div class="form-group">
+                  <span  class = "form-label-control m-t-50"><%=@price_list.name %></span>                  
+                    </div>
+              <div class="form-group ">
+                 <label >Utilidad <%=@price_list.utilidad %>%</label>
+              </div>
+             </div>
+
+           <div class="col-lg-6 col-md-6 col-sm-6">
+            <%= render partial: 'layouts/partials/search_form', locals: { search_entity: 'price_lists', word: "Item" , view_kamback: '', view_list: '', url_pdf: @price_list, url: new_brand_path, ban: true,url_csv:'',url_xls:'' } %>
+
+              <div class="input-group">
+                <div class="col-xs-12 ">
+                  <%= link_to 'Atras', price_lists_path,  class: " btn btn-default "  %>  
+                </div>
+              </div>
+
+           </div>
+         </div>
+      </div> 
+           
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

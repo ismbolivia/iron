@@ -1,0 +1,43 @@
+es:
+  unauthorized:
+    manage:
+      all: "Usted no tine autorización a esta pagina!"
+
+  activerecord:
+    attributes:
+      models:
+        contact: "Contacto"
+      contact:
+        name: "Nombre"
+        mobile: "Celular"
+        title: "Titulo (Profeción)"
+        job: "Cargo"
+      client:
+        name: "Nombre"  
+        address: "Dirección"
+        price_list: "Lista de precio"
+        phone: "Telefono"
+        mobile: "Celular"
+        address_id: "Dirección"
+        credit_limit: "Limite de credito"
+        discount: "Descuento"
+        price_list_id: "Lista de precio"
+        web_site: "Sitio web"
+    errors:
+      models:
+        contact:
+          attributes:
+            name: 
+              blank: "no admite vacio"
+            mobile: 
+              blank: "no admite vacio"
+        client:
+          attributes:
+            address:
+              required: "es requerido"
+            price_list:
+              required: "es requerido" 
+            name:
+              blank: "no admite el campo vacio"
+            address_id:
+              blank: "no admite el campo vacio"          

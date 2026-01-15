@@ -1,0 +1,21 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  departamento_id: 1
+  province_id: 1
+  zona_id: 1
+  avenida_id: 1
+  calles: MyString
+  coordenadas: 1.5
+  description: MyString
+  country_id: 1
+
+two:
+  departamento_id: 1
+  province_id: 1
+  zona_id: 1
+  avenida_id: 1
+  calles: MyString
+  coordenadas: 1.5
+  description: MyString
+  country_id: 1

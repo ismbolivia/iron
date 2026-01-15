@@ -1,0 +1,1 @@
+json.partial! "box_purchase_order_payments/box_purchase_order_payment", box_purchase_order_payment: @box_purchase_order_payment

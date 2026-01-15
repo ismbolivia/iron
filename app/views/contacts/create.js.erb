@@ -1,0 +1,11 @@
+$("ul.errors").html("");
+<% if @contact.errors.any? %>
+    $("#payment_sale").val("")
+	$('#payment_sale').css('border-color', 'red');
+	$('#div-error').addClass('alert alert-danger');
+	 document.getElementById("div-error").innerHTML = "<h2><%= pluralize(@contact.errors.count, 'errores') %> al intentar guardar el contacto:</h2>"+
+	" <ul><% @contact.errors.full_messages.each do |message| %><li><%= message %></li><% end %></ul>";
+<% else %>
+$("#panel_card_contact").html("<%= escape_javascript(render(partial: 'contacts/card', locals: { client: @client, show_actions: true })) %>");
+$("#new-payment-modal").modal("hide");
+<% end %>

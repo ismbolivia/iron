@@ -1,0 +1,5 @@
+
+
+ var image = document.getElementById('<%= @item.id %>');
+  image.src = "<%= @item.image.large.url%>";
+  $("#new-pdf-modal").modal("hide");

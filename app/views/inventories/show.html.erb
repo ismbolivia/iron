@@ -1,0 +1,131 @@
+<div class="row">
+   <div class="col-lg-1">
+   </div>
+  <div class="col-lg-10">
+   <div class="white-box">
+    <div class="">
+     <h2 class="m-b-0 m-t-0 m-t-40"> Codigo de inventario <%= @inventory.ref %></h2> <h4 class="text-muted db"> <i class="fas fa-warehouse"></i> <%= @inventory.name_warehouse %></h4>
+     <hr>
+       <div class="row">
+          <div class="col-lg-3 col-md-3 col-sm-4">
+            <div class="white-box text-center"> 
+                <i class="fas fa-building fa-10x fa-lg"  ></i>
+            </div>
+        </div>       
+        <div class="col-lg-4 col-md-4 col-sm-4">
+          <h4 class ='m-t-40'><%= @inventory.name_company %></h4>
+         <h4 class=" m-t-40"><i class="fas fa-calendar-alt"></i> <%= @inventory.created_at.strftime("%d/%m/%Y") %></h4>            
+            <h2 class="m-t-40"><%= @mycompany.get_current_currency.symbol%> <%= @inventory.TotalAmountInventory %></h2>            
+                <%= link_to 'Back', inventories_path,  class: "btn btn-warning" %>         
+        </div>
+        <div class="col-lg-5 col-md-4 col-sm-4">
+          <div class="containeres">
+            <div class="element-card">
+              <div class="front-facing">
+                <i class="  ti-layout-column3 abr"></i>
+                
+                <p class="title">Stock</p>
+                <span class="atomic-mass"><%= @inventory.quantity %></span>
+              </div>             
+            </div>            
+            <div class="element-card">
+              <div class="front-facing">
+              <i class="  ti-layout-column2 abr"></i>
+                <p class="title">Previstos</p>               
+                <span class="atomic-mass"><%= @inventory.quantity %></span>
+              </div>
+              
+            </div>
+           <div class="element-card">
+              <div class="front-facing">
+                <i class=" ti-arrows-vertical abr"></i>
+                <p class="title">Movimientos</p>
+                
+                <span class="atomic-mass">282</span>
+              </div>
+            </div>
+            <div class="element-card">
+              <div class="front-facing">
+                 <i class=" ti-money abr"></i>
+                 
+                <p class="title">Valor Total</p>
+                
+                <span class="atomic-mass"> <%= @inventory.TotalAmountInventory %>
+                </span>
+              </div>
+            </div>           
+            <div class="element-card">
+              <div class="front-facing">
+              <i class="  ti-reload abr"></i>
+                <p class="title">Reglas</p>
+                
+                <span class="atomic-mass">282</span>
+              </div>
+            </div>
+            <div class="element-card">
+              <div class="front-facing">
+                 <i class="  ti-archive abr"></i>
+                <p class="title">Archivar</p>                
+                <span class="atomic-mass">282</span>
+              </div>
+            </div>
+            </div>  
+          </div>       
+            </div>
+            <ul class="nav nav-tabs" role="tablist">
+              <li role="presentation" class="active"><a href="#iprofile" aria-controls="profile" role="tab" data-toggle="tab" aria-expanded="true"><span><i class="fas fa-list-alt"></i></span> Detalle</a></li>
+              <li role="presentation" class=""><a href="#ireporte" aria-controls="home" role="tab" data-toggle="tab" aria-expanded="false"><span><i class="far fa-building text-info"></i></span> Reporte</a></li>
+          </ul>
+              <div class="tab-content">
+                <div role="tabpanel" class="tab-pane" id="ireporte">
+                                  
+                   <%= (@inventory.inventory_items.count > 0) ? render(partial: 'inventories/reports/table', locals: { inventory: @inventory, show_actions: false }) : 'No hay items en el inventario' %>                           
+                 </div>
+                  
+                <div role="tabpanel" class="tab-pane active" id="iprofile">
+                  <div class="col-md-12 col-sm-12">
+                       <div class="panel-wrapper collapse in" aria-expanded="true">
+                     <div class="panel-body fixed-table-body ">
+                       
+                       <div class=" ">
+                        <div class="table-responsive pre-scrollable">
+                          <table class="table product-overview ">
+                              <thead>
+                                <tr>
+                                  <th>Fecha</th>                           
+                                  <th>Codigo</th>
+                                  <th>Nombre</th>
+                                  <th>Unidad</th>
+                                  <th>Cant</th>
+                                  <th>Valor Inventario </th>                                                 
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <% @inventory.inventory_items.each do |inventory_item| %>
+                                  <tr>
+                                    <td><%= inventory_item.created_at.strftime("%d/%m/%Y") %></td>   
+                                    <td><%= inventory_item.code_item %></td>
+                                    <td><%= inventory_item.name_item %></td>
+                                    <td><%= inventory_item.description_item %></td>
+                                    <td><%= inventory_item.quantity_product %></td>
+                                    <td><%= @mycompany.get_current_currency.symbol%> 
+                                      <%= inventory_item.price_purchase_total %>                              
+                                    </td>                        
+                                  </tr>
+                                <% end %>
+                              </tbody> 
+                          </table>
+                        </div>     
+                      </div>        
+                    </div>  
+                  </div>
+                  </div>                  
+                  <div class="clearfix"></div>
+                </div>
+              </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-1">
+      </div>
+    </div>

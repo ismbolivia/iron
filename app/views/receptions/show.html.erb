@@ -1,0 +1,44 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Qty in:</strong>
+  <%= @reception.qty_in %>
+</p>
+
+<p>
+  <strong>Total:</strong>
+  <%= @reception.total %>
+</p>
+
+<p>
+  <strong>Fecha:</strong>
+  <%= @reception.fecha %>
+</p>
+
+<p>
+  <strong>Ob:</strong>
+  <%= @reception.ob %>
+</p>
+
+<p>
+  <strong>Warehouse:</strong>
+  <%= @reception.warehouse_id %>
+</p>
+
+<p>
+  <strong>User:</strong>
+  <%= @reception.user_id %>
+</p>
+
+<p>
+  <strong>Company:</strong>
+  <%= @reception.company_id %>
+</p>
+
+<p>
+  <strong>Purchase order line:</strong>
+  <%= @reception.purchase_order_line_id %>
+</p>
+
+<%= link_to 'Edit', edit_reception_path(@reception) %> |
+<%= link_to 'Back', receptions_path %>

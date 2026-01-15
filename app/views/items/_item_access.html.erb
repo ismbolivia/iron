@@ -1,0 +1,110 @@
+<ul class="nav nav-tabs" role="tablist">
+    <li role="presentation" class="active"><a href="#ihome" aria-controls="home" role="tab" data-toggle="tab" aria-expanded="false"><span><i class="fas fa-boxes text-info"></i></span> Presentaciones</a></li>
+
+    <li role="presentation" class=""><a href="#iprofile" aria-controls="profile" role="tab" data-toggle="tab" aria-expanded="true"><span><i class=" fas fa-chart-line text-info"></i></span> Ventas</a></li>
+
+     <li role="presentation" class=""><a href="#note" aria-controls="home" role="tab" data-toggle="tab" aria-expanded="false"><span><i class="fas fa-dolly text-info"></i></span> Pedidos recibidos</a></li>
+     <li role="presentation" class=""><a href="#price" aria-controls="home" role="tab" data-toggle="tab" aria-expanded="false"><span><i class=" far fa-money-bill-alt text-info"></i></span>Precios</a></li>
+     <li role="presentation" class=""><a href="#supplier" aria-controls="home" role="tab" data-toggle="tab" aria-expanded="false"><span><i class="  fas fa-home text-info"></i></span>Proveedores</a></li>
+</ul>
+    <div class="tab-content">
+          <div role="tabpanel" class="tab-pane active" id="ihome">
+            <div class="table-responsive">
+               <!-- crear presentacionen el los modelos -->
+             <div id="presentation_id">
+             <%= (@item.presentations.count > 0) ? render(partial: 'presntations_items', locals: { item: @item, show_actions: true }) : 'No hay presentaciones que mostrar' %>
+
+              </div>
+               <hr>
+               <div class="row no-print ">
+                  <div class="col-xs-12">
+                     <%= link_to "Nueva presentación", new_presentation_path(item_id: @item.id), remote: true, class: "btn btn-info pull-right" %>
+                   </div>
+                </div>
+              <hr>
+            </div>
+           </div>
+
+         <div role="tabpanel" class="tab-pane" id="note">
+          <div class="table-responsive">
+            <div id="panel-stock">
+                <%= (@item.purchase_order_lines.count > 0) ? render(partial: 'tables_pol', locals: { item: @item, show_actions: true }) : 'No hay productos recividos' %>
+
+             </div>
+          </div>
+         </div>
+         <div role="tabpanel" class="tab-pane " id="iprofile">
+                <div class="white-box">
+                      <div class="table-responsive">
+                              <table class="table product-overview">
+                                <thead>
+                                  <tr>
+                                    <th>Fecha</th>
+                                    <th>number</th>
+                                    <th>Usuario</th>
+                                    <th>Cliente</th>
+                                  </tr>
+                                </thead>
+
+                                <tbody>
+                                  <% @item.sales.order(id: :desc).each do |sale| %>
+                                    <tr>
+                                      <td><%= sale.created_at.strftime("%d/%m/%Y") %></td>
+                                      <td>
+
+                                        <% if sale.proformas.count > 0 %>
+                                        <%= link_to sale, {method: :get, class: "badge bg-info"} do %>
+                                       <span aria-hidden="true">  <%= sale.proformas.first.number_recibo %></span>
+                                       <% end %>
+                                       <% else %>
+                                       <span class="badge bg-danger">Sin Nota</span>
+                                       <% end %>
+                                     </td>
+                                      <td><%= sale.user.email  %></td>
+                                      <td><%= sale.client.name%></td>
+                                      <td><%=sale.getSaleDetail(@item.id)%></td>
+                                    </tr>
+                                  <% end %>
+                                </tbody>
+                              </table>
+                        </div>
+                  </div>
+
+           <div class="clearfix"></div>
+		 </div>
+
+    <div role="tabpanel" class="tab-pane" id="price">
+      <div class="table-responsive">
+         <div>
+            <div id="panel-prices">
+                <%= (@item.prices.count > 0) ? render(partial: 'prices/index', locals: { item: @item, show_actions: true }) : 'No hay Precios Disponibles' %>
+            </div>
+              <hr>
+            <div class="row no-print ">
+               <div class="col-xs-12">
+                  <%= link_to "Nuevo Precio", new_price_path(item_id: @item.id), remote: true, class: "btn btn-info pull-right" %>
+              </div>
+          </div>
+           <hr>
+          </div>
+        </div>
+    </div>
+
+
+    <div role="tabpanel" class="tab-pane" id="supplier">
+          <div class="table-responsive">
+            <div>
+               <div id="panel-supplier">
+                <%= (@item.items_suppliers.count > 0) ? render(partial: 'items_suppliers/index', locals: { item: @item, show_actions: true }) : 'No hay Proveedores asignados a este producto...!' %>
+              </div>
+               <hr>
+                  <div class="row no-print ">
+                     <div class="col-xs-12">
+                          <%= link_to "Añadir Proveedor", new_items_supplier_path(item_id: @item.id), remote: true, class: "btn btn-info pull-right" %>
+                      </div>
+                    </div>
+                <hr>
+             </div>
+          </div>
+         </div>
+</div>

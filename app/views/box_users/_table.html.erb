@@ -1,0 +1,24 @@
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Usuario</th>
+      <th>Correo</th>
+      <th>Activo</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% box_users.activo.each do |b_u| %>
+      <tr>
+        <td><%= b_u.user.name %></td>
+        <td><%= b_u.user.email %></td>
+        <td><%= b_u.acction %></td>
+        <td><%= link_to 'Eliminar', b_u, method: :delete, remote:true %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+

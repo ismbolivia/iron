@@ -1,0 +1,37 @@
+<div class="modal-content">
+    <div class="modal-header modal-header-primary">
+      <button type="button" class="close" data-dismiss="modal" aria-hidden="true"> [ × ] </button>
+      <h2><i class="fa fa-upload"></i> Registro de entrada</h2>
+    </div>
+     <% if @box_detail.input?  %>   	   
+    <%= render 'form', box_detail: @box_detail %>
+
+      <% elsif  @box_detail.output? && @box.saldo>0 %>
+       <%= render 'form', box_detail: @box_detail %>
+      <% else %>   
+      <div class="col-md-12 panel">
+      	<div class="panel alert alert-danger">
+      		<h3> ¡No es posible continuar, no tiene saldo...! </h3>
+      	</div>
+      	
+      </div>
+      	
+      <% end %>  		
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

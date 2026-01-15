@@ -1,0 +1,61 @@
+
+<div class="modal-body">
+ 
+  
+     <%= form_for :deposit, url: deposits_url, method: :post, remote: true do |form| %>
+      <% if deposit.errors.any? %>
+        <div id="error_explanation">
+          <h2><%= pluralize(deposit.errors.count, "error") %> prohibited this deposit from being saved:</h2>
+
+          <ul>
+          <% deposit.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+          </ul>
+        </div>
+      <% end %>
+      <div id="errors"></div>
+
+      <div class="row">
+         <div class="col-xs-12"> 
+           <div id="div-error"></div>
+         </div>
+        <div class="col-xs-12">        
+         <div class="form-group">
+           <%= form.number_field :bank_account_id, hidden:true  %>
+
+               <%= form.label :client_id, "Cliente", :class =>"control-label" %>
+                   <div class="input-group">
+                      <div class="input-group-addon"><i class="fas fa-diagnoses"></i></div>
+                      <%= form.collection_select :client_id, @clients, :id, :name, 
+                      {selected: deposit.client_id, include_blank: 'Seleccione un cliente'},
+                      {class: "form-control"} %>  
+                  </div>                       
+          </div>
+        </div>
+      </div>
+      <div class="col-xs-6">         
+            <div class="form-group">
+                <%= form.label :rode, class: "sr-only" %>
+                <div class="input-group">
+                  <div class="input-group-addon"><i class="far fa-credit-card"></i></div>
+                <%= form.text_field :rode, placeholder: "", class: "form-control", placeholder: "Ingrese el monto del deposito" %>
+              </div>
+            </div>
+      </div>
+     <div class="col-xs-6">         
+          <div class="form-group">
+                <%= form.label :numer_recibo, class: "sr-only" %>
+                <div class="input-group">
+                  <div class="input-group-addon"><i class="fas fa-diagnoses"></i></div>
+                  <%= form.text_field :depositante, placeholder: "", class: "form-control", placeholder: "Nombre del depositante" %>
+              </div>
+            </div>
+      </div>
+
+      <div class="actions">
+        <%= form.submit "Guardar", class: "btn btn-primary" %>
+      </div>
+    <% end %>
+</div>
+</div> 

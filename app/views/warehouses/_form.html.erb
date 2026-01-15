@@ -1,0 +1,82 @@
+
+
+  <%= form_with(model: warehouse, local: true) do |form| %>
+  <% if warehouse.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(warehouse.errors.count, "error") %> prohibited this company from being saved:</h2>
+
+      <ul>
+      <% warehouse.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+  <div class="col-md-8"> 
+  <div class="row">
+        <div class="col-md-6">    
+        <div class="form-group">    
+          <%= form.label :ref,  :class =>"control-label" %>          
+            <%= form.text_field :ref, :class =>"form-control", :placeholder =>"#A001" %>
+          </div>
+        </div>    
+        <div class="col-md-6">
+          <div class="form-group">
+              <%= form.label :name,  :class =>"control-label" %>
+              <%= form.text_field :name, :class =>"form-control", :placeholder =>"Almacen Central " %>
+          </div>
+        </div>
+      </div>
+
+       <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <%= form.label :company_id,  :class =>"control-label" %>
+             <%= form.collection_select :company_id, @companies, :id, :name, 
+                      {selected: @warehouse.company_id, include_blank: 'Seleccione su conpañia'},
+                      {class: "form-control"} %>
+          </div>
+        </div>
+
+                                                       <!--/span-->
+          <div class="col-md-6">
+              <div class="form-group">
+                    <%= form.label :active, :class =>"control-label" %>
+                <div class="checkbox  ">
+                      <!-- <input id="checkbox-10" type="checkbox" checked=""> -->
+                      <%= form.check_box :active, :id=>"checkbox-10"  %>
+                        <label for="checkbox-10"> ¿Activo? </label>
+                </div>  
+             </div>
+           </div>
+          </div>   
+        </div>
+
+      <div class="col-md-4">
+         <div class="col-md-12">
+           <%= form.label :description,  :class =>"control-label" %>
+              <div class="row">
+                <div class="col-md-12 ">
+                  <div class="form-group">
+                     <%= form.text_area(:description, class: "form-control") %>
+                  </div>
+                </div>
+             </div> 
+             <div class="form-actions m-t-40 ">
+             <%= form.submit :class => "btn btn-success" %>             
+             <%= link_to 'Back', warehouses_path, :class => "btn btn-default" %>
+           </div>  
+          </div>
+                       
+          </div>
+
+       <% end %>
+
+
+
+
+
+
+
+
+

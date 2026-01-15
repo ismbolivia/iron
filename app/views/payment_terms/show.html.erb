@@ -1,0 +1,29 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @payment_term.name %>
+</p>
+
+<p>
+  <strong>Active:</strong>
+  <%= @payment_term.active %>
+</p>
+
+<p>
+  <strong>Note:</strong>
+  <%= @payment_term.note %>
+</p>
+
+<p>
+  <strong>Company:</strong>
+  <%= @payment_term.company_id %>
+</p>
+
+<p>
+  <strong>Create uid:</strong>
+  <%= @payment_term.create_uid %>
+</p>
+
+<%= link_to 'Edit', edit_payment_term_path(@payment_term) %> |
+<%= link_to 'Back', payment_terms_path %>

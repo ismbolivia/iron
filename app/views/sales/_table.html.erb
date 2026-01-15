@@ -1,0 +1,94 @@
+
+   <% show_actions = show_actions.nil? ? false : show_actions %>
+   
+<div class="table-responsive white-box">
+	<table class="table product-overview">
+		<thead>
+            <tr>
+            	<td class="text-right"><strong>#</strong></td>
+            	<td class="text-right"><strong>CANT.</strong></td>
+				<td><strong>UNIT.</strong></td>
+				<td><strong>DESCRIPCIÓN </strong></td>
+				<td class="text-right"><strong>PL</strong></td>
+				<td class="text-right"><strong> (%)DESC. </strong></td>
+				<td class="text-right"><strong> PVENTA </strong></td>
+				<td class="text-right"><strong>SUBTOTAL</strong></td>
+				<%= show_actions ? '<td colspan=""></td>'.html_safe : "" %>
+            </tr>
+		</thead>
+		<tbody>
+			<div id="sale-details-index">
+				<%= render partial: "sale_details/index", locals: {show_actions: show_actions} %>
+			</div>
+			<tr>
+				<td class="thick-line"></td>
+				<td class="thick-line"></td>
+				<td class="thick-line"></td>
+				
+				<td class="thick-line text-right"><small>(+)Sub total</small></td>
+				<td class="thick-line"></td>
+				<td class="thick-line"></td>
+				<td class="thick-line"></td>
+				
+				<td class="thick-line text-right"><h8><%= @mycompany.get_current_currency.symbol%> <strong id="id_sub_total"><%=(sale.sub_total_before_devolution) %></strong></h8></td>
+				<%= show_actions ? '<td colspan="2" class=""></td>'.html_safe : "" %>
+			</tr>
+			<tr>
+				<td class=""></td>
+				<td class=""></td>
+				<td class=""></td>
+				
+				<% if show_actions %>
+				<td class="text-right"><h6>(-) Descuento.(<strong id="id_devo"><%= number_to_percentage(sale.discount_all, precision: 1) %></strong>)</h6></td>
+				<td class=""></td>
+				<td class=""></td>
+				<td class=""></td>
+				<td class="text-right"><h6><%= @mycompany.get_current_currency.symbol%> <strong id="id_amount_discount"> <%=sale.duscount_mount_all %> </strong> </h6></td>
+				<% else %>
+				<td class="text-right"><h>(-) Descuento.(<%= number_to_percentage(sale.discount_total, precision: 1) %>)</h6></td>
+				<td class=""></td>
+				<td class=""></td>
+				<td class=""></td>
+
+				<td class="text-right"><h6><%= @mycompany.get_current_currency.symbol%><%=sale.duscount_mount_all_final %></h6></td>
+				<% end %>
+				<%= show_actions ? '<td colspan="2" class=""></td>'.html_safe : "" %>
+			</tr>
+
+
+			
+			<tr>
+				<td class=""></td>
+				<td class=""></td>
+				<td class=""></td>
+				
+				<td class="text-right"><h6>(-) Devolución.</h6></td>
+				<td class=""></td>
+				<td class=""></td>
+				<td class=""></td>
+				<td class="text-right"><h6><%= @mycompany.get_current_currency.symbol%><%= sale.total_devolutions_mount %></h6></td>
+				<%= show_actions ? '<td colspan="2" class=""></td>'.html_safe : "" %>
+			</tr>
+				<tr>
+				<td class=""></td>
+				<td class=""></td>
+				<td class=""></td>
+				<td class="text-right"><strong> Total:</strong></td>
+				<td class=""></td>
+				<td class=""></td>
+				<td class=""></td>
+				<% if show_actions %>
+				<td class="text-right"><%= @mycompany.get_current_currency.symbol%><strong id="id_input_currency"><%=sale.total %></strong></td>
+				<% else %>
+				<td class="text-right"><strong id="input_currency"><%= @mycompany.get_current_currency.symbol%><%=sale.total_final %></strong></td>
+				<% end %>
+				<%= show_actions ? '<td colspan="2" class=""></td>'.html_safe : "" %>
+			</tr>
+		</tbody>
+	</table>
+		<% if show_actions %>
+			<label>Son: <strong  id="salida"><%=@mycompany.get_current_currency.montoLiteral(sale.total) %></strong>
+		<% else %>
+			<label>Son: <strong  id="salida"><%=@mycompany.get_current_currency.montoLiteral(sale.total_final) %></strong>
+		<% end %>
+</div>

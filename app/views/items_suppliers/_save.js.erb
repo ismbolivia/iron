@@ -1,0 +1,16 @@
+$("ul.errors").html("");
+	<% if @items_supplier.errors.any? %>
+	$('#div-error').addClass('alert alert-danger');
+	 document.getElementById("div-error").innerHTML = "<h2><%= pluralize(@items_supplier.errors.count, 'error') %> prohibited this zona from being saved:</h2>"+
+	" <ul><% @items_supplier.errors.full_messages.each do |message| %><li><%= message %></li><% end %></ul>";
+<% else %>
+if ('<%= @is_item %>'== 0) {
+	 $("#item_supplier").html("<%= escape_javascript(render(partial: 'suppliers/tables_items', locals: {items_suppliers: @supplier.items_suppliers, show_actions: true })) %>");
+	}else{
+	 $("#panel-supplier").html("<%= escape_javascript(render(partial: 'items_suppliers/index', locals: { item: @item, show_actions: true })) %>");
+	}
+	if(document.getElementById("select_all").checked == false){
+	 $("#new-supplier-modal").modal("hide");		
+	 }																									
+<% end %>
+	

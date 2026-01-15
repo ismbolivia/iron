@@ -1,0 +1,121 @@
+
+  <%= form_for(@purchase_order) do |form| %>
+  <% if @purchase_order.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@purchase_order.errors.count, "error") %> prohibited this pruchase order from being saved:</h2>
+
+      <ul>
+      <% @purchase_order.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+<div class="row">
+  <div class = "col-lg-12 col-md-12 col-sm-12" >
+    <div class="col-lg-2 col-md-2 col-sm-2">
+       <div class="product-img ">
+             <%= image_tag(  ActionController::Base.helpers.asset_path('order.png'), :alt => "imge-item", class: "image-form") %>              
+       </div>
+      </div>
+     <div class="col-lg-4 col-md-4 col-sm-4">
+          <div class="form-group">                      
+              <div class="input-group">
+                <%= form.text_field :name, placeholder: "Pedido", class: "form-controles m-t-50" %>
+              </div>
+              <div class="input-group m-t-50">
+                  <div class="input-group-addon "><i class="fas fa-address-card"></i></div>
+                   <%= form.date_field :date_order, class: "form-control" %>      
+              </div>
+              <div class="input-group m-t-50">
+                  <div class="input-group-addon "><i class="fas fa-address-card"></i></div>
+
+                  <%= form.collection_select :supplier_id, @suppliers, :id, :name,
+                        {selected: @purchase_order.supplier_id,  include_blank: 'Seleccione un proveedor'},
+                        {class: "form-control"} %>                
+              </div>
+          </div>
+        </div>
+        <div class="col-lg-6 col-md-4 col-sm-6">
+            <a class="btn btn-app">
+              <span class="badge bg-yellow"><%= @mycompany.currencies.first.symbol %> <%= @purchase_order.total%></span>
+                <i class="fa fa-money-bill-alt"></i> Total
+            </a>
+            <a class="btn btn-app">
+                <span class="badge bg-green"><%= @mycompany.currencies.first.symbol %> <%= @purchase_order.total_payment_purchase_order%></span>
+                  <i class=" fa fa-hand-holding-usd"></i> Total pagos
+            </a>
+            <a class="btn btn-app">
+                <span class="badge bg-purple"><%= @mycompany.currencies.first.symbol %> <%= @purchase_order.saldo%></span>
+                   <i class="fa fa-piggy-bank"></i> Saldo
+            </a>
+            <a class="btn btn-app">
+                       <!--  <span class="badge bg-teal">67</span>
+                          <i class="fa fa-inbox"></i> Orders -->
+                        </a>
+                        <a class="btn btn-app">
+                          <!-- <span class="badge bg-aqua">12</span>
+                          <i class="fa fa-envelope"></i> Inbox -->
+                        </a>
+                        <a class="btn btn-app">
+                          <!-- <span class="badge bg-red">531</span>
+                          <i class="fa fa-thumbs-up"></i> Likes -->
+                        </a>
+  </div>
+</div>
+</div>
+    <hr>
+    <div class="row">
+          <div class="col-lg-12 col-md-12 col-sm-12">
+              <div class="row">
+              <div class="col-sm-6 col-lg-6">
+                  <div class="form-group row">
+                     <%= form.label :payment_term_id, 'Termino de pago', class: "col-sm-3 text-left control-label col-form-label" %>
+                     <div class="col-sm-9">                   
+                  <%= form.collection_select :payment_term_id, @payment_terms, :id, :name,
+                        {selected: @purchase_order.payment_term_id,  include_blank: 'Seleccione un termino de pago'},
+                        {class: "form-control"} %>
+                     </div>
+                  </div>
+              </div>                         
+              <div class="col-sm-6 col-lg-6">
+                  <div class="form-group row">
+                     <%= form.label :note, 'Nota', class: "col-sm-3 text-left control-label col-form-label" %>
+                     <div class="col-sm-9">
+                          <%= form.text_field :note,  class: "form-control" %>
+                          <input type="hidden" name="" id="key_id" value="1">
+                     </div>
+                  </div>
+              </div>
+
+              </div>
+        </div>
+</div>
+<hr>
+ <div class="row no-print ">
+        <div class="col-xs-12">
+            <%= link_to 'Back', purchase_orders_path,  class: "btn btn-default "  %>
+            <%= form.submit 'Guardar', :class => "btn btn-success  pull-right" %>
+            <%= link_to 'Show', @purchase_order,  class: "btn btn-primary pull-right" , style: "margin-right: 5px;"%>
+        </div>
+  </div>
+<% end %>
+<hr>   
+<ul class="nav nav-tabs" role="tablist">
+    <li role="presentation" class="active"><a href="#iprofile" aria-controls="profile" role="tab" data-toggle="tab" aria-expanded="true"><span><i class="fa fa-box"></i></span> linea de productos</a></li>   
+</ul>
+<div class="tab-content">
+<div role="tabpanel" class="tab-pane active" id="iprofile">
+    <div class="col-md-12 col-sm-12">                
+        <div class="table-responsive">
+           <div class="" id="purchase_order_lines">                            
+              <%= (@purchase_order.purchase_order_lines.count > 0) ? render(partial: 'table', locals: { purchase_order: @purchase_order, show_actions: true }) : 'No hay linea de productos cargados' %>
+           </div> 
+           <hr>                             
+           <%= link_to "Añadir linea de producto", new_purchase_order_purchase_order_line_path(purchase_order_id: @purchase_order.id, supplier: @purchase_order.supplier_id), remote: true, class: "btn btn-info pull-right" %>
+        </div>              
+     </div>
+
+        <div class="clearfix"></div>
+        </div>
+</div>

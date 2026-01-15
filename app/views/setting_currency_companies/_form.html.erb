@@ -1,0 +1,35 @@
+
+     <%= form_for :setting_currency_company, url: setting_currency_companies_url, method: :post, remote: true do |form| %>
+     <div id="div-error-setti_currency" class="col-sm-12"></div>
+  <div class="row">
+        <div class="col-sm-1 col-lg-1">
+        </div>
+        <div class="col-sm-5 col-lg-5">
+          <div class="form-group row">
+            <%= form.label :Company_id, 'Compania', class: "col-sm-3 text-left control-label col-form-label" %>
+            <div class="col-sm-9">
+              <%= form.collection_select :company_id, @companies, :id, :name, 
+                        {selected: @setting_currency_company.company_id, include_blank: 'Seleccione su compañia'},
+                        {class: "form-control"} %>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6 col-lg-6">
+            <div class="form-group row">
+              <%= form.label :currency_id, 'Divisa monetaria', class: "col-sm-3 text-left control-label col-form-label" %>
+              <div class="col-sm-9">
+                <%= form.collection_select :currency_id, @currencies, :id, :name, 
+                        {selected: @setting_currency_company.company_id, include_blank: 'Seleccione una moneda'},
+                        {class: "form-control"} %>
+              </div>
+            </div>
+        </div>
+       
+   </div>
+
+
+   <div class="modal-footer">
+      <%= link_to "Cancelar", "#", class: "btn btn-danger ", "data-dismiss": "modal" %>
+       <%= form.submit 'Guardar', :class => "btn btn-success  pull-right" %>
+    </div>
+<% end %>

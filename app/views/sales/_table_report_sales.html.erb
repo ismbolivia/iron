@@ -1,0 +1,86 @@
+<table class="table">
+  <thead>
+   
+    <tr>
+      
+      <th>N° Nota</th>
+      <th>Cliente</th>
+      <th>Estado</th>
+      <th>Fecha</th>     
+      <th>Total</th>
+      <th>N° Recibo</th>
+      <th>Fecha</th>
+      <th>Monto</th>
+      <th>Saldo</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% disc = 0.0
+    @sale_report_rage.each do |sale| 
+      disc =disc+ sale.total_des_pagos %>
+      <tr>
+        
+        <%if  sale.proformas.count > 0 %>
+           <th class="thick-line"><%= sale.proformas.first.number_recibo %></th>
+        <%else%>
+        <td></td>
+        <%end%>
+        <td class="thick-line"> <%=sale.client.name %></td>  
+        <td class="thick-line"><%= sale.state %></td>
+        <td class="thick-line"><%= sale.date.strftime("%d/%m/%Y") %></td>
+              
+        <td class="thick-line"> <%= @mycompany.get_current_currency.symbol%><%= sale.total_final %></td> 
+        <% if sale.payments.count < 1%>
+        <td class="thick-line"></td>
+        <td class="thick-line"></td>
+        <td class="thick-line"></td>
+        <td class="thick-line" ><%= @mycompany.get_current_currency.symbol%><%= sale.saldo %></td>
+        <% end %>
+        <% sale.payments.each_with_index do |payment, index| %>
+        	 <% if index < 1 %>      	 
+        	 		
+        		<td class="thick-line"><%= payment.get_num_payment %></td>
+        		<td class="thick-line"><%= payment.created_at.strftime("%d/%m/%Y") %></td>
+        		<td class="thick-line"><%= @mycompany.get_current_currency.symbol%><%= payment.rode %></td>
+        		<% if sale.payments.count <= 1 %>
+        		<td class="thick-line"><%= @mycompany.get_current_currency.symbol%><%= sale.saldo %></td>
+        		<% else %>
+        		<th class="thick-line"></th>
+        		<% end %>
+        		
+        	<% else %>
+        	<tr>
+        	 	<td></td>
+        	 	<td><%=sale.client.name %></td>
+        	 	<td></td>
+        	 	<td></td>
+            <td></td>
+        		<td ><%= payment.get_num_payment %></td>
+        		<td><%= payment.created_at.strftime("%d/%m/%Y") %></td>
+        		<td><%= @mycompany.get_current_currency.symbol%><%= payment.rode %></td>
+        		<% if sale.payments.count == index+1 %>
+        		<td ><%= @mycompany.get_current_currency.symbol%><%= sale.saldo %></td>
+        		<% else %>
+        		<td></td>
+        		<% end %>
+        	</tr>
+        	<% end %>
+        	
+        <% end %>         
+      
+      </tr>
+    <% end %>
+    <tr>
+      <td class="thick-line"></td>
+      <td class="thick-line">Totales</td>
+      <td class="thick-line"></td>
+        <td class="thick-line"></td>
+      <td class="thick-line"><%= @mycompany.get_current_currency.symbol%><%= @sale_report_rage.sum(:total) %></td>
+      <td class="thick-line"></td>
+      <td class="thick-line"></td>
+      <td class="thick-line">  <%= @mycompany.get_current_currency.symbol%><%= Payment.where(sale_id: @sale_report_rage.ids).sum(:rode) %></td>
+      <td class="thick-line"> <%= @mycompany.get_current_currency.symbol%><%= @sale_report_rage.sum(:total) - Payment.where(sale_id: @sale_report_rage.ids).sum(:rode)- disc %></td>
+    </tr>
+  </tbody>
+</table>

@@ -1,0 +1,25 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  inventory_id: 1
+  item_id: 1
+  code_item: MyString
+  name_item: MyString
+  description_item: MyString
+  quantity_product: 1
+  price_purchase_total: 1.5
+  price_sale_total: 1.5
+  variance: 1.5
+  user_id: 1
+
+two:
+  inventory_id: 1
+  item_id: 1
+  code_item: MyString
+  name_item: MyString
+  description_item: MyString
+  quantity_product: 1
+  price_purchase_total: 1.5
+  price_sale_total: 1.5
+  variance: 1.5
+  user_id: 1

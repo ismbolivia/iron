@@ -1,0 +1,25 @@
+
+
+<table class="table">
+  <thead>
+    <tr>     
+      <th>Proveedores</th>
+      <th>email</th>
+      <th>Phone</th>
+      <th>Cel:</th>
+      <th colspan="1"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% item.items_suppliers.each do |items_supplier| %>
+      <tr>
+        <td><%= items_supplier.supplier.name %></td>
+        <td><%= items_supplier.supplier.email %></td>
+        <td><%= items_supplier.supplier.phone %></td>
+        <td><%= items_supplier.supplier.mobile %></td>
+        <td><%= link_to 'Desactivar', items_supplier, method: :delete, id:'id_supplier_item', data: { confirm: 'Are you sure?' }, remote:true %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

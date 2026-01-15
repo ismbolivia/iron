@@ -1,0 +1,11 @@
+
+<div class="panel panel-default">
+  <div class="panel-heading">Usuarios</div>
+  <div class="panel-body">
+    <%= render partial: 'layouts/partials/search_form', locals: { search_entity: 'users', word: "Usuario", new: new_item_path , view_kamback: '', view_list: '', url:'', url_pdf:'', ban: false, url_pdf:'',url_csv:'',url_xls:''} %>
+ 
+    
+  </div>
+  <%= render partial: 'results_search' %>
+</div>
+

@@ -1,0 +1,41 @@
+<table class="table product-overview">
+              <thead>
+                <tr>
+                  <th>Código</th>
+                  <th>Nombre</th>
+                  <th>Descripción</th>
+                  <th>Imagen</th>
+                  <th>Unidad</th>
+                  <th>Stock</th>
+                
+                  <th>Categoría</th>
+            
+                  <th>Precio</th>
+                  <th colspan="1"></th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <% items_suppliers.each do |items_supplier| %>
+                  <tr>
+                    <td><%= items_supplier.item.code %></td>
+                    <td><%= items_supplier.item.name  %></td>
+                    <td><%= items_supplier.item.item_description %></td>
+                    <td><%= image_tag(items_supplier.item.image.large.url, :alt => "imge-item", :style => "width: 80px;") %>
+                     </td>
+                    <td><%= items_supplier.item.unit ? items_supplier.item.unit.name : '' %></td>
+                    <td><%= items_supplier.item.stock %></td>
+
+                    <td><%= items_supplier.item.category ? items_supplier.item.category.name : '' %></td>
+                    
+                    <td><%= number_to_currency(items_supplier.item.price) %></td>
+                                     
+                    <td>
+                      <%= button_to items_supplier, { method: :delete, id:'id_item_supplier', data: { confirm: '¿Está seguro?' }, class: "btn btn-warning", remote: true } do %>
+                        <span class="glyphicon glyphicon-trash" aria-hidden="true"> </span>
+                      <% end %>
+                    </td>
+                  </tr>
+                <% end %>
+              </tbody>
+      </table>

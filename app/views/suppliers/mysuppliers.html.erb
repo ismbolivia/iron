@@ -1,0 +1,31 @@
+
+<div class="row">
+    <% @mysuppliers.each do |supplier| %>   
+       <%= link_to new_purchase_order_path(supplier: supplier), {method: :get, class: ""} do %>
+        <div class="col-md-4 ">
+            <div class="card" style="iwidth:100%; height:270px;">
+              <div class="card-body">               
+                    <div class="col-md-12 alert alert-info">
+                        <h3 class="box-title m-b-0 " align="center"> 
+                            <strong><%= supplier.name %></strong> 
+                        </h3>                        
+                    </div>
+                    <div class="col-md-6 " >                       
+                       <%= image_tag(supplier.imagesupplier.medium.url, :alt => "client-img", class: "rounded-circle", style:"width: 120px;" ) %>
+                    </div>
+                    <div class="col-md-6" align="center">
+                       <strong>Dirección</strong>
+                        <address>
+                             <%= supplier.address.get_direccion_all %>                        
+                        </address>
+                        
+                    </div>
+                    <div class="col-md-12 alert alert-warning" align="center"><span>Por pagar:</span></div>
+              
+             </div>
+            </div>
+        </div>
+       <% end%>
+    <% end %>
+</div>
+    

@@ -1,0 +1,137 @@
+
+<div class="modal-body">
+ <%= form_for :items_supplier, url: items_suppliers_url, method: :post, remote: true do |form| %>
+  <% if items_supplier.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(items_supplier.errors.count, "error") %> prohibited this items_supplier from being saved:</h2>
+
+      <ul>
+      <% items_supplier.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+
+<% if @suppliers.count > 0 %>
+  <div class="col-xs-12">
+     <div class="form-group">
+      <%= form.label :supplier_id, 'Proveedores' %>
+      <%= form.collection_select :supplier_id, @suppliers, :id, :name,
+          {selected:  @items_supplier.supplier_id,  include_blank: 'Seleccione un proveedor'},
+          {class: "form-control"} %>
+       <%= form.hidden_field :item_id %>
+
+       <table class="table">
+          <thead>
+            <tr>     
+              <th>Proveedores</th>
+              <th>email</th>
+              <th>Phone</th>
+              <th>Cel:</th>
+              <th colspan="1"></th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <% @suppliers.each_with_index do |supplier, index| %>
+              <tr>
+                <td><%= supplier.name %></td>
+                <td><%= supplier.email %></td>
+                <td><%= supplier.phone %></td>
+                <td><%= supplier.mobile %></td>
+                <td><%= link_to 'Desactivar', supplier, method: :delete, data: { confirm: 'Are you sure?' }, remote:true %></td>
+                <td>          
+                  <div class="group">
+                   <input class="toggle toggle-switch-success group" id="<%= index %>" type="checkbox" />
+                   <label class="toggle-btn" for="<%= index %>"></label>
+                  </div>                
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+
+    </div>
+  </div>
+  <% end %>
+  <% if @items.count > 0 %>
+  <div class="col-xs-12">
+     <div class="form-group">
+      <%= form.label :item_id, 'Productos' %>
+      <%= form.collection_select :item_id, @items, :id, :name,
+          {selected:  @items_supplier.item_id,  include_blank: 'Seleccione un proveedor'},
+          {class: "form-control"} %>
+       <%= form.hidden_field :supplier_id %>
+
+       <table class="table">
+          <thead>
+            <tr>     
+              <th>Code</th>
+              <th>Detalle</th>
+              <th>Marca</th>
+              <th>Categoria</th>
+              <th colspan="1"></th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <%  @items.each do |item| %>
+              <tr>
+                <td><%= item.name %></td>
+                <td><%= item.description %></td>
+                <td><%= item %></td>
+                <td><%= item %></td>
+                <td><%= link_to 'Desactivar', item, method: :delete, data: { confirm: 'Are you sure?' }, remote:true %></td>
+                <td>          
+                  <div class="group">
+                   <input class="toggle toggle-switch-success group" id="<%= item.id%>" type="checkbox"/>
+                   <label class="toggle-btn" for="<%= item.id%>"></label>
+                  </div>
+                
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+
+
+    </div>
+  </div>
+  <% end %>
+  <div class="modal-footer">
+     <%= form.submit "Aceptar", class: "btn btn-primary " %>
+  </div>
+
+<% end %>
+</div>
+
+
+
+
+
+
+
+
+
+<!-- <div class="wrapper">    
+<div class="group">
+
+    <input class="toggle toggle-switch" id="switch11" type="checkbox" checked="checked"/>
+    <label class="toggle-btn" for="switch11"></label>
+</div>
+  <div class="group">
+    <input class="toggle toggle-switch" id="switch22" type="checkbox" checked="checked"/>
+    <label class="toggle-btn" for="switch22"></label>
+</div>
+  <div class="group">
+    <input class="toggle toggle-switch" id="switch33" type="checkbox" checked="checked"/>
+    <label class="toggle-btn" for="switch33"></label>
+</div>
+  <div class="group">
+    <input class="toggle toggle-switch" id="switch44" type="checkbox" checked="checked"/>
+    <label class="toggle-btn" for="switch44"></label>
+</div>
+
+</div> -->

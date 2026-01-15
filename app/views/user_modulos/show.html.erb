@@ -1,0 +1,19 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>User:</strong>
+  <%= @user_modulo.user_id %>
+</p>
+
+<p>
+  <strong>Modulo:</strong>
+  <%= @user_modulo.modulo_id %>
+</p>
+
+<p>
+  <strong>State:</strong>
+  <%= @user_modulo.state %>
+</p>
+
+<%= link_to 'Edit', edit_user_modulo_path(@user_modulo) %> |
+<%= link_to 'Back', user_modulos_path %>

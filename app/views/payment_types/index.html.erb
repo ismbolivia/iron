@@ -1,0 +1,40 @@
+<div class="panel panel-success">
+  <div class="panel-head">Tipo de pagos</div>
+
+
+<div class="modal-body blu">       
+  <div class="row">
+      <% @payment_types.each do |payment_type| %>
+      <% if payment_type.code == "DB" %>       
+      <%= link_to new_payment_type_bank_account_path(:current_sale_id => @sale_id, :payment_type_id => payment_type ), {method: :get, remote: true} do %>
+      <div class="col-sm-4 col-md-4">
+        <label class="btn btn-app"><span class="badge bg-yellow">3</span><i class="fa fa-bullhorn"></i> <%= payment_type.nethod.upcase %>  </label>
+        
+         </div>
+       <% end %>
+      <% end %>
+      <% if payment_type.code == "CB" %>
+         <%= link_to new_check_payment_path(:current_sale_id => @sale_id, :payment_type_id => payment_type ), {method: :get, remote: true} do %>
+      <div class="col-sm-4 col-md-4"> 
+        <label class="btn btn-app"><span class="badge bg-green">300</span><i class="fa fa-barcode"></i> <%= payment_type.nethod.upcase %> </label>              
+        
+         </div>
+         <% end %>
+      <% end %>
+      <% if payment_type.code == "EF" %>
+       <%= link_to new_payment_currency_path(:current_sale_id => @sale_id, :payment_type_id => payment_type ), {method: :get, remote: true} do %>
+        <div class="col-sm-4 col-md-4">
+          <label class="btn btn-app"><span class="badge bg-purple">891</span><i class="fa fa-users"></i> <%= payment_type.nethod.upcase %>  </label>          
+        </div>
+        <% end %>
+      <% end %>
+     <% end %> 
+        
+                         
+    </div>
+      <hr>
+      <div align="center">
+         <%= link_to 'Nuevo tipo de pago', new_payment_type_path, class:"btn btn-success " %>          
+     </div>
+</div>
+</div>

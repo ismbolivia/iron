@@ -1,0 +1,10 @@
+$("ul.errors").html("");
+<% if @currency_rate.errors.any? %>
+    
+	$('#div-error').addClass('alert alert-danger');
+	 document.getElementById("div-error").innerHTML = "<h2><%= pluralize(@currency_rate.errors.count, 'error') %> prohibited this zona from being saved:</h2>"+
+	" <ul><% @currency_rate.errors.full_messages.each do |message| %><li><%= message %></li><% end %></ul>";
+<% else %>
+	$("#currency_rates_id").html("<%= escape_javascript(render(partial: 'currency_rates/index', locals: { currency: @currency, show_actions: true })) %>");
+	$("#new-currency_rates-modal").modal("hide");
+<% end %>

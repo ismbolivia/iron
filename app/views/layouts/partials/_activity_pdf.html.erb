@@ -1,0 +1,9 @@
+
+   <div class="input-group">    
+         <%= link_to '', "#{url_pdf}", remote:true, class: "btn btn-danger fa fa-file-pdf pull-left  "%> 
+
+         <%= link_to '', "#{url_csv}", remote:false, class: "btn btn-primary fa fa-file-alt pull-left  "%>  
+         <%= link_to '', "#{url_xls}", remote:false, class: "btn btn-success fa fa-file-excel pull-left  "%>      
+         <%= link_to '', "",  :onclick => 'to_printer();', class: "btn btn-info glyphicon fas fa-print pull-left  "%>
+     </div>
+ 

@@ -1,0 +1,40 @@
+<table class="table">
+  <thead>
+    <tr>
+      <%= render partial: "pager", locals: { keywords: @keywords, page: @page } %>
+    </tr>
+    <tr>
+      <th>Nombre</th>
+      <th>Nombre corto</th>
+      <th>Dirección</th>
+      <th>Nit</th>
+      <th>Telefono</th>
+      <th>Mobile</th>
+      <th>Email</th>
+      <th>Description</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+  <tbody>
+   <% @suppliers.each do |supplier| %>
+      <tr>
+        <td><%= supplier.name %></td>
+        <td><%= supplier.display_name %></td>
+        <td><%= supplier.address.get_direccion_all %></td>
+        <td><%= supplier.nit %></td>
+        <td><%= supplier.phone %></td>
+        <td><%= supplier.mobile %></td>
+        <td><%= supplier.email %></td>
+        <td><%= supplier.description %></td>
+        <td> <%= link_to new_purchase_order_path(supplier: supplier), {method: :get, class: "btn btn-purple"} do %>
+            <span class=" far fa-list-alt" aria-hidden="true"> </span> 
+          <% end %>
+
+        </td>
+        <td><%= link_to 'Ver', supplier, class: "btn btn-success"  %></td>
+        <td><%= link_to 'Editar', edit_supplier_path(supplier), class: "btn btn-primary" %></td>
+        <td><%= link_to 'Eliminar', supplier, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-danger" %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

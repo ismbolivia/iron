@@ -1,0 +1,1 @@
+json.partial! "purchase_order_lines_taxes/purchase_order_lines_tax", purchase_order_lines_tax: @purchase_order_lines_tax

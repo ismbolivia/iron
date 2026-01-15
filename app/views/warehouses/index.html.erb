@@ -1,0 +1,16 @@
+<div class="panel panel-inf">
+  <div class="panel-head">Alamcenes</div>
+    <div class="panel-wrapper collapse in" aria-expanded="true">
+      <div class="panel-body table-responsive ">
+        <%= render partial: 'layouts/partials/search_form', locals: { search_entity: 'warehouses', word: "Alamacen", view_kamback: '', view_list: '', url: '', ban: false,url_pdf:'',url_xls:'',url_csv:'' } %>
+           <%= render partial: 'results_search' %>
+          <div class="col-md-5 col-md-offset-5 col-sm-5 col-sm-offset-5">
+            <p>
+              <%= button_to new_warehouse_path, {method: :get, class: "btn btn-success"} do %>
+                <span class="fas fa-plus" aria-hidden="true"> </span> Nuev Alamcen
+              <% end %>
+            </p>
+          </div>
+    </div>  
+  </div>
+  </div>

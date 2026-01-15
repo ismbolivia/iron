@@ -1,0 +1,46 @@
+
+<% if @can_credit > 0 %>
+	$("#new-detail-modal").html("<%= escape_javascript(render 'new') %>");
+	$("#new-detail-modal").modal("show");
+<% else %>
+	if ($('#Checkboxes_Grape').is(':checked')){
+		swal({ type: 'error', title: '¡Oops...!', text: '¡No cuenta con credito suficiente, por favor debe cancelar las notas pendientes!' })
+	}else{		
+		$("#new-detail-modal").html("<%= escape_javascript(render 'new') %>");
+		$("#new-detail-modal").modal("show");
+	}	
+<% end %>
+
+
+
+// }else{
+// 	// construir una vista para mesajes de error por favor
+// 	swal("¡Oops..!", "Por favor Selecione un Cliente para poder realizar una venta", "error")
+
+// }
+
+
+
+// swal({
+// 		  title: 'Are you sure?',
+// 		  text: 'You will not be able to recover this imaginary file!',
+// 		  type: 'warning',
+// 		  showCancelButton: true,
+// 		  confirmButtonText: 'Yes, delete it!',
+// 		  cancelButtonText: 'No, keep it',
+// 		}).then(function() {
+// 		  swal(
+// 		    'Deleted!',
+// 		    'Your imaginary file has been deleted.',
+// 		    'success'
+// 		  );
+// 		}, function(dismiss) {
+// 		  // dismiss can be 'overlay', 'cancel', 'close', 'esc', 'timer'
+// 		  if (dismiss === 'cancel') {
+// 		    swal(
+// 		      'Cancelled',
+// 		      'Your imaginary file is safe :)',
+// 		      'error'
+// 		    );
+// 		  }
+// 		});

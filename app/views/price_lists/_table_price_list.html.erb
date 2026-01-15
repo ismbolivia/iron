@@ -1,0 +1,26 @@
+<% if @client.price_lists.count > 0 %>
+      <table class="table product-overview">
+        <thead>                               
+          <tr>
+           <th>#</th>
+           <th>Nombre</th>
+           <th>Utilidad</th>
+           <th>Opcion</th>                      
+          </tr>
+         </thead>
+       <tbody>
+      <% @client.price_lists.each.with_index do |pl, index|  %>
+          <tr>
+            <td><%= index+1 %></td>
+            <td><%= pl.name %></td>
+            <td><%= pl.utilidad %>%</td>
+            <td><%= link_to 'Eliminar', ClientPriceList.where(client_id: @client.id, price_list_id: pl.id ).first, method: :delete, id:'pl_id', data: { confirm: '¿Estas seguro de eliminar la lista.?' }, remote:true, :class  =>"btn btn-danger"%></td>          
+          </tr>
+      <% end %>
+        </tbody>
+      </table> 
+<% else %>
+   <div class="alert alert-warning">  
+     <span>¡No existe lista de precio asignado...! </span>
+   </div>                
+<% end %> 

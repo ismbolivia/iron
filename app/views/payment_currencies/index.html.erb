@@ -1,0 +1,31 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Payment Currencies</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Currency</th>
+      <th>Payment type</th>
+      <th>Sale</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @payment_currencies.each do |payment_currency| %>
+      <tr>
+        <td><%= payment_currency.currency_id %></td>
+        <td><%= payment_currency.payment_type_id %></td>
+        <td><%= payment_currency.sale_id %></td>
+        <td><%= link_to 'Show', payment_currency %></td>
+        <td><%= link_to 'Edit', edit_payment_currency_path(payment_currency) %></td>
+        <td><%= link_to 'Destroy', payment_currency, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Payment Currency', new_payment_currency_path %>

@@ -1,0 +1,10 @@
+$("ul.errors").html("");
+<% if @devolution.errors.any? %>
+	<% @devolution.errors.full_messages.each do |message| %>
+		$("ul.errors").append($("<li />").html(" <%= message.html_safe %> "));
+	<% end %>
+<% else %>	
+	$("#panel_sale_detail_devolution").html("<%= escape_javascript(render(partial: 'devolutions/index', locals: { devolutions: @sale.devolutions })) %>");
+	$("#new-devolution-modal").modal("hide");
+	
+<% end %>

@@ -20,7 +20,7 @@ class PricesController < ApplicationController
     @price.item_id = @item_id
     purchase_order_lines = Item.find(params[:item_id]).purchase_order_lines
     #.or(purchase_order_lines.where(state: 'asignado'))
-    pos = purchase_order_lines.where(state: 'recivido')
+    pos = purchase_order_lines.where(state: 'recibido')
 
     if pos.count >0
        @price.price_purchase = pos.last.price_unit

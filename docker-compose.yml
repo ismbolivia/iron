@@ -1,0 +1,31 @@
+services:
+  db:
+    image: postgres:12
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: sejas
+      POSTGRES_PASSWORD: sejas
+      POSTGRES_DB: siron_production
+    ports:
+      - "5434:5432"
+
+  app:
+    build: .
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - gem_cache:/usr/local/bundle/gems
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    environment:
+      - DATABASE_HOST=db
+      - DATABASE_USERNAME=sejas
+      - DATABASE_PASSWORD=sejas
+      - RAILS_ENV=development
+
+volumes:
+  postgres_data:
+  gem_cache:

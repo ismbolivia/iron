@@ -44,7 +44,7 @@ class StocksController < ApplicationController
            purchase_order_line.asignado!           
          end
         @item =  @stock.item
-        @purchase_order_lines = PurchaseOrderLine.where(state: "recivido")  
+        @purchase_order_lines = PurchaseOrderLine.where(state: "recibido")  
         messagess = 'successesfull' 
       else
          errores = "errors"

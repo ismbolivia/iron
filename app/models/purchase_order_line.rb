@@ -8,7 +8,7 @@ class PurchaseOrderLine < ApplicationRecord
     has_many :receptions
     validates :item_qty, presence: true
     validates :price_unit, presence: true
-	enum state: [:borrador, :confirmado,:parcial, :recivido, :asignado]
+	enum state: [:borrador, :confirmado,:parcial, :recibido, :asignado]
 
 	def subtotal
 		 self.item_qty ? item_qty * price_unit : 0

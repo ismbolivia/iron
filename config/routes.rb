@@ -1,3 +1,4 @@
+
 Rails.application.routes.draw do
   resources :client_price_lists
   resources :box_purchase_order_payments
@@ -10,6 +11,12 @@ Rails.application.routes.draw do
   resources :deposits
   resources :devolutions
   resources :proformas
+  resources :premium_sales do
+    member do
+      post :add_item
+      post :remove_item
+    end
+  end
 #   resources :products do
 #   collection { post :import }
 # end

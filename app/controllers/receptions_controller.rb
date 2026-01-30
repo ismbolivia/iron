@@ -35,7 +35,7 @@ class ReceptionsController < ApplicationController
               @purchase_order_line.save
           elsif @purchase_order_line.item_qty == @purchase_order_line.qty_received
             
-               @purchase_order_line.state = 'recivido'
+               @purchase_order_line.state = 'recibido'
                 @purchase_order_line.save
           else     
             @errores = "La cantidad ingresada es mayor al  pidio!"

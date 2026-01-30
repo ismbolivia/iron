@@ -28,7 +28,7 @@
          <div role="tabpanel" class="tab-pane" id="note">
           <div class="table-responsive">
             <div id="panel-stock">
-                <%= (@item.purchase_order_lines.count > 0) ? render(partial: 'tables_pol', locals: { item: @item, show_actions: true }) : 'No hay productos recividos' %>
+                <%= (@item.purchase_order_lines.count > 0) ? render(partial: 'tables_pol', locals: { item: @item, show_actions: true }) : 'No hay productos recibidos' %>
 
              </div>
           </div>

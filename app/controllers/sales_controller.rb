@@ -1,3 +1,4 @@
+
 class SalesController < ApplicationController
    before_action :set_sale, only: [:create, :show, :edit, :update, :destroy]
    before_action :set_combo_values, only: [:new, :edit, :update, :create]

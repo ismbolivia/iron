@@ -1,0 +1,152 @@
+
+<div id="pos-interface" class="premium-layout">
+  <%= form_for(@sale, url: premium_sale_path(@sale), method: :put, html: { id: "premium-sale-form" }) do |f| %>
+    
+    <!-- Top Bar: Info General -->
+    <div class="pos-topbar glass-effect">
+      <div class="row align-items-center">
+        <div class="col-md-3">
+          <h3 class="m-0 text-white"><i class="fas fa-cash-register"></i> Caja Rápida</h3>
+        </div>
+        <div class="col-md-3">
+          <div class="input-group premium-input-group">
+            <span class="input-group-addon"><i class="fas fa-calendar-alt"></i></span>
+            <%= f.date_field :date, class: "form-control transparent-input text-white" %>
+          </div>
+        </div>
+        <div class="col-md-3">
+           <div class="input-group premium-input-group">
+            <span class="input-group-addon"><i class="fas fa-hashtag"></i></span>
+            <%= f.text_field :number, class: "form-control transparent-input text-white", readonly: true %>
+          </div>
+        </div>
+        <div class="col-md-3 text-right">
+           <span class="badge badge-warning custom-badge">BORRADOR</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="row m-t-20">
+      <!-- Columna Izquierda: Productos y Buscador -->
+      <div class="col-md-8">
+        
+        <!-- Buscador Inteligente -->
+        <div class="search-container card-premium m-b-20 p-20">
+           <div class="form-group m-0 relative">
+             <i class="fas fa-search search-icon"></i>
+             <input type="text" id="pos-product-search" class="form-control pos-search-input" placeholder="Escanear código de barras o buscar producto (F2)..." autocomplete="off">
+             <div id="search-results" class="search-dropdown" style="display:none;"></div>
+           </div>
+        </div>
+
+        <!-- Tabla de Productos -->
+        <div class="products-container card-premium p-0" style="min-height: 400px;">
+          <table class="table table-hover table-pos m-0">
+            <thead>
+              <tr>
+                <th>Producto</th>
+                <th class="text-center" width="120">Cantidad</th>
+                <th class="text-right" width="120">Precio</th>
+                <th class="text-center" width="100">Desc %</th>
+                <th class="text-right" width="120">Subtotal</th>
+                <th width="50"></th>
+              </tr>
+            </thead>
+            <tbody id="pos-items-list">
+               <!-- Aquí se inyectarán los items via AJAX -->
+               <%= render partial: 'premium_sales/items_list', locals: { sale: @sale } %>
+            </tbody>
+          </table>
+          
+          <div id="empty-state" class="text-center p-40 <%= @sale.sale_details.any? ? 'hidden' : '' %>">
+            <i class="fas fa-shopping-basket fa-4x text-muted mb-3 opacity-30"></i>
+            <h4 class="text-muted">No hay productos en la venta</h4>
+            <p class="text-muted">Escanea un código o usa el buscador para comenzar</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Columna Derecha: Cliente y Totales -->
+      <div class="col-md-4">
+        
+        <!-- Cliente Card -->
+        <div class="client-card card-premium m-b-20">
+          <div class="card-header-gradient">
+            <h5 class="m-0"><i class="fas fa-user"></i> Cliente</h5>
+          </div>
+          <div class="p-20">
+            <div class="form-group">
+               <%= f.collection_select :client_id, @clients, :id, :name, {}, { class: "form-control select2-premium", id: "pos-client-select" } %>
+            </div>
+            
+            <div id="client-info-panel">
+               <div class="credit-bar-container m-t-15">
+                 <div class="d-flex justify-content-between mb-1">
+                   <small>Crédito Disponible</small>
+                   <small id="credit-amount-display">--</small>
+                 </div>
+                 <div class="progress" style="height: 6px;">
+                   <div class="progress-bar bg-success" role="progressbar" style="width: 0%;" id="credit-progress-bar"></div>
+                 </div>
+               </div>
+               
+               <div class="d-flex align-items-center justify-content-between m-t-15">
+                 <label class="switch-sm">
+                   <%= f.check_box :credit, id: "pos-credit-switch" %>
+                   <span class="slider round"></span>
+                 </label>
+                 <span id="credit-label-status" class="text-muted font-bold">Venta al Contado</span>
+               </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Totales Card -->
+        <div class="totals-card card-premium">
+          <div class="p-20">
+            <div class="row mb-2">
+              <div class="col-xs-6 text-muted">Subtotal</div>
+              <div class="col-xs-6 text-right font-bold"><%= @mycompany.get_current_currency.symbol %> <span id="pos-subtotal"><%= @sale.sub_total_before_devolution %></span></div>
+            </div>
+            
+            <div class="row mb-2 align-items-center">
+              <div class="col-xs-6 text-muted">Descuento Global</div>
+              <div class="col-xs-6 text-right">
+                <div class="input-group input-group-sm">
+                  <%= f.number_field :discount, class: "form-control text-right", id: "pos-global-discount", placeholder: "0" %>
+                  <span class="input-group-addon">%</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="separator-dashed my-3"></div>
+
+            <div class="total-display text-center m-t-20 m-b-20 animate-pulse">
+              <small class="text-uppercase text-muted tracking-wide">Total a Pagar</small>
+              <h1 class="m-0 text-gradient"><%= @mycompany.get_current_currency.symbol %> <span id="pos-total-big"><%= @sale.total %></span></h1>
+            </div>
+
+            <%= f.submit "Finalizar Venta", class: "btn btn-success btn-block btn-lg btn-gradient m-b-10" %>
+            <%= link_to "Cancelar", premium_sales_path, class: "btn btn-outline-secondary btn-block btn-sm" %>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  <% end %>
+</div>
+
+<!-- Modal oculto para atajos de teclado -->
+<div class="shortcuts-legend">
+  <span class="badge">F2</span> Buscar Producto
+  <span class="badge">F1</span> Cambiar Cliente
+</div>
+
+<% content_for :styles do %>
+  <%= stylesheet_link_tag 'premium_pos' %>
+<% end %>
+
+<% content_for :scripts do %>
+  <%= javascript_include_tag 'premium_pos' %>
+<% end %>

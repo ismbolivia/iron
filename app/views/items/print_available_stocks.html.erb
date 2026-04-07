@@ -82,8 +82,8 @@
     <% unless @available_stocks.empty? %>
       <tfoot>
         <tr>
-          <td colspan="4" class="text-right" style="font-size: 14px; padding: 10px;"><strong>SUMATORIA TOTAL DE STOCK DISPONIBLE:</strong></td>
-          <td class="text-right" style="font-size: 16px; background: #f0fdf4; color: #166534; padding: 10px;"><strong><%= number_with_precision(@available_stocks.sum { |g| g[1] }, precision: 0) %></strong></td>
+          <td colspan="4" class="text-right" style="font-size: 11px; padding: 10px;"><strong>TOTAL STOCK DISPONIBLE:</strong></td>
+          <td class="text-right" style="font-size: 14px; background: #f0fdf4; color: #166534; padding: 10px;"><strong><%= number_with_precision(@available_stocks.sum { |g| g[1] }, precision: 0) %></strong></td>
         </tr>
       </tfoot>
     <% end %>

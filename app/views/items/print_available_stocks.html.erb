@@ -4,15 +4,17 @@
   <title>Lotes Disponibles - <%= @item.code %></title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
   <style>
-    body { font-family: Arial, sans-serif; margin: 20px; font-size: 12px; }
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 10mm; font-size: 10px; color: #1e293b; width: 95mm; }
     table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-    th, td { border: 1px solid #ccc; padding: 6px; text-align: left; }
-    th { background: #f0f0f0; }
-    h2 { margin-bottom: 5px; }
+    th, td { border: 1px solid #cbd5e1; padding: 4px; text-align: left; }
+    th { background: #f8fafc; color: #475569; font-size: 8px; text-transform: uppercase; white-space: nowrap; }
     .text-right { text-align: right; }
     .text-center { text-align: center; }
+    .no-wrap { white-space: nowrap; }
     @media print {
+      @page { size: 105mm 216mm; margin: 0; }
       .no-print { display: none; }
+      body { padding: 5mm; width: 95mm; }
     }
   </style>
 </head>
@@ -22,10 +24,16 @@
     <button onclick="window.close()" style="padding: 10px 20px; font-size: 14px; cursor: pointer; background: #e2e8f0; color: #475569; border: none; border-radius: 4px; margin-left: 10px;"><i class="fas fa-times"></i> Cerrar</button>
   </div>
 
-  <div style="margin-bottom: 20px; border-bottom: 2px solid #334155; padding-bottom: 10px;">
-    <span style="font-size: 1.1rem; color: #64748b; font-weight: 600;">Reporte de Stock Disponible</span><br>
-    <strong style="font-size: 1.6rem; color: #0f172a; display: block; margin-top: 5px;"><%= @item.code %> - <%= @item.name %></strong>
-    <span style="color: #64748b;">Fecha de Impresión: <%= Time.now.strftime("%d/%m/%Y %H:%M") %></span>
+  <div style="margin-bottom: 15px; border-bottom: 1px solid #334155; padding-bottom: 8px; display: flex; align-items: center; gap: 15px;">
+    <% if @mycompany&.logo&.url %>
+      <div style="flex-shrink: 0;">
+        <%= image_tag(@mycompany.logo.url, style: "height: 40px; width: auto; max-width: 80px; object-fit: contain;") %>
+      </div>
+    <% end %>
+    <div style="flex-grow: 1;">
+      <strong style="font-size: 1.25rem; color: #0f172a; display: block; line-height: 1.2;"><%= @item.code %> - <%= @item.name %></strong>
+      <span style="color: #64748b; font-size: 9px; font-weight: 600;">Fecha de Impresión: <%= Time.now.strftime("%d/%m/%Y %H:%M") %></span>
+    </div>
   </div>
 
   <table>
@@ -51,14 +59,14 @@
             repacked = main_stock.respond_to?(:repacking_id) && main_stock.repacking_id.present?
           %>
           <tr>
-             <td class="text-center" style="width: 5%;"><%= index + 1 %></td>
-             <td style="width: 15%;"><%= main_stock.created_at.strftime("%d/%m/%Y") %></td>
-             <td style="width: 35%;">
+             <td class="text-center no-wrap" style="width: 20px;"><%= index + 1 %></td>
+             <td class="no-wrap" style="width: 70px;"><%= main_stock.created_at.strftime("%d/%m/%Y") %></td>
+             <td>
                <strong><%= lot_display_name %></strong>
                <% if moves_count > 1 %><br/><small style="color: #0ea5e9;"><i class="fas fa-sync"></i> Lote consolidado</small><% end %>
                <% if repacked %> <br/><small style="color: #8b5cf6; font-weight: bold;"><i class="fas fa-box-open"></i> Lote Re-empacado</small> <% end %>
              </td>
-             <td class="text-center" style="width: 25%;">
+             <td class="text-center">
                 <% if presentation %>
                     <strong><%= presentation.name %></strong> <br/>
                     <small>(<%= presentation.qty %> <%= @item.unit.name %>s)</small>
@@ -66,7 +74,7 @@
                     Sin Presentación
                 <% end %>
              </td>
-             <td class="text-right" style="font-size: 14px; width: 20%;"><strong><%= number_with_precision(balance, precision: 0) %></strong></td>
+             <td class="text-right no-wrap" style="font-size: 13px; width: 60px;"><strong><%= number_with_precision(balance, precision: 0) %></strong></td>
           </tr>
         <% end %>
       <% end %>

@@ -20,7 +20,27 @@
               </div>
             </div>
           </div>
-           
+
+          <div class="col-xs-6" style="margin-bottom: 15px;">
+            <div class="form-group">
+               <%= form.label :expense_type, 'Tipo de Gasto', style: "font-weight: 700; color: #475569;" %>
+               <div class="input-group">
+                 <div class="input-group-addon"><i class="fas fa-tags"></i></div>
+                 <%= form.select :expense_type, AccountExpense.expense_types.keys.map { |k| [k.capitalize, k] }, {}, class: "form-control", style: "border-radius: 6px;" %>
+               </div>
+            </div>
+          </div>
+
+          <div class="col-xs-6" style="margin-bottom: 15px;">
+            <div class="form-group">
+               <%= form.label :expense_category, 'Categoría', style: "font-weight: 700; color: #475569;" %>
+               <div class="input-group">
+                 <div class="input-group-addon"><i class="fas fa-folder"></i></div>
+                 <%= form.select :expense_category, AccountExpense.expense_categories.keys.map { |k| [k.to_s.gsub('_', ' ').capitalize, k] }, {}, class: "form-control", style: "border-radius: 6px;" %>
+               </div>
+            </div>
+          </div>
+
           <div class="col-xs-12">
             <div class="form-group">
                 <%= form.label :description, class: "sr-only" %>

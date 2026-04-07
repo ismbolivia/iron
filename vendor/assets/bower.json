@@ -2,6 +2,8 @@
   "name": "dsl-generated-dependencies",
   "dependencies": {
     "bootstrap-sass-official": "latest",
-    "typeahead.js": "latest"
+    "typeahead.js": "latest",
+    "moment": "latest",
+    "bootstrap-daterangepicker": "latest"
   }
 }

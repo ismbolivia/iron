@@ -5,116 +5,112 @@
           <div class="col-xs-12">            
           </div>
           <div class="col-xs-12">
-            <div class="col-xs-9">
+            <div class="col-xs-9" style="margin-bottom: 15px;">
               <div class="form-group">
-                  <label>Buscar producto:  </label>
+                  <label style="font-size: 1.1rem; font-weight: 700; color: var(--text-main);">Buscar producto:  </label>
                 
-                  <div class="input-group ">
-                    <div class="input-group-addon">
-                      <i class="fab fa-apple"></i>                    
+                  <div class="input-group input-group-lg">
+                    <div class="input-group-addon" style="background: var(--bg-card); border-right: none;">
+                      <i class="fas fa-search" style="color: var(--accent-indigo);"></i>                    
                     </div>
-                  <%= f.text_field :item, placeholder: "Artículo", class: "form-control", value: nil %>
+                  <%= f.text_field :item, placeholder: "Escribe nombre o código...", class: "form-control", value: nil, style: "font-size: 1.2rem; font-weight: 600;" %>
                 </div>
                   <%= f.hidden_field :item_id %>
                   <%= hidden_field_tag :item_description  %>
                </div>
             </div>
-            <div class="col-xs-3">
+            <div class="col-xs-3" style="margin-bottom: 15px;">
               <div class="form-group">
-                <label>Cantidad disponible: </label>
-                  <div class="input-group">
-                     <div class="input-group-addon"><i class=" fa fa-building"></i></div>
-                     <label class="form-control" id="stock_current"></label>                    
+                <label style="font-size: 1.1rem; font-weight: 700; color: var(--text-muted);">Stock disponible: </label>
+                  <div class="input-group input-group-lg">
+                     <div class="input-group-addon"><i class="fa fa-boxes" style="color: var(--accent-green);"></i></div>
+                     <label class="form-control" id="stock_current" style="font-size: 1.25rem; font-weight: 900; color: var(--accent-green); text-align: center; background: #f8fff9; border-color: #d1e7dd;"></label>                    
                   </div>
               </div>
             </div>
           </div>
 
-        <div class="col-xs-12 ">
+        <div class="col-xs-12" style="background: #f1f5f9; padding: 15px; border-radius: 12px; margin-bottom: 20px;">
           <div class="col-xs-6">
-            <div class="form-group"  id="sale_item_presentations">
-              <label>Selecione presentación: </label>
+            <div class="form-group" id="sale_item_presentations">
+              <label style="font-weight: 700;">Presentación:</label>
                <div class="input-group">
-               <div class="input-group-addon"><i class="fas fa-boxes"></i></div>
-              <select class="form-control" id="sel_presentation_id" onclick=change_qty(value)></select> 
+               <div class="input-group-addon"><i class="fas fa-th-large"></i></div>
+              <select class="form-control" id="sel_presentation_id" onclick=change_qty(value) style="font-size: 1.1rem; font-weight: 600;"></select> 
             </div>
             </div>
           </div>
           <div class="col-xs-3">
             <div class="form-group">
-              <label>Cant. presentación: </label>
+              <label style="font-weight: 700;">Cant. Empaque:</label>
                <div class="input-group">
-               <div class="input-group-addon"><i class="fas fa-braille"></i></div>
-                  <input type="number" name="" class="form-control" id="qty_presentation_id"  >
+               <div class="input-group-addon"><i class="fas fa-layer-group"></i></div>
+                  <input type="number" name="" class="form-control" id="qty_presentation_id" style="font-size: 1.1rem; font-weight: 700;">
                </div>
             </div>
           </div>
            <div class="col-xs-3">
             <div class="form-group">
-                <label>Base unitaria( <strong id="unit_item_id"> </strong>)</label>
+                <label style="font-weight: 700;">Total Unidades (<strong id="unit_item_id"> </strong>)</label>
                  <div class="input-group">
-                  <div class="input-group-addon"><i class="fas fa-braille"></i></div>
-                 <%= f.text_field :qty, placeholder: "Cant.", class: "form-control" %>
+                  <div class="input-group-addon"><i class="fas fa-calculator"></i></div>
+                 <%= f.text_field :qty, placeholder: "0", class: "form-control", style: "font-size: 1.25rem; font-weight: 900; color: var(--accent-indigo);" %>
               </div>
-               
             </div>
           </div>
-           
         </div>
 
-        <div class="col-xs-12" >         
-          <div class="col-xs-2">
+        <div class="col-xs-12" style="margin-top: 10px;">         
+          <div class="col-xs-3">
             <div class="form-group">
-                <label>Precio de lista</label>
+                <label style="font-weight: 600;">Precio Lista</label>
                  <div class="input-group">
-                  <div class="input-group-addon"><i class="fas fa-dollar-sign"></i></div>
-                 <%= f.text_field :price, placeholder: "Precio lista", class: "form-control" , disabled: false%>
+                  <div class="input-group-addon"><i class="fas fa-tag"></i></div>
+                 <%= f.text_field :price, placeholder: "0.00", class: "form-control" , disabled: false, style: "font-weight: 700;" %>
               </div>
-                
             </div>
           </div>
          
-          <div class="col-xs-2">
+          <div class="col-xs-3">
             <div class="form-group">
-               <label>Definir descuento</label>
+               <label style="font-weight: 600;">% Desc.</label>
                 <div class="input-group">
-                  <div class="input-group-addon"><i class="fas fa-cut">%</i></div>
-                  <%= f.text_field :discount, placeholder: "0", class: "form-control", disabled: false %>
+                  <div class="input-group-addon"><i class="fas fa-percent"></i></div>
+                  <%= f.text_field :discount, placeholder: "0", class: "form-control", disabled: false, style: "font-weight: 700; color: var(--accent-red);" %>
               </div>
-                
             </div>
           </div>
 
-           <div class="col-xs-2">
+           <div class="col-xs-3">
             <div class="form-group">
-                <label>Precio de venta</label>
+                <label style="font-weight: 700; color: var(--accent-indigo);">P. Venta</label>
                  <div class="input-group">
-                  <div class="input-group-addon"><i class="fas fa-dollar-sign"></i></div>
-                 <%= f.text_field :price_sale, placeholder: "Precio", class: "form-control" %>
+                  <div class="input-group-addon" style="background: var(--accent-indigo-light);"><i class="fas fa-cash-register" style="color: var(--accent-indigo);"></i></div>
+                 <%= f.text_field :price_sale, placeholder: "0.00", class: "form-control", style: "font-weight: 900; font-size: 1.1rem; border-color: var(--accent-indigo);" %>
               </div>
             </div>
           </div>
 
-           <div class="col-xs-2">
+           <div class="col-xs-3">
             <div class="form-group">
-              <label>Sub total</label>
-                <div class="input-group">
-                  <div class="input-group-addon"><i class="far fa-money-bill-alt"></i></div>
-                   <%= f.text_field :subtotal, placeholder: "0", class: "form-control", disabled: true %>
+              <label style="font-weight: 800; color: #1e293b;">Subtotal</label>
+                <div class="input-group input-group-lg">
+                   <%= f.text_field :subtotal, placeholder: "0.00", class: "form-control", disabled: true, style: "font-weight: 950; font-size: 1.4rem; color: #1e293b; background: white; text-align: right; border: none; box-shadow: none;" %>
               </div>
-             
             </div>
           </div>
-          <div class="col-xs-4">
-            <div class="form-group" id="div_prices">
-                <label>Cambiar lista</label>
+       </div>
+
+       <div class="col-xs-12">
+          <div class="col-xs-12">
+            <div class="form-group" id="div_prices" style="margin-bottom: 0;">
+                <label style="font-weight: 600; font-size: 0.9rem; color: var(--text-muted);">Listas de precio alternativas:</label>
                 <div class="input-group">
-                  <div class="input-group-addon"><i class="far fa-money-bill-alt"></i></div>
+                  <div class="input-group-addon"><i class="fas fa-list-ul"></i></div>
                    <%= f.collection_select :price_id,[], :Object, :name,
-                   {include_blank: 'Seleccione precio'},
-                    {class: "form-control"} %>                  
+                   {include_blank: 'Seleccione otra lista si desea cambiar el precio'},
+                    {class: "form-control", style: "font-size: 0.9rem;"} %>                  
               </div>
-             
             </div>
           </div>
        </div>

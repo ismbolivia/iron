@@ -10,8 +10,7 @@
                   <th>Name</th>
                   <th>Email</th>
                   <th>Rol</th>
-                  
-                 
+                  <th>Sucursal</th>
                   <th>Fecha de Alta</th>
                   <th>Fecha de Modificación</th>
                   <th colspan="2"></th>
@@ -26,9 +25,14 @@
                     </td>
                     <td><%= user.name %></td>
                     <td><%= user.email  %></td>
-                    <td><%= user.rol.name %></td>
-                    
-                    
+                    <td><span class="label label-info"><%= user.rol.name %></span></td>
+                    <td>
+                      <% if user.branch %>
+                        <span class="label label-success"><%= user.branch.name %></span>
+                      <% else %>
+                        <span class="label label-default">Todas (Global)</span>
+                      <% end %>
+                    </td>
                     <td><%= user.created_at.strftime("%d/%m/%Y") %></td>
                     <td><%= user.updated_at.strftime("%d/%m/%Y") %></td>
                     <td>

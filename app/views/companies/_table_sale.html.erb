@@ -10,7 +10,7 @@
         </tr>
     </thead>                
     <tbody>
-     <% @company.get_sales_year.each do |sale| %>
+     <% @company.get_sales_year.includes(:client).order(created_at: :desc).limit(20).each do |sale| %>
         <tr>
           <td><%= sale.number %></td>
           <td><%= sale.date.strftime("%d/%m/%Y") %></td>

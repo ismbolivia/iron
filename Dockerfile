@@ -1,13 +1,12 @@
 # Usa la imagen oficial de Ruby como base
-FROM ruby:2.7.1
+FROM ruby:2.7.8
 
 # Instala dependencias del sistema
 # - build-essential: para compilar gemas con extensiones nativas
 # - libpq-dev: para la gema 'pg' de PostgreSQL
 # - nodejs & yarn: para webpacker y dependencias de JavaScript
 # - imagemagick: para la gema 'mini_magick'
-RUN sed -i -e 's/deb.debian.org/archive.debian.org/g' -e 's/security.debian.org/archive.debian.org/g' -e '/buster-updates/d' /etc/apt/sources.list && \
-    apt-get update -qq && \
+RUN apt-get update -qq && \
     apt-get install -y --no-install-recommends apt-transport-https curl bash && \
     curl -sL https://deb.nodesource.com/setup_16.x | bash - && \
     curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \

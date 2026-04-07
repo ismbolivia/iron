@@ -1,0 +1,42 @@
+Guía para Restaurar la Base de Datos en un Proyecto Rails
+
+Este documento describe los pasos para eliminar una base de datos existente y restaurarla desde un archivo de respaldo.
+
+--------------------------------------------------------------------------------
+
+### PASO 1: Eliminar la Base de Datos Actual
+
+El siguiente comando eliminará la base de datos de desarrollo y de prueba.
+Asegúrate de tener un respaldo antes de ejecutar este comando, ya que es una acción destructiva.
+
+# Elimina las bases de datos definidas en config/database.yml para el entorno actual.
+bundle exec rails db:drop
+
+--------------------------------------------------------------------------------
+
+### PASO 2: Crear la Base de Datos
+
+Después de eliminar la base de datos, necesitas crearla de nuevo antes de poder restaurar los datos.
+
+# Crea las bases de datos para el entorno actual, basándose en la configuración de config/database.yml.
+bundle exec rails db:create
+
+--------------------------------------------------------------------------------
+
+### PASO 3: Restaurar la Base de Datos desde un Respaldo
+
+Este comando utiliza `pg_restore` de PostgreSQL para cargar los datos desde un archivo de respaldo.
+Asegúrate de que la ruta al archivo de respaldo sea la correcta.
+
+# Restaura la base de datos 'siron_production' usando el usuario 'sejas'.
+# Se te pedirá la contraseña para 'sejas'.
+#
+# Opciones:
+# --verbose: Muestra información detallada del proceso.
+# --clean: Elimina los objetos de la base de datos antes de crearlos.
+# --no-acl: No restaura los permisos de acceso (ACLs).
+# --no-owner: No restaura la propiedad de los objetos.
+# -h localhost: El servidor de la base de datos.
+# -U sejas: El usuario de la base de datos.
+# -d siron_production: La base de datos de destino.
+pg_restore --verbose --clean --no-acl --no-owner -h localhost -U sejas -d siron_production /home/caleb/Escritorio/restored/bkbk_2026

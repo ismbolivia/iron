@@ -18,6 +18,8 @@ class PricesController < ApplicationController
     @price = Price.new
     @item_id =  params[:item_id]
     @price.item_id = @item_id
+    @price.price_list_id = PriceList.find_by(default: true)&.id # Pre-poblar con la lista por defecto
+    
     purchase_order_lines = Item.find(params[:item_id]).purchase_order_lines
     #.or(purchase_order_lines.where(state: 'asignado'))
     pos = purchase_order_lines.where(state: 'recibido')
@@ -122,19 +124,13 @@ class PricesController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
   def set_combo_values
-    items_ids = []
-    Item.find(params[:item_id]).price_lists.each do |price_list|
-
-      items_ids.push(price_list.id) 
-    end
-   @price_lists = PriceList.all
-  
+    @price_lists = PriceList.where(default: true)
   end
     def set_price
       @price = Price.find(params[:id])
     end
     # Never trust parameters from the scary internet, only allow the white list through.
     def price_params
-      params.require(:price).permit(:name, :price_purchase, :utility, :price_sale, :active, :item_id, :price_list_id)
+      params.require(:price).permit(:name, :price_purchase, :utility, :price_sale, :active, :item_id, :price_list_id, :opex_margin)
     end
 end

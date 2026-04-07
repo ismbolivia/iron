@@ -24,6 +24,19 @@
              </div>
             </div>
           </div>
+
+      <div class="col-xs-12">
+        <div class="form-group">
+          <%= form.label :presentation_id, "Empaque / Jerarquía", class: "sr-only" %>
+          <div class="input-group">
+            <div class="input-group-addon"><i class="fas fa-layer-group"></i></div>
+            <%= form.collection_select :presentation_id, @presentations, :id, :hierarchy_name,
+                {include_blank: 'UNIDADES (SIN ETIQUETAR)'}, 
+                {class: "form-control", style: "border: 2px solid #4f46e5; border-radius: 8px; font-weight: 800; color: #4f46e5;"} %>
+          </div>
+          <small class="text-muted">La presentación determina cuántas etiquetas se imprimirán para este lote.</small>
+        </div>
+      </div>
         <div class="col-xs-4">
           <div id="div-error"></div>
             <div class="form-group">

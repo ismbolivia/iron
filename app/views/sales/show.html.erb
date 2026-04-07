@@ -19,7 +19,9 @@
                 <h4 class="m-t-40">Venta: <%= @sale.iscredit %></h4>
                 <h4 class="m-t-40">Saldo: <%=@mycompany.get_current_currency.symbol %> <%= @sale.saldo %></h4>
                   <ul class="list-icons">
-                      <li>Vencimiento:<i class="fas fa-calendar text-success"></i> <%= @sale.credit_expiration.strftime("%d/%m/%Y") %></li>
+                      <% if @sale.credit_expiration.present? %>
+                        <li>Vencimiento:<i class="fas fa-calendar text-success"></i> <%= @sale.credit_expiration.strftime("%d/%m/%Y") %></li>
+                      <% end %>
                   </ul>
             </div>
             <div class="col-lg-5 col-md-4 col-sm-4">                
@@ -41,21 +43,29 @@
  <div class="row no-print ">
         <div class="  col-lg-12">        
           <%= link_to 'Back', sales_path,  class: "btn btn-default btn-rounded"  %> 
-           <% if @sale.proformas.count > 0 %>
-          <%= link_to 'Imprimir', sale_path(@sale, format: 'pdf'), class: "btn btn-warning "  %>         
+           <% if @sale.proformas.count > 0 || @sale.quoted? %>
+          <%= link_to (@sale.quoted? ? 'Imprimir Cotización' : 'Imprimir'), sale_path(@sale, format: 'pdf'), class: "btn btn-warning ", target: "_blank" %>         
+          <% if @sale.proformas.count > 0 %>
+            <%= link_to 'Orden Despacho', dispatch_note_sale_path(@sale, format: 'pdf'), class: "btn btn-info", target: "_blank" %>
           <% end %>
-           <% if @sale.proformas.count == 0 %>
+          <% end %>
+           <% if @sale.proformas.count == 0 && !@sale.quoted? %>
            <%= link_to 'Crear Recibo', new_proforma_path(sale_id: @sale.id), remote:true, id:"id_crear_recibo", class: "btn btn-warning "  %> 
            <% end %>
           
-           <%= link_to edit_sale_path(@sale), {method: :get, class: "btn btn-primary  pull-right"} do %><i class="ti-marker-alt" aria-hidden="true"> </i> 
+           <% if @sale.quoted? || @sale.draft? %>
+              <%= link_to "/pos?sale_id=#{@sale.id}", class: "btn btn-primary pull-right", style: "margin-left: 10px;" do %>
+                <i class="fas fa-cash-register"></i> Editar en POS
+              <% end %>
+           <% end %>
+           <%= link_to edit_sale_path(@sale), {method: :get, class: "btn btn-default pull-right"} do %><i class="ti-marker-alt" aria-hidden="true"> </i> 
            <% end %>
           
           <% if @sale.canceled %>
              <div class="centrado canceled">ANULADO</div>
           <%end %>
           <% if @sale.completed %>
-             <div class="centrado complet">CANCELADO</div>
+             <div class="centrado complet">PAGADA</div>
           <%end %>       
         
         </div>

@@ -1,0 +1,33 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Transfer Details</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Transfer</th>
+      <th>Item</th>
+      <th>Quantity</th>
+      <th>Observation</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @transfer_details.each do |transfer_detail| %>
+      <tr>
+        <td><%= transfer_detail.transfer %></td>
+        <td><%= transfer_detail.item %></td>
+        <td><%= transfer_detail.quantity %></td>
+        <td><%= transfer_detail.observation %></td>
+        <td><%= link_to 'Show', transfer_detail %></td>
+        <td><%= link_to 'Edit', edit_transfer_detail_path(transfer_detail) %></td>
+        <td><%= link_to 'Destroy', transfer_detail, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Transfer Detail', new_transfer_detail_path %>

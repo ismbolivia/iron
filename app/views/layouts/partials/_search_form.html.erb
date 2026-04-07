@@ -1,25 +1,63 @@
-<section class="search-form">
- <%= form_for search_entity, method: :get do |f| %>
-   <div class="input-group">     
-         <%= label_tag :keywords, nil, class: "sr-only" %>
-         <%= text_field_tag :keywords, nil, placeholder: "Buscar", class: "form-control", value: "#{@keywords}" %>    
-
-         
-         <%= link_to '', "#{url_pdf}", remote:true, class: "btn btn-danger fa fa-file-pdf pull-left  "%>      
-         <%= link_to '', "#{url_csv}", remote:false, class: "btn btn-primary fa fa-file-alt pull-left  "%>  
-         <%= link_to '', "#{url_xls}", remote:false, class: "btn btn-success fa fa-file-excel pull-left  "%>      
-         <%= link_to '', "",  :onclick => 'to_printer();', class: "btn btn-info  fas fa-print pull-left  "%>  
-         
-         
+<section class="search-form" style="margin-bottom: 2rem;">
+  <%= form_for search_entity, method: :get do |f| %>
+    <div style="display: flex; gap: 0.8rem; align-items: stretch; background: white; padding: 0.8rem; border-radius: 16px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.03); flex-wrap: wrap;">
        
-       <span class="input-group-btn" >
-          <%= button_tag(type: 'submit', class: "btn btn-success") do %>
-          <span class="fas fa-search"></span> Buscar <%= "#{word}" %><% end %>
-          <%= link_to '', "#{view_kamback}", class: "btn btn-primary pull-right fas fa-th" %>
-          <%= link_to '', "#{view_list}", class: "btn btn-info pull-right fas fa-list" %>
-          <%= link_to '', "#{url}",  remote: ban, class: "btn btn-success pull-right fas fa-plus" %>         
-       </span>
+       <!-- Input de Búsqueda -->
+       <div style="flex-grow: 1; display: flex; align-items: center; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 0 12px; transition: all 0.2s;">
+          <i class="fas fa-search" style="color: #64748b; font-size: 1.1rem;"></i>
+          <%= text_field_tag :keywords, nil, placeholder: "Buscar #{defined?(word) ? word : 'artículo'}...", class: "form-control", value: "#{@keywords}", style: "border: none !important; background: transparent !important; padding: 10px 12px !important; height: auto !important; width: 100%; box-shadow: none !important; color: #1e293b; font-weight: 600; font-size: 0.95rem; margin: 0;" %>
+       </div>
 
-   </div>
-<% end %>
+       <!-- Botones de Exportar -->
+       <div style="display: flex; gap: 4px; align-items: center;">
+          <% if defined?(url_pdf) && url_pdf.present? %>
+             <%= link_to "#{url_pdf}", remote: true, class: "btn btn-sm", style: "background: #fef2f2; color: #ef4444; border: 1px solid #fecaca; padding: 9px 12px; border-radius: 10px;", title: "Exportar PDF" do %>
+                <i class="fas fa-file-pdf"></i>
+             <% end %>
+          <% end %>
+          
+          <% if defined?(url_csv) && url_csv.present? %>
+             <%= link_to "#{url_csv}", remote: false, class: "btn btn-sm", style: "background: #eff6ff; color: #2563eb; border: 1px solid #dbeafe; padding: 9px 12px; border-radius: 10px;", title: "Exportar CSV" do %>
+                <i class="fas fa-file-alt"></i>
+             <% end %>
+          <% end %>
+          
+          <% if defined?(url_xls) && url_xls.present? %>
+             <%= link_to "#{url_xls}", remote: false, class: "btn btn-sm", style: "background: #f0fdf4; color: #166534; border: 1px solid #dcfce7; padding: 9px 12px; border-radius: 10px;", title: "Exportar Excel" do %>
+                <i class="fas fa-file-excel"></i>
+             <% end %>
+          <% end %>
+
+          <button type="button" onclick="to_printer();" class="btn btn-sm" style="background: #ecfeff; color: #0891b2; border: 1px solid #cffafe; padding: 9px 12px; border-radius: 10px;" title="Imprimir">
+             <i class="fas fa-print"></i>
+          </button>
+       </div>
+
+       <!-- Botones de Vista y Creación -->
+       <div style="display: flex; gap: 6px; align-items: center; margin-left: auto;">
+          <%= button_tag type: 'submit', class: "btn-premium-action btn-indigo", style: "padding: 9px 16px; border-radius: 12px; font-weight: 800; border: none; font-size: 0.9rem; height: 100%;" do %>
+             <i class="fas fa-search mr-1"></i> Buscar
+          <% end %>
+
+          <% if defined?(view_kamback) && view_kamback.present? %>
+             <%= link_to "#{view_kamback}", class: "btn btn-sm", style: "background: #f8fafc; color: #475569; border: 1px solid #e2e8f0; padding: 9px 11px; border-radius: 10px;", title: "Vista Cuadrícula" do %>
+                <i class="fas fa-th"></i>
+             <% end %>
+          <% end %>
+
+          <% if defined?(view_list) && view_list.present? %>
+             <%= link_to "#{view_list}", class: "btn btn-sm", style: "background: #f8fafc; color: #475569; border: 1px solid #e2e8f0; padding: 9px 11px; border-radius: 10px;", title: "Vista Lista" do %>
+                <i class="fas fa-list"></i>
+             <% end %>
+          <% end %>
+
+          <% if defined?(url) && url.present? %>
+             <%= link_to "#{url}", remote: (defined?(ban) ? ban : false), class: "btn btn-sm", style: "background: #4338ca; color: white; border: none; padding: 9px 11px; border-radius: 10px; font-weight: 700;", title: "Crear Nuevo" do %>
+                <i class="fas fa-plus"></i>
+             <% end %>
+          <% end %>
+       </div>
+
+    </div>
+  <% end %>
 </section>

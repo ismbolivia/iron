@@ -1,0 +1,56 @@
+#!/bin/bash
+# ==============================================================================
+# SCRIPT DE DESPLIEGUE SEGURO - SISTEMA IRON (DOCKER)
+# ==============================================================================
+# Este script automatiza el despliegue de cambios a la rama master, 
+# realiza un backup de la base de datos y reinicia los contenedores.
+# ==============================================================================
+
+set -e # Detener el script si hay errores
+
+# Colores para la terminal
+GREEN='\033[0;32m'
+BLUE='\033[0;34m'
+RED='\033[0;31m'
+NC='\033[0m' # No Color
+
+echo -e "${BLUE}>>> Iniciando proceso de despliegue...${NC}"
+
+# 1. Asegurarnos de que estamos en la rama correcta (opcional en el servidor)
+CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+if [ "$CURRENT_BRANCH" != "master" ]; then
+    echo -e "${RED}[ERROR] No estás en la rama 'master'. No se recomienda desplegar desde $CURRENT_BRANCH.${NC}"
+    exit 1
+fi
+
+# 2. Actualizar código de Git
+echo -e "${BLUE}>>> Paso 1: Actualizando código de Git...${NC}"
+git pull origin master
+
+# 3. Backup de Base de Datos antes de cualquier cambio destructivo
+echo -e "${BLUE}>>> Paso 2: Realizando backup de la base de datos (seguridad)...${NC}"
+TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
+BACKUP_DIR="db/backups"
+mkdir -p $BACKUP_DIR
+# Usamos docker-compose exec para que postgres genere el dump
+docker-compose exec -t db pg_dump -U sejas siron_production > "$BACKUP_DIR/backup_before_deploy_$TIMESTAMP.sql"
+echo -e "${GREEN}[OK] Backup guardado en $BACKUP_DIR/backup_before_deploy_$TIMESTAMP.sql${NC}"
+
+# 4. Reconstruir imagen de Docker (esto aplica cambios en Gemfile y código)
+echo -e "${BLUE}>>> Paso 3: Reconstruyendo imágenes de Docker...${NC}"
+docker-compose build app
+
+# 5. Reiniciar servicios
+echo -e "${BLUE}>>> Paso 4: Reiniciando contenedores (Hot Swap)...${NC}"
+docker-compose up -d
+
+# 6. Ejecutar migraciones (por si acaso no corrieron en el entrypoint)
+echo -e "${BLUE}>>> Paso 5: Verificando migraciones...${NC}"
+docker-compose exec -t app rake db:migrate
+
+# 7. Limpiar caché si es necesario (opcional)
+# docker-compose exec -t app rake tmp:clear
+
+echo -e "${GREEN}==============================================================================${NC}"
+echo -e "${GREEN}   ¡DESPLIEGUE FINALIZADO EXITOSAMENTE! El sistema está actualizado.${NC}"
+echo -e "${GREEN}==============================================================================${NC}"

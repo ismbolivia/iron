@@ -1,0 +1,48 @@
+.main:fullscreen {
+    background-color: white;
+    width: 100%;
+    height: 100%;
+    overflow-y: scroll;
+}
+
+body.dark-mode .main:fullscreen {
+    background-color: #222d32;
+    /* Match dark mode background */
+    color: #b8c7ce;
+}
+
+.main:-webkit-full-screen {
+    background-color: white;
+    width: 100%;
+    height: 100%;
+    overflow-y: scroll;
+}
+
+body.dark-mode .main:-webkit-full-screen {
+    background-color: #222d32;
+    color: #b8c7ce;
+}
+
+.main:-moz-full-screen {
+    background-color: white;
+    width: 100%;
+    height: 100%;
+    overflow-y: scroll;
+}
+
+body.dark-mode .main:-moz-full-screen {
+    background-color: #222d32;
+    color: #b8c7ce;
+}
+
+.main:-ms-fullscreen {
+    background-color: white;
+    width: 100%;
+    height: 100%;
+    overflow-y: scroll;
+}
+
+body.dark-mode .main:-ms-fullscreen {
+    background-color: #222d32;
+    color: #b8c7ce;
+}

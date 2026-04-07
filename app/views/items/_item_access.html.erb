@@ -1,110 +1,246 @@
 <ul class="nav nav-tabs" role="tablist">
-    <li role="presentation" class="active"><a href="#ihome" aria-controls="home" role="tab" data-toggle="tab" aria-expanded="false"><span><i class="fas fa-boxes text-info"></i></span> Presentaciones</a></li>
-
-    <li role="presentation" class=""><a href="#iprofile" aria-controls="profile" role="tab" data-toggle="tab" aria-expanded="true"><span><i class=" fas fa-chart-line text-info"></i></span> Ventas</a></li>
-
-     <li role="presentation" class=""><a href="#note" aria-controls="home" role="tab" data-toggle="tab" aria-expanded="false"><span><i class="fas fa-dolly text-info"></i></span> Pedidos recibidos</a></li>
-     <li role="presentation" class=""><a href="#price" aria-controls="home" role="tab" data-toggle="tab" aria-expanded="false"><span><i class=" far fa-money-bill-alt text-info"></i></span>Precios</a></li>
-     <li role="presentation" class=""><a href="#supplier" aria-controls="home" role="tab" data-toggle="tab" aria-expanded="false"><span><i class="  fas fa-home text-info"></i></span>Proveedores</a></li>
+    <li role="presentation" class="active">
+      <a href="#istock" aria-controls="stock" role="tab" data-toggle="tab" aria-expanded="true">
+        <i class="fas fa-warehouse mr-2"></i> Stock Detallado
+      </a>
+    </li>
+    <li role="presentation">
+      <a href="#stock_adjustments" aria-controls="home" role="tab" data-toggle="tab" aria-expanded="false" style="color: #f59e0b; font-weight: 800;">
+        <i class="fas fa-tools mr-2"></i> Ajustes de Lote
+      </a>
+    </li>
+    <li role="presentation">
+      <a href="#iprofile" aria-controls="profile" role="tab" data-toggle="tab" aria-expanded="false" data-url="<%= item_path(@item, tab: 'sales') %>">
+        <i class="fas fa-chart-line mr-2"></i> Ventas
+      </a>
+    </li>
+    <li role="presentation">
+      <a href="#iutility" aria-controls="utility" role="tab" data-toggle="tab" aria-expanded="false" data-url="<%= item_path(@item, tab: 'utility') %>">
+        <i class="fas fa-hand-holding-usd mr-2"></i> Análisis Utilidad
+      </a>
+    </li>
+    <li role="presentation">
+      <a href="#iquote" aria-controls="quote" role="tab" data-toggle="tab" aria-expanded="false" data-url="<%= item_path(@item, tab: 'quotes') %>">
+        <i class="fas fa-file-invoice mr-2"></i> Cotizaciones
+      </a>
+    </li>
+    <li role="presentation">
+      <a href="#idraft" aria-controls="draft" role="tab" data-toggle="tab" aria-expanded="false" data-url="<%= item_path(@item, tab: 'drafts') %>">
+        <i class="fas fa-history mr-2"></i> Historial Borradores
+      </a>
+    </li>
+    <li role="presentation">
+      <a href="#ihome" aria-controls="home" role="tab" data-toggle="tab" aria-expanded="false">
+        <i class="fas fa-boxes mr-2"></i> Presentaciones
+      </a>
+    </li>
+    <li role="presentation">
+      <a href="#note" aria-controls="home" role="tab" data-toggle="tab" aria-expanded="false">
+        <i class="fas fa-truck-loading mr-2"></i> Órdenes Compra
+      </a>
+    </li>
+    <li role="presentation">
+      <a href="#price" aria-controls="home" role="tab" data-toggle="tab" aria-expanded="false">
+        <i class="fas fa-tags mr-2"></i> Precios
+      </a>
+    </li>
+    <li role="presentation">
+      <a href="#supplier" aria-controls="home" role="tab" data-toggle="tab" aria-expanded="false">
+        <i class="fas fa-handshake mr-2"></i> Proveedores
+      </a>
+    </li>
+    <li role="presentation">
+      <a href="#stock_reconciliation" aria-controls="home" role="tab" data-toggle="tab" aria-expanded="false" style="color: #6366f1; font-weight: 700;">
+        <i class="fas fa-tags mr-2"></i> Etiquetado Lotes
+      </a>
+    </li>
 </ul>
     <div class="tab-content">
-          <div role="tabpanel" class="tab-pane active" id="ihome">
-            <div class="table-responsive">
-               <!-- crear presentacionen el los modelos -->
-             <div id="presentation_id">
-             <%= (@item.presentations.count > 0) ? render(partial: 'presntations_items', locals: { item: @item, show_actions: true }) : 'No hay presentaciones que mostrar' %>
-
+          <div role="tabpanel" class="tab-pane" id="ihome">
+            <div style="padding: 2.5rem;">
+              <div class="d-flex justify-content-between align-items-center mb-4" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                 <h4 class="font-weight-bold m-0" style="color: var(--text-main);">
+                   <i class="fas fa-boxes mr-2" style="color: var(--accent-indigo);"></i> 
+                   Configuración de Empaques y Presentaciones
+                 </h4>
+                 <%= link_to new_presentation_path(item_id: @item.id), remote: true, class: "btn-premium-action btn-indigo" do %>
+                   <i class="fas fa-plus"></i> Nueva Presentación
+                 <% end %>
               </div>
-               <hr>
-               <div class="row no-print ">
-                  <div class="col-xs-12">
-                     <%= link_to "Nueva presentación", new_presentation_path(item_id: @item.id), remote: true, class: "btn btn-info pull-right" %>
-                   </div>
-                </div>
-              <hr>
+
+              <div id="presentation_id">
+                <%= (@item.presentations.count > 0) ? render(partial: 'presntations_items', locals: { item: @item, show_actions: true }) : '<div class="alert alert-info" style="background: #f8fafc; border: 1px dashed #cbd5e1; color: #64748b; text-align: center; padding: 3rem; border-radius: 12px;">No hay presentaciones configuradas para este producto.</div>'.html_safe %>
+              </div>
             </div>
            </div>
 
          <div role="tabpanel" class="tab-pane" id="note">
-          <div class="table-responsive">
-            <div id="panel-stock">
-                <%= (@item.purchase_order_lines.count > 0) ? render(partial: 'tables_pol', locals: { item: @item, show_actions: true }) : 'No hay productos recibidos' %>
+            <div style="padding: 2.5rem;">
+              <div class="d-flex justify-content-between align-items-center mb-4" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                 <h4 class="font-weight-bold m-0" style="color: var(--text-main);">
+                   <i class="fas fa-truck-loading mr-2" style="color: var(--accent-indigo);"></i> 
+                   Órdenes de Compra y Entregas
+                 </h4>
+              </div>
 
-             </div>
-          </div>
+              <div id="panel-stock" class="table-responsive">
+                 <%= (@item.purchase_order_lines.count > 0) ? render(partial: 'tables_pol', locals: { item: @item, show_actions: true }) : '<div class="alert alert-info" style="background: #f8fafc; border: 1px dashed #cbd5e1; color: #64748b; text-align: center; padding: 3rem; border-radius: 12px;">No hay productos recibidos para este ítem.</div>'.html_safe %>
+              </div>
+            </div>
          </div>
-         <div role="tabpanel" class="tab-pane " id="iprofile">
-                <div class="white-box">
-                      <div class="table-responsive">
-                              <table class="table product-overview">
-                                <thead>
-                                  <tr>
-                                    <th>Fecha</th>
-                                    <th>number</th>
-                                    <th>Usuario</th>
-                                    <th>Cliente</th>
-                                  </tr>
-                                </thead>
+         <div role="tabpanel" class="tab-pane active" id="istock">
+            <div id="panel-stock-detailed">
+                <%= render partial: 'items/stock_detailed', locals: { item: @item } %>
+            </div>
+         </div>
+         <div role="tabpanel" class="tab-pane" id="iprofile">
+<div class="tab-loading text-center" style="padding: 3rem; color: #64748b;"><i class="fas fa-spinner fa-spin fa-2x mb-2"></i><div>Cargando...</div></div>
+          </div>
 
-                                <tbody>
-                                  <% @item.sales.order(id: :desc).each do |sale| %>
-                                    <tr>
-                                      <td><%= sale.created_at.strftime("%d/%m/%Y") %></td>
-                                      <td>
-
-                                        <% if sale.proformas.count > 0 %>
-                                        <%= link_to sale, {method: :get, class: "badge bg-info"} do %>
-                                       <span aria-hidden="true">  <%= sale.proformas.first.number_recibo %></span>
-                                       <% end %>
-                                       <% else %>
-                                       <span class="badge bg-danger">Sin Nota</span>
-                                       <% end %>
-                                     </td>
-                                      <td><%= sale.user.email  %></td>
-                                      <td><%= sale.client.name%></td>
-                                      <td><%=sale.getSaleDetail(@item.id)%></td>
-                                    </tr>
-                                  <% end %>
-                                </tbody>
-                              </table>
-                        </div>
+          <div role="tabpanel" class="tab-pane" id="iquote">
+<div class="tab-loading text-center" style="padding: 3rem; color: #64748b;"><i class="fas fa-spinner fa-spin fa-2x mb-2"></i><div>Cargando...</div></div>
                   </div>
 
-           <div class="clearfix"></div>
-		 </div>
+          <div role="tabpanel" class="tab-pane" id="idraft">
+<div class="tab-loading text-center" style="padding: 3rem; color: #64748b;"><i class="fas fa-spinner fa-spin fa-2x mb-2"></i><div>Cargando...</div></div>
+          </div>
 
     <div role="tabpanel" class="tab-pane" id="price">
-      <div class="table-responsive">
-         <div>
-            <div id="panel-prices">
-                <%= (@item.prices.count > 0) ? render(partial: 'prices/index', locals: { item: @item, show_actions: true }) : 'No hay Precios Disponibles' %>
-            </div>
-              <hr>
-            <div class="row no-print ">
-               <div class="col-xs-12">
-                  <%= link_to "Nuevo Precio", new_price_path(item_id: @item.id), remote: true, class: "btn btn-info pull-right" %>
-              </div>
+       <div style="padding: 2.5rem;">
+          <div class="d-flex justify-content-between align-items-center mb-4" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+             <h4 class="font-weight-bold m-0" style="color: var(--text-main);">
+               <i class="fas fa-tags mr-2" style="color: var(--accent-indigo);"></i> 
+               Lista de Precios y Márgenes
+             </h4>
+             <%= link_to new_price_path(item_id: @item.id), remote: true, class: "btn-premium-action btn-indigo" do %>
+               <i class="fas fa-plus"></i> Nuevo Precio
+             <% end %>
           </div>
-           <hr>
+
+          <div id="panel-prices" class="table-responsive">
+              <%= (@item.prices.count > 0) ? render(partial: 'prices/index', locals: { item: @item, show_actions: true }) : '<div class="alert alert-info" style="background: #f8fafc; border: 1px dashed #cbd5e1; color: #64748b; text-align: center; padding: 3rem; border-radius: 12px;">No hay precios configurados.</div>'.html_safe %>
           </div>
-        </div>
+       </div>
     </div>
 
 
     <div role="tabpanel" class="tab-pane" id="supplier">
-          <div class="table-responsive">
-            <div>
-               <div id="panel-supplier">
-                <%= (@item.items_suppliers.count > 0) ? render(partial: 'items_suppliers/index', locals: { item: @item, show_actions: true }) : 'No hay Proveedores asignados a este producto...!' %>
-              </div>
-               <hr>
-                  <div class="row no-print ">
-                     <div class="col-xs-12">
-                          <%= link_to "Añadir Proveedor", new_items_supplier_path(item_id: @item.id), remote: true, class: "btn btn-info pull-right" %>
-                      </div>
-                    </div>
-                <hr>
-             </div>
+       <div style="padding: 2.5rem;">
+          <div class="d-flex justify-content-between align-items-center mb-4" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+             <h4 class="font-weight-bold m-0" style="color: var(--text-main);">
+               <i class="fas fa-handshake mr-2" style="color: var(--accent-indigo);"></i> 
+               Proveedores Asociados
+             </h4>
+             <%= link_to new_items_supplier_path(item_id: @item.id), remote: true, class: "btn-premium-action btn-indigo" do %>
+               <i class="fas fa-user-plus"></i> Añadir Proveedor
+             <% end %>
           </div>
+
+          <div id="panel-supplier" class="table-responsive">
+              <%= (@item.items_suppliers.count > 0) ? render(partial: 'items_suppliers/index', locals: { item: @item, show_actions: true }) : '<div class="alert alert-info" style="background: #f8fafc; border: 1px dashed #cbd5e1; color: #64748b; text-align: center; padding: 3rem; border-radius: 12px;">No hay proveedores asignados.</div>'.html_safe %>
+          </div>
+       </div>
+    </div>
+
+         <div role="tabpanel" class="tab-pane" id="stock_reconciliation">
+            <div id="panel-reconciliation">
+                <%= render partial: 'items/stock_reconciliation', locals: { item: @item } %>
+            </div>
          </div>
+
+          <div role="tabpanel" class="tab-pane" id="iutility">
+<div class="tab-loading text-center" style="padding: 3rem; color: #64748b;"><i class="fas fa-spinner fa-spin fa-2x mb-2"></i><div>Cargando...</div></div>
+          </div>
+
+          <div role="tabpanel" class="tab-pane" id="stock_adjustments">
+            <div style="padding: 2.5rem;">
+              <div class="d-flex justify-content-between align-items-center mb-4" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                 <h4 class="font-weight-bold m-0" style="color: var(--text-main);">
+                   <i class="fas fa-tools mr-2" style="color: #f59e0b;"></i> 
+                   Ajustes de Stock Manuales
+                 </h4>
+                 <%= link_to new_stock_adjustment_path(item_id: @item.id), class: "btn-premium-action btn-indigo" do %>
+                   <i class="fas fa-plus"></i> Registrar Ajuste
+                 <% end %>
+              </div>
+
+              <div class="table-responsive">
+                <table class="table" style="border-collapse: separate; border-spacing: 0 10px; margin-top: -10px;">
+                  <thead>
+                    <tr style="background: transparent; border: none;">
+                      <th style="padding: 1.2rem; color: #475569; font-weight: 800; border: none;">FECHA</th>
+                      <th style="padding: 1.2rem; color: #475569; font-weight: 800; border: none;">ALMACÉN</th>
+                      <th style="padding: 1.2rem; text-align: center; color: #475569; font-weight: 800; border: none;">TIPO</th>
+                      <th style="padding: 1.2rem; text-align: right; color: #475569; font-weight: 800; border: none;">CANTIDAD</th>
+                      <th style="padding: 1.2rem; min-width: 200px; color: #475569; font-weight: 800; border: none;">MOTIVO</th>
+                      <th style="padding: 1.2rem; color: #475569; font-weight: 800; border: none;">REGISTRADO POR</th>
+                      <th style="padding: 1.2rem; text-align: center; color: #475569; font-weight: 800; border: none;">ACCIONES</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% adjustments = @item.stock_adjustments.order(created_at: :desc) %>
+                    <% if adjustments.empty? %>
+                      <tr>
+                        <td colspan="6" class="text-center" style="padding: 4rem; color: #94a3b8; background: #f8fafc; border-radius: 16px; border: 1px dashed #cbd5e1;">
+                          <i class="fas fa-tools fa-3x mb-3" style="opacity: 0.3;"></i>
+                          <p style="font-weight: 600;">No hay ajustes registrados para este producto.</p>
+                        </td>
+                      </tr>
+                    <% else %>
+                      <% adjustments.each do |adj| %>
+                        <tr style="background: white; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+                          <td style="padding: 1.5rem 1.2rem; font-weight: 800; color: #1e293b; border-radius: 12px 0 0 12px; border: 1px solid #f1f5f9; border-right: none;">
+                             <%= adj.created_at.strftime("%d/%m/%Y %H:%M") %>
+                          </td>
+                          <td style="padding: 1.5rem 1.2rem; color: #475569; font-weight: 600; border-top: 1px solid #f1f5f9; border-bottom: 1px solid #f1f5f9;">
+                             <%= adj.warehouse.name %>
+                          </td>
+                          <td style="padding: 1.5rem 1.2rem; text-align: center; border-top: 1px solid #f1f5f9; border-bottom: 1px solid #f1f5f9;">
+                             <% if adj.adjustment_type == 'entrada' %>
+                               <span class="badge" style="background: #dcfce7; color: #166534; font-weight: 800; font-size: 0.8rem;">ENTRADA (+)</span>
+                             <% else %>
+                               <span class="badge" style="background: #fee2e2; color: #b91c1c; font-weight: 800; font-size: 0.8rem;">SALIDA (-)</span>
+                             <% end %>
+                          </td>
+                          <td style="padding: 1.5rem 1.2rem; text-align: right; font-weight: 800; color: <%= adj.adjustment_type == 'entrada' ? '#166534' : '#b91c1c' %>; border-top: 1px solid #f1f5f9; border-bottom: 1px solid #f1f5f9;">
+                             <%= adj.quantity %> <small><%= @item.unit.name.downcase %>s</small>
+                          </td>
+                          <td style="padding: 1.5rem 1.2rem; color: #64748b; font-weight: 600; border-top: 1px solid #f1f5f9; border-bottom: 1px solid #f1f5f9;">
+                             <%= adj.reason.titleize %>
+                          </td>
+                          <td style="padding: 1.5rem 1.2rem; color: #475569; font-weight: 600; border-top: 1px solid #f1f5f9; border-bottom: 1px solid #f1f5f9;">
+                             <%= adj.user&.name || 'N/A' %>
+                          </td>
+                          <td style="padding: 1.5rem 1.2rem; text-align: center; border-radius: 0 12px 12px 0; border: 1px solid #f1f5f9; border-left: none;">
+                             <%= button_to stock_adjustment_path(adj), method: :delete, data: { confirm: '¿Estás completamente seguro de ELIMINAR este ajuste y REVERTIR el stock en bodega?' }, class: "btn btn-sm", style: "background: #fff1f2; color: #e11d48; border: 1px solid #ffe4e6;", title: "Eliminar y Revertir" do %>
+                               <i class="fas fa-trash"></i>
+                             <% end %>
+                          </td>
+                        </tr>
+                      <% end %>
+                    <% end %>
+                  </tbody>
+                </table>
+              </div>
+            </div>
 </div>
+
+             <div class="clearfix"></div>
+          </div>
+<script>
+  $(document).ready(function() {
+    // Escuchar el evento de cambio de pestaña
+    $('a[data-url]').on('shown.bs.tab', function (e) {
+       var target = $(e.target).attr("href");
+       var url = $(e.target).data("url");
+       
+       // Cargar solo si tiene el loader visible o está vacío
+       if (url && ($(target).find('.tab-loading').length > 0 || $(target).is(':empty'))) {
+          $.get(url, function(data) {
+             $(target).html(data);
+             // Re-inicializar estilos o plugins sobre el contenido inyectado si fuera necesario
+          });
+       }
+    });
+  });
+</script>

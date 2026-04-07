@@ -8,6 +8,136 @@
     <%= favicon_link_tag 'logo1.png' %>
     <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
     <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+    
+    <style>
+      /* --- RUTAS VARIABLES GLOBALES --- */
+      /* --- TIPOGRAFÍA GLOBAL AMPLIADA --- */
+      body {
+        font-family: 'Inter', 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
+        font-size: 1.15rem !important; /* Aumento global de la fuente */
+        line-height: 1.6;
+        --bg: #f3f4f6; --panel: #ffffff; --text: #1e293b; --text-sub: #64748b; --border: #e5e7eb; --hover: #f8fafc;
+      }
+      
+      h1 { font-size: 3rem !important; font-weight: 800; letter-spacing: -0.03em; }
+      h2 { font-size: 2.5rem !important; font-weight: 700; letter-spacing: -0.02em; }
+      h3 { font-size: 2rem !important; font-weight: 700; }
+      h4 { font-size: 1.5rem !important; font-weight: 600; }
+      h5 { font-size: 1.25rem !important; font-weight: 600; }
+      h6 { font-size: 1.1rem !important; font-weight: 600; }
+
+      /* Ajuste para inputs y botones globales */
+      input, select, textarea, button, .btn, .form-control {
+        font-size: 1.25rem !important; /* Letras mucho más grandes en campos */
+        padding: 0.75rem 1rem !important; /* Más altura para el texto */
+        border-radius: 10px !important;
+      }
+
+      /* Etiquetas de formulario más claras */
+      label {
+        font-size: 1.15rem !important;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+      }
+
+      /* Tablas más legibles y amplias */
+      .table th { font-size: 1.15rem !important; font-weight: 800; }
+      .table td { font-size: 1.15rem !important; }
+
+      /* Barra lateral y Navegación (AdminLTE Overrides) */
+      .sidebar-menu li > a { font-size: 1.15rem !important; padding: 15px 20px !important; }
+      .sidebar-menu li.header { font-size: 1rem !important; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 800; }
+      .sidebar-menu li > a > .fa { font-size: 1.25rem !important; margin-right: 12px !important; }
+      .user-panel > .info { font-size: 1.1rem !important; top: 5px !important; }
+      .main-header .navbar .nav > li > a { font-size: 1.1rem !important; }
+      .content-header > h1 { font-size: 2.5rem !important; font-weight: 800 !important; }
+
+      /* Responsive adjustment */
+      @media (max-width: 767px) {
+        body { font-size: 1rem !important; }
+        h1 { font-size: 2rem !important; }
+        .auth-card { padding: 2.5rem 1.5rem !important; border-radius: 20px !important; }
+        .auth-header h2 { font-size: 2rem !important; }
+      }
+
+      body.theme-dark-slate {
+        --bg: #0f172a; --panel: #1e293b; --text: #f1f5f9; --text-sub: #94a3b8; --border: #334155; --hover: rgba(51, 65, 85, 0.4);
+      }
+      body.theme-dark-green {
+        --bg: #040d0a; --panel: #0b1c15; --text: #f0fdf4; --text-sub: #6ee7b7; --border: #064e3b; --hover: rgba(16, 185, 129, 0.05);
+      }
+      body.theme-cyber-purple {
+        --bg: #0a0514; --panel: #120924; --text: #faf5ff; --text-sub: #d8b4fe; --border: #4c1d95; --hover: rgba(139, 92, 246, 0.05);
+      }
+      body.theme-deep-space {
+        --bg: #030814; --panel: #0a1124; --text: #f0f9ff; --text-sub: #7dd3fc; --border: #0c4a6e; --hover: rgba(14, 165, 233, 0.05);
+      }
+      body.theme-midnight {
+        --bg: #0b0f19; --panel: #111827; --text: #f9fafb; --text-sub: #9ca3af; --border: #1f2937; --hover: rgba(255, 255, 255, 0.03);
+      }
+      body.theme-amoled {
+        --bg: #000000; --panel: #000000; --text: #ffffff; --text-sub: #a1a1aa; --border: #27272a; --hover: #18181b;
+      }
+      
+      /* --- TEMAS ELEGANTES ADICIONALES --- */
+      /* Light Cream / Marfil */
+      body.theme-light-cream {
+        --bg: #faf7f2; --panel: #ffffff; --text: #3c2f2f; --text-sub: #8a7875; --border: #eedec7; --hover: #eedec777;
+      }
+      /* Nordic Frost / Azul Claro */
+      body.theme-light-frost {
+        --bg: #f1f5f9; --panel: #ffffff; --text: #1e3a5f; --text-sub: #64748b; --border: #cbd5e1; --hover: #e2e8f0;
+      }
+      /* Rosado Oscuro / Carmesí */
+      body.theme-dark-rose {
+        --bg: #090101; --panel: #130303; --text: #fee2e2; --text-sub: #fca5a5; --border: #7f1d1d; --hover: rgba(239, 68, 68, 0.05);
+      }
+      /* Golden Obsidian / Oro Negro */
+      body.theme-dark-gold {
+        --bg: #090805; --panel: #14110b; --text: #fef08a; --text-sub: #ca8a04; --border: #422006; --hover: rgba(234, 179, 8, 0.05);
+      }
+
+      /* --- RE-MAPEO DE CLASES COMUNES PARA TODOS --- */
+      body[class*="theme-"] {
+         background-color: var(--bg) !important;
+         color: var(--text) !important;
+      }
+      body[class*="theme-"] .page-wrapper, 
+      body[class*="theme-"] .main, 
+      body[class*="theme-"] #main-content {
+         background-color: var(--bg) !important;
+         color: var(--text) !important;
+      }
+      body[class*="theme-"] .table, 
+      body[class*="theme-"] .card, 
+      body[class*="theme-"] .panel,
+      body[class*="theme-"] .bg-white {
+         background-color: var(--panel) !important;
+         color: var(--text) !important;
+         border-color: var(--border) !important;
+      }
+      body[class*="theme-"] th, 
+      body[class*="theme-"] td {
+         color: var(--text) !important;
+         border-color: var(--border) !important;
+      }
+      body[class*="theme-"] h1, body[class*="theme-"] h2, body[class*="theme-"] h3, 
+      body[class*="theme-"] h4, body[class*="theme-"] h5, body[class*="theme-"] h6 {
+         color: var(--text) !important;
+      }
+      body[class*="theme-"] .sidebar {
+         background-color: var(--panel) !important;
+         border-color: var(--border) !important;
+      }
+      body[class*="theme-"] a {
+         color: var(--text) !important;
+      }
+      body[class*="theme-"] input, body[class*="theme-"] select, body[class*="theme-"] textarea {
+         background-color: rgba(255,255,255,0.03) !important;
+         color: var(--text) !important;
+         border-color: var(--border) !important;
+      }
+    </style>
   </head>
   <body class="coll-body">
  <%= render 'layouts/partials/navbar' %>
@@ -17,7 +147,8 @@
         <div class="row ">
             <%= render 'layouts/partials/sidebar' %>
           <div class="main">
-            <div class="">
+            <div class="" id="main-content" style="position: relative;">
+         
               <div style="margin-left: 10px;margin-right: 10px;">
                 <div class="col-md-12">
                  <%= render 'layouts/partials/alerts' %>                
@@ -25,8 +156,9 @@
                   <div class="col-md-12">
                     <%= yield %>
                      <footer class="footer text-center"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
-                Todos los derechos reservados 2020 &copy; dev-sejas.cbba.bo.com
+                Todos los derechos reservados 2026 &copy; devsejas@gmail.com
             </font></font></footer>  
+            
                   </div>
                   <div class="modal fade" id="new-address-modal" title="Modal"></div>
                   <div class="modal fade" id="new-purchaseorderlines-modal" title="Modal"></div>

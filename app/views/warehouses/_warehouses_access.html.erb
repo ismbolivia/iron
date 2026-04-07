@@ -2,6 +2,7 @@
      <li role="presentation" class="active"><a href="#product_item" aria-controls="profile" role="tab" data-toggle="tab" aria-expanded="true"><span><i class="fa fa-box"></i></span> Productos</a></li>
 
      <li role="presentation" class=""><a href="#ihome" aria-controls="home" role="tab" data-toggle="tab" aria-expanded="false"><span><i class="far fa-building text-info"></i></span> Pedidos</a></li>
+     <li role="presentation" class=""><a href="#control" aria-controls="control" role="tab" data-toggle="tab" aria-expanded="false"><span><i class="fa fa-exchange-alt text-warning"></i></span> Control</a></li>
 
 </ul>
 <div class="tab-content">
@@ -10,33 +11,44 @@
         <div class="table-responsive">
           <div id="item_supplier" class="pre-scrollable">
          	
-                <table class="table product-overview">
+              <table class="table product-overview">
               <thead>
                 <tr>
-                  <th>Código</th>
+                
                   <th>Nombre</th>
-                  <th>Descripción</th>
                   <th>Unidad</th>
-                  <th>Stock</th>
-           
+                  <th>Stock</th>           
                   <th>Categoría</th>
                  <!--  <th>Almacen</th> -->
                   <th>Precio</th>
-                  
+                  <th>Acciones</th>
                 </tr>
               </thead>
 
               <tbody>
                 <%  warehouse.items.each do |item| %>
-                  <tr>
-                    <td><%= item.code %></td>
-                    <td><%= item.name  %></td>
-                    <td><%= item.item_description %></td>                   
+                  <tr id="item_row_<%= item.id %>">
+                   
+                    <td><%= item.name  %></td>  
                     <td><%= item.unit ? item.unit.name : '' %></td>
                     <td><%= item.get_total_stock %></td>               
                     <td><%= item.category ? item.category.name : '' %></td>                    
                     <td><%= number_to_currency(item.price) %></td>                  
-                    
+                    <td>
+                      <%= link_to item_path(item), class: "btn btn-info btn-xs", title: "Ver" do %>
+                        <i class="fa fa-eye"></i> Ver
+                      <% end %>
+
+                      <button type="button" class="btn btn-warning btn-xs btn-transfer-trigger" 
+                              data-toggle="modal" 
+                              data-target="#transferModalGeneric" 
+                              data-item-id="<%= item.id %>"
+                              data-item-name="<%= item.name %>"
+                              data-item-code="<%= item.code %>"
+                              title="Transferir">
+                        <i class="fa fa-exchange-alt"></i> Transferir
+                      </button>
+                    </td>
                   </tr>
                 <% end %>
               </tbody>
@@ -44,6 +56,136 @@
           </div>
         </div>
          <hr>  
+         <style>
+             .modal-content.premium-modal {
+               border: none;
+               border-radius: 16px;
+               box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+               overflow: hidden;
+               font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+             }
+             .premium-modal .modal-header {
+               background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+               color: white;
+               border-bottom: none;
+               padding: 20px 25px;
+             }
+             .premium-modal .modal-title {
+               font-weight: 700;
+               font-size: 18px;
+               letter-spacing: 0.5px;
+               margin: 0;
+             }
+             .premium-modal .close {
+               color: white;
+               opacity: 0.8;
+               text-shadow: none;
+               font-size: 24px;
+               margin-top: -2px;
+             }
+             .premium-modal .close:hover {
+               opacity: 1;
+             }
+             .premium-modal .modal-body {
+               padding: 25px 30px;
+               background-color: #f9fafb;
+             }
+             .premium-modal .form-label {
+               font-weight: 600;
+               color: #4a5568;
+               margin-bottom: 8px;
+               display: block;
+               font-size: 14px;
+             }
+             .premium-modal .form-control-premium {
+               border-radius: 8px;
+               border: 1px solid #cbd5e0;
+               padding: 12px 15px;
+               height: auto;
+               width: 100%;
+               font-size: 14px;
+               transition: all 0.2s;
+               box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+               color: #2d3748;
+             }
+             .premium-modal .form-control-premium:focus {
+               border-color: #764ba2;
+               box-shadow: 0 0 0 3px rgba(118, 75, 162, 0.2);
+               outline: none;
+             }
+             .premium-modal .info-box {
+               background-color: #fffaf0;
+               border-left: 4px solid #ed8936;
+               padding: 15px;
+               border-radius: 4px;
+               margin-top: 20px;
+               display: flex;
+               align-items: start;
+             }
+             .premium-modal .info-box i {
+               color: #ed8936;
+               margin-right: 12px;
+               font-size: 18px;
+               margin-top: 2px;
+             }
+             .premium-modal .info-box p {
+               margin: 0;
+               color: #744210;
+               font-size: 13px;
+               line-height: 1.5;
+             }
+             .premium-modal .modal-footer {
+               padding: 20px 30px;
+               background-color: white;
+               border-top: 1px solid #e2e8f0;
+               display: flex;
+               justify-content: flex-end;
+               gap: 10px;
+             }
+             .btn-premium-cancel {
+               background-color: #edf2f7;
+               color: #4a5568;
+               border: none;
+               font-weight: 600;
+               padding: 10px 24px;
+               border-radius: 8px;
+               transition: background 0.2s;
+             }
+             .btn-premium-cancel:hover {
+               background-color: #e2e8f0;
+               color: #2d3748;
+             }
+             .btn-premium-action {
+               background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+               color: white;
+               border: none;
+               font-weight: 600;
+               padding: 10px 24px;
+               border-radius: 8px;
+               box-shadow: 0 4px 6px rgba(118, 75, 162, 0.3);
+               transition: transform 0.2s, box-shadow 0.2s;
+             }
+             .btn-premium-action:hover {
+               transform: translateY(-1px);
+               box-shadow: 0 6px 8px rgba(118, 75, 162, 0.4);
+               color: white;
+             }
+             
+             @media (min-width: 768px) {
+                 .img-responsive {
+                    width: 100%;
+                 }
+                 .premium-dialog-autosize {
+                     width: fit-content !important;
+                     min-width: 450px;
+                     max-width: 800px;
+                     margin: 30px auto;
+                 }
+             }
+         </style>
+
+         <!-- Modals are generated here, outside the table structure -->
+          <!-- Modals area cleared for performance optimization -->
      
    </div>
       <div class="clearfix"></div>
@@ -62,4 +204,138 @@
     </div>
        <div class="clearfix"></div>
    </div>
+   
+   <div role="tabpanel" class="tab-pane" id="control">
+       <div class="col-md-12 col-sm-12">        
+            <div class="table-responsive">
+              <div id="control_items" class="pre-scrollable">
+                <table class="table product-overview">
+              <thead>
+                <tr>
+                  
+                  <th>Nombre</th>                 
+                  <th>Unidad</th>
+                  <th>Stock</th>
+                  <th>Categoría</th>
+                  <th>Precio</th>
+                  <th>Stock en Otros Almacenes</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% if @control_items.present? %>
+                <%  @control_items.each do |item| %>
+                  <tr id="control_row_<%= item.id %>">
+                   
+                    <td><%= item.name  %></td>
+                                     
+                    <td><%= item.unit ? item.unit.name : '' %></td>
+                    <td><%= item.get_total_stock %></td>               
+                    <td><%= item.category ? item.category.name : '' %></td>                    
+                    <td><%= number_to_currency(item.price) %></td>
+                    <td>
+                      <% other_stocks = item.stocks.select { |s| s.warehouse.active? && s.warehouse_id != @warehouse.id }.group_by(&:warehouse) %>
+                      <% other_stocks.each do |st_warehouse, stocks| %>
+                        <% total_stock = stocks.sum(&:total) %>
+                        <div style="margin-bottom: 2px;">
+                          <span class="label label-info"><%= st_warehouse.name %></span> 
+                          <span class="badge" style="background-color: #edf2f7; color: #333; border: 1px solid #cbd5e0;"><%= total_stock %></span>
+                        </div>
+                      <% end %>
+                    </td>
+                    <td>
+                      <button type="button" class="btn btn-warning btn-xs btn-transfer-trigger" 
+                              data-toggle="modal" 
+                              data-target="#transferModalGeneric" 
+                              data-item-id="<%= item.id %>"
+                              data-item-name="<%= item.name %>"
+                              data-item-code="<%= item.code %>"
+                              title="Transferir">
+                        <i class="fa fa-exchange-alt"></i> Transferir
+                      </button>
+                    </td>
+                  </tr>
+                <% end %>
+                <% else %>
+                  <tr>
+                    <td colspan="8" class="text-center">No hay productos repetidos en otros almacenes.</td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+
+              </div>
+            </div>
+             <hr>                                 
+    </div>
+       <div class="clearfix"></div>
+   </div>
 </div>
+
+<!-- SINGLE GENERIC MODAL OPTIMIZATION -->
+<div class="modal fade" id="transferModalGeneric" tabindex="-1" role="dialog" aria-labelledby="transferModalLabel">
+  <div class="modal-dialog premium-dialog-autosize" role="document">
+    <div class="modal-content premium-modal">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="transferModalLabel"><i class="fa fa-exchange-alt"></i> Transferir Producto</h4>
+      </div>
+      <%= form_tag transfer_item_warehouse_path(id: warehouse.id), method: :post, remote: true do %>
+        <div class="modal-body">
+          <%= hidden_field_tag :item_id, '', id: 'modal_item_id_input' %>
+          
+          <div style="margin-bottom: 20px;">
+            <h5 style="margin-top: 0; color: #4a5568; font-weight: 600; margin-bottom: 10px;">Producto Seleccionado:</h5>
+            <div style="font-size: 16px; color: #2d3748;">
+              <span class="" style="display: block; padding: 10px; background-color: white; border: 1px solid #e2e8f0; border-radius: 8px;">
+                <i class="fa fa-box text-primary"></i> <b id="modal_item_name_display">...</b>
+                <span class="pull-right text-muted" style="font-size: 0.9em;">Código: <span id="modal_item_code_display">...</span></span>
+              </span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="target_warehouse_id" class="form-label">Seleccione Almacén de Destino</label>
+            <%= select_tag :target_warehouse_id, 
+                options_from_collection_for_select(@other_warehouses, "id", "name"), 
+                class: "form-control-premium", 
+                prompt: "Seleccionar almacén..." %>
+          </div>
+
+          <div class="info-box">
+            <i class="fa fa-info-circle"></i>
+            <p>
+              <strong>Importante:</strong> Se transferirá <b>toda la existencia física</b> de este producto en el almacén actual hacia el destino seleccionado.
+            </p>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-premium-cancel" data-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-premium-action">
+            <i class="fa fa-check-circle"></i> Confirmar Transferencia
+          </button>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<script>
+  $(document).ready(function() {
+      // Delegated event handler for better performance and dynamic content support
+      $(document).on('click', '.btn-transfer-trigger', function() {
+          var button = $(this);
+          var itemId = button.data('item-id');
+          var itemName = button.data('item-name');
+          var itemCode = button.data('item-code');
+          
+          // Populate Modal Data
+          $('#modal_item_id_input').val(itemId);
+          $('#modal_item_name_display').text(itemName);
+          $('#modal_item_code_display').text(itemCode);
+          
+          // Reset select
+          $('#target_warehouse_id').val('');
+      });
+  });
+</script>

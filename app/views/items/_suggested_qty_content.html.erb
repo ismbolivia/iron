@@ -1,0 +1,8 @@
+<span class="stat-label">Sugerido Compra</span>
+<div class="stat-value" style="color: var(--accent-indigo);">
+  <%= rotation_data ? rotation_data[:suggested_qty].to_i : '0' %>
+  <span style="font-size: 1rem; color: var(--text-muted); font-weight: 600;"><%= @item.unit.name.downcase %>s</span>
+</div>
+<div class="mt-2 text-muted" style="font-size: 0.9rem; font-weight: 700;">
+  Para <%= months >= 1 ? months.to_i : months %> <%= months == 1 ? 'mes' : 'meses' %>
+</div>

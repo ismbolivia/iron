@@ -15,28 +15,20 @@ class ProformasController < ApplicationController
         @sale = @proforma.sale
         format.html { redirect_to @proforma, notice: 'Proforma genarada con exito.' }
         format.json { render :show, status: :created, location: @proforma }
-         format.pdf {
-          render template: 'sales/proforma', 
+        format.js
+         format.pdf do
+          render template: 'sales/note_sale_modern', 
           layout: 'pdf_layout.html.erb',
-          pdf: 'Nota',
-          title: 'Proforma',
+          pdf: @sale.quoted? ? 'Cotización' : 'Nota',
+          title: @sale.quoted? ? 'Cotización' : 'Nota de Venta',
           orientation: 'Portrait',
-          page_height:  215,
-          page_width:   163,
-          print_media_type:  false,
-          
-          margin:  { 
-                  left: 15,
-                  top: 13,
-                  right: 1}, 
-
-           footer: {
-             right: '[page] de [topage]',
-         
-          
-        }                        
-         
-        }
+          page_height: 215,
+          page_width: 163,
+          print_media_type: false,
+          margin: { left: 15, top: 20, right: 1, bottom: 15 },
+          header: { html: { template: 'sales/pdf_header', layout: nil, formats: [:pdf] }, spacing: 0 },
+          footer: { html: { template: 'sales/pdf_footer', layout: nil, formats: [:pdf] }, spacing: 0 }
+        end
           end
   end
 
@@ -67,28 +59,19 @@ class ProformasController < ApplicationController
         @sale = @proforma.sale
         format.html { redirect_to @proforma, notice: 'Proforma was successfully created.' }
         format.json { render :show, status: :created, location: @proforma }
-         format.pdf {
-          render template: 'sales/proforma', 
+         format.pdf do
+          render template: 'sales/note_sale_modern', 
           layout: 'pdf_layout.html.erb',
-          pdf: 'Nota',
-          title: 'Proforma',
+          pdf: @sale.quoted? ? 'Cotización' : 'Nota',
+          title: @sale.quoted? ? 'Cotización' : 'Nota de Venta',
           orientation: 'Portrait',
-          page_height:  215,
-          page_width:   163,
-          print_media_type:  false,
-          
-          margin:  { 
-                  left: 15,
-                  top: 13,
-                  right: 1}, 
-
-           footer: {
-             right: '[page] de [topage]',
-         
-          
-        }                        
-         
-        }
+          page_height: 215,
+          page_width: 163,
+          print_media_type: false,
+          margin: { left: 15, top: 20, right: 1, bottom: 15 },
+          header: { html: { template: 'sales/pdf_header', layout: nil, formats: [:pdf] }, spacing: 0 },
+          footer: { html: { template: 'sales/pdf_footer', layout: nil, formats: [:pdf] }, spacing: 0 }
+        end
       else
         format.html { render :new }
         format.json { render json: @proforma.errors, status: :unprocessable_entity }

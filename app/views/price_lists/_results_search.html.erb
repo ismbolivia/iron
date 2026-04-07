@@ -1,41 +1,83 @@
 
 
 
-<table class="table">
-  <thead>
-    <tr>
-      <th>Nombre</th>
-      <th>Estado</th>
-      <th>Fecha</th>
-      <th colspan="3"></th>
-    </tr>
-  </thead>
+<div class="table-container-premium" style="background: white; border-radius: 20px; border: 1px solid #e2e8f0; box-shadow: 0 4px 20px rgba(0,0,0,0.03); overflow: hidden; margin-top: 1rem;">
+  <div class="table-responsive">
+    <table class="table" style="margin-bottom: 0; vertical-align: middle; border-collapse: separate; border-spacing: 0;">
+      <thead style="background: #f8fafc; border-bottom: 2px solid #e2e8f0;">
+        <tr>
+          <th style="padding: 1.2rem; color: #0f172a; font-weight: 800; border: none;">Nombre de la Lista</th>
+          <th style="padding: 1.2rem; text-align: center; color: #0f172a; font-weight: 800; border: none;">Estado</th>
+          <th style="padding: 1.2rem; text-align: center; color: #0f172a; font-weight: 800; border: none;">Artículos</th>
+          <th style="padding: 1.2rem; text-align: center; color: #0f172a; font-weight: 800; border: none;">Fecha</th>
+          <th style="padding: 1.2rem; text-align: right; color: #0f172a; font-weight: 800; border: none;">Acciones</th>
+        </tr>
+      </thead>
 
-  <tbody>
-    <% @price_lists.each do |price_list| %>
-      <tr>
-        <td><%= price_list.name %></td>
-    
-        <td><%= price_list.state %></td>
-        <td><%= price_list.date %></td>
-   
-        <td>
-            <% if can? :read, PriceList %>
-          <%= link_to 'Ver', price_list, class: "btn btn-info" %>
-            <%= link_to 'Ver', price_list_item_path(id: price_list), class: "btn btn-success" %>
-            <% end %>
-          </td>
-        <td>
-           <% if can? :update, PriceList %>
-          <%= link_to 'Editar', edit_price_list_path(price_list), class: "btn btn-primary"  %>
-            <% end %>
-          </td>
-        <td>
-          <% if can? :destroy, PriceList %>
-          <%= link_to 'Eliminar', price_list, method: :delete, data: { confirm: 'Are you sure?' },class: "btn btn-danger"  %>
-            <% end %>
-          </td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
+      <tbody style="border: none;">
+        <% @price_lists.each do |price_list| %>
+          <tr style="transition: all 0.2s; border-bottom: 1px solid #f1f5f9;">
+            <td style="padding: 1rem 1.2rem; vertical-align: middle;">
+              <div style="font-weight: 700; color: #1e293b; font-size: 14px;">
+                <%= price_list.name %>
+                <% if price_list.default %>
+                  <span class="badge" style="background: #fffbeb; color: #b45309; border: 1px solid #fef3c7; font-size: 10px; margin-left: 8px;">PREDETERMINADA</span>
+                <% end %>
+              </div>
+              <div style="margin-top: 4px;">
+                <span style="font-size: 10px; font-weight: 800; text-transform: uppercase; color: #6366f1; background: #eef2ff; padding: 2px 8px; border-radius: 4px; border: 1px solid #e0e7ff;">
+                  <%= price_list.list_type.humanize %>
+                </span>
+              </div>
+            </td>
+        
+            <td style="padding: 1rem 1.2rem; vertical-align: middle; text-align: center;">
+              <span class="badge state-badge-toggle" 
+                    id="badge-state-<%= price_list.id %>"
+                    onclick="togglePriceListState(<%= price_list.id %>)"
+                    style="cursor: pointer; transition: all 0.2s; font-weight: 700; <%= price_list.activo? ? 'background: #f0fdf4; color: #166534; border: 1px solid #dcfce7;' : 'background: #fef2f2; color: #b91c1c; border: 1px solid #fee2e2;' %>">
+                <%= price_list.activo? ? 'ACTIVO' : 'INACTIVO' %>
+              </span>
+            </td>
+
+            <td style="padding: 1rem 1.2rem; vertical-align: middle; text-align: center;">
+              <span style="font-weight: 600; color: #64748b; background: #f1f5f9; padding: 4px 10px; border-radius: 20px; font-size: 12px;">
+                <i class="fa fa-cubes" style="margin-right: 4px;"></i> <%= price_list.items.where(active: true).count %>
+              </span>
+            </td>
+
+            <td style="padding: 1rem 1.2rem; vertical-align: middle; text-align: center; color: #64748b; font-size: 13px;">
+              <%= price_list.date&.strftime("%d/%m/%Y") %>
+            </td>
+       
+            <td style="padding: 1.2rem; vertical-align: middle; text-align: right;">
+              <div style="display: flex; gap: 8px; justify-content: flex-end;">
+                <% if can? :read, PriceList %>
+                  <%= link_to price_list, class: "btn-action-premium", title: "Configuración", style: "background: #f0f9ff; color: #0369a1;" do %>
+                    <i class="fa fa-eye"></i>
+                  <% end %>
+                  <%= link_to price_list_item_price_list_path(price_list), class: "btn-action-premium", title: "Vista Impresión", style: "background: #f0fdf4; color: #166534;" do %>
+                    <i class="fa fa-list"></i>
+                  <% end %>
+                  <%= link_to builder_price_list_path(price_list), class: "btn-action-premium", title: "Constructor POS", style: "background: #fffbeb; color: #b45309;" do %>
+                    <i class="fa fa-sliders"></i>
+                  <% end %>
+                <% end %>
+                <% if can? :update, PriceList %>
+                  <%= link_to edit_price_list_path(price_list), class: "btn-action-premium", title: "Editar", style: "background: #f5f3ff; color: #6d28d9;" do %>
+                    <i class="fa fa-edit"></i>
+                  <% end %>
+                <% end %>
+                <% if can? :destroy, PriceList %>
+                  <%= link_to price_list, method: :delete, data: { confirm: '¿Estás seguro de eliminar esta lista?' }, class: "btn-action-premium", title: "Eliminar", style: "background: #fef2f2; color: #b91c1c;" do %>
+                    <i class="fa fa-trash"></i>
+                  <% end %>
+                <% end %>
+              </div>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

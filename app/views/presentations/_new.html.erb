@@ -1,10 +1,53 @@
+<style>
+  .modal-premium-header {
+    background: var(--primary-gradient);
+    color: white;
+    padding: 1.5rem 2rem;
+    border-bottom: none;
+    border-radius: 12px 12px 0 0;
+    position: relative;
+  }
+  .modal-premium-header h2 {
+    margin: 0;
+    font-weight: 800;
+    font-size: 1.5rem;
+    letter-spacing: -0.025em;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .modal-close-btn {
+    background: rgba(255,255,255,0.2);
+    border: none;
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    outline: none !important;
+    position: absolute;
+    right: 1.5rem;
+    top: 1.5rem;
+  }
+  .modal-close-btn:hover {
+    background: rgba(255,255,255,0.4);
+    transform: rotate(90deg);
+  }
+</style>
 
-
-<div class="modal-content">
-  <div class="modal-header modal-header-primary">
-     <button type="button" class="close" data-dismiss="modal" aria-hidden="true"> [ × ] </button>
-     <h2><i class=" fas fa-boxes"></i>   Nueva Presentación</h2>
+<div class="modal-content" style="border: none; border-radius: 12px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);">
+  <div class="modal-premium-header">
+     <button type="button" class="modal-close-btn" data-dismiss="modal" aria-hidden="true">
+       <i class="fas fa-times"></i>
+     </button>
+     <h2><i class="fas fa-boxes"></i> Nueva Presentación</h2>
   </div>
                 
-<%= render 'form', presentation: @presentation %>
+  <div class="modal-body" style="padding: 2rem;">
+    <%= render 'form', presentation: @presentation %>
+  </div>
 </div>

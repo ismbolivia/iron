@@ -13,6 +13,8 @@
           <ul class="dropdown-menu forAnimate" role="menu">
             <li class="<%= current_page?(companies_path) ? "active" : "" %>"><%= link_to 'Compañias', companies_path %>
             </li>
+            <li class="<%= current_page?(branches_path) ? "active" : "" %>"><%= link_to 'Sucursales', branches_path %>
+            </li>
             <li class="<%= current_page?(warehouses_path) ? "active" : "" %>"><%= link_to 'Almacenes', warehouses_path %>
             </li>
           </ul>

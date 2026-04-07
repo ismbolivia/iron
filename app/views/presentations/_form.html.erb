@@ -1,49 +1,155 @@
+<style>
+  .presentation-form-group {
+    margin-bottom: 1.5rem;
+  }
+  .presentation-label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.5rem;
+  }
+  .presentation-input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-main);
+    transition: all 0.2s;
+    outline: none !important;
+  }
+  .presentation-input:focus {
+    border-color: var(--accent-indigo);
+    box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+  }
+  .presentation-img-preview {
+    width: 100%;
+    aspect-ratio: 1;
+    background: #f8fafc;
+    border: 2px dashed #cbd5e1;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    margin-bottom: 1rem;
+  }
+  .presentation-file-label {
+    display: block;
+    text-align: center;
+    padding: 0.75rem;
+    background: #f1f5f9;
+    color: #475569;
+    border-radius: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 1px solid #e2e8f0;
+  }
+  .presentation-file-label:hover {
+    background: #e2e8f0;
+  }
+</style>
 
-<div class="container-fluid">
+<%= form_for :presentation, url: (presentation.persisted? ? presentation_path(presentation) : presentations_path), method: (presentation.persisted? ? :patch : :post), remote: true, html: { multipart: true } do |form| %>  
+  <div id="div-error"></div>
+
   <div class="row">
-    <div class="panel-body">   
-     <%= form_for :presentation, url: presentations_url, method: :post, remote: true do |form| %>  
-          <div id="div-error">
-            
-          </div>
+    <div class="col-md-7">
+      <div class="presentation-form-group">
+        <label class="presentation-label">Nombre de Presentación</label>
+        <%= form.text_field :name, autofocus: true, placeholder: "Ej. Caja de 12 unidades", class: "presentation-input" %>
+      </div>
 
-    <div class="col-xs-8">
-        <div class="form-group">
-          <%= form.text_field :name, autofocus: true, placeholder: "Nombre", class: "form-control" %>
-        </div>
-        <div class="form-group">
-          <%= form.number_field :qty, autofocus: true, placeholder: "Cantidad", class: "form-control" %>
-        </div>
-        <div class="form-group">
-          <%= form.collection_select :unit_id, @units, :id, :name,
-              {selected: @presentation.unit_id, include_blank: 'Seleccione unidad'},
-              {class: "form-control"} %>
-              <span class="input-group-btn">
-        </div>
-        <%= hidden_field_tag :is_item_presentation, @is_item_presentation %>
-       <% if @is_item_presentation %>
-           <div class="form-group">
-            <%= form.collection_select :item_id, @items, :id, :name,
-                {selected: @presentation.item_id, include_blank: 'Seleccione producto'},
-                {class: "form-control"} %>
-                <span class="input-group-btn">
+      <div class="row">
+        <div class="col-md-4">
+          <div class="presentation-form-group">
+            <label class="presentation-label">Cantidad Base</label>
+            <%= form.number_field :qty, placeholder: "Ej. 12", class: "presentation-input" %>
           </div>
-       <% else %>
-              <%= form.hidden_field :item_id %>
-       <% end %> 
-        
-  </div>
-    <div class="col-xs-4">
-      <div class="product-img "> 
-          <%= image_tag(presentation.image_presentation.large.url, :alt => "imge-item", class: "image-form") %><br>
-        <div class="fileupload btn btn-info waves-effect waves-light"><span><i class="ion-upload m-r-5"></i>Subir una imagen </span>
-          <%= form.file_field :image_presentation, :class =>"upload"%>
         </div>
-         <%= form.submit "Aceptar", class: "btn btn-success" %>                            
-                 </div>
+        <div class="col-md-8">
+          <div class="presentation-form-group">
+            <label class="presentation-label">Unidad de Medida</label>
+            <%= form.collection_select :unit_id, @units, :id, :name,
+                { selected: presentation.unit_id, include_blank: 'Seleccione unidad' },
+                { class: "presentation-input" } %>
           </div>
-       
+        </div>
+      </div>
+
+      <div class="row" style="background: #f8fafc; padding: 15px; border-radius: 12px; border: 1px solid #edf2f7; margin-bottom: 20px;">
+        <div class="col-md-8">
+          <div class="presentation-form-group" style="margin-bottom: 0;">
+            <label class="presentation-label" style="color: #4f46e5;"><i class="fas fa-sitemap"></i> ¿Pertenece a otra?</label>
+            <%= form.collection_select :parent_id, (presentation.item ? presentation.item.presentations.where.not(id: presentation.id) : []), :id, :name,
+                { selected: presentation.parent_id, include_blank: 'Ninguna (Nivel Superior)' },
+                { class: "presentation-input", style: "border-color: #c7d2fe;" } %>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="presentation-form-group" style="margin-bottom: 0;">
+            <label class="presentation-label" style="color: #4f46e5;">Cant. por Padre</label>
+            <%= form.number_field :qty_in_parent, placeholder: "Ej. 10", class: "presentation-input", style: "border-color: #c7d2fe;" %>
+          </div>
+        </div>
+      </div>
+
+      <%= hidden_field_tag :is_item_presentation, @is_item_presentation %>
+      
+      <% if @is_item_presentation %>
+        <div class="presentation-form-group">
+          <label class="presentation-label">Asignar a Producto</label>
+          <%= form.collection_select :item_id, @items, :id, :name,
+              { selected: presentation.item_id, include_blank: 'Seleccione producto' },
+              { class: "presentation-input" } %>
+        </div>
+      <% else %>
+        <%= form.hidden_field :item_id %>
       <% end %>
+
+      <div class="mt-4 pt-2">
+        <button type="submit" class="btn-premium-action btn-indigo w-100 justify-content-center" style="font-size: 1.1rem; padding: 1rem;">
+          <i class="fas fa-save mr-2"></i> Guardar Presentación
+        </button>
+      </div>
+    </div>
+
+    <div class="col-md-5">
+      <label class="presentation-label text-center">Referencia Visual</label>
+      <div class="presentation-img-preview">
+        <% if presentation.image_presentation.present? %>
+          <%= image_tag(presentation.image_presentation.large.url, id: "img_prev_pres", style: "max-width: 100%; max-height: 100%; object-fit: contain;") %>
+        <% else %>
+          <div id="placeholder_pres" class="text-center" style="color: #cbd5e1;">
+            <i class="fas fa-camera fa-4x mb-2"></i>
+            <div style="font-size: 0.8rem; font-weight: 700;">SIN IMAGEN</div>
+          </div>
+          <img id="img_prev_pres" style="display: none; max-width: 100%; max-height: 100%; object-fit: contain;" />
+        <% end %>
+      </div>
+      
+      <label class="presentation-file-label">
+        <i class="fas fa-upload mr-2"></i> Seleccionar Imagen
+        <%= form.file_field :image_presentation, class: "upload", style: "display: none;", onchange: "previewImage(this);" %>
+      </label>
     </div>
   </div>
-</div>
+<% end %>
+
+<script>
+  function previewImage(input) {
+    if (input.files && input.files[0]) {
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        $('#img_prev_pres').attr('src', e.target.result).show();
+        $('#placeholder_pres').hide();
+      }
+      reader.readAsDataURL(input.files[0]);
+    }
+  }
+</script>

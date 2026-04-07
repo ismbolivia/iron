@@ -1,19 +1,87 @@
 
 
-<div class="panel panel-inf">
-  <div class="panel-head">Categorias</div>
-    <div class="panel-wrapper collapse in" aria-expanded="true">
-      <div class="panel-body table-responsive ">
-            <%= render partial: 'layouts/partials/search_form', locals: { search_entity: 'categories', word: "Categoría", view_kamback: '', view_list: '', url: '', ban: false, url_pdf:'',url_csv:'',url_xls:'' } %>
+<style>
+.premium-dashboard {
+  background: #fdfdfd;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.02);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
 
-          <%= render partial: 'results_search' %>
-          <div class="col-md-5 col-md-offset-5 col-sm-5 col-sm-offset-5">
-            <p>
-              <%= button_to new_category_path, {method: :get, class: "btn btn-success"} do %>
-          <span class="glyphicon glyphicon-plus" aria-hidden="true"> </span> Nueva Categoría
-        <% end %>
-            </p>
-          </div>
-    </div>  
+.gradient-banner {
+  background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+  color: white;
+  border-radius: 16px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.search-form-container {
+  background: white;
+  border-radius: 16px;
+  padding: 0;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.02);
+  margin-bottom: 1.5rem;
+  border: 1px solid #f1f5f9;
+}
+
+.btn-workspace {
+  background: rgba(255, 255, 255, 0.2);
+  color: white !important;
+  font-weight: 700;
+  padding: 10px 20px;
+  border-radius: 14px;
+  transition: all 0.2s;
+  border: 1.5px solid rgba(255, 255, 255, 0.4);
+  font-size: 0.95rem;
+  text-decoration: none !important;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-workspace:hover {
+  background: white;
+  color: #1e3a8a !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+</style>
+
+<div class="premium-dashboard">
+  <div class="gradient-banner">
+    <div>
+      <h2 class="m-0" style="font-weight: 800; font-size: 1.85rem; letter-spacing: -0.5px; display: flex; align-items: center; gap: 12px;">
+         <i class="fas fa-tags" style="font-size: 1.6rem; opacity: 0.9;"></i> Categorías
+      </h2>
+      <p class="m-0" style="color: rgba(255,255,255,0.9); font-size: 1.05rem; margin-top: 6px; font-weight: 500;">
+        Gestione las clasificaciones de sus productos en el inventario.
+      </p>
+    </div>
+    <%= link_to workspace_categories_path, class: "btn-workspace" do %>
+         <i class="fas fa-tasks"></i> Gestión Masiva
+    <% end %>
   </div>
+
+  <div class="search-form-container">
+    <%= render partial: 'layouts/partials/search_form', locals: { 
+          search_entity: 'categories', 
+          word: "Categoría", 
+          view_kamback: '', 
+          view_list: '', 
+          url: new_category_path, 
+          ban: false, 
+          url_pdf: '', url_csv: '', url_xls: '' 
+        } %>
   </div>
+
+  <div id="results-container">
+    <%= render partial: 'results_search' %>
+  </div>
+</div>
+

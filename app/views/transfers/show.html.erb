@@ -1,0 +1,131 @@
+<div class="row bg-title">
+  <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
+    <h4 class="page-title">Detalle de Traspaso T-<%= @transfer.id.to_s.rjust(5, '0') %></h4>
+  </div>
+  <div class="col-lg-9 col-sm-8 col-md-8 col-xs-12">
+    <%= link_to 'Volver a Traspasos', transfers_path, class: "btn btn-default pull-right m-l-20 hidden-xs hidden-sm waves-effect waves-light" %>
+    <% if @transfer.in_transit? %>
+       <%= link_to 'Editar Traspaso', edit_transfer_path(@transfer), class: "btn btn-primary pull-right hidden-xs hidden-sm waves-effect waves-light" %>
+    <% end %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-12">
+    <div class="white-box printableArea">
+      <h3><b>NOTA DE REMISIÓN / TRASPASO</b> <span class="pull-right"># <%= @transfer.id.to_s.rjust(5, '0') %></span></h3>
+      <hr>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="pull-left">
+            <address>
+              <h3> &nbsp;<b class="text-danger">Origen: <%= @transfer.origin_branch&.name || 'Desconocida' %></b></h3>
+              <p class="text-muted m-l-5">
+                Almacén Asociado: <%= @transfer.origin_branch&.warehouses&.first&.name || 'Ninguno' %>
+              </p>
+            </address>
+          </div>
+          <div class="pull-right text-right">
+            <address>
+              <h3>Destino: <b class="text-success"><%= @transfer.destination_branch&.name || 'Desconocida' %></b></h3>
+              <p class="text-muted m-l-30">
+                Almacén Asociado: <%= @transfer.destination_branch&.warehouses&.first&.name || 'Ninguno' %>
+              </p>
+              <p class="m-t-30"><b>Fecha Solicitud :</b> <i class="fa fa-calendar"></i> <%= @transfer.date.strftime("%d/%m/%Y") if @transfer.date %></p>
+              <p><b>Estado :</b> 
+                <% if @transfer.in_transit? %>
+                  <span class="label label-warning">En Tránsito / Creación</span>
+                <% elsif @transfer.received? %>
+                  <span class="label label-info">Recibido</span>
+                <% else %>
+                  <span class="label label-danger">Cancelado</span>
+                <% end %>
+              </p>
+              <p><b>Usuario Emisor :</b> <%= @transfer.user&.name || @transfer.user&.email %></p>
+            </address>
+          </div>
+        </div>
+        
+        <div class="col-md-12 m-t-20">
+            <p><strong>Observaciones: </strong><%= @transfer.observations.presence || 'Sin observaciones' %></p>
+        </div>
+
+        <div class="col-md-12">
+          <div class="table-responsive m-t-40" style="clear: both;">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th class="text-center">#</th>
+                  <th>Descripción del Producto</th>
+                  <th>Observación Específica</th>
+                  <th class="text-right">Cantidad Enviada</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% if @transfer.transfer_details.any? %>
+                  <% @transfer.transfer_details.each_with_index do |detail, index| %>
+                    <tr>
+                      <td class="text-center"><%= index + 1 %></td>
+                      <td><%= detail.item&.name || 'Producto Eliminado' %></td>
+                      <td><%= detail.observation %></td>
+                      <td class="text-right"><strong><%= detail.quantity %></strong></td>
+                    </tr>
+                  <% end %>
+                <% else %>
+                  <tr>
+                    <td colspan="4" class="text-center text-muted">Aún no se han agregado productos a este traspaso.</td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        
+        <div class="col-md-12 text-center m-t-40">
+           <% if @transfer.in_transit? %>
+             <% if @transfer.transfer_details.any? %>
+                <%# TODO: Implement send / receive logic depending on user session logic and branch. %>
+                <%= button_to "Recibir Traspaso en Destino", receive_transfer_path(@transfer), method: :patch, class: "btn btn-success btn-lg btn-block btn-receive-transfer", form: { style: 'display:inline-block; width:100%;' } %>
+             <% else %>
+                <div class="alert alert-warning">
+                   No puede recibir este traspaso porque no tiene productos asignados. Edítelo primero.
+                </div>
+             <% end %>
+           <% elsif @transfer.received? %>
+              <div class="alert alert-success">
+                 <h3><i class="fas fa-check-circle"></i> Traspaso Completado Exitosamente</h3>
+                 <p>El inventario ha sido asimilado por la sucursal de destino y descontado de la de origen.</p>
+              </div>
+           <% end %>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script type="text/javascript">
+  $(document).ready(function() {
+    $('.btn-receive-transfer').on('click', function(e) {
+      e.preventDefault();
+      var form = $(this).closest('form');
+
+      Swal.fire({
+        title: '¿Confirmar Recepción?',
+        text: "El inventario será cargado en los almacenes de tu sucursal. ¡Esta acción no se puede revertir!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#2ecc71',
+        cancelButtonColor: '#95a5a6',
+        confirmButtonText: '<i class="fa fa-truck-loading"></i> Sí, recibir inventario',
+        cancelButtonText: 'Cancelar'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          form.submit();
+        }
+      });
+    });
+  });
+</script>

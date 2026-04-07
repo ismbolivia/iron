@@ -42,31 +42,27 @@ def brands_by_name
       
       return brands, number_of_pages
   end
- def payments_by_num
-  payments = []
-  # @number_of_records= 0
+  def payments_by_num
+    payments_query = Payment.joins(:sale)
+    payments_query = payments_query.where(sales: { user_id: @current_user.id }) unless @current_user.is_admin?
+
     if @keywords.present?
-        pagos = Payment.where(num_payment: @keywords ).offset(@offset).limit(@page_size)
-        # number_of_record = Payment.where(num_payment: @keywords).count
-      else
-        pagos = Payment.all.offset(@offset).limit(@page_size)
-        # @umber_of_record = Payment.count
-      end
-      pagos.order(created_at: :desc).each do |payment|
-        if payment.sale.user_id ==  @current_user.id
-         payments.push(payment)
-        end
-      end
-      @number_of_records = payments.count
-      return payments, number_of_pages
+      # Intentar buscar por número de pago o referencia de factura (si aplica)
+      payments_query = payments_query.where("CAST(payments.num_payment AS TEXT) LIKE ?", "%#{@keywords}%")
+    end
+
+    @number_of_records = payments_query.count
+    payments = payments_query.order(created_at: :desc).offset(@offset).limit(@page_size)
+
+    return payments, number_of_pages
   end
 
   def categories_by_name
     if @keywords.present?
-        categories = Category.where(name_condition).order(:name).offset(@offset).limit(@page_size)
+        categories = Category.where(name_condition).order("unaccent(lower(name)) ASC").offset(@offset).limit(@page_size)
         @number_of_records = Category.where(name_condition).count
       else
-        categories = Category.order(:name).offset(@offset).limit(@page_size)
+        categories = Category.order("unaccent(lower(name)) ASC").offset(@offset).limit(@page_size)
         @number_of_records = Category.count
       end
       
@@ -99,8 +95,9 @@ def brands_by_name
   end
   def price_list_item_by_name(pl)
     if @keywords.present?
-        items =  pl.items.where( "items.active = #{true} and unaccent(lower(items.name)) LIKE '%#{I18n.transliterate(@keywords.downcase)}%'").order(:name).offset(@offset).limit(@page_size)
-        @number_of_records = pl.items.where( "items.active = #{true} and unaccent(lower(items.name)) LIKE '%#{I18n.transliterate(@keywords.downcase)}%'").count
+        pattern = "%#{I18n.transliterate(@keywords.downcase)}%"
+        items =  pl.items.where("items.active = ? AND unaccent(lower(items.name)) LIKE ?", true, pattern).order(:name).offset(@offset).limit(@page_size)
+        @number_of_records = pl.items.where("items.active = ? AND unaccent(lower(items.name)) LIKE ?", true, pattern).count
       else
         items = pl.items.where(active: true).order(:name).offset(@offset).limit(@page_size)
         @number_of_records = pl.items.where(active:true).count
@@ -242,65 +239,105 @@ def addresses_by_calles
 
 
   def sales
-    sales_query = Sale.all
+    sales_query = Sale.joins(:client)
     sales_query = sales_query.where(user_id: @current_user.id) unless @current_user.is_admin?
 
     if @filter.present?
       if Sale::PAYMENT_STATUSES.value?(@filter)
-        sales_query = sales_query.where(payment_status_cache: @filter)
-      elsif Sale.states.keys.include?(@filter) # Allow filtering by original enum states as a fallback
-        sales_query = sales_query.where(state: Sale.states[@filter])
+        sales_query = sales_query.where(sales: { payment_status_cache: @filter })
+      elsif Sale.states.keys.include?(@filter)
+        sales_query = sales_query.where(sales: { state: Sale.states[@filter] })
       end
     end
 
     if @keywords.present?
-        sales_query = sales_query.where("number_sale = ?", @keywords.to_i)
+      pattern = "%#{I18n.transliterate(@keywords.downcase)}%"
+      
+      # Subquery for items to avoid Cartesian product and DISTINCT performance hit
+      item_exists_subquery = <<-SQL
+        EXISTS (
+          SELECT 1 FROM sale_details 
+          JOIN items ON items.id = sale_details.item_id 
+          WHERE sale_details.sale_id = sales.id 
+          AND (unaccent(lower(items.name)) LIKE :p OR unaccent(lower(items.code)) LIKE :p)
+        )
+      SQL
+
+      sales_query = sales_query.where(
+        "(unaccent(lower(clients.name)) LIKE :p OR " \
+        "unaccent(lower(clients.nit)) LIKE :p OR " \
+        "CAST(sales.number_sale AS TEXT) LIKE :p OR " \
+        "#{item_exists_subquery})",
+        p: pattern
+      )
     end
 
     @number_of_records = sales_query.count
-    sales = sales_query.order(:status_priority, number_sale: :desc).offset(@offset).limit(@page_size)
+    sales = sales_query.order("sales.status_priority" => :asc, "sales.number_sale" => :desc)
+                       .offset(@offset).limit(@page_size)
     return sales, number_of_pages
   end
   def mysales
-    sales_query = Sale.where(client_id: @data_condition)
+    sales_query = Sale.joins(:client)
+    sales_query = sales_query.where(sales: { client_id: @data_condition })
     sales_query = sales_query.where(user_id: @current_user.id) unless @current_user.is_admin?
 
     if @filter.present?
-            if Sale::PAYMENT_STATUSES.value?(@filter)
-              sales_query = sales_query.where(payment_status_cache: @filter)
-            elsif Sale.states.keys.include?(@filter) # Allow filtering by original enum states as a fallback
-              sales_query = sales_query.where(state: Sale.states[@filter])
-            end    end
+      if Sale::PAYMENT_STATUSES.value?(@filter)
+        sales_query = sales_query.where(sales: { payment_status_cache: @filter })
+      elsif Sale.states.keys.include?(@filter)
+        sales_query = sales_query.where(sales: { state: Sale.states[@filter] })
+      end
+    end
 
     if @keywords.present?
-        sales_query = sales_query.where("number_sale = ?", @keywords.to_i)
+      pattern = "%#{I18n.transliterate(@keywords.downcase)}%"
+      
+      item_exists_subquery = <<-SQL
+        EXISTS (
+          SELECT 1 FROM sale_details 
+          JOIN items ON items.id = sale_details.item_id 
+          WHERE sale_details.sale_id = sales.id 
+          AND (unaccent(lower(items.name)) LIKE :p OR unaccent(lower(items.code)) LIKE :p)
+        )
+      SQL
+
+      sales_query = sales_query.where(
+        "(unaccent(lower(clients.name)) LIKE :p OR " \
+        "unaccent(lower(clients.nit)) LIKE :p OR " \
+        "CAST(sales.number_sale AS TEXT) LIKE :p OR " \
+        "#{item_exists_subquery})",
+        p: pattern
+      )
     end
 
     @number_of_records = sales_query.count
-    sales = sales_query.order(:status_priority, number_sale: :desc).offset(@offset).limit(@page_size)
+    sales = sales_query.order("sales.status_priority" => :asc, "sales.number_sale" => :desc)
+                       .offset(@offset).limit(@page_size)
     return sales, number_of_pages
   end
 
 private
   def calles_condition
-    calles_condition = "unaccent(lower(calles)) LIKE '%#{I18n.transliterate(@keywords.downcase)}%'"
+    ["unaccent(lower(calles)) LIKE ?", "%#{I18n.transliterate(@keywords.downcase)}%"]
   end
   def name_condition
-    name_condition = "unaccent(lower(name)) LIKE '%#{I18n.transliterate(@keywords.downcase)}%'"
+    ["unaccent(lower(name)) LIKE ?", "%#{I18n.transliterate(@keywords.downcase)}%"]
   end
 
   def name_item_condition
-    name_item_condition = "unaccent(lower(name_item)) LIKE '%#{I18n.transliterate(@keywords.downcase)}%'"
+    ["unaccent(lower(name_item)) LIKE ?", "%#{I18n.transliterate(@keywords.downcase)}%"]
   end
 
   def description_condition
-    description_condition =  "unaccent(lower(code)) LIKE '%#{I18n.transliterate(@keywords.downcase)}%' or unaccent(lower(name)) LIKE '%#{I18n.transliterate(@keywords.downcase)}%'"
+    pattern = "%#{I18n.transliterate(@keywords.downcase)}%"
+    ["unaccent(lower(code)) LIKE ? OR unaccent(lower(name)) LIKE ?", pattern, pattern]
   end
 
 
 
   def ref_condition
-     ref_condition = "unaccent(lower(ref)) LIKE '%#{I18n.transliterate(@keywords.downcase)}%'"
+     ["unaccent(lower(ref)) LIKE ?", "%#{I18n.transliterate(@keywords.downcase)}%"]
   end
   def number_of_pages
     number_of_pages = (@number_of_records % @page_size) == 0 ? 

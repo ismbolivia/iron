@@ -1,0 +1,20 @@
+<% if @success %>
+  // 1. Eliminar la fila
+  $('#payment_row_<%= @payment.id %>').fadeOut(400, function() { $(this).remove(); });
+  $('#modalRechazo').modal('hide');
+  
+  // 2. Actualizar contadores
+  <% 
+     box = @payment.box
+     pendientes_count = Payment.where(box_id: box.id, state: :draft).count
+  %>
+  $('#pendientes_count_value').text('<%= pendientes_count %>');
+  
+  // 3. Si el contador llega a 0, cambiar el layout a vacío
+  <% if pendientes_count == 0 %>
+     setTimeout(function() {
+         $('#tabla_rendicion').closest('.panel-body').prepend('<div style="text-align: center; padding: 40px; color: #94a3b8;"><i class="fas fa-check-circle fa-4x" style="color: #10b981; margin-bottom: 15px; opacity: 0.7;"></i><h4 style="font-weight: 700; color: #475569;">¡Todo al día!</h4><p style="margin: 0;">No hay cobros pendientes de rendir en esta caja.</p></div>');
+         $('#tabla_rendicion').closest('.table-responsive').remove();
+     }, 400);
+  <% end %>
+<% end %>

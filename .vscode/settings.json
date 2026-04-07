@@ -1,0 +1,23 @@
+{
+    "dbcode.connections": [
+        {
+            "connectionId": "bxpahjF-yZbzzJ_1ywS7M",
+            "name": "Data",
+            "driver": "postgres",
+            "color": "#8EA23B",
+            "connectionType": "host",
+            "host": "localhost",
+            "port": 5432,
+            "ssl": false,
+            "authMethod": "password",
+            "username": "sejas",
+            "password": "",
+            "savePassword": "secretStorage",
+            "database": "siron_production",
+            "readOnly": false,
+            "role": "production",
+            "postConnectionSqlType": "inline",
+            "connectionTimeout": 30
+        }
+    ]
+}

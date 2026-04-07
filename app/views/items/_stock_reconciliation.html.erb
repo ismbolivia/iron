@@ -1,0 +1,125 @@
+<div class="white-box" style="border: none; padding: 0;">
+    <div class="alert alert-info" style="background: #eff6ff; border: 1px solid #dbeafe; color: #1e40af; border-radius: 12px; margin-bottom: 2rem; padding: 1.5rem;">
+        <div style="display: flex; align-items: flex-start;">
+            <i class="fas fa-info-circle fa-2x mr-3" style="margin-right: 15px;"></i>
+            <div>
+                <h4 style="margin-top: 0; font-weight: 800; color: #1e3a8a;">Conciliación de Lotes y Empaques</h4>
+                <p style="margin-bottom: 0; opacity: 0.9;">
+                    Asigne la <strong>Presentación</strong> correcta a cada lote de ingreso. Esto permitirá que el sistema genere instrucciones de despacho exactas (ej: "Entregue 2 Cajas de 1000") siguiendo la prioridad por fecha (FIFO).
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
+        <table class="table product-overview" style="margin-bottom: 0;">
+            <thead style="background: #f8fafc; border-bottom: 2px solid #e2e8f0; position: sticky; top: 0; z-index: 10;">
+                <tr>
+                    <th style="padding: 1.2rem; color: #475569; font-weight: 800;">Fecha Ingreso</th>
+                    <th style="padding: 1.2rem; color: #475569; font-weight: 800;">Lote / OC</th>
+                    <th style="padding: 1.2rem; text-align: center; color: #475569; font-weight: 800;">Entrada</th>
+                    <th style="padding: 1.2rem; text-align: center; color: #475569; font-weight: 800;">Salida</th>
+                    <th style="padding: 1.2rem; text-align: right; color: #475569; font-weight: 800;">Saldo Actual</th>
+                    <th style="padding: 1.2rem; min-width: 250px; color: #1e3a8a; font-weight: 800;">Identidad (Presentación)</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <% 
+                   # Solo mostrar lotes con saldo disponible para etiquetar
+                   active_stocks = item.stocks.includes(:purchase_order_line => :purchase_order).where("qty_in - qty_out > 0").order(created_at: :asc)
+                   
+                   if active_stocks.empty?
+                %>
+                    <tr>
+                        <td colspan="6" class="text-center" style="padding: 4rem; color: #94a3b8;">
+                            <i class="fas fa-box-open fa-4x mb-3" style="opacity: 0.2; display: block; margin-bottom: 15px;"></i>
+                            <p style="font-size: 1.1rem; font-weight: 600;">No hay lotes con saldo disponible para este producto.</p>
+                        </td>
+                    </tr>
+                <% else %>
+                    <% active_stocks.each do |stock| 
+                       balance = stock.qty_in - stock.qty_out
+                    %>
+                        <tr style="border-bottom: 1px solid #f1f5f9;">
+                            <td style="padding: 1.2rem; color: #64748b; vertical-align: middle;">
+                                <div style="font-size: 0.9rem; font-weight: 800; color: #1e293b;"><%= stock.created_at.strftime("%d/%m/%Y") %></div>
+                                <div style="font-size: 0.75rem; color: #94a3b8;"><%= time_ago_in_words(stock.created_at) %> ago</div>
+                            </td>
+                            <td style="padding: 1.2rem; vertical-align: middle;">
+                                <div style="margin-bottom: 4px;">
+                                    <span class="badge" style="background: #1e293b; color: white; font-weight: 800; padding: 4px 10px; border-radius: 6px;">
+                                        ID: <%= stock.id %>
+                                    </span>
+                                    <% if stock.lote.present? %>
+                                        <span class="badge" style="background: #f59e0b; color: white; font-weight: 800; padding: 4px 10px; border-radius: 6px;">
+                                            LOTE: <%= stock.lote %>
+                                        </span>
+                                    <% end %>
+                                </div>
+                                <% if stock.purchase_order_line %>
+                                    <div style="font-size: 0.8rem; color: #64748b; font-weight: 700;">
+                                        <i class="fas fa-file-invoice"></i> OC: <%= stock.purchase_order_line.purchase_order.name %>
+                                    </div>
+                                <% end %>
+                            </td>
+                            <td style="padding: 1.2rem; text-align: center; color: #64748b; font-weight: 600; vertical-align: middle;">
+                                <%= number_with_precision(stock.qty_in, precision: 0) %>
+                            </td>
+                            <td style="padding: 1.2rem; text-align: center; color: #94a3b8; vertical-align: middle;">
+                                <%= number_with_precision(stock.qty_out, precision: 0) %>
+                            </td>
+                            <td style="padding: 1.2rem; text-align: right; vertical-align: middle;">
+                                <strong style="font-size: 1.4rem; color: #0f172a; font-family: 'JetBrains Mono', monospace;">
+                                    <%= number_with_precision(balance, precision: 0) %>
+                                </strong>
+                            </td>
+                            <td style="padding: 1.2rem; vertical-align: middle;">
+                                <%= form_for stock, remote: true, authenticity_token: true, html: { id: "edit_stock_#{stock.id}", style: "margin: 0;" } do |f| %>
+                                    <div class="input-group" style="box-shadow: 0 4px 12px rgba(99, 102, 241, 0.1); border-radius: 8px;">
+                                        <%= f.collection_select :presentation_id, item.presentations.order(qty: :desc), :id, :hierarchy_name, 
+                                            { include_blank: '--- Sin Empaque (Unidades Sueltas) ---' }, 
+                                            { 
+                                              class: 'form-control presentation-selector', 
+                                              style: 'border-radius: 8px 0 0 8px; border: 2px solid #e2e8f0; height: 42px; font-weight: 800; color: #4f46e5;',
+                                              onchange: "$(this).css('border-color', '#4f46e5'); Rails.fire(this.form, 'submit');"
+                                            } 
+                                        %>
+                                        <div class="input-group-addon" style="background: #eff6ff; border: 2px solid #e2e8f0; border-left: none; border-radius: 0 8px 8px 0; padding: 0 15px; display: flex; align-items: center; justify-content: center;">
+                                            <i class="fas fa-check-circle text-success" id="success_icon_<%= stock.id %>" style="display: none; font-size: 1.4rem;"></i>
+                                            <div class="spinner-border text-primary" id="spinner_<%= stock.id %>" role="status" style="display: none; width: 1.2rem; height: 1.2rem; border-width: 0.2em;">
+                                            </div>
+                                            <%= link_to print_label_stock_path(stock, format: :pdf), target: "_blank", class: "btn-print-direct", style: "margin-left: 10px; color: #4f46e5; transition: all 0.2s;", title: "Imprimir Etiquetas ahora" do %>
+                                                <i class="fas fa-print" style="font-size: 1.4rem;"></i>
+                                            <% end %>
+                                        </div>
+                                    </div>
+                                    <p class="help-block" style="margin: 4px 0 0 5px;"><small style="font-weight: 700; color: #94a3b8;">Cambie el empaque para recalcular etiquetas automáticamente.</small></p>
+                                <% end %>
+                            </td>
+                        </tr>
+                    <% end %>
+                <% end %>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    $(document).on('ajax:beforeSend', 'form[id^="edit_stock_"]', function() {
+        var id = $(this).attr('id').split('_')[2];
+        $('#success_icon_' + id).hide();
+        $('#spinner_' + id).show();
+    });
+
+    $(document).on('ajax:success', 'form[id^="edit_stock_"]', function() {
+        var id = $(this).attr('id').split('_')[2];
+        $('#spinner_' + id).hide();
+        $('#success_icon_' + id).fadeIn().delay(1000).fadeOut();
+    });
+</script>
+
+<style>
+    .presentation-selector:hover { border-color: #6366f1 !important; background: #f8faff; }
+    .presentation-selector:focus { border-color: #6366f1 !important; box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1); }
+</style>

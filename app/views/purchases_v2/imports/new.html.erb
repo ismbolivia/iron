@@ -1,0 +1,95 @@
+<style>
+  :root {
+    --primary-gradient: linear-gradient(135deg, #4f46e5 0%, #2563eb 100%);
+    --bg-light: #f8fafc;
+    --border-color: #e2e8f0;
+    --text-main: #1e293b;
+    --text-muted: #64748b;
+  }
+
+  .premium-wrapper {
+    background: var(--bg-light); padding: 2rem; font-family: 'Inter', system-ui, sans-serif; min-height: 100vh;
+  }
+
+  .card-premium {
+    background: white; border-radius: 20px; border: 1px solid var(--border-color);
+    padding: 2.5rem; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02); margin: 0 auto; max-width: 600px;
+  }
+
+  .card-header h2 { font-weight: 800; color: var(--text-main); font-size: 1.6rem; margin-bottom: 0.5rem; }
+  .card-header p { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 2rem; }
+
+  .form-group label {
+    font-weight: 700; font-size: 0.85rem; color: #475569; margin-bottom: 6px; display: block;
+  }
+  .form-control-premium {
+    width: 100%; padding: 12px 16px; border-radius: 12px; border: 1.5px solid #cbd5e1;
+    font-size: 0.95rem; color: var(--text-main); transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .form-control-premium:focus {
+    border-color: #3b82f6; outline: none; box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+  }
+
+  .btn-premium-solid {
+    background: var(--primary-gradient); border: none; border-radius: 12px;
+    color: white !important; font-weight: 700; padding: 14px 24px; font-size: 1rem;
+    box-shadow: 0 4px 14px rgba(79,70,229,0.3); transition: all 0.2s;
+    width: 100%; display: flex; justify-content: center; gap: 8px; cursor: pointer; margin-top: 1.5rem;
+  }
+  .btn-premium-solid:hover {
+    box-shadow: 0 6px 20px rgba(79,70,229,0.4); transform: translateY(-1px);
+  }
+
+  .btn-premium-outline {
+    background: white; border: 1.5px solid #cbd5e1; border-radius: 12px;
+    color: #475569; font-weight: 700; padding: 12px 20px; font-size: 0.95rem;
+    display: inline-flex; align-items: center; gap: 6px; text-decoration: none; transition: all 0.2s;
+  }
+  .btn-premium-outline:hover {
+    background: #f8fafc; border-color: #94a3b8; color: #1e293b;
+  }
+</style>
+
+<div class="premium-wrapper">
+  <div style="margin-bottom: 1.5rem;">
+    <%= link_to purchases_v2_imports_path, class: "btn-premium-outline" do %>
+      <i class="fas fa-arrow-left"></i> Cancelar y volver
+    <% end %>
+  </div>
+
+  <div class="card-premium">
+    <div class="card-header">
+      <h2>🚢 Crear Nueva Importación</h2>
+      <p>Configura la carpeta logística para agrupar tus órdenes de compra internacionales.</p>
+    </div>
+
+    <%= form_for @import, url: @import.new_record? ? purchases_v2_imports_path : purchases_v2_import_path(@import) do |f| %>
+      <div class="form-group mb-3">
+        <%= f.label :name, "Código / Nombre de la Importación:" %>
+        <%= f.text_field :name, class: "form-control-premium", placeholder: "Ej. IMP-2026-CH01", required: true %>
+      </div>
+
+      <div class="form-group mb-3">
+        <%= f.label :container_type, "Tipo de Contenedor:" %>
+        <%= f.select :container_type, [["Contenedor 40 HQ", "40HQ"], ["Contenedor 20ft", "20ft"], ["Carga Suelta (LCL)", "LCL"]], { include_blank: "Seleccionar..." }, class: "form-control-premium", required: true %>
+      </div>
+
+      <div class="form-group mb-3">
+        <%= f.label :eta_date, "Fecha Estimada de Llegada (ETA):" %>
+        <%= f.date_field :eta_date, class: "form-control-premium", required: true %>
+      </div>
+
+      <div class="form-group mb-3">
+        <%= f.label :state, "Estado Inicial:" %>
+        <%= f.select :state, Importacion.states.keys.map { |k| [k.capitalize, k] }, {}, class: "form-control-premium" %>
+      </div>
+
+      <div class="form-group mb-3">
+        <%= f.label :notes, "Notas / Observaciones:" %>
+        <%= f.text_area :notes, class: "form-control-premium", rows: 3, placeholder: "Detalles adicionales de la ruta o compras..." %>
+      </div>
+
+      <%= f.submit "🚀 Crear Carpeta de Importación", class: "btn-premium-solid" %>
+    <% end %>
+  </div>
+</div>

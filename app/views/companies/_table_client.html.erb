@@ -17,7 +17,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <% @clients.each do |client| %>
+                  <% latest_clients.includes(:address).each do |client| %>
                     <tr>
                       <td><%= client.name %></td>
                       <td><%= client.address.get_direccion_all %></td>

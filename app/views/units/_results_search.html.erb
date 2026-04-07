@@ -5,6 +5,7 @@
     </tr>
     <tr>
       <th>Nombre</th>
+      <th class="text-center">Permite Decimales</th>
       <th>Fecha de Alta</th>
       <th>Fecha de Modificación</th>
       <th colspan="2"></th>
@@ -14,7 +15,14 @@
   <tbody>
     <% @units.each do |unit| %>
       <tr>
-        <td><%= unit.name %></td>
+        <td style="font-weight: 700; color: #1e293b;"><%= unit.name %></td>
+        <td class="text-center">
+          <% if unit.allow_decimals %>
+            <span class="badge" style="background: #10b981; color: white; padding: 5px 10px; border-radius: 6px;"><i class="fas fa-check-circle mr-1"></i> Sí (Balanza)</span>
+          <% else %>
+            <span class="badge" style="background: #f1f5f9; color: #64748b; padding: 5px 10px; border-radius: 6px; border: 1px solid #cbd5e1;"><i class="fas fa-circle mr-1" style="font-size: 0.6rem; opacity: 0.5;"></i> No (Entero)</span>
+          <% end %>
+        </td>
         <td><%= unit.created_at.strftime("%d/%m/%Y") %></td>
         <td><%= unit.updated_at.strftime("%d/%m/%Y") %></td>
         <td>

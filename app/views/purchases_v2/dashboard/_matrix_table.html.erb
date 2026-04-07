@@ -1,0 +1,63 @@
+<div class="pv2-table-container" id="matrix-table-container">
+  <table class="pv2-table">
+    <thead>
+      <tr>
+        <th rowspan="3" class="text-center" style="width: 60px;">#</th>
+        <th rowspan="3">Detalle de Producto</th>
+        <th rowspan="3" class="text-center">Stock<br>Actual</th>
+        <th rowspan="3" class="text-center" style="border-right: 2px solid var(--border-color); background: #f8fafc; min-width: 120px;">
+          <span style="color: #3b82f6;">Cant. Sugerida</span><br>
+          <span style="font-size: 0.8rem; color: var(--text-muted);">(Modificable)</span>
+        </th>
+        <th rowspan="3" class="text-center" style="border-right: 2px solid var(--border-color); background: #ecfdf5; min-width: 120px;">
+          <span style="color: #059669;">Costo Unitario</span><br>
+          <span style="font-size: 0.8rem; color: var(--text-muted);">(Últ. Compra)</span>
+        </th>
+        <th colspan="4" class="text-center" style="border-right: 2px solid var(--border-color); background: #ffffff;">Cantidades Vendidas (Periodos Reales)</th>
+        <th colspan="8" class="text-center" style="background: #f8fafc; color: #475569;">Tendencia Histórica Anual</th>
+        <th rowspan="3" class="text-center" style="width: 50px; background: #f8fafc; border-left: 2px solid var(--border-color);"></th>
+      </tr>
+      <tr>
+        <th rowspan="2" class="text-center" title="Vendido últ. 30 días" style="background:#f1f5f9; color: #0f172a; font-size: 0.8rem;">1M</th>
+        <th rowspan="2" class="text-center" title="Vendido últ. 90 días">3M</th>
+        <th rowspan="2" class="text-center" title="Vendido últ. 180 días">6M</th>
+        <th rowspan="2" class="text-center" title="Vendido últ. 365 días" style="border-right: 2px solid var(--border-color);">1A</th>
+        
+        <% years = @matrix_items.first&.dig(:years) || [Date.today.year, Date.today.year-1, Date.today.year-2, Date.today.year-3] %>
+        <th colspan="2" class="text-center" style="background: #fdf2f8; color: #be185d; border-right: 1px solid #e2e8f0;"><%= years[0] %> (Actual)</th>
+        <th colspan="2" class="text-center" style="background: #f8fafc; color: #0f172a; border-right: 1px solid #e2e8f0;"><%= years[1] %></th>
+        <th colspan="2" class="text-center" style="background: #f8fafc; color: #0f172a; border-right: 1px solid #e2e8f0;"><%= years[2] %></th>
+        <th colspan="2" class="text-center" style="background: #f8fafc; color: #0f172a;"><%= years[3] %></th>
+      </tr>
+      <tr>
+        <th class="text-center" style="background: #fdf2f8; font-size: 0.8rem; color: #be185d;">TOTAL</th>
+        <th class="text-center" style="background: #fdf2f8; font-size: 0.8rem; color: #be185d; border-right: 1px solid #e2e8f0;">P. MES</th>
+        <th class="text-center" style="background: #f1f5f9; font-size: 0.8rem; color: #64748b;">TOTAL</th>
+        <th class="text-center" style="background: #f1f5f9; font-size: 0.8rem; color: #64748b; border-right: 1px solid #e2e8f0;">P. MES</th>
+        <th class="text-center" style="background: #f1f5f9; font-size: 0.8rem; color: #64748b;">TOTAL</th>
+        <th class="text-center" style="background: #f1f5f9; font-size: 0.8rem; color: #64748b; border-right: 1px solid #e2e8f0;">P. MES</th>
+        <th class="text-center" style="background: #f1f5f9; font-size: 0.8rem; color: #64748b;">TOTAL</th>
+        <th class="text-center" style="background: #f1f5f9; font-size: 0.8rem; color: #64748b;">P. MES</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% if @matrix_items.any? %>
+        <% @matrix_items.each_with_index do |item, index| %>
+          <%= render 'matrix_row', item: item, index: index %>
+        <% end %>
+      <% else %>
+        <tr>
+          <td colspan="20" class="text-center py-5">
+            <div style="color: var(--text-muted); max-width: 350px; margin: 3rem auto;">
+              <div style="background: #f1f5f9; width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem;">
+                <i class="fas fa-folder-open" style="font-size: 2rem; color: #94a3b8;"></i>
+              </div>
+              <h5 style="color: #1e293b; font-weight: 700;">No hay datos de rotación</h5>
+              <p style="font-size: 0.9rem;">No se encontraron artículos con historial de venta asociado a este filtro en el rango de 3 años.</p>
+            </div>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

@@ -1,25 +1,73 @@
 
 
 
-<div class="row">
-	<div class="col-lg-12">
-    <div class="col-lg-1"> </div>
-<div class="col-lg-10">
-<div class="panel panel-inf">
-	<div class="panel-head">Nuevo Categoria</div>
-	  <div class="panel-wrapper collapse in" aria-expanded="true">
-	  	<div class="panel-body">
-	  	  <div class="form-body">
-	  	  	 
-		        <%= render 'form', category: @category %>
-	
-	      </div>
-		</div>
- 	</div>
+<style>
+.premium-dashboard {
+  background: #fdfdfd;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.03);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+.gradient-banner {
+  background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+  color: white;
+  border-radius: 12px;
+  padding: 1.5rem 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.form-panel {
+  background: white;
+  border-radius: 12px;
+  padding: 2.2rem;
+  box-shadow: 0 2px 15px rgba(0,0,0,0.02);
+  margin-bottom: 2rem;
+  border: 1px solid #edf2f7;
+}
+
+.btn-premium-back {
+  background: rgba(255, 255, 255, 0.15);
+  color: white !important;
+  font-weight: 600;
+  padding: 9px 18px;
+  border-radius: 20px;
+  transition: all 0.2s;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  font-size: 0.85rem;
+  text-decoration: none !important;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.btn-premium-back:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: translateY(-1px);
+}
+</style>
+
+<div class="premium-dashboard">
+  <div class="gradient-banner">
+    <div>
+      <h2 class="m-0" style="font-weight: 800; font-size: 1.85rem; letter-spacing: -0.4px; display: flex; align-items: center; gap: 10px;">
+         <i class="fas fa-plus-circle" style="font-size: 1.6rem; opacity: 0.9;"></i> Nueva Categoría
+      </h2>
+      <p class="m-0" style="color: rgba(255,255,255,0.9); font-size: 1.05rem; margin-top: 6px; font-weight: 500;">Cree una nueva clasificación para organizar sus productos.</p>
+    </div>
+    <%= link_to categories_path, class: "btn-premium-back" do %>
+         <i class="fas fa-arrow-left" style="font-size: 0.8rem;"></i> Volver
+    <% end %>
   </div>
+
+  <div class="form-panel">
+    <%= render 'form', category: @category %>
   </div>
- <div class="col-lg-1">
-        </div>
-        </div>
 </div>
+
 

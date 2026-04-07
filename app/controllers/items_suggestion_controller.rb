@@ -10,10 +10,19 @@ class ItemsSuggestionController < ApplicationController
 
 			if params[:supp].present?
 				items_supplier = Supplier.find(supplier_id).items
-					@items = items_supplier.joins(:brand).where(condition4)
-				# @items = Item.joins(:brand).where(condition2)
+				@items = items_supplier.joins(:brand).where(condition4)
 			else
-				@items = Item.where(active:true).joins(:brand).where(condition4)
+				@items = Item.where(active: true).joins(:brand).where(condition4)
+				
+				# Filtro Multisucursal: Solo mostrar items con historial de stock en la sucursal del usuario
+				if current_user.branch_id.present?
+					warehouse_ids = Warehouse.where(branch_id: current_user.branch_id, active: true).pluck(:id)
+					if warehouse_ids.any?
+						@items = @items.joins(:stocks).where(stocks: { warehouse_id: warehouse_ids }).distinct
+					else
+						@items = Item.none
+					end
+				end
 			end			
 			# Item.joins(:brand).where(condition2)
 			@items.each do |item|

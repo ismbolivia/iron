@@ -1,0 +1,221 @@
+<div class="row bg-title">
+    <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
+        <h4 class="page-title">📊 Cartera de Ventas y Análisis <small>(Vendedor: <%= User.find_by(id: @vendedor_id)&.name || 'Todos' %> | Ubicación: <%= Departamento.find_by(id: @depto_id)&.name || 'Todas' %>)</small></h4>
+    </div>
+    <div class="col-lg-9 col-sm-8 col-md-8 col-xs-12">
+        <ol class="breadcrumb">
+            <li><a href="/">Dashboard</a></li>
+            <li class="active">Reportes</li>
+        </ol>
+    </div>
+</div>
+
+<!-- 🔍 Barra de Filtros -->
+<div class="row">
+    <div class="col-sm-12">
+        <div class="white-box">
+            <%= form_tag sales_portfolio_report_path, method: :get, class: 'form-inline' do %>
+                <div class="form-group m-r-10">
+                    <label class="control-label">👤 Vendedor</label><br>
+                    <%= select_tag :vendedor_id, options_from_collection_for_select(User.all, :id, :name, @vendedor_id), prompt: 'Todos', class: 'form-control input-sm' %>
+                </div>
+
+                <div class="form-group m-r-10">
+                    <label class="control-label">📍 Departamento</label><br>
+                    <%= select_tag :depto_id, options_from_collection_for_select(Departamento.joins(:country).where("LOWER(countries.name) = ?", "bolivia"), :id, :name, @depto_id), prompt: 'Todos', class: 'form-control input-sm' %>
+                </div>
+
+                <div class="form-group m-r-10">
+                    <label class="control-label">🧭 Estado</label><br>
+                    <%= select_tag :estado_pago, options_for_select([['Todas', 'todas'], ['Por Cobrar (Deuda)', 'por_cobrar'], ['Pagadas (Liquidadas)', 'pagadas']], @estado_pago), class: 'form-control input-sm' %>
+                </div>
+
+                <div class="form-group m-r-10">
+                    <label class="control-label">📅 Desde</label><br>
+                    <%= date_field_tag :desde, @desde, class: 'form-control input-sm' %>
+                </div>
+
+                <div class="form-group m-r-10">
+                    <label class="control-label">📅 Hasta</label><br>
+                    <%= date_field_tag :hasta, @hasta, class: 'form-control input-sm' %>
+                </div>
+
+                <div class="form-group m-t-20">
+                    <button type="submit" class="btn btn-info btn-sm"><i class="fa fa-search"></i> Buscar</button>
+                    <%= link_to sales_portfolio_report_path(format: :pdf, vendedor_id: @vendedor_id, depto_id: @depto_id, estado_pago: @estado_pago, desde: @desde, hasta: @hasta), class: 'btn btn-danger btn-sm', target: '_blank' do %>
+                         📥 Descargar PDF
+                    <% end %>
+                </div>
+            <% end %>
+        </div>
+    </div>
+</div>
+
+<!-- 🏆 Tarjetas de KPIs -->
+<div class="row">
+    <div class="col-lg-4 col-sm-6 col-xs-12">
+        <div class="white-box bg-info">
+            <h3 class="text-white">💰 Total Ventas</h3>
+            <ul class="list-inline m-t-15 text-white">
+                <li><i class="fa fa-shopping-cart fa-2x"></i></li>
+                <li class="text-right m-l-15"><h2 class="text-white">$ <%= '%.2f' % @total_ventas %></h2></li>
+            </ul>
+        </div>
+    </div>
+    <div class="col-lg-4 col-sm-6 col-xs-12">
+        <div class="white-box bg-success">
+            <h3 class="text-white">🟢 Cobros Recaudados</h3>
+            <ul class="list-inline m-t-15 text-white">
+                <li><i class="fa fa-money fa-2x"></i></li>
+                <li class="text-right m-l-15"><h2 class="text-white">$ <%= '%.2f' % @total_pagos %></h2></li>
+            </ul>
+        </div>
+    </div>
+    <div class="col-lg-4 col-sm-6 col-xs-12">
+        <div class="white-box bg-danger">
+            <h3 class="text-white">🔴 Cartera por Cobrar</h3>
+            <ul class="list-inline m-t-15 text-white">
+                <li><i class="fa fa-credit-card fa-2x"></i></li>
+                <li class="text-right m-l-15"><h2 class="text-white">$ <%= '%.2f' % @total_deuda %></h2></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- 📑 Tabla Dinámica Detallada -->
+<div class="row">
+    <div class="col-sm-12">
+        <div class="white-box">
+            <h3 class="box-title m-b-0">📑 Extracto Detallado de Ventas</h3>
+            <p class="text-muted m-b-30">Desglose secuencial de ventas y cobros amarrados conforme a tu plantilla.</p>
+            
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped">
+                    <thead class="bg-dark text-white">
+                        <tr>
+                            <th>N° Nota</th>
+                            <th>Cliente</th>
+                            <th>Fecha</th>
+                            <th>Total Venta</th>
+                            <th>🧭 Estado</th>
+                            <th>N° Recibo</th>
+                            <th>Fecha Pago</th>
+                            <th>Monto Cobro</th>
+                            <th>🔴 Saldo Deuda</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <%
+  short_status = {
+    "PENDIENTE DE PAGO" => "Pendiente",
+    "PARCIALMENTE PAGADA" => "Parcial",
+    "VENCIDA PENDIENTE DE PAGO" => "Vencida (P)",
+    "VENCIDA PARCIALMENTE PAGADA" => "Vencida (Parc)",
+    "PAGADA" => "Pagada",
+    "ANULADO" => "Anulado",
+    "BORRADOR" => "Borrador",
+    "PARA ANULAR" => "Por Anular",
+    "COTIZACION" => "Cotizar"
+  }
+%>
+<% @grouped_sales.each do |client, s_list| %>
+                            <!-- Subcabecera por Cliente -->
+                            <tr class="info">
+                                <td colspan="9"><strong>👤 Cliente: <%= client&.name || 'Sin Cliente' %></strong></td>
+                            </tr>
+                            
+                            <% s_list.each do |s| %>
+                                <% payments = s.payments.to_a %>
+                                <% status_label = s.payment_status_cache %>
+                                
+                                <% if payments.any? %>
+                                    <% payments.each_with_index do |p, index| %>
+                                        <tr>
+                                            <% if index == 0 %>
+                                                <td><%= s.number_sale %></td>
+                                                <td><%= client&.name %></td>
+                                                
+                                                <td><%= s.date.strftime("%d/%m/%Y") %></td>
+                                                <td><strong>$ <%= '%.2f' % s.total_final %></strong></td>
+                                                <td>
+                                                    <span class="label <%= status_label == 'PAGADA' ? 'label-success' : (['PENDIENTE DE PAGO', 'VENCIDA PENDIENTE DE PAGO'].include?(status_label) ? 'label-danger' : 'label-warning') %>">
+                                                        <%= short_status[status_label] || status_label %>
+                                                    </span>
+                                                </td>
+                                            <% else %>
+                                                <td colspan="5" class="text-right text-muted"><small><i> Amortización Nota #<%= s.number_sale %></i></small></td>
+                                            <% end %>
+                                            
+                                            <td><%= p.get_num_payment %></td>
+                                            <td><%= p.date&.strftime('%d/%m/%Y') %></td>
+                                            <td><strong class="text-success">+ $ <%= '%.2f' % p.rode %></strong></td>
+                                            
+                                            <% if index == 0 %>
+                                                <td><strong class="text-danger">$ <%= '%.2f' % s.saldo %></strong></td>
+                                            <% else %>
+                                                <td>-</td>
+                                            <% end %>
+                                        </tr>
+                                    <% end %>
+                                <% else %>
+                                    <!-- Venta sin cobranzas registradas -->
+                                    <tr>
+                                        <td><%= s.number_sale %></td>
+                                        <td><%= client&.name %></td>
+                                        
+                                        <td><%= s.date.strftime("%d/%m/%Y") %></td>
+                                        <td><strong>$ <%= '%.2f' % s.total_final %></strong></td>
+                                        <td>
+                                            <span class="label <%= status_label == 'PAGADA' ? 'label-success' : (['PENDIENTE DE PAGO', 'VENCIDA PENDIENTE DE PAGO'].include?(status_label) ? 'label-danger' : 'label-warning') %>">
+                                                <%= short_status[status_label] || status_label %>
+                                            </span>
+                                        </td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td><strong class="text-danger">$ <%= '%.2f' % s.saldo %></strong></td>
+                                    </tr>
+                                <% end %>
+                            <% end %>
+                            <tr class="warning">
+                                <td colspan="8" class="text-right"><strong>Subtotal Deuda (<%= client&.name || 'Sin Cliente' %>):</strong></td>
+                                <td><strong class="text-danger">$ <%= '%.2f' % s_list.sum { |s| s.saldo.to_f }.round(2) %></strong></td>
+                            </tr>
+                        <% end %>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Paginación -->
+            <div class="row" style="margin-top: 1.5rem;">
+                <div class="col-md-12 text-center">
+                    <nav>
+                        <ul class="pager" style="display: flex; justify-content: center; align-items: center; gap: 10px; list-style: none;">
+                            <li class="previous <%= @page == 0 ? 'disabled' : '' %>">
+                                <% if @page > 0 %>
+                                    <%= link_to "&larr; Anterior".html_safe, sales_portfolio_report_path(page: @page - 1, vendedor_id: @vendedor_id, depto_id: @depto_id, estado_pago: @estado_pago, desde: @desde, hasta: @hasta), class: "btn btn-default", style: "border-radius: 20px;" %>
+                                <% else %>
+                                    <span class="btn btn-default disabled" style="border-radius: 20px;">&larr; Anterior</span>
+                                <% end %>
+                            </li>
+                            
+                            <li>
+                                <span style="font-weight: 800; color: #4b5563; background: #f3f4f6; padding: 6px 15px; border-radius: 20px;">Página <%= @page + 1 %> de <%= @number_of_pages + 1 %></span>
+                            </li>
+
+                            <li class="next <%= @page >= @number_of_pages ? 'disabled' : '' %>">
+                                <% if @page < @number_of_pages %>
+                                    <%= link_to "Siguiente &rarr;".html_safe, sales_portfolio_report_path(page: @page + 1, vendedor_id: @vendedor_id, depto_id: @depto_id, estado_pago: @estado_pago, desde: @desde, hasta: @hasta), class: "btn btn-default", style: "border-radius: 20px;" %>
+                                <% else %>
+                                    <span class="btn btn-default disabled" style="border-radius: 20px;">Siguiente &rarr;</span>
+                                <% end %>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+

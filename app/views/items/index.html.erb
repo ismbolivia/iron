@@ -1,4 +1,4 @@
-
+<%= render 'premium_item_styles' %>
 
 <div class="panel panel-blue">
   <div class="panel-head">Articulos(Productos)</div>
@@ -11,194 +11,28 @@
                 <%= render partial: 'results_search_camback' %>
           <% end %>
 
-           <div class="row col-lg-12 col-md-12 col-xs-12">
-                <div class="col-lg-3 col-md-3 col-xs-3">
-                  <div class="col-md-5 col-md-offset-5 col-sm-5 col-sm-offset-5">
-                    <p>
-                      <%= button_to new_item_path, {method: :get, class: "btn btn-success"} do %>
-                        <span class="fas fa-plus" aria-hidden="true"> </span> Nuevo articulo
-                      <% end %>     
-                      </p>            
-                    </div>
-                  </div>
-                  <div class="col-lg-9 col-md-9 col-xs-9">
-                      <%= form_tag import_items_path, multipart: true do %>
-                         <p><div class="col-lg-9 col-md-9 col-xs-9"> <%= file_field_tag :file, class: "btn btn-success"%></div> 
-                          <div class="col-lg-3 col-md-3 col-xs-3"><%= submit_tag "Import", class: "btn btn-primary" %></div></p> 
-                        <% end %>
-                  </div>
+            <div style="margin-top: 1.5rem; display: flex; align-items: stretch; gap: 1rem; flex-wrap: nowrap; width: 100%;">
+               <div style="width: 250px; flex-shrink: 0;">
+                   <%= link_to new_item_path, class: "btn-premium-action btn-indigo justify-content-center", style: "display: flex; align-items: center; padding: 1rem; font-size: 1rem; border-radius: 12px; width: 100%; border: none; height: 100%;" do %>
+                      <i class="fas fa-plus-circle mr-2"></i> Nuevo Artículo
+                   <% end %>
+               </div>
+               <div style="flex-grow: 1;">
+                   <%= form_tag import_items_path, multipart: true, style: "background: white; padding: 0.8rem 1.5rem; border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.03); display: flex; gap: 1rem; align-items: center; justify-content: space-between; height: 100%;" do %>
+                      <div style="display: flex; align-items: center; gap: 1rem; flex-grow: 1;">
+                         <div style="background: #f0fdf4; padding: 0.7rem; border-radius: 10px; color: #166534;">
+                            <i class="fas fa-file-excel fa-lg"></i>
+                         </div>
+                         <div style="position: relative; overflow: hidden; display: flex; flex-direction: column; flex-grow: 1;">
+                            <span style="font-weight: 800; color: #334155; font-size: 0.95rem; line-height: 1;">Importar desde Excel / CSV</span>
+                            <span id="file-name" style="font-size: 0.75rem; color: #64748b; font-weight: 600; margin-top: 3px;">Subir un archivo para procesar...</span>
+                            <%= file_field_tag :file, style: "position: absolute; left: 0; top: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;", onchange: "document.getElementById(\"file-name\").innerText = this.files[0].name; document.getElementById(\"file-name\").style.color = \"#166534\";" %>
+                         </div>
+                      </div>
+                      <%= submit_tag "Procesar Carga", class: "btn-premium-action", style: "background: #f1f5f9; color: #1e293b; border: 1px solid #cbd5e1; padding: 0.7rem 1.2rem; border-radius: 10px; font-weight: 800; cursor: pointer; font-size: 0.9rem;" %>
+                   <% end %>
+               </div>
             </div>
         </div>  
     </div>
 </div>
-
-
-<!--     
-<div class="row">
-                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                        <div class="white-box">
-                            <div class="product-img">
-                                <img src="https://wrappixel.com/ampleadmin/ampleadmin-html/plugins/images/chair.jpg">
-                                <div class="pro-img-overlay">
-                                  <a href="javascript:void(0)" class="bg-info"><i class="glyphicon glyphicon-pencil"></i></a> 
-                                  <a href="javascript:void(0)" class="bg-danger"><i class="glyphicon glyphicon-trash"></i></a>
-                                </div>
-                            </div>
-                            <div class="product-text">
-                                <span class="pro-price bg-danger">$15</span>
-                                <h3 class="box-title m-b-0">Rounded Chair</h3>
-                                <small class="text-muted db">globe type chair for rest</small>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                        <div class="white-box">
-                            <div class="product-img">
-                                <img src="https://wrappixel.com/ampleadmin/ampleadmin-html/plugins/images/chair.jpg">
-                                <div class="pro-img-overlay">
-                                  <a href="javascript:void(0)" class="bg-info"><i class="glyphicon glyphicon-pencil"></i></a>
-                                   <a href="javascript:void(0)" class="bg-danger"><i class="glyphicon glyphicon-trash"></i></a>
-                                 </div>
-                            </div>
-                            <div class="product-text">
-                                <span class="pro-price bg-success">$15</span>
-                                <h3 class="box-title m-b-0">Rounded Chair</h3>
-                                <small class="text-muted db">globe type chair for rest</small>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                        <div class="white-box">
-                            <div class="product-img">
-                                <img src="https://wrappixel.com/ampleadmin/ampleadmin-html/plugins/images/chair.jpg">
-                                <div class="pro-img-overlay"><a href="javascript:void(0)" class="bg-info"><i class="ti-marker-alt"></i></a> <a href="javascript:void(0)" class="bg-danger"><i class="ti-trash"></i></a></div>
-                            </div>
-                            <div class="product-text">
-                                <span class="pro-price bg-info">$15</span>
-                                <h3 class="box-title m-b-0">Rounded Chair</h3>
-                                <small class="text-muted db">globe type chair for rest</small>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                        <div class="white-box">
-                            <div class="product-img">
-                                <img src="https://wrappixel.com/ampleadmin/ampleadmin-html/plugins/images/chair.jpg">
-                                <div class="pro-img-overlay"><a href="javascript:void(0)" class="bg-info"><i class="ti-marker-alt"></i></a> <a href="javascript:void(0)" class="bg-danger"><i class="ti-trash"></i></a></div>
-                            </div>
-                            <div class="product-text">
-                                <span class="pro-price bg-danger">$15</span>
-                                <h3 class="box-title m-b-0">Rounded Chair</h3>
-                                <small class="text-muted db">globe type chair for rest</small>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                        <div class="white-box">
-                            <div class="product-img">
-                                <img src="https://wrappixel.com/ampleadmin/ampleadmin-html/plugins/images/chair.jpg">
-                                <div class="pro-img-overlay"><a href="javascript:void(0)" class="bg-info"><i class="ti-marker-alt"></i></a> <a href="javascript:void(0)" class="bg-danger"><i class="ti-trash"></i></a></div>
-                            </div>
-                            <div class="product-text">
-                                <span class="pro-price bg-success">$15</span>
-                                <h3 class="box-title m-b-0">Rounded Chair</h3>
-                                <small class="text-muted db">globe type chair for rest</small>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                        <div class="white-box">
-                            <div class="product-img">
-                                <img src="https://wrappixel.com/ampleadmin/ampleadmin-html/plugins/images/chair.jpg">
-                                <div class="pro-img-overlay"><a href="javascript:void(0)" class="bg-info"><i class="ti-marker-alt"></i></a> <a href="javascript:void(0)" class="bg-danger"><i class="ti-trash"></i></a></div>
-                            </div>
-                            <div class="product-text">
-                                <span class="pro-price bg-danger">$15</span>
-                                <h3 class="box-title m-b-0">Rounded Chair</h3>
-                                <small class="text-muted db">globe type chair for rest</small>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                        <div class="white-box">
-                            <div class="product-img">
-                                <img src="https://wrappixel.com/ampleadmin/ampleadmin-html/plugins/images/chair.jpg">
-                                <div class="pro-img-overlay"><a href="javascript:void(0)" class="bg-info"><i class="ti-marker-alt"></i></a> <a href="javascript:void(0)" class="bg-danger"><i class="ti-trash"></i></a></div>
-                            </div>
-                            <div class="product-text">
-                                <span class="pro-price bg-danger">$15</span>
-                                <h3 class="box-title m-b-0">Rounded Chair</h3>
-                                <small class="text-muted db">globe type chair for rest</small>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                        <div class="white-box">
-                            <div class="product-img">
-                                <img src="https://wrappixel.com/ampleadmin/ampleadmin-html/plugins/images/chair.jpg">
-                                <div class="pro-img-overlay"><a href="javascript:void(0)" class="bg-info"><i class="ti-marker-alt"></i></a> <a href="javascript:void(0)" class="bg-danger"><i class="ti-trash"></i></a></div>
-                            </div>
-                            <div class="product-text">
-                                <span class="pro-price bg-info">$15</span>
-                                <h3 class="box-title m-b-0">Rounded Chair</h3>
-                                <small class="text-muted db">globe type chair for rest</small>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                        <div class="white-box">
-                            <div class="product-img">
-                                <img src="https://wrappixel.com/ampleadmin/ampleadmin-html/plugins/images/chair.jpg">
-                                <div class="pro-img-overlay"><a href="javascript:void(0)" class="bg-info"><i class="ti-marker-alt"></i></a> <a href="javascript:void(0)" class="bg-danger"><i class="ti-trash"></i></a></div>
-                            </div>
-                            <div class="product-text">
-                                <span class="pro-price bg-danger">$15</span>
-                                <h3 class="box-title m-b-0">Rounded Chair</h3>
-                                <small class="text-muted db">globe type chair for rest</small>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                        <div class="white-box">
-                            <div class="product-img">
-                                <img src="https://wrappixel.com/ampleadmin/ampleadmin-html/plugins/images/chair.jpg">
-                                <div class="pro-img-overlay"><a href="javascript:void(0)" class="bg-info"><i class="ti-marker-alt"></i></a> <a href="javascript:void(0)" class="bg-danger"><i class="ti-trash"></i></a></div>
-                            </div>
-                            <div class="product-text">
-                                <span class="pro-price bg-success">$15</span>
-                                <h3 class="box-title m-b-0">Rounded Chair</h3>
-                                <small class="text-muted db">globe type chair for rest</small>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                        <div class="white-box">
-                            <div class="product-img">
-                                <img src="https://wrappixel.com/ampleadmin/ampleadmin-html/plugins/images/chair.jpg">
-                                <div class="pro-img-overlay"><a href="javascript:void(0)" class="bg-info"><i class="ti-marker-alt"></i></a> <a href="javascript:void(0)" class="bg-danger"><i class="ti-trash"></i></a></div>
-                            </div>
-                            <div class="product-text">
-                                <span class="pro-price bg-info">$15</span>
-                                <h3 class="box-title m-b-0">Rounded Chair</h3>
-                                <small class="text-muted db">globe type chair for rest</small>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                        <div class="white-box">
-                            <div class="product-img">
-                                <img src="https://wrappixel.com/ampleadmin/ampleadmin-html/plugins/images/chair.jpg">
-                                <div class="pro-img-overlay"><a href="javascript:void(0)" class="bg-info"><i class="ti-marker-alt"></i></a> <a href="javascript:void(0)" class="bg-danger"><i class="ti-trash"></i></a></div>
-                            </div>
-                            <div class="product-text">
-                                <span class="pro-price bg-danger">$15</span>
-                                <h3 class="box-title m-b-0">Rounded Chair</h3>
-                                <small class="text-muted db">globe type chair for rest</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
- -->
-
-
-

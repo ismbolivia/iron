@@ -23,10 +23,15 @@ class Ability
       if user.is_seller? 
         can :ru, Modulo
         can :read, Item
+        can :read, Branch
+        can :manage, Transfer
+        can :manage, TransferDetail
         can :cru, Client 
         can :manage, Sale
         can :manage , SaleDetail
         can :manage , Payment
+        can :confirm_observed, Sale, user_id: user.id
+        cannot :observe, Sale
         can :cru , Address
         can :crud , Province
         can :crud , Zona
@@ -45,10 +50,10 @@ class Ability
             cli.asig_a_user_id != user.id
             end
         cannot :ud , Sale do |sale|
-            sale.payments.count > 0
+            sale.payments.count > 0 && !sale.observed?
             end    
         cannot :ud , Sale do |sale|
-            sale.proformas.count > 0
+            sale.proformas.count > 0 && !sale.observed?
             end      
       end   
       if user.is_warehouser?
@@ -57,11 +62,13 @@ class Ability
         can :ru, Item
         can :ru , Warehouse
         can :manage, Stock
-
+        can :manage, Transfer
+        can :manage, TransferDetail
         can :rc, Presentation
-      end 
+      end
       if user.is_manager?
         can :read, :all   
+        can :manage, Branch
         can :cru, Supplier
         can :cru, PurchaseOrder
         can :manage, PurchaseOrderLine
@@ -73,11 +80,10 @@ class Ability
             cli.asig_a_user_id != user.id
             end
         cannot :ud , Sale do |sale|
-            sale.payments.count > 0
-            end    
-        cannot :ud , Sale do |sale|
-            sale.proformas.count > 0
+            sale.payments.count > 0 && !sale.observed?
         end 
+        can :observe, Sale
+        can :confirm_observed, Sale
 
       end 
       if user.is_owner? 

@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  transfer: one
+  item: one
+  quantity: 9.99
+  observation: MyString
+
+two:
+  transfer: two
+  item: two
+  quantity: 9.99
+  observation: MyString

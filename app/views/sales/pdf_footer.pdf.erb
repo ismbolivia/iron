@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <script>
+        function number_pages() {
+            var vars = {};
+            var x = document.location.search.substring(1).split('&');
+            for(var i in x) {
+                var z = x[i].split('=', 2);
+                vars[z[0]] = decodeURIComponent(z[1]);
+            }
+            var x = ['frompage','topage','page','webpage','section','subsection','subsubsection'];
+            for(var i in x) {
+                var y = document.getElementsByClassName(x[i]);
+                for(var j=0; j<y.length; ++j) y[j].textContent = vars[x[i]];
+            }
+        }
+        window.onload = function() {
+            setTimeout(function(){
+                try { number_pages(); } catch(e) {}
+            }, 100);
+        }
+    </script>
+    <style>
+        body { 
+            margin: 0; 
+            padding: 0; 
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; 
+        }
+        .footer-table {
+            width: 100%;
+            border-top: 2px solid #1e3a8a;
+            padding-top: 5px;
+            margin-top: 0;
+        }
+        .terms-title {
+            color: #1e3a8a;
+            font-weight: bold;
+            font-size: 9px;
+            text-transform: uppercase;
+            margin-bottom: 2px;
+        }
+        .terms-text {
+            font-size: 8px;
+            color: #64748b;
+            line-height: 1.2;
+        }
+        .page-counter {
+            background-color: #f1f5f9;
+            color: #1e3a8a;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 9px;
+            font-weight: bold;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <table class="footer-table" style="border-collapse: collapse;">
+        <tr>
+            <td style="width: 15%; vertical-align: middle;">
+                <% 
+                   qr_path = Rails.root.join('app', 'assets', 'images', 'qr.jpeg')
+                   qr_src = File.exist?(qr_path) ? "data:image/jpeg;base64,#{Base64.strict_encode64(File.read(qr_path))}" : ""
+                %>
+                <% if qr_src.present? %>
+                    <img src="<%= qr_src %>" style="max-height: 40px;">
+                <% end %>
+            </td>
+            <td style="width: 65%; vertical-align: top; padding-left: 10px;">
+                <div class="terms-title">Condiciones</div>
+                <div class="terms-text">
+                    &bull; Validez: 15 días. &bull; Sujeto a stock. &bull; Sin devoluciones post-retiro.
+                </div>
+            </td>
+            <td style="width: 20%; text-align: right; vertical-align: middle;">
+                <div class="page-counter">
+                    Pág <span class="page"></span>/<span class="topage"></span>
+                </div>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

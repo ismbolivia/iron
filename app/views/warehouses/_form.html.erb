@@ -29,17 +29,25 @@
       </div>
 
        <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-4">
           <div class="form-group">
             <%= form.label :company_id,  :class =>"control-label" %>
              <%= form.collection_select :company_id, @companies, :id, :name, 
-                      {selected: @warehouse.company_id, include_blank: 'Seleccione su conpañia'},
+                      {selected: @warehouse.company_id},
                       {class: "form-control"} %>
           </div>
         </div>
 
-                                                       <!--/span-->
-          <div class="col-md-6">
+        <div class="col-md-4">
+          <div class="form-group">
+            <%= form.label :branch_id, "Sucursal Asignada", :class =>"control-label text-info font-weight-bold" %>
+             <%= form.collection_select :branch_id, @branches, :id, :name, 
+                      {selected: @warehouse.branch_id, include_blank: 'Ninguna / Independiente'},
+                      {class: "form-control"} %>
+          </div>
+        </div>
+
+          <div class="col-md-4">
               <div class="form-group">
                     <%= form.label :active, :class =>"control-label" %>
                 <div class="checkbox  ">

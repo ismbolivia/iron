@@ -45,7 +45,6 @@
 								    <thead class="conf-pdf text-center">
 									    <tr>
 									      <th style="width:250px">NOMBRE</th>
-									      <th style="width:350px">DETALLE</th>
 									      <th style="width:80px">UNIDAD</th>
 									      <th>PRECIO $</th>
 									      <% @mycompany.get_current_currency.getChangePrices.each do |price_rate| %>
@@ -57,7 +56,6 @@
 										<% data.each do |item| %> 
 										<tr>
 										    <td><%= item.name %></td>
-										    <td><%= item.description %></td>
 										    <td><%= item.unit.name %></td>
 										    <td><%= number_to_currency(item.getPriceAsignado(@datas[0].name)) %></td>
 									         <% @mycompany.get_current_currency.getChangePrices.each do |price_rate| %>

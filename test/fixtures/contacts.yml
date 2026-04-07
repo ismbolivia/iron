@@ -6,7 +6,6 @@ one:
   job: MyString
   email: MyString
   mobile: MyString
-  notes: MyString
   client: one
 
 two:
@@ -15,5 +14,4 @@ two:
   job: MyString
   email: MyString
   mobile: MyString
-  notes: MyString
   client: two

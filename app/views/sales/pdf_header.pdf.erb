@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <style>
+        body { 
+            margin: 0; 
+            padding: 0; 
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            color: #1e1e2d;
+        }
+        .header-container {
+            width: 100%;
+            border-bottom: 1.5px solid #e2e8f0; /* Remate de línea elegante */
+            padding-top: 10px;
+            padding-bottom: 12px;
+            margin-bottom: 15px;
+        }
+        .logo-box {
+            text-align: left;
+            vertical-align: middle;
+        }
+        .info-box {
+            text-align: right;
+            vertical-align: middle;
+        }
+        /* Eliminar cualquier componente gris residual de tablas */
+        table, tr, td {
+            border: none !important;
+            border-color: white !important;
+        }
+        /* DISEÑO TIPOGRÁFICO DE ALTO IMPACTO (SIN BLOQUES) */
+        .header-card {
+            background: transparent;
+            padding: 5px 0;
+            display: inline-block;
+            text-align: right;
+        }
+        .badge-base {
+            color: #c90000; /* Rojo Sangre / Distinguido */
+            padding: 5px 0;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            font-weight: 900; /* Máximo grosor real */
+            display: inline-block;
+            vertical-align: middle;
+            white-space: nowrap;
+            font-size: 28px; 
+            text-transform: uppercase;
+            letter-spacing: -0.5px;
+        }
+        .title-badge {
+            margin-right: 15px; /* Espacio entre NOTA y número */
+        }
+        .number-badge {
+            /* Limpio de fondos */
+        }
+    </style>
+</head>
+<body>
+    <div class="header-container">
+        <table style="width: 100%; border-collapse: collapse; border: 0px solid white !important;">
+            <tr>
+                <td class="logo-box" style="width: 40%; padding: 0;">
+                    <% 
+                       logo_path = Rails.root.join('app', 'assets', 'images', 'logo_pd.png')
+                       logo_path = Rails.root.join('app', 'assets', 'images', 'logo_pd.png') unless File.exist?(logo_path)
+                       image_src = File.exist?(logo_path) ? "data:image/png;base64,#{Base64.strict_encode64(File.read(logo_path))}" : ""
+                    %>
+                    <% if image_src.present? %>
+                        <img src="<%= image_src %>" style="max-height: 80px; max-width: 300px; display: block;">
+                    <% else %>
+                         <div style="font-weight: 1000; font-size: 38px; color: #1e3a8a; line-height: 1;">IRON</div>
+                    <% end %>
+                </td>
+                <td class="info-box" style="width: 55%; padding: 0;">
+                     <div class="header-card"> <!-- Unified Box Style -->
+                         <div style="white-space: nowrap; font-size: 0;">
+                             <span class="badge-base title-badge"><%= @sale.quoted? ? 'Cotización' : 'NOTA' %></span>
+                             <span class="badge-base number-badge">N° <%= @sale.proformas.first&.number_recibo || @sale.number_sale || @sale.id %></span>
+                         </div>
+                     </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>

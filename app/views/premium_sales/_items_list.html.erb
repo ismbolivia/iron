@@ -21,7 +21,7 @@
       </div>
     </td>
     <td class="text-right font-mono">
-      <%= @mycompany.get_current_currency.symbol %> <%= number_with_precision(detail.price_sale, precision: 2) %>
+      <%= @mycompany.get_current_currency.symbol %> <%= number_with_precision(detail.price_sale, precision: 4) %>
     </td>
     <td class="text-center">
       <input type="number" 

@@ -18,6 +18,9 @@ class BoxPurchaseOrderPayment < ApplicationRecord
 		  if self.box.saldo <= amount
 		  	errors.add(:_, "Su saldo es insuficiente no tiene fondos suficientes")
 		  end
+		  if self.box.ruta? || self.box.sucursal_ruta?
+		  	errors.add(:_, "Caja de ruta no tiene permitido realizar pagos a proveedores")
+		  end
 	end
 end
 

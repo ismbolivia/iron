@@ -1,26 +1,37 @@
 class Payment < ApplicationRecord
-	has_many :box_details
+	has_many :box_details, dependent: :destroy
 	belongs_to :sale
 	belongs_to :payment_type
-	belongs_to :account
+	belongs_to :account, optional: true
+	belongs_to :box, optional: true
 
-
-	# has_many :checks, inverse_of: :payment, dependent: :destroy
-	# has_many :check_payments, through: :checks
-
-	# has_many :deposits, inverse_of: :payment, dependent: :destroy
-	# has_many :deposit_payments, through: :deposits
-
-	enum state: [:draft, :confirmed]
-	validates :account, presence: true
-	# validates :account, numericality: true
+	enum state: [:draft, :confirmed, :rejected]
+	validates :account, presence: true, unless: -> { box_id.present? }
+	validates :box, presence: true, if: -> { payment_type_id == 1 }
 	validates_numericality_of :rode, :greater_than => 0
 
 	after_save :update_sale_status_priority
 	after_destroy :update_sale_status_priority
+	after_create :create_box_detail_if_cash, if: -> { confirmed? }
+	after_update :create_box_detail_if_cash, if: -> { saved_change_to_state? && confirmed? }
+	after_initialize :set_default_state, if: :new_record?
+	before_save :calculate_commission, if: -> { confirmed? }
+
+	def calculate_commission
+		vendedor = self.sale&.user
+		if vendedor.present?
+			tasa = vendedor.commission_rate || 0.0
+			self.commission_amount = (self.rode.to_f * tasa.to_f / 100.0).round(2)
+		end
+	end
+
+	def set_default_state
+		self.state ||= :draft
+	end
 
 	def get_discount_payment
-		res = self.sale.total_final_afther ? ((self.sale.total_final_afther)*discount)/100 : 0
+		d = discount || 0
+		res = self.sale.total_final_afther ? ((self.sale.total_final_afther)*d)/100 : 0
 	end
 	def get_num_payment
 		num = self.num_payment
@@ -53,10 +64,10 @@ class Payment < ApplicationRecord
 	end
 	def obs
 		res = ""
-		if self.discount > 0
-		res = "Desc. "+self.get_discount_payment.to_s	
+		d = discount || 0
+		if d > 0
+			res = "Desc. " + self.get_discount_payment.to_s	
 		end
-
 		res
 	end
 
@@ -75,5 +86,17 @@ class Payment < ApplicationRecord
 
 	def update_sale_status_priority
 	  self.sale.update_status_priority!
+	end
+
+	def create_box_detail_if_cash
+		if payment_type_id == 1 && box_id.present?
+			BoxDetail.create!(
+				box_id: box_id, 
+				amount: rode, 
+				reason: "Cobro Recibo ##{self.get_num_payment} - Venta ##{self.sale_id}", 
+				state: "input",
+				payment_id: self.id
+			)
+		end
 	end
 end

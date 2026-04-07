@@ -24,22 +24,56 @@
         <div class="row">
             <% if current_user.id.equal? @user.id %>
              <div class="col-12" align="center">             
-                 <div class="product-img">                  
-                    <%= image_tag(@user.avatar.medium.url class: "col-sm-12") %><br>                   
+                 <div class="product-img">                                      <%= image_tag(@user.avatar.medium.url, class: "col-sm-12") %><br>                   
                       <div class="fileupload btn btn-info "><span><i class="ion-upload m-r-5"></i>Selecionar Imagen</span>                        
                            <%= form.file_field :avatar, class: "upload" %>
                       </div>
                  </div>
+                 
+                 <div class="row text-left" style="margin-top: 20px; padding: 0 15px;">
+                    <div class="col-sm-6">
+                      <%= form.label :phone, "Teléfono" %>
+                      <%= form.text_field :phone, class: "form-control" %>
+                    </div>
+                    <div class="col-sm-6">
+                      <%= form.label :mobile, "Celular (Móvil)" %>
+                      <%= form.text_field :mobile, class: "form-control" %>
+                    </div>
+                 </div>
              
             <% else %>   
             <div class="col-sm-1" ></div>          
-                <%= form.label :permission  ,class: "col-sm-2 "%>
-                 <div class="col-sm-4">
+                <%= form.label :permission, "Rol", class: "col-sm-1" %>
+                 <div class="col-sm-3">
                    <%= form.collection_select :rol_id, @rols, :id, :name,
                         {selected: @user.rol_id, include_blank: 'Seleccione un Rol'},
                         {class: "form-control"} %>
-
                 </div>      
+
+                 <%= form.label :branch_id, "Sucursal", class: "col-sm-1" %>
+                  <div class="col-sm-4">
+                    <%= form.collection_select :branch_id, @branches, :id, :name,
+                         {selected: @user.branch_id, include_blank: 'Ninguna (Asignación Global)'},
+                         {class: "form-control"} %>
+                 </div> 
+                 
+                 <div class="col-sm-12" style="margin-top: 20px;"></div>
+                 
+                 <div class="col-sm-1"></div>
+                 <%= form.label :phone, "Teléfono", class: "col-sm-1" %>
+                 <div class="col-sm-3">
+                    <%= form.text_field :phone, class: "form-control" %>
+                 </div>
+                 
+                 <%= form.label :mobile, "Celular", class: "col-sm-1" %>
+                 <div class="col-sm-2">
+                    <%= form.text_field :mobile, class: "form-control" %>
+                 </div>
+                 
+                 <%= form.label :commission_rate, "% Comisión", class: "col-sm-1" %>
+                 <div class="col-sm-2">
+                    <%= form.number_field :commission_rate, step: 0.1, class: "form-control" %>
+                 </div> 
             <% end %>
              
               <div class="actions ">

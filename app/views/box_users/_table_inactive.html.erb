@@ -1,0 +1,19 @@
+<table class="table" style="color: #94a3b8; font-size: 0.9rem;">
+  <thead>
+    <tr>
+      <th>Usuario</th>
+      <th>Correo</th>
+      <th>Estado</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% box_users.each do |b_u| %>
+      <tr style="opacity: 0.75;">
+        <td><del><%= b_u.user.name %></del></td>
+        <td><%= b_u.user.email %></td>
+        <td><span class="label label-default" style="border-radius: 4px;">Inactivo</span></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

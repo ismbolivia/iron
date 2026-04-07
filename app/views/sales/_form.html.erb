@@ -20,29 +20,46 @@
 <div class="row">
  <div class="col-md-3 col-lg-3 col-sm-5 panel panel-default">
     <br>
-  <div class="col-md-12 col-lg-12 col-sm-12 ">
-       <div class="">
-        <small>Información Del Clientes</small>          
-          <div class="form-group">
-                <h3 class="m-b-0 m-t-0 m-t-40 text-center"><%= @sale.client.name %></h3>
+  <div class="col-md-12 col-lg-12 col-sm-12">
+       <div style="padding: 10px 0;">
+          <div style="text-transform: uppercase; font-size: 0.75rem; font-weight: 800; color: var(--text-muted); letter-spacing: 1px; margin-bottom: 5px;">Información del Cliente</div>          
+          <div class="form-group" style="margin-bottom: 20px;">
+                <h2 style="font-weight: 950; color: var(--accent-indigo); margin: 0; line-height: 1.1;"><%= @sale.client.name %></h2>
           </div>
-          <div class="form-group  ">
+          
+          <div class="form-group" style="background: #f8fafc; padding: 12px; border-radius: 10px; border: 1px solid #e2e8f0;">
             <span class="additional-info-wrap">
-                <label class="checkbox-inline " for="Checkboxes_Grape">
+                <label class="checkbox-inline" for="Checkboxes_Grape" style="font-weight: 700; color: var(--text-main); font-size: 1rem;">
                     <%= f.check_box :credit, id:"Checkboxes_Grape", checked: true %>
-                    <span id="id_credit">A Credito</span>
+                    <span id="id_credit">Venta a Crédito</span>
                 </label>
-                <div class="additional-info ">
-                    <%= f.date_field :credit_expiration, placeholder: "Fecha", class: "form-control" %>
+                <div class="additional-info" style="margin-top: 10px;">
+                    <%= f.date_field :credit_expiration, placeholder: "Fecha Vencimiento", class: "form-control", style: "font-weight: 600;" %>
                 </div>
             </span>
-         </div>
-          <hr>
-          <h4 id="discount_client_sales">Descuento Max:  <span class="badge badge-info"><%=@sale.client.discount%>% </span></h4>                 
-          <hr>          
-          <small>Linea de Credito</small>
-          <h4>Credito <span class="badge badge-success"><%= @mycompany.get_current_currency.symbol%> <%=@sale.client.credit_limit %></span></h4>
-          <h4>Credito disponible<span class="badge badge-warning"><%= @mycompany.get_current_currency.symbol%> <%= @sale.client.line_credit_available %></span></h4>          
+          </div>
+
+          <div style="display: flex; gap: 10px; margin-top: 15px;">
+              <div style="flex: 1; background: #eef2ff; padding: 10px; border-radius: 8px; text-align: center; border: 1px solid #e0e7ff;">
+                  <div style="font-size: 0.7rem; font-weight: 800; color: var(--accent-indigo); text-transform: uppercase;">Desc. Máx</div>
+                  <div style="font-size: 1.25rem; font-weight: 900; color: var(--accent-indigo);"><%=@sale.client.discount%>%</div>
+              </div>
+          </div>
+
+          <div style="margin-top: 20px;">
+              <div style="text-transform: uppercase; font-size: 0.75rem; font-weight: 800; color: var(--text-muted); margin-bottom: 8px;">Estado de Crédito</div>
+              <div style="background: #fdfdfd; border: 1px solid #eee; border-radius: 10px; padding: 15px;">
+                  <div style="margin-bottom: 10px;">
+                      <div style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600;">Límite Total:</div>
+                      <div style="font-size: 1.1rem; font-weight: 800; color: var(--text-main);"><%= @mycompany.get_current_currency.symbol%> <%=@sale.client.credit_limit %></div>
+                  </div>
+                  <hr style="margin: 10px 0;">
+                  <div>
+                      <div style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600;">Disponible:</div>
+                      <div style="font-size: 1.3rem; font-weight: 950; color: var(--accent-green);"><%= @mycompany.get_current_currency.symbol%> <%= @sale.client.line_credit_available %></div>
+                  </div>
+              </div>
+          </div>
        </div>
     </div>
 
@@ -72,6 +89,12 @@
                         <div class="form-group">
                             <%= f.label :discount, "Descuento en ventas %" %>
                             <%= f.text_field :discount, class: "form-control" %>
+                        </div>
+                    </div>
+                    <div class="col-xs-2 col-md-2" style="margin-top: 25px;">
+                        <div class="form-group">
+                            <%= f.check_box :show_bs %>
+                            <%= f.label :show_bs, "Ver en Bs." %>
                         </div>
                     </div>
                     <div class="col-xs-4 col-md-4 pull-right">

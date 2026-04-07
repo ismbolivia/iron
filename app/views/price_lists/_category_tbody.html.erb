@@ -1,0 +1,47 @@
+<tbody id="cat-group-<%= category.id %>" style="border-top: 3px solid #e2e8f0; page-break-inside: avoid;">
+  <% items.each_with_index do |item, index| %>
+    <% included = @price_list.items.include?(item) %>
+    <tr id="row-item-<%= item.id %>" class="<%= 'table-success' if included %>">
+      
+      <!-- 🖼️ Imagen Combinada (Rowspan) -->
+      <% if index == 0 %>
+        <td rowspan="<%= items.count %>" class="text-center" style="vertical-align: middle; background: #fafafa; width: 140px;">
+          <% 
+            category_image_url = nil
+            if category.pictures.present?
+              category_image_url = category.pictures.url
+            elsif items.first.present? && items.first.image.present?
+              category_image_url = items.first.image.large.url rescue items.first.image.url
+            end
+          %>
+          <% if category_image_url.present? %>
+            <%= image_tag(category_image_url, style: "max-width: 90px; max-height: 90px; object-fit: contain; border-radius: 6px;") %>
+          <% else %>
+            <span style="font-size: 11px; color: #aaa; font-style: italic;">Sin Foto</span>
+          <% end %>
+          <div style="margin-top: 5px; font-weight: bold; font-size: 12px; color: #1e293b; text-transform: uppercase;"><%= category.name %></div>
+          
+          <!-- Botón Remover Toda la Categoría -->
+          <button onclick="removeCategoryGroup(<%= category.id %>)" class="btn btn-xs btn-outline btn-danger" style="margin-top: 5px; font-size: 10px; padding: 2px 5px;">
+             <i class="fa fa-trash"></i> Quitar de Lista
+          </button>
+        </td>
+      <% end %>
+
+      <!-- 📦 Datos del Producto -->
+      <td style="vertical-align: middle; font-weight: 500;"><%= item.name %></td>
+      <td style="vertical-align: middle; color: #555; font-size: 13px;"><%= item.description.present? ? item.description : "Sin descripción" %></td>
+      
+      <!-- 💰 Precio Costo ($) -->
+      <td class="text-center" style="vertical-align: middle; font-weight: bold;"><%= number_to_currency(item.cost.to_f) %></td>
+      
+      <!-- 🗑️ Acciones Item individuales -->
+      <td class="text-center" style="vertical-align: middle;">
+        <button onclick="toggleItem(<%= item.id %>)" class="btn btn-sm btn-circle <%= included ? 'btn-success' : 'btn-default' %>" id="btn-<%= item.id %>">
+          <i class="fa <%= included ? 'fa-check' : 'fa-plus' %>"></i>
+        </button>
+      </td>
+
+    </tr>
+  <% end %>
+</tbody>

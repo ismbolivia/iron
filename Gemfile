@@ -43,6 +43,7 @@ gem 'toastr-rails'
 gem 'wicked_pdf', '~> 2.0', '>= 2.0.2'
 gem 'wkhtmltopdf-binary', '~> 0.12.4'
 gem 'roo'
+gem 'rails-erd'
 # Modal
 gem 'bootstrap-modal-rails'
 gem 'font_awesome5_rails'

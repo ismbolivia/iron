@@ -1,0 +1,62 @@
+            <div style="padding: 2.5rem;">
+              <h4 class="font-weight-bold mb-4" style="color: var(--text-main);">
+                <i class="fas fa-chart-bar mr-2" style="color: var(--accent-indigo);"></i> 
+                Rentabilidad Mensual Histórica (FIFO)
+              </h4>
+              
+              <div class="table-responsive">
+                <table class="table" style="border-collapse: separate; border-spacing: 0 10px; margin-top: -10px;">
+                  <thead>
+                    <tr style="background: transparent; border: none;">
+                      <th style="padding: 1.2rem; color: #475569; font-weight: 800; border: none;">MES / GESTIÓN</th>
+                      <th style="padding: 1.2rem; text-align: center; color: #475569; font-weight: 800; border: none;">UNIDADES VENDIDAS</th>
+                      <th style="padding: 1.2rem; text-align: right; color: #475569; font-weight: 800; border: none;">COSTO COMPRA</th>
+                      <th style="padding: 1.2rem; text-align: right; color: #475569; font-weight: 800; border: none;">INGRESO VENTAS</th>
+                      <th style="padding: 1.2rem; text-align: right; color: #475569; font-weight: 800; border: none;">UTILIDAD BRUTA</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% monthly_stats = item.get_monthly_utility_stats %>
+                    <% if monthly_stats.empty? %>
+                      <tr>
+                        <td colspan="5" class="text-center" style="padding: 4rem; color: #94a3b8; background: #f8fafc; border-radius: 16px; border: 1px dashed #cbd5e1;">
+                          <i class="fas fa-info-circle fa-3x mb-3" style="opacity: 0.3;"></i>
+                          <p style="font-weight: 600;">No hay datos suficientes para generar el análisis de utilidad.</p>
+                        </td>
+                      </tr>
+                    <% else %>
+                      <% monthly_stats.reverse.each do |stat| %>
+                        <tr style="background: white; box-shadow: 0 2px 8px rgba(0,0,0,0.04); transition: all 0.2s;">
+                          <td style="padding: 1.5rem 1.2rem; font-weight: 800; color: #1e293b; border-radius: 12px 0 0 12px; border: 1px solid #f1f5f9; border-right: none;">
+                             <i class="far fa-calendar-check mr-2" style="color: var(--accent-indigo); opacity: 0.7;"></i>
+                             <%= I18n.l(Date.parse(stat[:month_label] + "-01"), format: "%B %Y").upcase %>
+                          </td>
+                          <td style="padding: 1.5rem 1.2rem; text-align: center; font-weight: 700; color: #64748b; border-top: 1px solid #f1f5f9; border-bottom: 1px solid #f1f5f9;">
+                            <span style="font-size: 1.2rem; color: #0f172a;"><%= stat[:qty] %></span> <small><%= item.unit.name.downcase %>s</small>
+                          </td>
+                          <td style="padding: 1.5rem 1.2rem; text-align: right; color: #94a3b8; font-weight: 600; border-top: 1px solid #f1f5f9; border-bottom: 1px solid #f1f5f9;">
+                            <div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px;">Costo</div>
+                            <%= @mycompany.get_current_currency.symbol %> <%= number_with_precision(stat[:cost], precision: 2) %>
+                          </td>
+                          <td style="padding: 1.5rem 1.2rem; text-align: right; color: #3b82f6; font-weight: 700; border-top: 1px solid #f1f5f9; border-bottom: 1px solid #f1f5f9;">
+                            <div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px; color: #93c5fd;">Ingreso</div>
+                            <%= @mycompany.get_current_currency.symbol %> <%= number_with_precision(stat[:revenue], precision: 2) %>
+                          </td>
+                          <td style="padding: 1.5rem 1.2rem; text-align: right; border-radius: 0 12px 12px 0; border: 1px solid #f1f5f9; border-left: none; background: #f0fdf4;">
+                            <div style="font-size: 1.4rem; font-weight: 900; color: #166534;">
+                              <%= @mycompany.get_current_currency.symbol %> <%= number_with_precision(stat[:utility], precision: 2) %>
+                            </div>
+                            <% margin = stat[:revenue] > 0 ? (stat[:utility] / stat[:revenue] * 100) : 0 %>
+                            <div style="display: flex; justify-content: flex-end; align-items: center; gap: 5px;">
+                               <span class="badge" style="background: #dcfce7; color: #166534; font-weight: 800; font-size: 0.7rem; padding: 3px 8px;">
+                                 <%= number_with_precision(margin, precision: 1) %>% MARGEN
+                               </span>
+                            </div>
+                          </td>
+                        </tr>
+                      <% end %>
+                    <% end %>
+                  </tbody>
+                </table>
+              </div>
+            </div>

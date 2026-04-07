@@ -1,0 +1,27 @@
+<tr class="nested-fields">
+  <td>
+    <%= f.hidden_field :id %>
+    <%= f.collection_select :item_id, Item.where(active: true).order(:name), :id, :name, { prompt: "Elegir producto..." }, { class: "form-control select2 item-select", required: true } %>
+  </td>
+  <td>
+    <div class="field-group mb-2">
+      <%= f.select :purchase_order_line_id, [], { prompt: "Primero elige producto..." }, { class: "form-control lot-select", required: true, style: "border-color: #f59e0b;" } %>
+    </div>
+    <div class="field-group">
+      <%= f.select :presentation_id, [], { prompt: "Cargando..." }, { class: "form-control presentation-select", style: "border-color: #6366f1;" } %>
+    </div>
+  </td>
+  <td>
+    <%= f.number_field :quantity, class: "form-control text-right", step: 1, required: true, min: 1, style: "font-weight: 800; font-size: 1.1rem; color: #4f46e5;" %>
+    <div class="total-preview text-center" style="font-size: 0.7rem; color: #4f46e5; margin-top: 4px; font-weight: 700;">0 pzs</div>
+  </td>
+  <td>
+    <%= f.text_field :observation, class: "form-control", placeholder: "Opcional..." %>
+  </td>
+  <td class="text-center" style="vertical-align: middle;">
+    <%= f.hidden_field :_destroy %>
+    <%= link_to "#", class: "btn btn-danger btn-circle btn-sm remove_fields", title: "Eliminar" do %>
+      <i class="fas fa-trash"></i>
+    <% end %>
+  </td>
+</tr>

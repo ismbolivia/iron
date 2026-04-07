@@ -1,91 +1,284 @@
-<div class="row">
-   <div class="col-lg-1"> </div>
-    <div class="col-lg-10 panel panel-purchase">
-       <div class="">
-         <div class="">
-          <div class="row">
-            <div class = "col-lg-12 col-md-12 col-sm-12" >
-              <div class="col-lg-2 col-md-2 col-sm-2">
-                 <div class="product-img ">
-                    <%= image_tag(  ActionController::Base.helpers.asset_path('order.png'), :alt => "imge-item", class: "image-form") %>
-                 </div>                 
-                </div>            
-                 <div class="col-lg-4 col-md-4 col-sm-4">
-                    <div class="form-group"> 
-                        <div class="input-group">
-                           <span  class = "form-label-control m-t-50"><%= @purchase_order.name  %></span>
-                        </div>
-                        <div class="input-group m-t-50">
-                            <div class="input-group-addon "><i class="fas fa-address-card"></i></div>
-                            <span  class = "form-control"> <%= @purchase_order.date_order %></span>
-                        </div>
-                        <div class="input-group m-t-50">
-                            <div class="input-group-addon "><i class="fas fa-address-card"></i></div>
-                              <span  class = "form-control">  <%= @purchase_order.supplier.name %> </span>
-                        </div>
-                    </div>
-                 </div>
-                  <div class="col-lg-6 col-md-4 col-sm-6">                    
-                        <a class="btn btn-app">
-                          <span class="badge bg-yellow"><%= @mycompany.currencies.first.symbol %> <%= @purchase_order.total%></span>
-                          <i class="fa fa-money-bill-alt"></i> Total
-                        </a>
-                        <a class="btn btn-app">
-                          <span class="badge bg-green"><%= @mycompany.currencies.first.symbol %> <%= @purchase_order.total_payment_purchase_order%></span>
-                          <i class=" fa fa-hand-holding-usd"></i> Total pagos
-                        </a>
-                        <a class="btn btn-app">
-                          <span class="badge bg-purple"><%= @mycompany.currencies.first.symbol %> <%= @purchase_order.saldo%></span>
-                          <i class="fa fa-piggy-bank"></i> Saldo
-                        </a>
-                        <a class="btn btn-app">
-                         <!--  <span class="badge bg-teal">67</span>
-                          <i class="fa fa-inbox"></i> Orders -->
-                        </a>
-                        <a class="btn btn-app">
-                          <!-- <span class="badge bg-aqua">12</span>
-                          <i class="fa fa-envelope"></i> Inbox -->
-                        </a>
-                        <a class="btn btn-app">
-                          <!-- <span class="badge bg-red">531</span>
-                          <i class="fa fa-thumbs-up"></i> Likes -->
-                        </a>
-                </div>
-          </div>
-        </div>
-    <hr>
-    <div class="row">
-          <div class="col-lg-12 col-md-12 col-sm-12">              
-            <div class="col-sm-12 col-lg-6">
-                <div class="form-group row">
-                  <%= label :nit, 'Termino de Pago: ', class: "col-sm-3 text-left control-label col-form-label" %> 
-                  <div class="col-sm-9">
-                     <%= @purchase_order.payment_term.name %>
-                  </div>
-                </div>
-          </div>
-          <div class="col-sm-12 col-lg-6">
-              <div class="form-group row">
-                <%= label :phone, 'Nota :', class: "col-sm-3 text-left control-label col-form-label" %>
-                <div class="col-sm-9">
-                  <%=@purchase_order.note %>
-                </div>
-              </div>
-          </div>                              
-      </div>              
+<style>
+  :root {
+    --primary-gradient: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%);
+    --success-gradient: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    --warning-gradient: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    --purple-gradient: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+    --card-bg: #ffffff;
+    --text-main: #1e293b;
+    --text-muted: #64748b;
+    --border-color: #f1f5f9;
+    --bg-light: #f8fafc;
+  }
+  
+  .premium-wrapper {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    color: var(--text-main);
+    background-color: #f8fafc !important;
+    padding: 2.5rem;
+    min-height: 100vh;
+  }
+
+  .premium-header-banner {
+    background: var(--primary-gradient);
+    border-radius: 20px;
+    padding: 3rem;
+    color: white;
+    box-shadow: 0 12px 30px -5px rgba(59, 130, 246, 0.3);
+    margin-bottom: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .premium-header-banner::after {
+    content: '';
+    position: absolute;
+    right: -5%; top: -40%;
+    width: 380px; height: 380px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 50%;
+    transform: rotate(45deg);
+  }
+
+  .premium-header-banner::before {
+    content: '';
+    position: absolute;
+    left: -10%; bottom: -50%;
+    width: 300px; height: 300px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 40%;
+  }
+
+  .banner-title { z-index: 2; }
+  .banner-title h1 {
+    font-weight: 800; font-size: 2.4rem; margin: 0;
+    letter-spacing: -0.035em; text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  .banner-title p {
+    margin: 0.75rem 0 0; opacity: 0.95; font-size: 1.15rem;
+    display: flex; gap: 1.5rem; align-items: center;
+    font-weight: 500;
+  }
+
+  .banner-metrics {
+    display: flex; gap: 1.5rem; z-index: 2;
+  }
+
+  .metric-glass {
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 18px;
+    padding: 1.5rem 1.75rem;
+    min-width: 151px;
+    display: flex; flex-direction: column; gap: 0.35rem;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.05);
+    transition: transform 0.2s;
+  }
+  .metric-glass:hover { transform: translateY(-3px); }
+
+  .m-label { font-size: 0.8rem; font-weight: 600; text-transform: uppercase; opacity: 0.8; letter-spacing: 0.05em;}
+  .m-value { font-size: 1.45rem; font-weight: 800; letter-spacing: -0.02em; }
+
+  .premium-details-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-bottom: 2.5rem;
+  }
+
+  .info-card {
+    background: white; border: 1px solid var(--border-color); border-radius: 18px;
+    padding: 1.75rem; box-shadow: 0 6px 15px rgba(0,0,0,0.015);
+    display: flex; align-items: center; gap: 1.5rem;
+    transition: all 0.2s;
+  }
+  .info-card:hover { box-shadow: 0 8px 20px rgba(0,0,0,0.03); transform: translateY(-1px); }
+
+  .info-icon {
+    padding: 1.25rem; border-radius: 14px; font-size: 1.4rem;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .icon-blue { background: #eff6ff; color: #3b82f6; }
+  .icon-green { background: #ecfdf5; color: #10b981; }
+  .icon-amber { background: #fffbeb; color: #f59e0b; }
+
+  .info-content .label { color: var(--text-muted); font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em;}
+  .info-content .value { color: var(--text-main); font-weight: 800; font-size: 1.2rem; margin-top: 4px; }
+
+  .premium-tabs {
+    border-bottom: 2px solid var(--border-color) !important; margin-bottom: 2rem;
+  }
+
+  .premium-tabs > li > a {
+    border: none !important; color: var(--text-muted) !important; font-weight: 600 !important;
+    padding: 14px 24px !important; border-radius: 0 !important; transition: all 0.2s !important;
+    background: transparent !important; font-size: 0.95rem;
+  }
+
+  .premium-tabs > li.active > a, 
+  .premium-tabs > li.active > a:focus, 
+  .premium-tabs > li.active > a:hover {
+    color: #4f46e5 !important; background: transparent !important;
+    border-bottom: 3.5px solid #4f46e5 !important; font-weight: 800 !important;
+    box-shadow: none !important;
+  }
+
+  .btn-premium-outline {
+    background: white; border: 1.5px solid #e2e8f0; border-radius: 12px;
+    color: #64748b; font-weight: 700; padding: 12px 20px; font-size: 0.95rem;
+    transition: all 0.2s ease; display: inline-flex; align-items: center; gap: 8px;
+    cursor: pointer;
+  }
+  .btn-premium-outline:hover {
+    background: #f8fafc; border-color: #cbd5e1; color: #1e293b; transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+  }
+
+  .btn-premium-solid {
+    background: var(--primary-gradient); border: none; border-radius: 12px;
+    color: white !important; font-weight: 700; padding: 12px 24px; font-size: 0.95rem;
+    box-shadow: 0 4px 14px rgba(79,70,229,0.3); transition: all 0.2s;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .btn-premium-solid:hover {
+    box-shadow: 0 6px 20px rgba(79,70,229,0.4); transform: translateY(-1px);
+  }
+
+  .product-overview th {
+    background: #f8fafc !important; color: #64748b !important; font-weight: 700 !important;
+    text-transform: uppercase; font-size: 0.75rem !important; letter-spacing: 0.05em !important;
+    padding: 16px 12px !important; border-bottom: 2px solid #e2e8f0 !important;
+  }
+
+  .product-overview td {
+    padding: 16px 12px !important; vertical-align: middle !important;
+    border-bottom: 1px solid #f1f5f9 !important; color: #334155;
+  }
+</style>
+
+<div class="premium-wrapper">
+  <!-- Header Banner -->
+  <div class="premium-header-banner">
+    <div class="banner-title">
+      <% if @purchase_order.importacion_id.present? %>
+        <span style="display: inline-flex; align-items: center; gap: 6px; background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(10px); font-size: 0.75rem; font-weight: 800; padding: 6px 12px; border-radius: 9999px; text-transform: uppercase; letter-spacing: 0.05rem; margin-bottom: 8px; border: 1px solid rgba(255,255,255,0.25);"><i class="fas fa-ship"></i> Importación</span>
+      <% else %>
+        <span style="display: inline-flex; align-items: center; gap: 6px; background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(10px); font-size: 0.75rem; font-weight: 800; padding: 6px 12px; border-radius: 9999px; text-transform: uppercase; letter-spacing: 0.05rem; margin-bottom: 8px; border: 1px solid rgba(255,255,255,0.25);"><i class="fas fa-truck"></i> Compra Local</span>
+      <% end %>
+      <h1><i class="fas fa-file-invoice-dollar mr-3"></i>Orden de Compra: <%= @purchase_order.name %></h1>
+      <p>
+        <span><i class="fas fa-calendar-alt mr-2" style="opacity: 0.8"></i> <%= @purchase_order.date_order %></span>
+        <span style="opacity: 0.4">|</span>
+        <span><i class="fas fa-user-tie mr-2" style="opacity: 0.8"></i> <%= @purchase_order.supplier.name %></span>
+      </p>
+    </div>
+    
+    <div class="banner-metrics">
+      <div class="metric-glass">
+        <span class="m-label">Total</span>
+        <span class="m-value"><%= @mycompany.currencies.first.symbol %> <%= number_with_precision(@purchase_order.total, precision: 2) %></span>
+      </div>
+      <div class="metric-glass">
+        <span class="m-label">Pagos</span>
+        <span class="m-value" style="color: #6ee7b7;"><%= @mycompany.currencies.first.symbol %> <%= number_with_precision(@purchase_order.total_payment_purchase_order, precision: 2) %></span>
+      </div>
+      <div class="metric-glass" style="background: rgba(139, 92, 246, 0.2);">
+        <span class="m-label">Saldo</span>
+        <span class="m-value" style="color: #ddd6fe;"><%= @mycompany.currencies.first.symbol %> <%= number_with_precision(@purchase_order.saldo, precision: 2) %></span>
+      </div>
     </div>
   </div>
-</div>
-<hr>
- <div class="row no-print ">
-        <div class="  col-lg-12">
-        <%= link_to 'Atras', purchase_orders_path, class: "btn btn-default btn-outline "  %>
-        <%= link_to  'Editar', edit_purchase_order_path(@purchase_order),  class: "btn btn-primary pull-right" , style: "margin-right: 5px;"%>     
-        
+
+  <!-- Details Grid -->
+  <div class="premium-details-grid">
+    <div class="info-card">
+      <div class="info-icon icon-blue">
+        <i class="fas fa-receipt"></i>
+      </div>
+      <div class="info-content">
+        <span class="label">Término de Pago</span>
+        <div class="value"><%= @purchase_order.payment_term.name %></div>
+      </div>
+    </div>
+
+    <div class="info-card">
+      <div class="info-icon icon-green">
+        <i class="fas fa-info-circle"></i>
+      </div>
+      <div class="info-content">
+        <span class="label">Estado de la Orden</span>
+        <div class="value">
+          <span class="badge" style="background: #eff6ff; color: #2563eb; padding: 6px 12px; border-radius: 9999px; font-size: 0.85rem; border: 1px solid #dbeafe;">
+            <%= @purchase_order.state.capitalize %>
+          </span>
         </div>
       </div>
-      <hr>
-          <ul class="nav nav-tabs" role="tablist">
+    </div>
+
+    <div class="info-card">
+      <div class="info-icon icon-amber">
+        <i class="fas fa-sticky-note"></i>
+      </div>
+      <div class="info-content">
+        <span class="label">Nota / Glosa</span>
+        <div class="value"><%= @purchase_order.note.present? ? @purchase_order.note : "Sin observaciones" %></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Actions Section Above Tabs -->
+  <div class="row no-print mb-4 d-flex justify-content-between align-items-center" style="margin-bottom: 2rem;">
+    <div>
+      <%= link_to purchase_orders_path, class: "btn-premium-outline" do %>
+        <i class="fas fa-arrow-left"></i> Volver al listado
+      <% end %>
+    </div>
+    <div style="display: flex; gap: 12px; align-items: center;">
+      <% if @purchase_order.origen == 'importacion' || @purchase_order.importacion_id.present? %>
+        <% if @purchase_order.importacion_id.present? %>
+          <%= link_to purchases_v2_import_path(@purchase_order.importacion_id), class: "btn-premium-solid", style: "background: var(--purple-gradient); border: none;" do %>
+            <i class="fas fa-ship"></i> Seguimiento de Importación
+          <% end %>
+        <% else %>
+        <div style="background: #fffbeb; padding: 10px 15px; border-radius: 12px; border: 1px solid #fde68a; display: flex; align-items: center; gap: 12px;">
+          <span style="color: #b45309; font-weight: 700; font-size: 0.85rem;"><i class="fas fa-ship mr-1"></i> Vincular a Importación:</span>
+          <%= form_with(model: @purchase_order, url: purchase_order_path(@purchase_order), method: :patch, local: true, class: "d-inline-flex gap-2") do |f| %>
+            <%= f.collection_select :importacion_id, 
+                Importacion.where(state: [:borrador, :transito, :aduana]).order(created_at: :desc), 
+                :id, :name, 
+                { prompt: "Seleccionar Carpeta..." }, 
+                { class: "form-control", style: "font-size: 0.8rem; height: 32px; padding: 0 10px;", onchange: "this.form.submit()" } %>
+          <% end %>
+          
+          <span style="color: #cbd5e1;">|</span>
+
+          <%= button_to create_from_purchase_order_purchases_v2_imports_path(purchase_order_id: @purchase_order.id), 
+              method: :post, 
+              class: "btn btn-xs btn-primary", 
+              style: "border-radius: 8px; font-weight: 700; padding: 5px 12px; display: flex; align-items: center; gap: 6px; border: none; background: #6366f1;",
+              data: { confirm: "¿Deseas crear una nueva carpeta de importación para esta orden?" } do %>
+            <i class="fas fa-plus"></i> Crear Nueva y Vincular
+          <% end %>
+        </div>
+      <% end %>
+      <% elsif @purchase_order.state == 'draft' || @purchase_order.state == 'borrador' || @purchase_order.state == 'confirmed' %>
+        <%# El canal local ahora va a la nueva matriz de recepción (Paso 3) %>
+        <%= link_to new_purchases_v2_reception_path(purchase_order_id: @purchase_order.id), class: "btn-premium-solid", style: "background: var(--success-gradient); border: none;" do %>
+          <i class="fas fa-truck-loading"></i> Iniciar Recepción Local
+        <% end %>
+      <% end %>
+
+      <%= link_to edit_purchase_order_path(@purchase_order), class: "btn-premium-outline" do %>
+        <i class="fas fa-edit"></i> Editar Orden
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Tabs Navigation -->
+  <div class="bg-white p-4" style="border-radius: 20px; border: 1px solid var(--border-color); box-shadow: 0 4px 20px rgba(0,0,0,0.02);">
+    <ul class="nav premium-tabs" role="tablist">
             <li role="presentation" class="active"><a href="#iprofile" aria-controls="profile" role="tab" data-toggle="tab" aria-expanded="true"><span><i class="fa fa-box"></i></span> Linea de Productos</a></li>
             <li role="presentation" class=""><a href="#payment_purchase_order" aria-controls="profile" role="tab" data-toggle="tab" aria-expanded="true"><span><i class="fa fa-box"></i></span> Pagos</a></li>
             <li role="presentation" class=""><a href="#purchase_order_pdf" aria-controls="profile" role="tab" data-toggle="tab" aria-expanded="true"><span><i class="fa fa-box"></i></span> Reporte</a></li>            
@@ -114,13 +307,51 @@
                   </div>              
                 </div>         
               </div>
-          </div>
-          </div>
-        </div>
-          <div class="col-lg-1">
-          </div>
-    </div>
+          </div> <!-- .tab-content -->
+        </div> <!-- .bg-white -->
+      </div> <!-- .premium-wrapper -->
+ 
 
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const btnBulkSave = document.getElementById('btn-bulk-save-costs');
+  if (btnBulkSave) {
+    btnBulkSave.addEventListener('click', function() {
+      const inputs = document.querySelectorAll('.bulk-cost-input');
+      const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+      
+      this.disabled = true;
+      this.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Guardando...';
 
+      const updates = Array.from(inputs).map(input => {
+        const lineId = input.dataset.id;
+        const poId = input.dataset.poId;
+        const newCost = input.value;
 
+        return fetch(`/purchase_orders/${poId}/purchase_order_lines/${lineId}.json`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-Token': csrfToken
+          },
+          body: JSON.stringify({
+            purchase_order_lines: { price_unit: newCost }
+          })
+        });
+      });
 
+      Promise.all(updates)
+        .then(() => {
+          // Toastr si estuviera disponible, o recarga silenciosa
+          window.location.reload();
+        })
+        .catch(err => {
+          console.error(err);
+          alert('Hubo un error al guardar algunos costos.');
+          this.disabled = false;
+          this.innerHTML = '<i class="fas fa-save mr-2"></i> Guardar Todos los Costos (Edición Masiva)';
+        });
+    });
+  }
+});
+</script>

@@ -1,0 +1,354 @@
+<style>
+.workspace-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 8px;
+  background: transparent;
+}
+
+.workspace-table th {
+  text-align: left;
+  padding: 12px 16px;
+  background: transparent;
+  color: var(--text-secondary);
+  font-weight: 800;
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  border-bottom: 2px solid var(--border-color);
+}
+
+.workspace-table td {
+  padding: 16px;
+  background: var(--panel-bg);
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  vertical-align: middle;
+  border-top: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+  transition: all 0.2s;
+}
+
+.workspace-table td:first-child {
+  border-left: 1px solid var(--border-color);
+  border-top-left-radius: 14px;
+  border-bottom-left-radius: 14px;
+}
+
+.workspace-table td:last-child {
+  border-right: 1px solid var(--border-color);
+  border-top-right-radius: 14px;
+  border-bottom-right-radius: 14px;
+}
+
+.workspace-table tr {
+  cursor: pointer;
+}
+
+.workspace-table tr:hover td {
+  background-color: var(--node-hover);
+}
+
+.workspace-table tr.selected td {
+  background-color: var(--node-active) !important;
+  border-color: rgba(37, 99, 235, 0.2);
+}
+
+.checkbox-cell {
+  width: 45px;
+  text-align: center !important;
+}
+
+/* Custom Checkbox Wrapper */
+.custom-checkbox-container {
+  display: inline-block;
+  position: relative;
+  width: 22px;
+  height: 22px;
+  cursor: pointer;
+  vertical-align: middle;
+}
+
+.custom-checkbox-container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 22px;
+  width: 22px;
+  background-color: white;
+  border: 2px solid #cbd5e1;
+  border-radius: 7px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.custom-checkbox-container:hover input ~ .checkmark {
+  border-color: #2563eb;
+  background-color: #f8fafc;
+}
+
+.custom-checkbox-container input:checked ~ .checkmark {
+  background-color: #2563eb;
+  border-color: #2563eb;
+  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.25);
+}
+
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+  left: 6.5px;
+  top: 2.5px;
+  width: 5px;
+  height: 11px;
+  border: solid white;
+  border-width: 0 2.5px 2.5px 0;
+  transform: rotate(45deg);
+}
+
+.custom-checkbox-container input:checked ~ .checkmark:after {
+  display: block;
+}
+
+.badge-item-cat {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.badge-item-cat.uncategorized {
+  background: #fef2f2;
+  color: #ef4444;
+  border: 1px solid #fee2e2;
+}
+
+.badge-item-cat.categorized {
+  background: #f0fdf4;
+  color: #10b981;
+  border: 1px solid #d1fae5;
+}
+
+.priority-input {
+  width: 65px;
+  padding: 6px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  text-align: center;
+  font-weight: 800;
+  color: var(--text-primary);
+  outline: none;
+  background: transparent;
+  transition: all 0.2s;
+}
+
+.code-input {
+  width: 140px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  font-weight: 600;
+  color: var(--text-primary);
+  outline: none;
+  background: transparent;
+  transition: all 0.2s;
+  font-size: 0.9rem;
+}
+
+.priority-input:hover, .code-input:hover {
+  background: #f8fafc;
+  border-color: #e2e8f0;
+}
+
+.priority-input:focus, .code-input:focus {
+  border-color: #2563eb;
+  background: white;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.name-input {
+  width: 100%;
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  font-weight: 700;
+  color: var(--text-primary);
+  outline: none;
+  background: transparent;
+  transition: all 0.2s;
+  font-size: 0.95rem;
+}
+
+.name-input:hover {
+  background: #f8fafc;
+  border-color: #e2e8f0;
+}
+
+.name-input:focus {
+  border-color: #2563eb;
+  background: white;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+</style>
+
+<% if @items.any? %>
+  <table class="workspace-table">
+    <thead>
+      <tr>
+        <th class="checkbox-cell">
+          <label class="custom-checkbox-container">
+            <input type="checkbox" id="check-all" onclick="toggleAllItems(this)">
+            <span class="checkmark"></span>
+          </label>
+        </th>
+        <th>Nombre del Producto</th>
+        <th>Código</th>
+        <th>Categoría Actual</th>
+        <th>Prioridad</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @items.each do |item| %>
+        <tr onclick="rowClickToggle(<%= item.id %>, this, event)" id="item-row-<%= item.id %>">
+          <td class="checkbox-cell" onclick="event.stopPropagation();">
+            <label class="custom-checkbox-container">
+              <input type="checkbox" value="<%= item.id %>" class="item-check" onchange="toggleSelectItem(<%= item.id %>, this)">
+              <span class="checkmark"></span>
+            </label>
+          </td>
+          <td onclick="event.stopPropagation();">
+            <input type="text" value="<%= item.name %>" class="name-input" onchange="updateItemField(<%= item.id %>, 'name', this)" onkeydown="spreadsheetNavigation(event, this)">
+          </td>
+          <td onclick="event.stopPropagation();">
+            <input type="text" value="<%= item.code %>" class="code-input" onchange="updateItemField(<%= item.id %>, 'code', this)" onkeydown="spreadsheetNavigation(event, this)">
+          </td>
+          <td>
+            <% if item.category.present? %>
+              <span class="badge-item-cat categorized"><%= item.category.name %></span>
+            <% else %>
+              <span class="badge-item-cat uncategorized">Sin Categoría</span>
+            <% end %>
+          </td>
+          <td onclick="event.stopPropagation();">
+            <input type="number" value="<%= item.priority %>" class="priority-input" onchange="updateItemField(<%= item.id %>, 'priority', this)" min="0" onkeydown="spreadsheetNavigation(event, this)">
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <!-- Paginación -->
+  <div class="pagination-wrapper" style="display: flex; justify-content: flex-end; margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid #e2e8f0;">
+    <nav>
+      <ul class="pager" style="margin: 0; display: flex; gap: 10px;">
+        <li class="previous <%= @page <= 0 ? 'disabled' : '' %>">
+          <%= link_to_if @page > 0, "&larr; Anterior".html_safe, workspace_categories_path(keywords: @keywords, category_filter: @category_filter, page: @page - 1), style: "padding: 8px 16px; background: white; border: 1px solid #e2e8f0; border-radius: 10px; color: #475569; font-weight: 600; text-decoration: none;" %>
+        </li>
+        <li class="next <%= @page >= @number_of_pages ? 'disabled' : '' %>">
+          <%= link_to_if @page < @number_of_pages, "Siguiente &rarr;".html_safe, workspace_categories_path(keywords: @keywords, category_filter: @category_filter, page: @page + 1), style: "padding: 8px 16px; background: white; border: 1px solid #e2e8f0; border-radius: 10px; color: #475569; font-weight: 600; text-decoration: none;" %>
+        </li>
+      </ul>
+    </nav>
+  </div>
+
+<% else %>
+  <div style="text-align: center; padding: 4rem 2rem; color: #94a3b8; background: #f8fafc; border-radius: 16px; border: 2px dashed #e2e8f0;">
+     <i class="fas fa-boxes" style="font-size: 3.5rem; margin-bottom: 1rem; opacity: 0.6;"></i>
+     <p style="font-weight: 700; color: #475569; margin-bottom: 0.5rem; font-size: 1.1rem;">No se encontraron productos</p>
+     <p style="font-size: 0.9rem;">Pruebe cambiando los filtros o el buscador.</p>
+  </div>
+<% end %>
+
+<script>
+function spreadsheetNavigation(event, currentInput) {
+  if (event.key === 'Tab' || event.key === 'Enter') {
+     event.preventDefault(); // Detener salto horizontal
+     
+     const className = currentInput.className.split(' ').find(c => c.endsWith('-input'));
+     const tr = currentInput.closest('tr');
+     const nextTr = tr.nextElementSibling;
+     
+     if (nextTr && className) {
+        const nextInput = nextTr.querySelector(`.${className}`);
+        if (nextInput) {
+           nextInput.focus();
+           nextInput.select(); // Resaltar texto para sobreescribir
+        }
+     }
+  }
+}
+
+function updateItemField(itemId, field, inputElement) {
+  const value = inputElement.value;
+  inputElement.style.borderColor = "#fbbf24"; /* Amarillo guardando */
+  
+  fetch('<%= update_item_field_categories_path %>', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+    },
+    body: JSON.stringify({ item_id: itemId, field: field, value: value })
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+       inputElement.style.borderColor = "#10b981"; // Éxito
+       
+       let fieldName = "Campo";
+       if (field === 'code') fieldName = 'Código';
+       else if (field === 'priority') fieldName = 'Prioridad';
+       else if (field === 'name') fieldName = 'Nombre';
+
+       if (typeof showToast === "function") showToast(`${fieldName} actualizado`);
+       setTimeout(() => inputElement.style.borderColor = "#e2e8f0", 1200);
+    } else {
+       inputElement.style.borderColor = "#ef4444"; // Error
+       if (typeof showToast === "function") showToast("Error al actualizar", "error");
+    }
+  })
+  .catch(err => {
+     inputElement.style.borderColor = "#ef4444";
+     if (typeof showToast === "function") showToast("Error de conexión", "error");
+  });
+}
+
+function rowClickToggle(id, tr, event) {
+  // Si se hizo click directamente en el checkbox, salimos
+  if (event.target.type === 'checkbox') return;
+  
+  const checkbox = tr.querySelector('.item-check');
+  if (checkbox) {
+    checkbox.checked = !checkbox.checked;
+    toggleSelectItem(id, checkbox);
+  }
+}
+
+function toggleAllItems(masterCheckbox) {
+  const checkboxes = document.querySelectorAll('.item-check');
+  checkboxes.forEach(c => {
+    c.checked = masterCheckbox.checked;
+    const id = parseInt(c.value);
+    const tr = c.closest('tr');
+    
+    if (masterCheckbox.checked) {
+       if (!selectedItems.includes(id)) selectedItems.push(id);
+       if (tr) tr.classList.add('selected');
+    } else {
+       selectedItems = selectedItems.filter(i => i !== id);
+       if (tr) tr.classList.remove('selected');
+    }
+  });
+  updateBulkBar();
+}
+</script>

@@ -1,70 +1,154 @@
-       <% if can? :read, Warehouse %> 
-        <li class="dropdown active">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Compras <span class="caret"></span>
-            <span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-shopping-cart"></span>
-            </a>
-          <ul class="dropdown-menu forAnimate" role="menu">
-            <li class="<%= current_page?(items_path) ? "active" : "" %>"><%= link_to 'Proveedores', suppliers_path %>
-            </li>
-            <li class="<%= current_page?(warehouses_path) ? "active" : "" %>"><%= link_to 'Ordenes de Compra', purchase_orders_path %>
-            </li>
-          </ul>
-        </li>
+<style>
+  .sidebar-category-title {
+    padding: 15px 20px 5px 20px;
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+  }
+  .nav.navbar-nav li.dropdown > a {
+    padding: 12px 20px;
+    font-weight: 700;
+    color: #334155;
+    transition: all 0.2s;
+    border-left: 3px solid transparent;
+  }
+  .nav.navbar-nav li.dropdown.active > a,
+  .nav.navbar-nav li.dropdown > a:hover {
+    background: #f1f5f9 !important;
+    color: #6366f1 !important;
+    border-left: 3px solid #6366f1;
+  }
+  .dropdown-menu.forAnimate {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 8px;
+    margin-top: 5px;
+  }
+  .dropdown-menu.forAnimate li a {
+    padding: 10px 15px;
+    border-radius: 6px;
+    font-weight: 600;
+    transition: all 0.2s;
+  }
+  .dropdown-menu.forAnimate li a:hover {
+    background: #6366f1 !important;
+    color: white !important;
+  }
+  .menu-icon-sidebar {
+    width: 20px;
+    text-align: center;
+    margin-right: 12px;
+    font-size: 1.1rem;
+    opacity: 0.8;
+  }
+</style>
 
+<!-- SECCIÓN COMPRAS -->
+<% if can? :read, Warehouse %> 
+  <div class="sidebar-category-title">Abastecimiento</div>
+  <li class="dropdown <%= 'active' if current_page?(suppliers_path) || current_page?(purchase_orders_path) %>">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+        <i class="fas fa-shopping-basket menu-icon-sidebar"></i> Compras <span class="caret pull-right" style="margin-top: 8px;"></span>
+      </a>
+    <ul class="dropdown-menu forAnimate" role="menu">
+      <li class="<%= current_page?(suppliers_path) ? "active" : "" %>">
+        <%= link_to suppliers_path do %>
+          <i class="fas fa-truck-loading mr-2"></i> Proveedores
         <% end %>
-
-      <% if can? :read, Sale %> 
-        <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Ventas <span class="caret"></span>
-            <span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-home"></span>
-          </a>
-          <ul class="dropdown-menu forAnimate" role="menu">
-            <li class="<%= current_page?(sales_path) ? "active" : "" %>"><%= link_to 'Vender', sales_path %>
-            </li>
-            <li class="<%= current_page?(clients_path) ? "active" : "" %>"><%= link_to 'Clientes', clients_path %>
-            </li>
-            <li class="<%= current_page?(payments_path) ? "active" : "" %>"><%= link_to 'Pagos', payments_path %>
-            </li>
-          </ul>
-        </li>
-      <% end %>
-
-      <% if can? :read, Warehouse %> 
-        <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Almacén <span class="caret"></span>
-            <span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-home"></span>
-          </a>
-          <ul class="dropdown-menu forAnimate" role="menu">
-            <li class="<%= current_page?(items_path) ? "active" : "" %>"><%= link_to 'Artículos', items_path %>
-            </li>
-            <li class="<%= current_page?(warehouses_path) ? "active" : "" %>"><%= link_to 'Almacenes', warehouses_path %>
-            </li>
-          </ul>
-        </li>
+      </li>
+      <li class="<%= current_page?(purchase_orders_path) ? "active" : "" %>">
+        <%= link_to purchase_orders_path do %>
+          <i class="fas fa-file-invoice-dollar mr-2"></i> Órdenes de Compra
         <% end %>
-        <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-            Configuración
-            <span class="caret"></span>
-            <span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-wrench"></span>
-          </a>
+      </li>
+      <li class="<%= current_page?(purchases_v2_dashboard_path) ? "active" : "" %>">
+        <%= link_to purchases_v2_dashboard_path do %>
+          <i class="fas fa-rocket mr-2" style="color: #10b981;"></i> Compras V2 <small class="badge badge-success" style="font-size: 0.6rem;">BETA</small>
+        <% end %>
+      </li>
+    </ul>
+  </li>
+<% end %>
 
-          <ul class="dropdown-menu forAnimate" role="menu">
-            <li class="<%= current_page?(payment_types_path) ? "active" : "" %>"><%= link_to 'Tipos de pago', payment_types_path %></li>
-               <% if can? :read, Category %>
-            <li class="<%= current_page?(categories_path) ? "active" : "" %>"><%= link_to 'Categorías', categories_path %></li>
-            <% end %>
-            <% if can? :read, Brand %>
-            <li class="<%= current_page?(brands_path) ? "active" : "" %>"><%= link_to 'Marcas', brands_path %></li>
-            <% end %>
-            <% if can? :read, Presentation %>
-            <li class="<%= current_page?(presentations_path) ? "active" : "" %>"><%= link_to 'Presentacciones', presentations_path %></li>
-            <% end %>
-             <% if can? :read, Unit %>
-            <li class="<%= current_page?(units_path) ? "active" : "" %>"><%= link_to 'Unidades', units_path %></li>
-            <% end %>
-            <% if can? :read, Town %>
-            <li class="<%= current_page?(towns_path) ? "active" : "" %>"><%= link_to 'Localidades', towns_path %></li>
-            <% end %>            
-          </ul>
-        </li>
+<!-- SECCIÓN VENTAS -->
+<% if can? :read, Sale %> 
+  <div class="sidebar-category-title">Operaciones</div>
+  <li class="dropdown <%= 'active' if params[:controller] == 'sales' || current_page?(pos_path) %>">
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+      <i class="fas fa-chart-line menu-icon-sidebar"></i> Ventas <span class="caret pull-right" style="margin-top: 8px;"></span>
+    </a>
+    <ul class="dropdown-menu forAnimate" role="menu">
+      <li class="<%= current_page?(pos_path) ? "active" : "" %>">
+        <%= link_to pos_path, style: "background: #fff7ed; color: #ea580c !important;" do %>
+          <i class="fas fa-cash-register mr-2"></i> <strong>Punto de Venta (POS)</strong>
+        <% end %>
+      </li>
+      <li class="<%= current_page?(sales_path) ? "active" : "" %>">
+        <%= link_to sales_path do %>
+          <i class="fas fa-list-ul mr-2"></i> Listado de Ventas
+        <% end %>
+      </li>
+      <li class="<%= current_page?(clients_path) ? "active" : "" %>">
+        <%= link_to clients_path do %>
+          <i class="fas fa-users mr-2"></i> Clientes
+        <% end %>
+      </li>
+      <li class="<%= current_page?(payments_path) ? "active" : "" %>">
+        <%= link_to payments_path do %>
+          <i class="fas fa-money-bill-wave mr-2"></i> Recibos de Pago
+        <% end %>
+      </li>
+    </ul>
+  </li>
+<% end %>
+
+<!-- SECCIÓN ALMACÉN -->
+<% if can? :read, Warehouse %> 
+  <div class="sidebar-category-title">Logística</div>
+  <li class="dropdown <%= 'active' if current_page?(items_path) || current_page?(warehouses_path) %>">
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+      <i class="fas fa-warehouse menu-icon-sidebar"></i> Almacén <span class="caret pull-right" style="margin-top: 8px;"></span>
+    </a>
+    <ul class="dropdown-menu forAnimate" role="menu">
+      <li class="<%= current_page?(items_path) ? "active" : "" %>">
+        <%= link_to items_path do %>
+          <i class="fas fa-boxes mr-2"></i> Catálogo Artículos
+        <% end %>
+      </li>
+      <li class="<%= current_page?(warehouses_path) ? "active" : "" %>">
+        <%= link_to warehouses_path do %>
+          <i class="fas fa-map-marker-alt mr-2"></i> Gestión Almacenes
+        <% end %>
+      </li>
+    </ul>
+  </li>
+<% end %>
+
+<!-- SECCIÓN CONFIGURACIÓN -->
+<div class="sidebar-category-title">Maestros</div>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+    <i class="fas fa-cog menu-icon-sidebar"></i> Configuración <span class="caret pull-right" style="margin-top: 8px;"></span>
+  </a>
+  <ul class="dropdown-menu forAnimate" role="menu">
+    <li class="<%= current_page?(payment_types_path) ? "active" : "" %>"><%= link_to payment_types_path do %><i class="fas fa-credit-card mr-2"></i> Tipos de pago<% end %></li>
+    <% if can? :read, Category %>
+      <li class="<%= current_page?(categories_path) ? "active" : "" %>"><%= link_to categories_path do %><i class="fas fa-tags mr-2"></i> Categorías<% end %></li>
+    <% end %>
+    <% if can? :read, Brand %>
+      <li class="<%= current_page?(brands_path) ? "active" : "" %>"><%= link_to brands_path do %><i class="fas fa-copyright mr-2"></i> Marcas<% end %></li>
+    <% end %>
+    <% if can? :read, Presentation %>
+      <li class="<%= current_page?(presentations_path) ? "active" : "" %>"><%= link_to presentations_path do %><i class="fas fa-box-open mr-2"></i> Presentaciones<% end %></li>
+    <% end %>
+    <% if can? :read, Unit %>
+      <li class="<%= current_page?(units_path) ? "active" : "" %>"><%= link_to units_path do %><i class="fas fa-balance-scale mr-2"></i> Unidades<% end %></li>
+    <% end %>
+    <% if can? :read, Town %>
+      <li class="<%= current_page?(towns_path) ? "active" : "" %>"><%= link_to towns_path do %><i class="fas fa-city mr-2"></i> Localidades<% end %></li>
+    <% end %>            
+  </ul>
+</li>

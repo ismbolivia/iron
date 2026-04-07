@@ -38,6 +38,12 @@ class SalesControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to sale_url(@sale)
   end
 
+  test "should update sale priority" do
+    patch sale_url(@sale), params: { sale: { priority: 5 } }
+    @sale.reload
+    assert_equal 5, @sale.priority
+  end
+
   test "should destroy sale" do
     assert_difference('Sale.count', -1) do
       delete sale_url(@sale)

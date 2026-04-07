@@ -6,7 +6,11 @@
           <div class="col-md-5 col-md-offset-5 col-sm-5 col-sm-offset-5">
             <p>
               <% if can? :create, Account %>
-                <%= button_to new_account_path, {method: :get, class: "btn btn-success"} do %>
+                <%= link_to new_account_transfer_path, remote: true, class: "btn btn-info", style: "background: #00bcd4; border: none; font-weight: 700; margin-right: 10px;" do %>
+                   <i class="fas fa-exchange-alt"></i> Transferir Fondos
+                <% end %>
+
+                <%= button_to new_account_path, {method: :get, class: "btn btn-success", style: "display: inline-block;"} do %>
                   <span class="glyphicon glyphicon-plus" aria-hidden="true"> </span> Nueva cuenta
                 <% end %>
               <% end %>

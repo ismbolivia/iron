@@ -109,7 +109,7 @@ class BoxesController < ApplicationController
        @data_init = params[:data_init].try(:to_date) || 30.days.ago.to_date
        @data_limit = params[:data_limit].try(:to_date) || Date.current
        @mystate =  params[:state]
-       ranges = (@data_init..@data_limit)
+       ranges = (@data_init.beginning_of_day..@data_limit.end_of_day)
        # report = Report.new(@data_init, @data_limit, current_user, @box)
        if @mystate.present?
          @box_details_rage=@box.box_details.where(state: @mystate).where(created_at: ranges).order(created_at: :desc)
@@ -151,6 +151,6 @@ class BoxesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def box_params
-      params.require(:box).permit(:user_id, :name, :description, :currency_id, :active)
+      params.require(:box).permit(:user_id, :name, :description, :currency_id, :active, :box_type, :code, :parent_box_id)
     end
 end

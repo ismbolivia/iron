@@ -12,9 +12,10 @@ module Iron
     config.load_defaults 5.2
 
     config.time_zone = "America/La_Paz"
-    #config.i18n.default_locale = :es
+    config.i18n.default_locale = :es
     config.i18n.fallbacks = [I18n.default_locale]
     config.autoload_paths += %W(#{Rails.root}/lib/validators)
+    config.autoload_paths += %W(#{Rails.root}/app/services)
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration can go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded after loading

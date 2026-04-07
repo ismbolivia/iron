@@ -293,12 +293,46 @@ class ClientsController < ApplicationController
   # POST /clients.json
   def create
     @addresses = []
-    @client = Client.new(client_params)
+    @client = Client.new(client_params.except(:address_attributes))
+    
+    # Handle auto-address creation
+    if params[:client][:address_attributes].present?
+       address_attrs = params[:client][:address_attributes]
+       # Use first available geographic data as defaults for quick creation
+       # In a real scenario, these shout be system configurations or 'General' records
+       default_country = @mycompany&.country || Country.find_by(name: 'Bolivia') || Country.first
+       if default_country
+          default_depto = default_country.departamentos.find_by(name: 'La Paz') || default_country.departamentos.first
+       else
+          default_depto = Departamento.first
+       end
+       default_province = Province.first 
+       default_zona = Zona.first
+       default_avenida = Avenida.first
+       
+       new_address = Address.create(
+         calles: address_attrs[:calles],
+         description: address_attrs[:description] || 'Dirección Rápida POS',
+         country_id: address_attrs[:country_id] || default_country&.id,
+         departamento_id: address_attrs[:departamento_id] || default_depto&.id,
+         province_id: address_attrs[:province_id] || default_province&.id,
+         zona_id: address_attrs[:zona_id] || default_zona&.id,
+         avenida_id: default_avenida&.id,
+         coordenadas: 0 
+       )
+       
+       if new_address.persisted?
+         @client.address_id = new_address.id
+       end
+    end
+
     @client.state = 1
     @client.saldo = 0
-    @client.user_id = current_user.id
-    @client.asig_a_user_id = current_user.id
-    @client.discount = 0
+    @client.user_id = current_user.id # Creator
+    # asig_a_user_id is already set via params, but we ensure a default if missing
+    @client.asig_a_user_id ||= current_user.id 
+    @client.discount ||= 0
+    @client.credit_limit ||= 0
     respond_to do |format|
       if @client.save
         # params[:price_lists][:ids].each do |price_list|

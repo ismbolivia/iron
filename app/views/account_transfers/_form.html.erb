@@ -1,0 +1,75 @@
+<div class="modal-body">
+    <%= form_with(model: account_transfer, method: :post, remote: true) do |form| %>
+        <div class="row">
+           <div class="col-xs-12"> 
+             <div id="div-error-transfer"></div>
+             <% if account_transfer.errors.any? %>
+               <div class="alert alert-danger" style="border-radius: 8px;">
+                  <ul style="margin-bottom: 0;"><% account_transfer.errors.full_messages.each do |msg| %><li><%= msg %></li><% end %></ul>
+               </div>
+             <% end %>
+           </div>
+
+           <!-- Cuenta Origen -->
+           <div class="col-xs-12" style="margin-bottom: 20px;">
+             <div class="form-group">
+                <%= form.label :from_account_id, '📥 Desde Cuenta (Origen)', style: "font-weight: 700; color: #334155; margin-bottom: 5px;" %>
+                <div class="input-group">
+                  <div class="input-group-addon" style="background: #f8fafc;"><i class="fas fa-sign-out-alt text-danger"></i></div>
+                  <%= form.select :from_account_id, @accounts.map { |a| ["#{a.name} ($ #{'%.2f' % a.total.to_f})", a.id] }, { prompt: '--- Seleccionar Origen ---' }, class: "form-control", style: "border-radius: 6px;" %>
+                </div>
+             </div>
+           </div>
+
+           <!-- Cuenta Destino -->
+           <div class="col-xs-12" style="margin-bottom: 20px;">
+             <div class="form-group">
+                <%= form.label :to_account_id, '📤 Hacia Cuenta (Destino)', style: "font-weight: 700; color: #334155; margin-bottom: 5px;" %>
+                <div class="input-group">
+                  <div class="input-group-addon" style="background: #f8fafc;"><i class="fas fa-sign-in-alt text-success"></i></div>
+                  <%= form.select :to_account_id, @accounts.map { |a| ["#{a.name}", a.id] }, { prompt: '--- Seleccionar Destino ---' }, class: "form-control", style: "border-radius: 6px;" %>
+                </div>
+             </div>
+           </div>
+
+           <!-- Monto -->
+           <div class="col-xs-12" style="margin-bottom: 20px;">
+             <div class="form-group">
+                <%= form.label :amount, '💰 Monto a Transferir', style: "font-weight: 700; color: #334155; margin-bottom: 5px;" %>
+                <div class="input-group">
+                  <div class="input-group-addon" style="background: #f8fafc;"><i class="fas fa-dollar-sign"></i></div>
+                  <%= form.text_field :amount, placeholder: "0.00", class: "form-control", style: "border-radius: 6px;" %>
+                </div>
+             </div>
+           </div>
+
+           <!-- Tipo de Cambio -->
+           <div class="col-xs-12" style="margin-bottom: 20px;">
+             <div class="form-group">
+                <%= form.label :exchange_rate, '💱 Factor de Cambio (Multiplicador)', style: "font-weight: 700; color: #334155; margin-bottom: 5px;" %>
+                <div class="input-group">
+                  <div class="input-group-addon" style="background: #f8fafc;"><i class="fas fa-percentage"></i></div>
+                  <%= form.text_field :exchange_rate, value: "1.0", class: "form-control", style: "border-radius: 6px;" %>
+                </div>
+                <small class="text-muted" style="display: block; margin-top: 4px; font-size: 0.8rem;">Por defecto es `1.0` (Misma moneda). Si pasas de Bs a $, ingresa el proporcional (ej: `0.1436` si el cambio es 6.96).</small>
+             </div>
+           </div>
+
+           <!-- Nota -->
+           <div class="col-xs-12">
+             <div class="form-group">
+                <%= form.label :note, '📝 Nota / Comentario', style: "font-weight: 700; color: #334155; margin-bottom: 5px;" %>
+                <div class="input-group">
+                  <div class="input-group-addon" style="background: #f8fafc;"><i class="fas fa-comment"></i></div>
+                  <%= form.text_area :note, placeholder: "Motivo...", class: "form-control", style: "border-radius: 6px;", rows: 3 %>
+                </div>
+             </div>
+           </div>
+        </div>
+
+        <div class="modal-footer" style="padding: 15px 0 0 0; border-top: 1px solid #e2e8f0; margin-top: 25px;">
+           <button type="button" class="btn btn-default" data-dismiss="modal" style="border-radius: 6px;">Cancelar</button>
+           <%= form.submit "Ejecutar Transferencia", class: "btn btn-info", style: "background: #00bcd4; border: none; border-radius: 6px; font-weight: 700;" %>
+        </div>
+    <% end %>
+</div>

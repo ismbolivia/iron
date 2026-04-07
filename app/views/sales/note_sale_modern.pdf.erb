@@ -1,0 +1,304 @@
+<div class="page-content" style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #333; font-size: 14px; line-height: 1.3;">
+    <!-- Setup Currency Conversion if show_bs is enabled -->
+    <% 
+        current_currency = @mycompany.get_current_currency
+        display_symbol = current_currency.symbol
+        exch_rate = 1.0
+        bob_currency = nil
+        
+        if @sale.respond_to?(:show_bs) && @sale.show_bs
+            # Find BOB currency (symbol 'Bs' or 'BOB') and rate relative to current
+            bob_currency = Currency.find_by(symbol: 'Bs') || Currency.find_by(name: 'BOB') || Currency.find_by(name: 'BOLIVIANO')
+            if bob_currency && current_currency.id != bob_currency.id
+                rate_obj = CurrencyRate.where(currency_id: current_currency.id, currency_ref: bob_currency.id, state: true).first
+                if rate_obj
+                    exch_rate = rate_obj.rate
+                    display_symbol = 'Bs'
+                end
+            end
+        end
+        
+        # Helper for display using a Proc (safer in ERB)
+        convert_price = ->(val, rate) { (val.to_f * (rate || 1.0).to_f).round(2) }
+    %>
+
+    <!-- Client Section: Navy Blue Banner -->
+    <div style="background-color: #1D2644; color: #fff; padding: 10px 15px; margin-bottom: 15px; border-radius: 4px; font-size: 0.9em; display: -webkit-box; display: -ms-flexbox; display: flex; -webkit-box-pack: justify; -ms-flex-pack: justify; justify-content: space-between; -webkit-box-align: start; -ms-flex-align: start; align-items: flex-start;">
+        
+        <!-- Left Side: Client Details -->
+        <div style="-webkit-box-flex: 1; -ms-flex-positive: 1; flex-grow: 1;">
+            <div style="margin-bottom: 2px;">
+                <strong style="color: #ddd; text-transform: uppercase; font-size: 0.85em;">SEÑOR(ES):</strong> 
+                <span style="font-size: 1.1em; font-weight: bold; color: #fff; margin-left: 5px;"><%= @sale.client.name.upcase %></span>
+                
+                <% nit = (@sale.client.try(:nit_ci) || @sale.client.try(:nit) || '') %>
+                <% if nit.present? %>
+                    <span style="color: #666; margin: 0 8px;">|</span> 
+                    <strong style="color: #ddd; font-size: 0.85em;">NIT:</strong> <span style="color: #fff;"><%= nit %></span>
+                <% end %>
+            </div>
+            
+            <div style="color: #ccc; margin-bottom: 2px;">
+                <%= @sale.client.address.get_direccion_cli.truncate(90) rescue '' %>
+            </div>
+            
+             <% if @sale.client.phone.present? || @sale.client.mobile.present? %>
+                <div style="color: #bbb;">
+                    <strong style="color: #ddd; font-size: 0.85em;">Telf:</strong> <%= [@sale.client.phone, @sale.client.mobile].reject(&:blank?).join(' / ') %>
+                </div>
+            <% end %>
+        </div>
+
+        <!-- Right Side: Company & Vendor Info -->
+        <div style="white-space: nowrap; margin-left: 20px; text-align: right; min-width: 150px; padding-left: 15px; border-left: 1px solid #1D2644;">
+            <div style="font-weight: bold; color: #fff; font-size: 1.1em; margin-bottom: 3px;"><%= @mycompany.name.titleize rescue 'Empresa' %></div>
+            <% if @sale.branch.present? %>
+                <div style="font-size: 0.85em; margin-bottom: 2px; color: #fff; font-weight: bold;">
+                    Sucursal: <span><%= @sale.branch.name %></span>
+                </div>
+            <% end %>
+            <div style="font-size: 0.9em; margin-bottom: 1px; color: #ddd;">
+                Vendedor: <span style="color: #fff;"><%= @sale.user.name rescue '?' %></span>
+            </div>
+            <div style="font-size: 0.85em; color: #bbb;">
+                Contacto: <%= @mycompany.phone rescue '' %>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION 1: ITEMS WITH DISCOUNT (todiscount = true) -->
+    <% discountable_items = @sale.sale_details.where(todiscount: true).order(:priority) %>
+    <% if discountable_items.any? %>
+    <div style="margin-bottom: 20px;">
+        <table class="table table-condensed" style="margin-bottom: 0; font-size: 0.95em;">
+            <thead>
+                <tr style="background-color: #1D2644; color: #fff;">
+                    <th style="padding: 5px; border: 1px solid #1D2644;">Descripción</th>
+                    <th class="text-right" style="padding: 5px; width: 90px; border: 1px solid #1D2644;">Cantidad</th>
+                    <th class="text-right" style="padding: 5px; width: 80px; border: 1px solid #1D2644;">P.Unit.</th>
+                    <th class="text-right" style="padding: 5px; width: 40px; border: 1px solid #1D2644;">Desc.</th>
+                    <th class="text-right" style="padding: 5px; width: 80px; border: 1px solid #1D2644;">p.Venta</th>
+                    <th class="text-right" style="padding: 5px; width: 90px; border: 1px solid #1D2644;">Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% subtotal_discountable = 0 %>
+                <% total_item_discount_amount = 0 %>
+                <% discountable_items.each do |detail| %>
+                    <% 
+                       item_subtotal = detail.price_sale * detail.qty 
+                       subtotal_discountable += item_subtotal
+                       
+                       # Calculate exact discount amount for this item
+                       item_discount_amount = (detail.price * detail.qty) - item_subtotal
+                       total_item_discount_amount += item_discount_amount
+                    %>
+                    <tr>
+                        <td style="padding: 4px; border: none; border-bottom: 1px solid #1D2644;">
+                            <%= detail.item.name %>
+                        </td>
+                        <td class="text-right" style="padding: 4px; border: none; border-bottom: 1px solid #1D2644;">
+                            <%= detail.qty %> <small style="color:#777"><%= detail.item.unit.name rescue '' %></small>
+                        </td>
+                        <td class="text-right" style="padding: 4px; border: none; border-bottom: 1px solid #1D2644;">
+                            <%= number_to_currency(convert_price.call(detail.price, exch_rate), unit: display_symbol + ' ', precision: 4) %>
+                        </td>
+                        <td class="text-right" style="padding: 4px; border: none; border-bottom: 1px solid #1D2644; color: #CC0000;">
+                            <%= detail.discount.to_i > 0 ? "#{number_to_percentage(detail.discount, precision: 0)}" : '' %>
+                        </td>
+                        <td class="text-right" style="padding: 4px; border: none; border-bottom: 1px solid #1D2644;">
+                            <%= number_to_currency(convert_price.call(detail.price_sale, exch_rate), unit: display_symbol + ' ', precision: 4) %>
+                        </td>
+                        <td class="text-right" style="padding: 4px; border: none; border-bottom: 1px solid #1D2644; font-weight: bold;">
+                            <%= number_to_currency(convert_price.call(item_subtotal, exch_rate), unit: display_symbol + ' ') %>
+                        </td>
+                    </tr>
+                <% end %>
+            </tbody>
+        </table>
+        
+        <!-- Subtotals for Discountable Section -->
+        <div class="row" style="margin-top: 1px;">
+            <div class="col-xs-7"></div>
+            <div class="col-xs-5">
+                <table class="table table-condensed" style="font-size: 0.9em; margin-bottom: 0;">
+                   
+                    <tr>
+                        <td class="text-right" style="border:none; padding: 1px 5px;"><strong>Sub total:</strong></td>
+                        <td class="text-right" style="border:none; width: 90px; padding: 1px 5px;"><%= number_to_currency(convert_price.call(subtotal_discountable + total_item_discount_amount, exch_rate), unit: display_symbol + ' ') %></td>
+                    </tr>
+                     <% if total_item_discount_amount > 0 %>
+                    <tr>
+                        <td class="text-right" style="border:none; color: #CC0000; padding: 1px 5px;">Descuento por Item:</td>
+                        <td class="text-right" style="border:none; color: #CC0000; width: 90px; padding: 1px 5px;">- <%= number_to_currency(convert_price.call(total_item_discount_amount, exch_rate), unit: display_symbol + ' ') %></td>
+                    </tr>
+                    <tr>
+                        <td class="text-right" style="border-top: 1px solid #1D2644; padding: 1px 5px;"><strong>Sub total Neto:</strong></td>
+                        <td class="text-right" style="border-top: 1px solid #1D2644; width: 90px; padding: 1px 5px;"><%= number_to_currency(convert_price.call(subtotal_discountable, exch_rate), unit: display_symbol + ' ') %></td>
+                    </tr>
+                    <% end %>
+                </table>
+            </div>
+        </div>
+    </div>
+    <% end %>
+
+    <!-- SECTION 2: ITEMS WITHOUT DISCOUNT (todiscount = false) -->
+    <% non_discountable_items = @sale.sale_details.where(todiscount: false).order(:priority) %>
+    <% if non_discountable_items.any? %>
+    <div style="margin-bottom: 10px;">
+        <table class="table table-condensed" style="margin-bottom: 0; font-size: 0.95em;">
+
+            <tbody>
+                <% subtotal_nondiscountable = 0 %>
+                <% non_discountable_items.each do |detail| %>
+                    <% 
+                       item_subtotal = detail.price * detail.qty # Price sale should be same as price here
+                       subtotal_nondiscountable += item_subtotal
+                    %>
+                    <tr>
+                        <td style="padding: 4px; border: none; border-bottom: 1px solid #1D2644;">
+                            <%= detail.item.name %>
+                        </td>
+                        <td class="text-right" style="padding: 4px; border: none; border-bottom: 1px solid #1D2644; width: 60px;">
+                            <%= detail.qty %> <small style="color:#777"><%= detail.item.unit.name rescue '' %></small>
+                        </td>
+                        <td class="text-right" style="padding: 4px; border: none; border-bottom: 1px solid #1D2644; width: 80px;">
+                            <%= number_to_currency(convert_price.call(detail.price, exch_rate), unit: display_symbol + ' ', precision: 4) %>
+                        </td>
+                        <td class="text-right" style="padding: 4px; border: none; border-bottom: 1px solid #1D2644; color: #CC0000; width: 60px;">
+                        </td>
+                        <td class="text-right" style="padding: 4px; border: none; border-bottom: 1px solid #1D2644; width: 80px;">
+                           <%= number_to_currency(convert_price.call(detail.price, exch_rate), unit: display_symbol + ' ', precision: 4) %>
+                        </td>
+                        <td class="text-right" style="padding: 4px; border: none; border-bottom: 1px solid #1D2644; font-weight: bold; width: 90px;">
+                            <%= number_to_currency(convert_price.call(item_subtotal, exch_rate), unit: display_symbol + ' ') %>
+                        </td>
+                    </tr>
+                <% end %>
+            </tbody>
+        </table>
+         <div class="row" style="margin-top: 1px;">
+            <div class="col-xs-7"></div>
+            <div class="col-xs-5">
+                 <table class="table table-condensed" style="font-size: 0.9em; margin-bottom: 0;">
+                    <tr>
+                        <td class="text-right" style="border:none; padding: 1px 5px;"><strong>Sub total:</strong></td>
+                        <td class="text-right" style="border:none; width: 90px; padding: 1px 5px;"><%= number_to_currency(convert_price.call(subtotal_nondiscountable, exch_rate), unit: display_symbol + ' ') %></td>
+                    </tr>
+                 </table>
+            </div>
+        </div>
+    </div>
+    <% end %>
+
+    <!-- TOTALS SECTION (COMPACTO) -->
+    <div class="row" style="margin-top: 10px; page-break-inside: avoid; border-top: 2px solid #1D2644; padding-top: 1px;">
+        <div class="col-xs-6" style="font-size: 0.9em; padding-right: 1px;">
+            <!-- Reserved Space for Layout Balance -->
+            
+            <!-- ESPACIO PARA NOTAS DEL CLIENTE (OPCIONAL) -->
+            <div style="font-size: 0.85em; color: #555; padding-top: 10px;">
+                <em>Gracias por su preferencia.</em>
+            </div>
+        </div>
+        <div class="col-xs-6" style="padding-left: 1px;">
+            <div style="color: #000; padding: 5px 10px 0 10px; display: block;">
+                <table style="width: 100%; font-size: 1.25em; border-collapse: collapse;">
+                    <% if @sale.discount_total > 0 %>
+                    <tr>
+                        <td class="text-right" style="color: #CC0000; font-size: 0.75em; border: none; font-weight: bold; padding: 0; line-height: 1.2;">Descuento Global (<%= number_to_percentage(@sale.discount_total, precision: 0) %>):</td>
+                        <td class="text-right" style="color: #CC0000; width: 90px; font-size: 0.75em; border: none; font-weight: bold; padding: 0; line-height: 1.2;">- <%= number_to_currency(convert_price.call(@sale.duscount_mount_all_final, exch_rate), unit: display_symbol + ' ') %></td>
+                    </tr>
+                    <% end %>
+                    <tr>
+                        <td class="text-right" style="vertical-align: middle; border: none; padding: 0; line-height: 1.2;"><strong>Total <%= @sale.quoted? ? 'Cotización' : 'Nota de Venta' %>:</strong></td>
+                        <td class="text-right" style="width: 110px; vertical-align: middle; border: none; padding: 0; line-height: 1.2;"><strong><%= number_to_currency(convert_price.call(@sale.total_final, exch_rate), unit: display_symbol + ' ') %></strong></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="padding-top: 2px; font-size: 0.6em; color: #555; text-align: right; border: none; line-height: 1.1;">
+                            Son: <%= (@sale.show_bs && bob_currency ? bob_currency : current_currency).montoLiteral(convert_price.call(@sale.total_final, exch_rate)) rescue '' %>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    <!-- CONTROL OF PACKAGING (BULKS) -->
+    <div style="margin-bottom: 30px;">
+
+        <table style="width: 100%; border-collapse: collapse; table-layout: fixed;">
+            <tr>
+                <td style="border: 1px solid #ddd; padding: 10px; text-align: center;">
+                    <div style="font-size: 0.8em; color: #666;">CAJAS</div>
+                    <div style="height: 20px; font-weight: bold; border-bottom: 1px dashed #999; width: 40px; margin: 5px auto;"></div>
+                </td>
+                <td style="border: 1px solid #ddd; padding: 10px; text-align: center;">
+                    <div style="font-size: 0.8em; color: #666;">BOLSAS</div>
+                    <div style="height: 20px; font-weight: bold; border-bottom: 1px dashed #999; width: 40px; margin: 5px auto;"></div>
+                </td>
+                <td style="border: 1px solid #ddd; padding: 10px; text-align: center;">
+                    <div style="font-size: 0.8em; color: #666;">MALLAS</div>
+                    <div style="height: 20px; font-weight: bold; border-bottom: 1px dashed #999; width: 40px; margin: 5px auto;"></div>
+                </td>
+                <td style="border: 1px solid #ddd; padding: 10px; text-align: center;">
+                    <div style="font-size: 0.8em; color: #666;">CARB.</div>
+                    <div style="height: 20px; font-weight: bold; border-bottom: 1px dashed #999; width: 40px; margin: 5px auto;"></div>
+                </td>
+                <td style="border: 1px solid #ddd; padding: 10px; text-align: center;">
+                    <div style="font-size: 0.8em; color: #666;">ALQUI</div>
+                    <div style="height: 20px; font-weight: bold; border-bottom: 1px dashed #999; width: 40px; margin: 5px auto;"></div>
+                </td>
+                 <td style="border: 1px solid #ddd; padding: 10px; text-align: center;">
+                    <div style="font-size: 0.8em; color: #666;">ROLLOS</div>
+                    <div style="height: 20px; font-weight: bold; border-bottom: 1px dashed #999; width: 40px; margin: 5px auto;"></div>
+                </td>
+                 <td style="border: 1px solid #ddd; padding: 10px; text-align: center;">
+                    <div style="font-size: 0.8em; color: #666;">ATADOS</div>
+                    <div style="height: 20px; font-weight: bold; border-bottom: 1px dashed #999; width: 40px; margin: 5px auto;"></div>
+                </td>
+                
+            </tr>
+        </table>
+    </div>
+
+    <!-- OBSERVATIONS -->
+    
+        
+    
+
+    
+    <!-- FOOTER / SIGNATURE -->
+    <!-- FOOTER / SIGNATURE COMPACT -->
+    <!-- FOOTER / SIGNATURE COMPACT -->
+    <% if !@sale.quoted? %>
+    <div style="margin-top: 30px; padding-top: 0; font-size: 0.8em; color: #333;">
+        <table style="width: 100%; border: none; border-collapse: collapse;">
+            <tr style="border: none;">
+             <td style="border: none; padding: 10px; width: 15%; vertical-align: top;">
+                    <div style="border-top: 1px solid #1D2644; width: 80%; margin: 0 auto; padding-top: 1px; text-align: center;">
+                        <span style="font-weight: bold;">Prep.</span>
+                    </div>
+                </td>
+                <td style="border: none; padding: 10px; width: 35%; vertical-align: top;">
+                    <div style="border-top: 1px solid #1D2644; width: 80%; margin: 0 auto; padding-top: 1px; text-align: center;">
+                        <span style="font-weight: bold;">Firma del Vendedor</span>
+                    </div>
+                </td>
+            
+                <td style="border: none; padding: 10px; width: 35%; vertical-align: top;">
+                     <div style="border-top: 1px solid #1D2644; width: 80%; margin: 0 auto; padding-top: 1px; text-align: center;">
+                         <span style="font-weight: bold;">Firma del Cliente</span>
+                    </div>
+                </td>
+                 <td style="border: none; padding: 10px; width: 15%; vertical-align: top;">
+                     <div style="border-top: 1px solid #1D2644; width: 80%; margin: 0 auto; padding-top: 1px; text-align: center;">
+                         <span style="font-weight: bold;">Rev.</span>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+    
+    <% end %>
+</div>

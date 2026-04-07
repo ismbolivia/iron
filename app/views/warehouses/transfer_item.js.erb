@@ -1,0 +1,44 @@
+(function() {
+    var itemId = '<%= params[:item_id] %>';
+    
+    // 1. Ocultar el modal (Standard Bootstrap action)
+    // 1. Ocultar el modal genérico
+    $('#transferModalGeneric').modal('hide');
+    
+    // 2. LIMPIEZA FORZADA (Arregla el congelamiento de pantalla)
+    // Eliminamos inmediatamente cualquier rastro del backdrop y clases de bloqueo
+    $('.modal-backdrop').remove();
+    $('body').removeClass('modal-open modal-scrollable').css('padding-right', '').css('overflow', '');
+    $('html').css('overflow', '');
+    $('.modal-scrollable').removeClass();
+    
+    // Reintentamos brevemente después por si una animación lo restauró
+    setTimeout(function() {
+         $('.modal-backdrop').remove();
+         $('body').removeClass('modal-open modal-scrollable').css('padding-right', '').css('overflow', '');
+    }, 200);
+
+    // 3. UI Optimista: Eliminar visualmente las filas (Producto y Control)
+    // Esto hace que la acción parezca instantánea
+    if (itemId) {
+        var rows = $('#item_row_' + itemId + ', #control_row_' + itemId);
+        rows.fadeOut(500, function() { $(this).remove(); });
+    }
+
+    // 4. Mostrar Notificación Flotante
+    var msg = '<%= j flash.now[:notice] %>';
+    if (msg) {
+        var alertHtml = '<div class="alert alert-success alert-dismissible fade in" style="position: fixed; top: 20px; right: 20px; z-index: 100000; box-shadow: 0 4px 10px rgba(0,0,0,0.15);">' +
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +
+                        '<strong><i class="fa fa-check-circle"></i></strong> ' + msg +
+                        '</div>';
+        
+        $('body').append(alertHtml);
+        
+        // Autocerrar después de 4 segundos
+        setTimeout(function() {
+            $('.alert-success').fadeOut(function() { $(this).remove(); });
+        }, 4000);
+    }
+})();
+

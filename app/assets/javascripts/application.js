@@ -14,15 +14,16 @@
 //= require activestorage
 //= require turbolinks
 //= require moment/moment.js
-//= require daterangepicker/daterangepicker
-//= require 'bootstrap-sass-official'
+//= require bootstrap-daterangepicker/daterangepicker
+//= require bootstrap-sass-official
 //= require bootstrap-modal
 //= require bootstrap-modalmanager
 //= require 'typeahead.js.js'
 //= require chartkick
 //= require Chart.bundle
 //= require_tree .
-//= require sweetalert2
+//
+
 
 //= require toastr
 

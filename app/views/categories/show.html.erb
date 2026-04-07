@@ -1,69 +1,207 @@
 
-<div class="row">
-	<div class="col-lg-12">
-    <div class="col-lg-1"> </div>
-<div class="col-lg-10">
-<div class="panel panel-inf">
-	<div class="panel-head">Categoria (<%= @category.name %>)</div>
-	  <div class="panel-wrapper collapse in" aria-expanded="true">
-	  	<div class="panel-body">
-	  	  <div class="form-body">
-	  	  	<div align="center" class="text-info">
-  				<h4 ><strong>PRODUCTOS DE LA CATEGORIA (<%= @category.name %>)</strong></h4>
-  				
-			</div>
-				<table class="table table-bordered text-center">
-					<thead>
-					   <tr>
-					    	<% @category.items.limit(3).each_with_index do |item, index| %>
-					    	<% if index == 1 %>
-					    		<th><%= image_tag(item.image.large.url, :alt => "imge-item",  :style => "iwidth:100%; height:350px;") %></th>
-					    	<% else %>
-						    		<th><%= image_tag(item.image.large.url, :alt => "imge-item",  :style => "iwidth:100%; height:200px;") %></th>
-						    	<% end%>
-						    <%end%> 			    
-					    </tr>
-					  </thead>					
-				</table>
-	  	  	 <hr>		       
-			<table class="table">
-			    <thead>
-				    <tr>
-				      <th>Nombre</th>
-				      <th>Descripción</th>
-				      <th>Marca</th>
-				      <th>Fecha</th>
-				      <th colspan="1"></th>
-					</tr>
-					  </thead>
-					  <tbody>
-					    <% @category.items.each do |item| %>
-					      <tr>
-					        <td><%= item.name %></td>
-					        <td><%= item.description %></td>
-					        <td><%= item.brand.name %></td>
-					        <td><%= item.created_at %></td>					   
-					        <td>
-					        <% if can? :read, Item %>
-					        	  <%= link_to 'Ver', item, class: "btn btn-info" %>
-					        <% end %>
-					        </td>
-					      
-					      </tr>
-					    <% end %>
-					  </tbody>
-					</table>
-	
-	      </div>
-		</div>
- 	</div>
+<style>
+.premium-dashboard {
+  background: #fdfdfd;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.03);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+.gradient-banner {
+  background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+  color: white;
+  border-radius: 12px;
+  padding: 1.75rem 2.25rem;
+  margin-bottom: 2.25rem;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.form-panel {
+  background: white;
+  border-radius: 16px;
+  padding: 2.5rem;
+  box-shadow: 0 2px 15px rgba(0,0,0,0.02);
+  margin-bottom: 2rem;
+  border: 1px solid #edf2f7;
+}
+
+.btn-premium-back {
+  background: rgba(255, 255, 255, 0.15);
+  color: white !important;
+  font-weight: 800;
+  padding: 12px 24px;
+  border-radius: 20px;
+  transition: all 0.2s;
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
+  font-size: 1.1rem;
+  text-decoration: none !important;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn-premium-back:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: translateY(-1px);
+}
+
+.item-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1.75rem;
+  margin-top: 1.75rem;
+}
+
+.item-card {
+  background: white;
+  border: 1.8px solid #e2e8f0;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+}
+
+.item-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0,0,0,0.07);
+  border-color: #cbd5e1;
+}
+
+.item-img-container {
+  width: 100%;
+  height: 180px;
+  background: #f8fafc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  border-bottom: 1.8px solid #f1f5f9;
+}
+
+.item-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s;
+}
+
+.item-card:hover .item-img {
+  transform: scale(1.05);
+}
+
+.item-body {
+  padding: 1.5rem;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.item-name {
+  font-size: 1.35rem;
+  font-weight: 850;
+  color: #0f172a;
+  margin-bottom: 0.4rem;
+  letter-spacing: -0.3px;
+  line-height: 1.2;
+}
+
+.item-brand {
+  font-size: 1.05rem;
+  color: #475569;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.btn-action-small {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  background: #eff6ff;
+  color: #1d4ed8;
+  border: 1.5px solid #bfdbfe;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-action-small:hover {
+  background: #1d4ed8;
+  color: white;
+  transform: scale(1.05);
+}
+</style>
+
+<div class="premium-dashboard">
+  <div class="gradient-banner">
+    <div>
+      <h2 class="m-0" style="font-weight: 800; font-size: 1.85rem; letter-spacing: -0.3px; display: flex; align-items: center; gap: 10px;">
+         <i class="fas fa-folder-open" style="font-size: 1.6rem;"></i> <%= @category.name %>
+      </h2>
+      <p class="m-0" style="color: rgba(255,255,255,0.9); font-size: 1.05rem; margin-top: 6px; font-weight: 500;">Detalles de la categoría y productos asociados.</p>
+    </div>
+    <div style="display: flex; gap: 8px;">
+      <%= link_to edit_category_path(@category), class: "btn-premium-back", style: "background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.25);" do %>
+           <i class="fas fa-edit" style="font-size: 0.8rem;"></i> Editar
+      <% end %>
+      <%= link_to categories_path, class: "btn-premium-back" do %>
+           <i class="fas fa-arrow-left" style="font-size: 0.8rem;"></i> Volver
+      <% end %>
+    </div>
   </div>
+
+  <div class="form-panel">
+    <h4 style="font-weight: 800; color: #1e3a8a; margin-bottom: 1rem; display: flex; align-items: center; gap: 8px; font-size: 1.1rem;">
+      <i class="fas fa-boxes" style="color: #3b82f6;"></i> Productos en esta categoría 
+      <span style="font-size: 0.8rem; background: #eff6ff; color: #2563eb; padding: 4px 10px; border-radius: 20px; font-weight: 700; margin-left: 5px;">
+        <%= @category.items.count %> artículos
+      </span>
+    </h4>
+
+    <% if @category.items.any? %>
+      <div class="item-grid">
+        <% @category.items.each do |item| %>
+          <div class="item-card">
+            <div class="item-img-container">
+              <% if item.image.present? && item.image.url.present? %>
+                <%= image_tag item.image.url, class: "item-img" %>
+              <% else %>
+                <i class="fas fa-image" style="font-size: 2.2rem; color: #cbd5e1; opacity: 0.6;"></i>
+              <% end %>
+            </div>
+            <div class="item-body">
+              <div>
+                <div class="item-name"><%= truncate(item.name, length: 45) %></div>
+                <div class="item-brand"><%= item.brand&.name || 'S/M' %></div>
+              </div>
+              
+              <div style="display: flex; justify-content: flex-end; padding-top: 8px; border-top: 1px solid #f1f5f9; margin-top: 8px;">
+                <% if can? :read, item %>
+                  <%= link_to item_path(item), class: "btn-action-small", title: "Ver Detalle" do %>
+                    <i class="fas fa-eye"></i>
+                  <% end %>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <div style="text-align: center; padding: 4rem 2rem; color: #94a3b8; background: #f8fafc; border-radius: 16px; border: 2px dashed #e2e8f0; margin-top: 1rem;">
+         <i class="fas fa-box-open" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+         <p style="font-weight: 600; color: #475569; margin-bottom: 0.25rem;">No hay productos asignados</p>
+         <p style="font-size: 0.85rem;">Esta categoría se encuentra vacía.</p>
+      </div>
+    <% end %>
   </div>
- <div class="col-lg-1">
-        </div>
-        </div>
 </div>
-
-
-<%= link_to 'Edit', edit_category_path(@category) %> |
-<%= link_to 'Back', categories_path %>

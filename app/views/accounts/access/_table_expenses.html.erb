@@ -1,40 +1,77 @@
-<table class="table">
-  <thead>
-    <tr>
-      <th>Descripción</th>
-      <th>Monto</th>
-      <th>Fecha</th>
-      <th colspan="2"></th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @account.account_expenses.limit(20).order(created_at: :desc).each do |expense| %>
-      <tr>
-        <td><%= expense.description %></td>
-        <td><%= @account.currency.symbol %><%= expense.amount %></td>
-        <td><%= expense.created_at.strftime("%d/%m/%Y") %></td> 
-        <% if current_user.is_admin? %>         
-           
-        <td>
-          <%= button_to edit_account_expense_path(expense), {method: :get, class: "btn btn-info"} do %>
-            <span class="glyphicon glyphicon-pencil" aria-hidden="true"> </span> Editar
-          <% end %>
-        </td> 
-         <td><%= link_to 'Destroy', expense, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-danger" %>
-         </td>        
-          <% end %>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
+<!-- Tarjetas de Resumen Visual -->
+<div style="display: flex; gap: 15px; margin-bottom: 20px;">
+  <div style="flex: 1; padding: 15px; background: #f8fafc; border-radius: 10px; border: 1px solid #e2e8f0; border-top: 4px solid #64748b;">
+    <h4 style="margin: 0; font-size: 0.8rem; color: #64748b; font-weight: 800; text-transform: uppercase;">Total Gastos</h4>
+    <p style="margin: 8px 0 0; font-size: 1.6rem; font-weight: 800; color: #1e293b;"><%= @account.currency.symbol %><%= number_with_precision(@account.account_expenses.sum(:amount), precision: 2) %></p>
+  </div>
+  
+  <div style="flex: 1; padding: 15px; background: #fefce8; border-radius: 10px; border: 1px solid #fef08a; border-top: 4px solid #eab308;">
+    <h4 style="margin: 0; font-size: 0.8rem; color: #854d0e; font-weight: 800; text-transform: uppercase;">📌 Gastos Fijos</h4>
+    <p style="margin: 8px 0 0; font-size: 1.6rem; font-weight: 800; color: #713f12;"><%= @account.currency.symbol %><%= number_with_precision(@account.account_expenses.where(expense_type: :fijo).sum(:amount), precision: 2) %></p>
+  </div>
 
+  <div style="flex: 1; padding: 15px; background: #f0fdf4; border-radius: 10px; border: 1px solid #bbf7d0; border-top: 4px solid #22c55e;">
+    <h4 style="margin: 0; font-size: 0.8rem; color: #166534; font-weight: 800; text-transform: uppercase;">📈 Gastos Variables</h4>
+    <p style="margin: 8px 0 0; font-size: 1.6rem; font-weight: 800; color: #14532d;"><%= @account.currency.symbol %><%= number_with_precision(@account.account_expenses.where(expense_type: :variable).sum(:amount), precision: 2) %></p>
+  </div>
+</div>
+
+<div class="table-responsive">
+  <table class="table table-hover" style="border-collapse: separate; border-spacing: 0 8px;">
+    <thead>
+      <tr style="background: #f8fafc;">
+        <th>Categoría</th>
+        <th>Tipo</th>
+        <th>Descripción</th>
+        <th>Monto</th>
+        <th>Fecha</th>
+        <th colspan="2"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @account.account_expenses.limit(30).order(created_at: :desc).each do |expense| %>
+        <tr style="background: white; box-shadow: 0 2px 4px rgba(0,0,0,0.02); margin-bottom: 5px;">
+          <td>
+            <span class="label" style="background: #e0f2fe; color: #0369a1; border-radius: 12px; padding: 4px 10px;">
+              <i class="fas fa-folder-open"></i> <%= expense.expense_category.to_s.gsub('_', ' ').capitalize %>
+            </span>
+          </td>
+          <td>
+            <% if expense.fijo? %>
+              <span class="label" style="background: #fef9c3; color: #854d0e; border-radius: 12px; padding: 4px 10px;"><i class="fas fa-thumbtack"></i> Fijo</span>
+            <% elsif expense.variable? %>
+              <span class="label" style="background: #dcfce7; color: #166534; border-radius: 12px; padding: 4px 10px;"><i class="fas fa-chart-line"></i> Variable</span>
+            <% else %>
+              <span class="label" style="background: #f1f5f9; color: #475569; border-radius: 12px; padding: 4px 10px;"><%= expense.expense_type.to_s.capitalize %></span>
+            <% end %>
+          </td>
+          <td style="font-weight: 600; color: #334155;"><%= expense.description %></td>
+          <td style="font-weight: 800; color: #1e293b;"><%= @account.currency.symbol %><%= number_with_precision(expense.amount, precision: 2) %></td>
+          <td><span style="color: #64748b; font-size: 0.85rem;"><%= expense.created_at.strftime("%d/%m/%Y") %></span></td> 
+          
+          <% if current_user.is_admin? %>         
+            <td style="text-align: right;">
+              <%= button_to edit_account_expense_path(expense), {method: :get, class: "btn btn-default btn-xs", style: "border-radius: 6px; padding: 4px 8px;"} do %>
+                <i class="fas fa-pencil-alt text-warning"></i> 
+              <% end %>
+            </td> 
+            <td>
+              <%= link_to expense, method: :delete, data: { confirm: '¿Estás seguro de eliminar este gasto?' }, class: "btn btn-default btn-xs", style: "border-radius: 6px; padding: 4px 8px;" do %>
+                <i class="fas fa-trash text-danger"></i>
+              <% end %>
+            </td>        
+          <% end %>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
 
 <div class="clearfix"></div>
-  <hr>
-  <div class="text-right">                                                                         
-     <%= link_to  new_account_expense_path(:account_id => @account.id), {method: :get, class: "btn btn-success", remote: true} do %>
-
-     <span class=" " aria-hidden="true">Registrar  </span>
+<hr style="border-color: #f1f5f9;">
+<div class="text-right">                                                                         
+    <%= link_to new_account_expense_path(:account_id => @account.id), {method: :get, class: "btn btn-success", style: "font-weight: 700; border-radius: 8px; padding: 8px 16px;", remote: true} do %>
+      <i class="fas fa-plus"></i> Registrar Gasto
     <% end %>     
-  <button id="print" class="btn btn-default btn-outline" type="button"> <span><i class="fa fa-print"></i> Print</span> </button>
+    <button id="print" class="btn btn-default btn-outline" style="border-radius: 8px; font-weight: 700;" type="button"> <span><i class="fa fa-print"></i> Imprimir</span> </button>
 </div>

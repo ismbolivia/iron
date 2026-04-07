@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <style>
+        @page {
+            margin: 0.5cm;
+            size: A4;
+        }
+        body {
+            font-family: 'Helvetica', 'Arial', sans-serif;
+            color: #1e293b;
+            margin: 0;
+            padding: 0;
+            line-height: 1.4;
+        }
+        .container {
+            width: 100%;
+            padding: 10px;
+        }
+        /* --- BRANDING & HEADER --- */
+        .header-table {
+            width: 100%;
+            border-bottom: 3px solid #1e3a8a;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            table-layout: fixed;
+        }
+        .main-title {
+            font-size: 26px;
+            font-weight: 800;
+            color: #1e3a8a;
+            margin: 0;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        .subtitle {
+            font-size: 11px;
+            color: #64748b;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+        .logo-container {
+            text-align: right;
+            position: relative;
+        }
+        .qr-code {
+            position: absolute;
+            right: 0;
+            top: 50px;
+            width: 70px;
+            height: 70px;
+            border: 1px solid #e2e8f0;
+            padding: 5px;
+            background: white;
+        }
+        .sale-badge {
+            background-color: #1e3a8a;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 5px;
+        }
+
+        /* --- INFO BOXES --- */
+        .info-table {
+            width: 100%;
+            margin-bottom: 20px;
+            border-collapse: separate;
+            border-spacing: 0 5px;
+        }
+        .info-label {
+            font-size: 9px;
+            color: #64748b;
+            text-transform: uppercase;
+            font-weight: bold;
+            margin-bottom: 2px;
+        }
+        .info-value {
+            font-size: 13px;
+            font-weight: bold;
+            color: #0f172a;
+        }
+        .card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 12px;
+            border-radius: 6px;
+        }
+
+        /* --- PRODUCTS TABLE --- */
+        .dispatch-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+        .dispatch-table th {
+            background-color: #1e3a8a;
+            color: white;
+            padding: 10px 8px;
+            font-size: 11px;
+            text-align: left;
+            text-transform: uppercase;
+            border: 1px solid #1e3a8a;
+        }
+        .dispatch-table td {
+            padding: 12px 8px;
+            border: 1px solid #e2e8f0;
+            font-size: 12px;
+            vertical-align: top;
+        }
+        .item-name {
+            font-weight: 800;
+            font-size: 13px;
+            color: #0f172a;
+        }
+        .item-code {
+            font-size: 10px;
+            color: #64748b;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        .qty-total {
+            font-size: 16px;
+            font-weight: 800;
+            text-align: center;
+            color: #1e3a8a;
+        }
+        .instruction-box {
+            color: #be123c;
+            font-weight: bold;
+            font-size: 11px;
+            background: #fff1f2;
+            padding: 4px 8px;
+            border-left: 3px solid #e11d48;
+            border-radius: 2px;
+            margin-top: 5px;
+        }
+        .priority-row {
+            background-color: #f1f5f9;
+        }
+        .check-box {
+            width: 25px;
+            height: 25px;
+            border: 2px solid #cbd5e1;
+            margin: 0 auto;
+            border-radius: 3px;
+        }
+
+        /* --- BULK SUMMARY --- */
+        .summary-header {
+            font-size: 12px;
+            font-weight: 800;
+            color: #475569;
+            border-left: 4px solid #1e3a8a;
+            padding-left: 10px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+        .bulk-card {
+            border: 1px solid #e2e8f0;
+            text-align: center;
+            padding: 8px;
+            width: 18%;
+        }
+        .bulk-label {
+            font-size: 9px;
+            color: #64748b;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .bulk-line {
+            border-bottom: 1px dashed #64748b;
+            height: 20px;
+            width: 40px;
+            margin: 0 auto;
+        }
+
+        /* --- REMARKS --- */
+        .remarks-box {
+            border: 1px solid #e2e8f0;
+            background-color: #fff;
+            padding: 10px;
+            min-height: 80px;
+            margin-top: 20px;
+            border-radius: 4px;
+        }
+
+        /* --- SIGNATURE FIELD --- */
+        .signature-table {
+            width: 100%;
+            margin-top: 60px;
+        }
+        .signature-line {
+            border-top: 1px solid #475569;
+            width: 80%;
+            margin: 0 auto;
+            margin-top: 10px;
+            padding-top: 5px;
+            text-align: center;
+            font-size: 11px;
+            font-weight: bold;
+        }
+        .signature-desc {
+            font-size: 9px;
+            color: #64748b;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <!-- HEADER SECTION -->
+    <table class="header-table">
+        <tr>
+            <td style="width: 50%;">
+                <h1 class="main-title">ORDEN DE DESPACHO</h1>
+                <span class="subtitle">SISTEMA DE CONTROL LOGÍSTICO IRON</span>
+            </td>
+            <td class="logo-container" style="width: 50%;">
+                <div class="sale-badge">SALE #<%= @sale.number %></div>
+                <div class="qr-code">
+                    <%# Fallback to text if QR image not found %>
+                    <img src="<%= asset_path('qr.png') rescue '' %>" style="width: 100%; height: 100%;">
+                </div>
+                <div style="font-size: 10px; color: #64748b; margin-top: 5px;">
+                    DOC: <%= @sale.date.strftime("%d/%m/%Y") %> | PRINT: <%= Time.now.strftime("%H:%M:%S") %>
+                </div>
+            </td>
+        </tr>
+    </table>
+
+    <!-- CLIENT INFO CARD -->
+    <table class="info-table">
+        <tr>
+            <td style="width: 60%;">
+                <div class="card">
+                    <div class="info-label">Destinatario / Cliente</div>
+                    <div class="info-value" style="font-size: 15px;"><%= @sale.client.name.upcase %></div>
+                    <div class="info-value" style="font-size: 11px; font-weight: normal; color: #475569;">
+                        <%= @sale.client.address.get_direccion_cli rescue 'Sin dirección registrada' %>
+                    </div>
+                </div>
+            </td>
+            <td style="width: 40%; padding-left: 10px;">
+                <div class="card">
+                    <table style="width: 100%;">
+                        <tr>
+                            <td>
+                                <div class="info-label">Vendedor</div>
+                                <div class="info-value"><%= @sale.user.name rescue 'SISTEMA' %></div>
+                            </td>
+                            <td>
+                                <div class="info-label">Tipo Venta</div>
+                                <div class="info-value">
+                                    <% if @sale.credit %>
+                                        <span style="color: #e11d48;">CRÉDITO</span>
+                                    <% else %>
+                                        CONTADO
+                                    <% end %>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </td>
+        </tr>
+    </table>
+
+    <!-- MAIN PRODUCT LIST -->
+    <table class="dispatch-table">
+        <thead>
+            <tr>
+                <th style="width: 30px; text-align: center;">#</th>
+                <th>Descripción Detallada del Producto</th>
+                <th style="width: 80px; text-align: center;">Cantidad</th>
+                <th style="width: 200px;">Instrucción de Almacén (Empaque)</th>
+                <th style="width: 40px; text-align: center;">Pick</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% @sale.sale_details.order(:priority).each_with_index do |detail, index| %>
+                <tr class="<%= index % 2 == 0 ? '' : 'priority-row' %>">
+                    <td style="text-align: center; color: #64748b; font-weight: bold;"><%= index + 1 %></td>
+                    <td>
+                        <div class="item-name"><%= detail.item.name %></div>
+                        <div class="item-code">SKU: <%= detail.item.code %></div>
+                        
+                        <%# Trazabilidad de Lotes y Empaques %>
+                        <% 
+                           valid_movs = detail.movements.select { |m| m.qty_out.to_f > 0 && m.stock }
+                           grouped_movs = valid_movs.group_by { |m| [m.stock.purchase_order_line_id || "SISTEMA-#{m.stock.lote}", m.stock.presentation_id] }
+                           surtir_texts_arr = []
+                        %>
+                        <% grouped_movs.each do |lot_id, movs|
+                             total_out = movs.sum(&:qty_out)
+                             sample_stock = movs.first.stock
+                             lot_name = sample_stock.lote.presence || (sample_stock.purchase_order_line ? "LOTE OC-#{sample_stock.purchase_order_line.purchase_order.name}" : "SISTEMA")
+                             presentation = sample_stock.presentation
+                             repacked = sample_stock.respond_to?(:repacking_id) && sample_stock.repacking_id.present?
+                             warehouse_name = sample_stock.warehouse.name rescue 'ALMACÉN PRINCIPAL'
+                             
+                             # Calcular instrucciones de surtido en base al empaque
+                             if presentation && presentation.qty.to_f > 0
+                               packs = (total_out / presentation.qty.to_f).floor
+                               remainder = total_out % presentation.qty.to_i
+                               
+                               if remainder > 0 && packs > 0
+                                 surtir_text = "#{packs} #{presentation.name.upcase} + #{remainder} #{detail.item.unit.name.upcase rescue 'PZS'}"
+                               elsif packs > 0
+                                 surtir_text = "#{packs} #{presentation.name.upcase}"
+                               else
+                                 surtir_text = "#{total_out} #{detail.item.unit.name.upcase rescue 'PZS'} (SUELTOS)"
+                               end
+                             else
+                               surtir_text = "#{total_out} #{detail.item.unit.name.upcase rescue 'PZS'} (SUELTOS)"
+                             end
+                             surtir_texts_arr << surtir_text
+                        %>
+                            <div style="font-size: 9px; margin-top: 4px; color: #1e3a8a; font-weight: bold; background: #f8fafc; padding: 4px 6px; border: 1px dashed #cbd5e1; border-radius: 4px;">
+                                <img src="<%= asset_path('box_icon.png') rescue '' %>" style="width: 8px; margin-right: 4px;">
+                                SURTIR: <span style="color: #e11d48; font-size: 10px;"><%= surtir_text %></span>
+                                | LOTE: <%= lot_name %> <% if repacked %><span style="color: #8b5cf6;">(Re-empacado)</span><% end %> 
+                                | UBICACIÓN: <%= warehouse_name %>
+                            </div>
+                        <% end %>
+                    </td>
+                    <td class="qty-total">
+                        <%= detail.qty %> <br>
+                        <small style="font-size: 9px; font-weight: normal; color: #64748b;"><%= detail.item.unit.name.upcase rescue 'PZS' %></small>
+                    </td>
+                    <td>
+                        <div class="instruction-box">
+                            <%= detail.dispatch_instructions %>
+                        </div>
+                        <div style="font-size: 8px; color: #94a3b8; margin-top: 3px; text-transform: uppercase;">
+                            Preparar según prioridad FIFO
+                        </div>
+                    </td>
+                    <td style="vertical-align: middle;">
+                        <div class="check-box"></div>
+                    </td>
+                </tr>
+            <% end %>
+        </tbody>
+    </table>
+
+    <!-- DISPATCH SUMMARY SECTION -->
+    <div class="summary-header">Resumen de Bultos para Transporte</div>
+    <table style="width: 100%; border-collapse: collapse;">
+        <tr>
+            <td class="bulk-card">
+                <div class="bulk-label">CAJAS</div>
+                <div class="bulk-line"></div>
+            </td>
+            <td style="width: 2%;"></td>
+            <td class="bulk-card">
+                <div class="bulk-label">PAQUETES</div>
+                <div class="bulk-line"></div>
+            </td>
+            <td style="width: 2%;"></td>
+            <td class="bulk-card">
+                <div class="bulk-label">BOLSAS/MALLAS</div>
+                <div class="bulk-line"></div>
+            </td>
+            <td style="width: 2%;"></td>
+            <td class="bulk-card">
+                <div class="bulk-label">BIDONES/LATAS</div>
+                <div class="bulk-line"></div>
+            </td>
+            <td style="width: 2%;"></td>
+            <td class="bulk-card" style="background-color: #f1f5f9;">
+                <div class="bulk-label">RECARGOS</div>
+                <div class="bulk-line"></div>
+            </td>
+        </tr>
+    </table>
+
+    <!-- REMARKS & SIGNATURES -->
+    <div class="remarks-box">
+        <div class="info-label">Observaciones y Ajustes en Almacén</div>
+        <div style="color: #cbd5e1; font-size: 10px; margin-top: 5px;">
+            En caso de discrepancia en lotes o condiciones de empaque, detalle a continuación:
+        </div>
+    </div>
+
+    <table class="signature-table">
+        <tr>
+            <td style="width: 33%;">
+                <div class="signature-line">DESPACHADO POR</div>
+                <div class="signature-desc">Responsable de Almacén</div>
+            </td>
+            <td style="width: 33%;">
+                <div class="signature-line">ENTREGADO A</div>
+                <div class="signature-desc">Transporte / Chofer (Firma y CI)</div>
+            </td>
+            <td style="width: 33%;">
+                <div class="signature-line">CONFORMIDAD CLIENTE</div>
+                <div class="signature-desc">Firma Recepción en Almacén</div>
+            </td>
+        </tr>
+    </table>
+
+</div>
+</body>
+</html>

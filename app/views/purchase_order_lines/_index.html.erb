@@ -1,56 +1,55 @@
-
-
-  <tbody>
-    <% @purchase_order.purchase_order_lines.order(:id).each do |purchase_order_line| %>
-        <tr>
+<% @purchase_order.purchase_order_lines.order(:id).each do |purchase_order_line| %>
+      <tr>
         <td><%= purchase_order_line.item.code %></td>
         <td><%= purchase_order_line.item.name %></td>
-        <td><%= purchase_order_line.item_qty %></td>
-        <td><%= @mycompany.get_current_currency.symbol%> <%= purchase_order_line.price_unit %> </td>
-         <% if @purchase_order.borrador? || @purchase_order.confirmado?%>
-
-         <% if purchase_order_line.borrador?%>
-         <td><%= link_to purchase_order_line.state, purchase_order_purchase_order_line_path(purchase_order_line.purchase_order.id, purchase_order_line.id,  state: true), method: :delete,  remote: true, class: "btn btn-danger" %></td>
+        <td><%= number_with_precision(purchase_order_line.item_qty, precision: (purchase_order_line.item.unit.allow_decimals ? 2 : 0), strip_insignificant_zeros: !purchase_order_line.item.unit.allow_decimals) %></td>
+        <td>
+          <% if @purchase_order.draft? || @purchase_order.borrador? || @purchase_order.confirmed? %>
+            <div style="display: flex; align-items: center; gap: 4px; background: #f8fafc; padding: 4px 8px; border-radius: 8px; border: 1px solid #e2e8f0; width: fit-content;">
+              <span style="font-weight: 800; color: #64748b; font-size: 0.9rem;"><%= @mycompany.get_current_currency.symbol %></span>
+              <input type="number" 
+                     step="0.0001" 
+                     value="<%= number_with_precision(purchase_order_line.price_unit, precision: 4, strip_insignificant_zeros: false) %>" 
+                     class="bulk-cost-input" 
+                     data-id="<%= purchase_order_line.id %>"
+                     data-po-id="<%= @purchase_order.id %>"
+                     style="width: 100px; border: none; background: transparent; font-weight: 800; color: #1e293b; padding: 0; outline: none; font-size: 0.95rem;">
+            </div>
+          <% else %>
+            <span style="font-weight: 700; color: #1e293b;"><%= @mycompany.get_current_currency.symbol %> <%= number_with_precision(purchase_order_line.price_unit, precision: 4, delimiter: ',') %></span>
           <% end %>
-           <% if purchase_order_line.parcial?%>
-        <td>
-           <span class="btn btn-warning"> <%= purchase_order_line.state  %>  </span>
         </td>
-         <% end %>
-         <% if purchase_order_line.confirmado?%>
-        <td>
-           <span class="btn btn-info"> <%= purchase_order_line.state  %>  </span>
-        </td>
-         <% end %>
-         <% if purchase_order_line.recibido?%>
-        <td>
-           <span class="btn btn-primary"> <%= purchase_order_line.state  %>  </span>
-        </td>
-         <% end %>
-           <% if purchase_order_line.asignado?%>
-        <td>
-           <span class="btn btn-success"> <%= purchase_order_line.state %>  </span>
-        </td>
-         <% end %>
-         <% end %>
 
-        <td><%= purchase_order_line.qty_received %></td>
-        <td  class=" text-right"><%= @mycompany.get_current_currency.symbol%> <%= purchase_order_line.subtotal %></td>
+        <td>
+          <% if purchase_order_line.borrador? %>
+            <span class="badge bg-red-gradient" style="background: #f87171; color: white; padding: 5px 10px; border-radius: 6px;">Borrador</span>
+          <% elsif purchase_order_line.parcial? %>
+            <span class="badge" style="background: #facc15; color: #1e293b; padding: 5px 10px; border-radius: 6px;">Parcial</span>
+          <% elsif purchase_order_line.confirmado? %>
+            <span class="badge" style="background: #3b82f6; color: white; padding: 5px 10px; border-radius: 6px;">Confirmado</span>
+          <% elsif purchase_order_line.recibido? %>
+            <span class="badge" style="background: #8b5cf6; color: white; padding: 5px 10px; border-radius: 6px;">Recibido</span>
+          <% elsif purchase_order_line.asignado? %>
+            <span class="badge" style="background: #10b981; color: white; padding: 5px 10px; border-radius: 6px;">Asignado</span>
+          <% else %>
+            <span class="badge bg-gray"><%= purchase_order_line.state %></span>
+          <% end %>
+        </td>
+
+        <td><%= number_with_precision(purchase_order_line.qty_received, precision: (purchase_order_line.item.unit.allow_decimals ? 2 : 0), strip_insignificant_zeros: !purchase_order_line.item.unit.allow_decimals) %></td>
+        <td  class=" text-right"><%= @mycompany.get_current_currency.symbol%> <%= number_with_precision(purchase_order_line.subtotal, precision: 4, delimiter: ',') %></td>
 
          <% if show_actions %>
-
-         <td>
-        <% if purchase_order_line.confirmado? || purchase_order_line.parcial?%>
-          <%= link_to '', new_reception_path(purchase_order_line_id: purchase_order_line.id), remote:true, class: " fas fa-truck-loading btn btn-success" %>
-        <% end %>
-        </td>
-        <td><% if purchase_order_line.borrador?%>
-          <%= link_to '', purchase_order_purchase_order_line_path(purchase_order_line.purchase_order.id, purchase_order_line.id), method: :delete,  remote: true,  class: " fas fa-trash btn btn-danger"  %>
-<% end %>
-         </td>
+           <td>
+             <% if purchase_order_line.confirmado? || purchase_order_line.parcial?%>
+               <%= link_to '', new_reception_path(purchase_order_line_id: purchase_order_line.id), remote:true, class: " fas fa-truck-loading btn btn-success" %>
+             <% end %>
+           </td>
+           <td>
+             <% if purchase_order_line.borrador?%>
+               <%= link_to '', purchase_order_purchase_order_line_path(purchase_order_line.purchase_order.id, purchase_order_line.id), method: :delete,  remote: true,  class: " fas fa-trash btn btn-danger"  %>
+             <% end %>
+           </td>
          <% end %>
       </tr>
-
-
-    <% end %>
-  </tbody>
+  <% end %>

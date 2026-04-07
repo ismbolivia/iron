@@ -9,6 +9,7 @@
       <th>Qty out</th>
       <th>Total</th>
       <th>Item</th>
+      <th>Origen</th>
       <th colspan="3"></th>
     </tr>
   </thead>
@@ -19,7 +20,18 @@
         <td><%= stock.qty_in %></td>
         <td><%= stock.qty_out %></td>
         <td><%= stock.total %></td>
-        <td><%= stock.item_id %></td>
+        <td><%= stock.item.name rescue stock.item_id %></td>
+        <td>
+          <% if stock.repacking_id.present? %>
+            <span class="badge" style="background: #f5f3ff; color: #7c3aed; border: 1px solid #ddd6fe;">Re-empaque</span>
+          <% elsif stock.stock_adjustment.present? %>
+            <span class="badge" style="background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0;" title="<%= stock.stock_adjustment.reason %>">Ajuste</span>
+          <% elsif stock.purchase_order_line_id.present? %>
+            <span class="badge" style="background: #fffbeb; color: #d97706; border: 1px solid #fde68a;">Compra</span>
+          <% else %>
+            <span class="badge" style="background: #f1f5f9; color: #64748b; border: 1px solid #e2e8f0;">Sistema</span>
+          <% end %>
+        </td>
         <td><%= link_to 'Show', stock %></td>
         <td><%= link_to 'Edit', edit_stock_path(stock) %></td>
         <td><%= link_to 'Destroy', stock, method: :delete, data: { confirm: 'Are you sure?' } %></td>

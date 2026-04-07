@@ -55,13 +55,19 @@ class Client < ApplicationRecord
 	end
 	# obtenemos linea de credito disponible para el credito actual asignado
 	def line_credit_available
-		sales = self.sales.where(credit: true)
+		if sales.loaded?
+			# Filter in memory using the Enum helper confirmed?
+			my_sales = sales.select { |s| s.confirmed? }
+		else
+			# Filter in DB
+			my_sales = sales.where(state: :confirmed)
+		end
+		
 		total = 0.0
-		sales.flat_map do |s|
+		my_sales.each do |s|
 			total += s.saldo
 		end
-		 res = self.credit_limit - total
-		
+		res = self.credit_limit - total
 	end
 	def getPayments
 		payments = []

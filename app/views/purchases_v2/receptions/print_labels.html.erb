@@ -1,0 +1,68 @@
+<div class="premium-wrapper" style="background: #f8fafc; min-height: 100vh; padding: 3rem;">
+  <div class="container" style="max-width: 800px; margin: 0 auto;">
+    <div class="card" style="background: white; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); padding: 4rem; text-align: center; border: 1px solid #eef2f6;">
+      <div class="success-icon" style="background: #ecfdf5; color: #10b981; width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 2rem; font-size: 2.5rem;">
+        <i class="fas fa-check-circle"></i>
+      </div>
+      
+      <h1 style="font-weight: 800; color: #1e293b; margin-bottom: 1rem; letter-spacing: -0.02em;">¡Recepción Exitosa!</h1>
+      <p style="color: #64748b; font-size: 1.1rem; margin-bottom: 3rem;">
+        La orden de compra <strong><%= @purchase_order.name %></strong> ha sido procesada correctamente y el stock ya se encuentra en inventario.
+      </p>
+
+      <div class="actions" style="display: flex; gap: 1rem; justify-content: center;">
+        <%= link_to print_labels_purchases_v2_reception_path(@purchase_order, format: :pdf), class: "btn-premium-solid", style: "background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%); color: white; padding: 14px 28px; border-radius: 12px; font-weight: 700; text-decoration: none; display: flex; align-items: center; gap: 10px; box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);", target: "_blank" do %>
+          <i class="fas fa-print"></i> Imprimir Etiquetas PDF
+        <% end %>
+
+        <%= link_to purchase_order_path(@purchase_order), class: "btn-premium-outline", style: "background: white; border: 1.5px solid #e2e8f0; color: #64748b; padding: 14px 28px; border-radius: 12px; font-weight: 700; text-decoration: none; display: flex; align-items: center; gap: 10px; transition: all 0.2s;" do %>
+          <i class="fas fa-file-invoice-dollar"></i> Ir a la Orden
+        <% end %>
+
+        <%= link_to purchases_v2_dashboard_path, class: "btn-premium-outline", style: "background: white; border: 1.5px solid #e2e8f0; color: #64748b; padding: 14px 28px; border-radius: 12px; font-weight: 700; text-decoration: none; display: flex; align-items: center; gap: 10px; transition: all 0.2s;" do %>
+          <i class="fas fa-th-large"></i> Dashboard de Compras
+        <% end %>
+      </div>
+    </div>
+
+    <!-- Preview List de lo Recibido -->
+    <div style="margin-top: 3rem;">
+       <h3 style="font-weight: 800; color: #1e293b; margin-bottom: 1.5rem;"><i class="fas fa-list mr-2"></i> Resumen de Ingreso</h3>
+       <div class="table-responsive" style="background: white; border-radius: 15px; border: 1px solid #eef2f6; overflow: hidden;">
+         <table class="table" style="margin-bottom: 0;">
+           <thead style="background: #f8fafc;">
+             <tr>
+               <th style="padding: 15px; color: #64748b; font-size: 0.8rem; text-transform: uppercase;">Producto</th>
+               <th style="padding: 15px; color: #64748b; font-size: 0.8rem; text-transform: uppercase;">Empaque</th>
+               <th style="padding: 15px; color: #64748b; font-size: 0.8rem; text-transform: uppercase;">Lote</th>
+               <th style="padding: 15px; color: #64748b; font-size: 0.8rem; text-transform: uppercase; text-align: right;">Cantidad Unit.</th>
+             </tr>
+           </thead>
+           <tbody>
+             <% @stocks.each do |stock| %>
+               <tr>
+                 <td style="padding: 15px; font-weight: 600; color: #1e293b;"><%= stock.item.name %></td>
+                 <td style="padding: 15px;">
+                   <span style="font-weight: 700; color: #4f46e5; font-size: 0.85rem;"><%= stock.presentation&.name || "UNID. SUELTAS" %></span>
+                 </td>
+                 <td style="padding: 15px;"><span class="badge" style="background: #f1f5f9; color: #475569; padding: 4px 8px; border-radius: 6px;"><%= stock.lote %></span></td>
+                 <td style="padding: 15px; text-align: right; font-weight: 800; color: #10b981;">
+                   <%= stock.qty_in %> <small style="font-size: 0.7rem; color: #94a3b8;"><%= stock.item.unit.name.downcase %>(s)</small>
+                 </td>
+               </tr>
+             <% end %>
+           </tbody>
+         </table>
+       </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .btn-premium-outline:hover {
+    background: #f8fafc !important;
+    border-color: #cbd5e1 !important;
+    color: #1e293b !important;
+    transform: translateY(-1px);
+  }
+</style>

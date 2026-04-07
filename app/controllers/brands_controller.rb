@@ -9,7 +9,7 @@ class BrandsController < ApplicationController
     @page = (params[:page] || 0).to_i
     @keywords = params[:keywords]
 
-    search = Search.new(@page, PAGE_SIZE, @keywords, current_user, nil)
+    search = Search.new(@page, PAGE_SIZE, @keywords, current_user, nil, nil)
     @brands, @number_of_pages = search.brands_by_name
   
 

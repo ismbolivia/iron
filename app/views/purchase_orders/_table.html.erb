@@ -17,32 +17,18 @@
 		      <% end %>
             </tr>
 		</thead>
-		<tbody>
-			<div id="sale-details-index">
-				<%= render partial: "purchase_order_lines/index", locals: {show_actions: show_actions} %>
-			</div>
-			<tr>
-				<td class="thick-line"></td>
-				<td class="thick-line"></td>
-				<td class="thick-line"></td>
-				<td class="thick-line"></td>
-				<td class="thick-line"></td>
-				<td class="thick-line"></td>
-				<td class="thick-line"></td>
-			
-				 <% if show_actions %>
-				 <td class="thick-line"></td>
-				 <td class="thick-line"></td>
-				 <% end %>
-				
-			
-			</tr>
-			
+		<tbody id="purchase-order-lines-container">
+			<%= render partial: "purchase_order_lines/index", locals: {show_actions: show_actions} %>
 		</tbody>
 	</table>
 	<div class="pull-right m-t-30 text-right">
-		<p>Sub total: <%=@mycompany.get_current_currency.symbol %> <%= @purchase_order.subtotal %></p>
-		<p>Tarifas impositivas: <%= @mycompany.get_current_currency.symbol%> <%= @purchase_order.total_tax %></p>
-		<h3><b>Total :</b> <%= @mycompany.get_current_currency.symbol%> <%= @purchase_order.total %></h3> 
+		<% if @purchase_order.draft? || @purchase_order.borrador? || @purchase_order.confirmed? %>
+			<button id="btn-bulk-save-costs" class="btn btn-warning" style="margin-bottom: 20px; font-weight: 800; border-radius: 12px; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);">
+				<i class="fas fa-save mr-2"></i> Guardar Todos los Costos (Edición Masiva)
+			</button>
+		<% end %>
+		<p>Sub total: <%=@mycompany.get_current_currency.symbol %> <%= number_with_precision(@purchase_order.subtotal, precision: 2, delimiter: ',') %></p>
+		<p>Tarifas impositivas: <%= @mycompany.get_current_currency.symbol%> <%= number_with_precision(@purchase_order.total_tax, precision: 2, delimiter: ',') %></p>
+		<h3><b>Total :</b> <%= @mycompany.get_current_currency.symbol%> <%= number_with_precision(@purchase_order.total, precision: 2, delimiter: ',') %></h3> 
 	</div>
 </div>

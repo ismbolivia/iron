@@ -9,7 +9,7 @@ class UsersController < ApplicationController
 		@page = (params[:page] || 0).to_i
   		@keywords = params[:keywords]
 
-  		search = Search.new(@page, PAGE_SIZE, @keywords, current_user, nil)
+  		search = Search.new(@page, PAGE_SIZE, @keywords, current_user, nil, nil)
   		@users, @number_of_pages = search.users_by_description
 		
 	end
@@ -43,9 +43,10 @@ class UsersController < ApplicationController
 	  private
 	   def set_combo_values
 	   @rols = Rol.all.order(:name)
+	   @branches = Branch.all.order(:name)
 	  end
 
 	def user_params
-      params.require(:user).permit(:name, :rol_id, :initials, :avatar)
+      params.require(:user).permit(:name, :rol_id, :initials, :avatar, :branch_id, :phone, :mobile, :commission_rate)
     end
 end

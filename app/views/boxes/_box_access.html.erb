@@ -1,15 +1,45 @@
 
 <hr>
-<ul class="nav nav-tabs" role="tablist">
-    <li role="presentation" id="entradas_id" class="active"><a href="#iprofile" aria-controls="profile" role="tab" data-toggle="tab" aria-expanded="true"><span><i class="fas fa-upload text-warning"></i></span> Entradas</a></li>
-    <li role="presentation" id="salidas_id" class=""><a href="#output" aria-controls="home" role="tab" data-toggle="tab" aria-expanded="false"><span><i class="fas fa-download text-primary"></i></span> Salidas</a></li>
-
-    <li role="presentation" id="pagos_id" class=""><a href="#payment_purchase_order_id" aria-controls="home" role="tab" data-toggle="tab" aria-expanded="false"><span><i class="fas fa-hand-holding-usd text-purple"></i></span> Pagar </a></li>
-
-    <li role="presentation" class=""><a href="#note" aria-controls="home" role="tab" data-toggle="tab" aria-expanded="false"><span><i class="fas fa-users text-success"></i></span> Cajeros</a></li>
-    <li role="presentation" class=""><a href="#report" aria-controls="home" role="tab" data-toggle="tab" aria-expanded="false"><span><i class="fas fa-chart-bar text-red"></i></span> Reportes</a></li>
+<ul class="nav nav-tabs customtab" role="tablist" style="border-bottom: 2px solid #f1f5f9; margin-bottom: 20px; display: flex; gap: 5px;">
+    <li role="presentation" id="entradas_id" class="active">
+        <a href="#iprofile" aria-controls="profile" role="tab" data-toggle="tab" aria-expanded="true" style="border-radius: 8px 8px 0 0; font-weight: 700; color: #1e293b;">
+            <i class="fas fa-arrow-circle-up text-success m-r-10"></i> Entradas
+        </a>
+    </li>
+    <li role="presentation" id="rendicion_tab_id" class="">
+        <a href="#rendicion" aria-controls="home" role="tab" data-toggle="tab" aria-expanded="false" style="border-radius: 8px 8px 0 0; font-weight: 700; color: #1e293b;">
+            <i class="fas fa-clipboard-check text-warning m-r-10"></i> Rendición
+        </a>
+    </li>
+    <li role="presentation" id="salidas_id" class="">
+        <a href="#output" aria-controls="home" role="tab" data-toggle="tab" aria-expanded="false" style="border-radius: 8px 8px 0 0; font-weight: 700; color: #1e293b;">
+            <i class="fas fa-arrow-circle-down text-danger m-r-10"></i> Salidas
+        </a>
+    </li>
+    <% unless @box.ruta? || @box.sucursal_ruta? %>
+    <li role="presentation" id="pagos_id" class="">
+        <a href="#payment_purchase_order_id" aria-controls="home" role="tab" data-toggle="tab" aria-expanded="false" style="border-radius: 8px 8px 0 0; font-weight: 700; color: #1e293b;">
+            <i class="fas fa-hand-holding-usd text-purple m-r-10"></i> Pagar Proveedores
+        </a>
+    </li>
+    <% end %>
+    <li role="presentation" class="">
+        <a href="#note" aria-controls="home" role="tab" data-toggle="tab" aria-expanded="false" style="border-radius: 8px 8px 0 0; font-weight: 700; color: #1e293b;">
+            <i class="fas fa-users text-info m-r-10"></i> Cajeros
+        </a>
+    </li>
+    <li role="presentation" class="">
+        <a href="#report" aria-controls="home" role="tab" data-toggle="tab" aria-expanded="false" style="border-radius: 8px 8px 0 0; font-weight: 700; color: #1e293b;">
+            <i class="fas fa-chart-bar text-warning m-r-10"></i> Reportes
+        </a>
+    </li>
 </ul>
 <div class="tab-content">
+    <div role="tabpanel" class="tab-pane" id="rendicion">
+        <div class="col-md-12 col-sm-12"><br>
+            <%= render partial: 'boxes/rendicion_panel', locals: { box: @box } %>
+        </div>
+    </div>
     <div role="tabpanel" class="tab-pane" id="report">
         <div class="table-responsive">
            <div class="col-md-12 col-sm-12"><hr>   
@@ -20,6 +50,7 @@
          </div>
     </div>
 
+    <% unless @box.ruta? || @box.sucursal_ruta? %>
     <div role="tabpanel" class="tab-pane" id="payment_purchase_order_id">
         <div class="table-responsive">
            <div class="col-md-12 col-sm-12"> <br>
@@ -30,36 +61,37 @@
                       <i class="fa fa-handshake"></i> Pagar prov.
                     <% end %>
                         <a class="btn btn-app btn-warning">
-                          <span class="badge bg-green"></span>
-                          <i class=" fa fa-hand-holding-usd"></i> En proceso
+                           <span class="badge bg-green"></span>
+                           <i class=" fa fa-hand-holding-usd"></i> En proceso
                         </a>
                         <a class="btn btn-app btn-success">
-                          <span class="badge bg-purple"></span>
-                          <i class=" fa fa-credit-card"></i> En proceso
+                           <span class="badge bg-purple"></span>
+                           <i class=" fa fa-credit-card"></i> En proceso
                         </a>
                         <a class="btn btn-app">
-                          <span class="badge bg-teal"></span>
-                          <i class="fa fa-inbox"></i> Sin agignar
+                           <span class="badge bg-teal"></span>
+                           <i class="fa fa-inbox"></i> Sin agignar
                         </a>
                         <a class="btn btn-app">
-                          <span class="badge bg-aqua"></span>
-                          <i class="fa fa-envelope"></i> in agignar
+                           <span class="badge bg-aqua"></span>
+                           <i class="fa fa-envelope"></i> in agignar
                         </a>
                         <a class="btn btn-app">
-                          <span class="badge bg-red"></span>
-                          <i class="fa fa-thumbs-up"></i> in agignar
+                           <span class="badge bg-red"></span>
+                           <i class="fa fa-thumbs-up"></i> in agignar
                         </a>
                 </div>
 
            </div>
          </div>
     </div>
+    <% end %>
 <div role="tabpanel" class="tab-pane" id="note">
       <div class="table-responsive">
            <div class="col-md-12 col-sm-12">
             <div id="panel_box_id">
-                <%= (@box.box_users.count > 0) ? render(partial: 'box_users/table', locals: { box_users: @box.box_users }) : 'No hay usuarios asignados a la caja' %>
-                </div>
+                <%= (@box.box_users.activo.count > 0) ? render(partial: 'box_users/table', locals: { box_users: @box.box_users }) : '<div class="alert alert-warning" style="border-radius: 8px; margin-bottom: 10px;">No hay cajeros activos asignados.</div>'.html_safe %>
+            </div>
                <div class="col-md-12">                   
                     <div class="text-right">                                                                                   
                       <%= link_to new_box_user_path(:current_box_id => box.id ), {method: :get, remote: true, class: "btn btn-success"} do %>

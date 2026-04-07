@@ -1,0 +1,581 @@
+<style>
+/* Variables por defecto (Modo Claro) */
+.premium-dashboard {
+  --bg-color: #f4f7fa;
+  --panel-bg: #ffffff;
+  --text-primary: #1e293b;
+  --text-secondary: #64748b;
+  --border-color: #f1f5f9;
+  --node-hover: #f8fafc;
+  --node-active: #f0f7ff;
+  --node-active-text: #1d4ed8;
+  --scrollbar: #e2e8f0;
+  
+  transition: background 0.3s, color 0.3s;
+}
+
+/* Slate Dark */
+.premium-dashboard.theme-dark-slate, body.theme-dark-slate .premium-dashboard {
+  --bg-color: #0f172a;
+  --panel-bg: #1e293b;
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --border-color: #334155;
+  --node-hover: #1e293b99;
+  --node-active: rgba(37, 99, 235, 0.15);
+  --node-active-text: #60a5fa;
+  --scrollbar: #475569;
+}
+
+/* Verde Oscuro (Bosque) */
+.premium-dashboard.theme-dark-green, body.theme-dark-green .premium-dashboard {
+  --bg-color: #040d0a;
+  --panel-bg: #0b1c15;
+  --text-primary: #f0fdf4;
+  --text-secondary: #a7f3d0;
+  --border-color: #064e3b;
+  --node-hover: rgba(16, 185, 129, 0.05);
+  --node-active: rgba(16, 185, 129, 0.15);
+  --node-active-text: #34d399;
+  --scrollbar: #065f46;
+}
+
+/* Violeta Oscuro */
+.premium-dashboard.theme-cyber-purple, body.theme-cyber-purple .premium-dashboard {
+  --bg-color: #0a0514;
+  --panel-bg: #120924;
+  --text-primary: #faf5ff;
+  --text-secondary: #e9d5ff;
+  --border-color: #3b0764;
+  --node-hover: rgba(139, 92, 246, 0.05);
+  --node-active: rgba(139, 92, 246, 0.15);
+  --node-active-text: #a78bfa;
+  --scrollbar: #4c1d95;
+}
+
+/* Deep Space Blue */
+.premium-dashboard.theme-deep-space, body.theme-deep-space .premium-dashboard {
+  --bg-color: #030814;
+  --panel-bg: #0a1124;
+  --text-primary: #f0f9ff;
+  --text-secondary: #bae6fd;
+  --border-color: #0c4a6e;
+  --node-hover: rgba(14, 165, 233, 0.05);
+  --node-active: rgba(14, 165, 233, 0.15);
+  --node-active-text: #38bdf8;
+  --scrollbar: #082f49;
+}
+
+/* Midnight Blue */
+.premium-dashboard.theme-midnight, body.theme-midnight .premium-dashboard {
+  --bg-color: #0b0f19;
+  --panel-bg: #111827;
+  --text-primary: #f9fafb;
+  --text-secondary: #9ca3af;
+  --border-color: #1f2937;
+  --node-hover: rgba(255, 255, 255, 0.03);
+  --node-active: rgba(16, 185, 129, 0.1);
+  --node-active-text: #34d399;
+  --scrollbar: #374151;
+}
+
+/* AMOLED Black */
+.premium-dashboard.theme-amoled, body.theme-amoled .premium-dashboard {
+  --bg-color: #000000;
+  --panel-bg: #000000;
+  --text-primary: #ffffff;
+  --text-secondary: #a1a1aa;
+  --border-color: #27272a;
+  --node-hover: #18181b;
+  --node-active: #27272a;
+  --node-active-text: #38bdf8;
+  --scrollbar: #3f3f46;
+}
+
+/* --- TEMAS ELEGANTES ADICIONALES LOCALES --- */
+/* Light Cream / Marfil */
+.premium-dashboard.theme-light-cream, body.theme-light-cream .premium-dashboard {
+  --bg-color: #faf7f2;
+  --panel-bg: #ffffff;
+  --text-primary: #3c2f2f;
+  --text-secondary: #8a7875;
+  --border-color: #eedec7;
+  --node-hover: #fdfaf5;
+  --node-active: #f3e8d5;
+  --node-active-text: #8a4b39;
+  --scrollbar: #dcc2a3;
+}
+
+/* Nordic Frost / Azul Claro */
+.premium-dashboard.theme-light-frost, body.theme-light-frost .premium-dashboard {
+  --bg-color: #f1f5f9;
+  --panel-bg: #ffffff;
+  --text-primary: #1e3a5f;
+  --text-secondary: #64748b;
+  --border-color: #cbd5e1;
+  --node-hover: #f8fafc;
+  --node-active: #e2e8f0;
+  --node-active-text: #0284c7;
+  --scrollbar: #94a3b8;
+}
+
+/* Rojo Oscuro / Carmesí */
+.premium-dashboard.theme-dark-rose, body.theme-dark-rose .premium-dashboard {
+  --bg-color: #090101;
+  --panel-bg: #130302;
+  --text-primary: #fee2e2;
+  --text-secondary: #fca5a5;
+  --border-color: #7f1d1d;
+  --node-hover: rgba(239, 68, 68, 0.05);
+  --node-active: rgba(239, 68, 68, 0.15);
+  --node-active-text: #f87171;
+  --scrollbar: #991b1b;
+}
+
+/* Golden Obsidian / Oro Negro */
+.premium-dashboard.theme-dark-gold, body.theme-dark-gold .premium-dashboard {
+  --bg-color: #090805;
+  --panel-bg: #14110b;
+  --text-primary: #fef08a;
+  --text-secondary: #ca8a04;
+  --border-color: #422006;
+  --node-hover: rgba(234, 179, 8, 0.05);
+  --node-active: rgba(234, 179, 8, 0.15);
+  --node-active-text: #eab308;
+  --scrollbar: #713f12;
+}
+
+.workspace-container {
+  display: flex;
+  gap: 1.5rem;
+  height: calc(100vh - 140px);
+  font-family: 'Outfit', 'Inter', system-ui, sans-serif;
+}
+
+.left-panel {
+  width: 280px;
+  background: var(--panel-bg);
+  border-radius: 20px;
+  padding: 1.5rem;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.02);
+  border: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s;
+}
+
+.right-panel {
+  flex-grow: 1;
+  background: var(--panel-bg);
+  border-radius: 20px;
+  padding: 1.5rem;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.02);
+  border: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s;
+}
+
+.category-node-list {
+  overflow-y: auto;
+  flex-grow: 1;
+  padding-right: 5px;
+}
+
+.category-node-list::-webkit-scrollbar {
+  width: 5px;
+}
+.category-node-list::-webkit-scrollbar-thumb {
+  background: var(--scrollbar);
+  border-radius: 10px;
+}
+
+.category-node {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 16px;
+  border-radius: 14px;
+  cursor: pointer;
+  margin-bottom: 8px;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  color: var(--text-secondary);
+  font-weight: 600;
+  font-size: 0.95rem;
+  border: 1px solid transparent;
+}
+
+.category-node:hover {
+  background: var(--node-hover);
+  color: var(--text-primary);
+  transform: translateX(3px);
+}
+
+.category-node.active {
+  background: var(--node-active);
+  color: var(--node-active-text);
+  font-weight: 800;
+  border-color: rgba(37, 99, 235, 0.2);
+}
+
+.badge-count {
+  background: rgba(148, 163, 184, 0.1);
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-weight: 700;
+  transition: all 0.2s;
+}
+
+.category-node.active .badge-count {
+  background: #2563eb;
+  color: white;
+  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2);
+}
+
+.toolbar {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 1.5rem;
+  align-items: center;
+}
+
+.search-wrapper {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  background: var(--bg-color);
+  border: 2px solid var(--border-color);
+  border-radius: 16px;
+  padding: 0 16px;
+  transition: all 0.3s;
+}
+
+.search-wrapper:focus-within {
+  border-color: #2563eb;
+  background: var(--panel-bg);
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.08);
+}
+
+@keyframes floatUp {
+  0% { transform: translate(-50%, 40px); opacity: 0; }
+  100% { transform: translate(-50%, 0); opacity: 1; }
+}
+
+.floating-bulk-actions {
+  position: fixed;
+  bottom: 35px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(15, 23, 42, 0.9); /* Slate Dark modern */
+  backdrop-filter: blur(14px) saturate(180%);
+  -webkit-backdrop-filter: blur(14px) saturate(180%);
+  color: white;
+  padding: 18px 36px; /* Más grande */
+  border-radius: 28px;
+  box-shadow: 0 25px 50px rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  gap: 25px; /* Más separación */
+  z-index: 20000;
+  opacity: 0;
+  transform: translate(-50%, 50px);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  pointer-events: none;
+  border: 1px solid rgba(255,255,255,0.15);
+}
+
+.floating-bulk-actions.visible {
+  opacity: 1;
+  transform: translate(-50%, 0);
+  pointer-events: auto;
+  animation: floatUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+</style>
+
+<div id="workspace-skin" class="premium-dashboard" style="background: var(--bg-color); border-radius: 16px; padding: 1.5rem; box-shadow: 0 10px 30px rgba(0,0,0,0.03); font-family: 'Outfit', 'Inter', sans-serif; transition: all 0.3s;">
+  <div class="gradient-banner" style="background: linear-gradient(135deg, #047857 0%, #10b981 100%); color: white; border-radius: 12px; padding: 1.5rem 2rem; margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2);">
+    <div>
+      <h2 class="m-0" style="font-weight: 800; font-size: 1.7rem; letter-spacing: -0.3px; display: flex; align-items: center; gap: 10px;">
+         <i class="fas fa-tasks"></i> Gestión Masiva de Categorías
+      </h2>
+      <p class="m-0" style="color: rgba(255,255,255,0.85); font-size: 1rem; margin-top: 5px;">Seleccione múltiples productos para reorganizarlos velozmente.</p>
+    </div>
+    
+
+    <%= link_to categories_path, style: "background: rgba(255, 255, 255, 0.2); color: white !important; font-weight: 700; padding: 10px 20px; border-radius: 14px; border: 1.5px solid rgba(255, 255, 255, 0.3); font-size: 0.95rem; text-decoration: none !important; display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s;", onmouseover: "this.style.background='white'; this.style.color='#047857'", onmouseout: "this.style.background='rgba(255,255,255,0.2)'; this.style.color='white'" do %>
+         <i class="fas fa-arrow-left"></i> Volver
+    <% end %>
+  </div>
+
+<div class="workspace-container">
+  <!-- Columna Izquierda: Panel de Categorías -->
+  <div class="left-panel">
+    <h4 style="font-weight: 800; color: var(--text-primary); margin-bottom: 1rem; display: flex; align-items: center; gap: 8px;">
+       <i class="fas fa-tags" style="color: #3b82f6;"></i> Categorías
+    </h4>
+    <div class="category-node-list">
+      <div class="category-node <%= @category_filter.blank? ? 'active' : '' %>" onclick="filterCategory('')">
+        <span><i class="fas fa-layer-group mr-2"></i> Todos</span>
+      </div>
+      <div class="category-node <%= @category_filter == 'none' ? 'active' : '' %>" onclick="filterCategory('none')">
+        <span><i class="far fa-folder mr-2"></i> Sin Categoría</span>
+      </div>
+      <hr style="margin: 10px 0; border-top: 1px solid #f1f5f9;">
+      
+      <% @categories.each do |cat| %>
+        <div class="category-node <%= @category_filter.to_s == cat.id.to_s ? 'active' : '' %>" onclick="filterCategory('<%= cat.id %>')">
+          <span class="text-truncate" style="max-width: 150px;"><%= cat.name %></span>
+          <span class="badge-count"><%= cat.items.count %></span>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Columna Derecha: Panel de Productos -->
+  <div class="right-panel">
+    <div class="toolbar">
+      <%= form_tag workspace_categories_path, method: :get, id: "search-form", style: "flex-grow: 1; display: flex; gap: 10px;" do %>
+        <%= hidden_field_tag :category_filter, @category_filter %>
+        <div class="search-wrapper" style="padding: 0 20px;">
+          <i class="fas fa-search" style="color: #64748b; font-size: 1.25rem;"></i>
+          <%= text_field_tag :keywords, @keywords, placeholder: "Buscar artículos por nombre o código...", style: "border: none; background: transparent; padding: 16px 14px; width: 100%; outline: none; font-size: 1.08rem; color: var(--text-primary); font-weight: 600;" %>
+        </div>
+        <button type="submit" class="btn btn-primary" style="border-radius: 16px; padding: 15px 32px; font-weight: 800; background: #2563eb; border: none; font-size: 1.05rem; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 15px rgba(37,99,235,0.2);" onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='scale(1)'">Buscar</button>
+      <% end %>
+    </div>
+
+    <div id="items-container" style="flex-grow: 1; overflow-y: auto;">
+      <%= render "workspace_items" %>
+    </div>
+  </div>
+</div>
+
+<!-- Barra de Acción Flotante -->
+<div class="floating-bulk-actions" id="bulk-bar">
+  <span id="select-label" style="font-weight: 800; font-size: 1.15rem; margin-right: 12px; color: #f8fafc; letter-spacing: -0.2px;">0 seleccionados</span>
+  
+  <div style="display: flex; gap: 12px; align-items: center;">
+    <!-- Custom Dropdown -->
+    <style>
+      .custom-dropdown {
+        position: relative;
+        display: inline-block;
+      }
+
+      .dropdown-trigger {
+        background: rgba(255, 255, 255, 0.12);
+        color: white;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 14px;
+        padding: 11px 18px; /* Más grande */
+        font-size: 0.95rem;
+        font-weight: 800;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        transition: all 0.2s;
+        backdrop-filter: blur(5px);
+      }
+
+      .dropdown-trigger:hover {
+        background: rgba(255, 255, 255, 0.2);
+        border-color: rgba(255, 255, 255, 0.3);
+      }
+
+      .dropdown-options {
+        position: absolute;
+        bottom: calc(100% + 15px); /* Abre hacia arriba */
+        left: 0;
+        width: 230px;
+        background: #1e293b; /* Slate Dark */
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 14px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        display: none;
+        flex-direction: column;
+        overflow: hidden;
+        z-index: 100000;
+        animation: popUp 0.2s ease-out;
+      }
+
+      @keyframes popUp {
+        0% { transform: translateY(10px) scale(0.95); opacity: 0; }
+        100% { transform: translateY(0) scale(1); opacity: 1; }
+      }
+
+      .dropdown-options.show {
+        display: flex;
+      }
+
+      .dropdown-option {
+        padding: 11px 16px;
+        color: #e2e8f0;
+        font-size: 0.88rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .dropdown-option:hover {
+        background: #2563eb;
+        color: white;
+      }
+
+      .dropdown-option i {
+        color: #94a3b8;
+      }
+    </style>
+
+    <div class="custom-dropdown" id="custom-cat-dropdown">
+      <button class="dropdown-trigger" onclick="toggleDropdown(event)">
+        <span id="dropdown-label">Mover a...</span>
+        <i class="fas fa-chevron-up" style="font-size: 0.75rem; opacity: 0.8;"></i>
+      </button>
+      <div class="dropdown-options" id="dropdown-options">
+        <div class="dropdown-option" onclick="selectOption('none', 'Sin Categoría')">
+          <i class="far fa-folder"></i> Sin Categoría
+        </div>
+        <% @categories.each do |cat| %>
+          <div class="dropdown-option" onclick="selectOption('<%= cat.id %>', '<%= cat.name %>')">
+            <i class="fas fa-tag" style="font-size: 0.75rem;"></i> <%= cat.name %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+    
+    <!-- Input oculto para mantener el ID de destino -->
+    <input type="hidden" id="target-category" value="">
+
+    <button class="btn btn-success" onclick="applyBulkAssign()" style="border-radius: 14px; font-weight: 800; padding: 11px 24px; background: #10b981; border: none; font-size: 0.95rem; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">Aplicar Cambios</button>
+    <button class="btn btn-sm" onclick="clearSelection()" style="border-width: 0; background: transparent; color: #94a3b8; font-size: 1.25rem; padding: 6px; cursor: pointer; transition: color 0.2s;" onmouseover="this.style.color='white'" onmouseout="this.style.color='#94a3b8'"><i class="fas fa-times"></i></button>
+  </div>
+</div>
+
+<script>
+function toggleDropdown(event) {
+  event.stopPropagation();
+  document.getElementById('dropdown-options').classList.toggle('show');
+}
+
+function selectOption(value, text) {
+  document.getElementById('dropdown-label').innerText = text;
+  document.getElementById('target-category').value = value;
+  document.getElementById('dropdown-options').classList.remove('show');
+}
+
+// Cerrar si hace click fuera
+window.addEventListener('click', function(e) {
+  const dropdown = document.getElementById('dropdown-options');
+  if (dropdown && dropdown.classList.contains('show')) {
+     if (!document.getElementById('custom-cat-dropdown').contains(e.target)) {
+        dropdown.classList.remove('show');
+     }
+  }
+});
+</script>
+
+</div> <!-- Cierre premium-dashboard -->
+
+<script>
+let selectedItems = [];
+
+function toggleSelectItem(id, checkbox) {
+  const tr = checkbox.closest('tr');
+  if (checkbox.checked) {
+    if (!selectedItems.includes(id)) selectedItems.push(id);
+    if (tr) tr.classList.add('selected');
+  } else {
+    selectedItems = selectedItems.filter(item => item !== id);
+    if (tr) tr.classList.remove('selected');
+  }
+  updateBulkBar();
+}
+
+function updateBulkBar() {
+  const bar = document.getElementById('bulk-bar');
+  const label = document.getElementById('select-label');
+  label.innerText = `${selectedItems.length} productos seleccionados`;
+  
+  if (selectedItems.length > 0) {
+    bar.classList.add('visible');
+  } else {
+    bar.classList.remove('visible');
+  }
+}
+
+function clearSelection() {
+  selectedItems = [];
+  document.querySelectorAll('.item-check').forEach(c => c.checked = false);
+  updateBulkBar();
+}
+
+function filterCategory(catId) {
+  document.getElementById('category_filter').value = catId;
+  document.getElementById('search-form').submit();
+}
+
+function showToast(message, type = 'success') {
+  const toast = document.createElement('div');
+  toast.innerText = message;
+  toast.style.cssText = `
+    position: fixed; top: 30px; right: 30px; 
+    background: ${type === 'success' ? '#10b981' : '#ef4444'}; 
+    color: white; padding: 14px 24px; border-radius: 16px; 
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15); font-weight: 800; 
+    z-index: 100000; font-family: 'Outfit', sans-serif; transition: all 0.3s;
+    font-size: 0.95rem; display: flex; align-items: center; gap: 10px;
+    animation: slideIn 0.3s ease-out;
+  `;
+  
+  // Agregar un keyframe dinámico si no existe
+  if (!document.getElementById('toast-anim')) {
+    const style = document.createElement('style');
+    style.id = 'toast-anim';
+    style.innerHTML = `@keyframes slideIn { 0% { opacity: 0; transform: translateY(-20px); } 100% { opacity: 1; transform: translateY(0); } }`;
+    document.head.appendChild(style);
+  }
+
+  document.body.appendChild(toast);
+  setTimeout(() => { 
+    toast.style.opacity = '0'; 
+    toast.style.transform = 'translateY(-10px)';
+    setTimeout(() => toast.remove(), 300); 
+  }, 2000);
+}
+
+function applyBulkAssign() {
+  const targetId = document.getElementById('target-category').value;
+  if (!targetId && targetId !== 'none') {
+     showToast("Por favor, seleccione una categoría de destino", "error");
+     return;
+  }
+  if (selectedItems.length === 0) return;
+
+  // Petición AJAX directa sin confirm() molestando
+  fetch('<%= assign_items_categories_path %>', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+    },
+    body: JSON.stringify({ category_id: targetId, item_ids: selectedItems })
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+       showToast(data.message);
+       // Recargar discretamente después del éxito
+       setTimeout(() => location.reload(), 800); 
+    } else {
+       showToast(data.message, "error");
+    }
+  })
+  .catch(err => showToast("Ocurrió un error al procesar la solicitud.", "error"));
+}
+</script>

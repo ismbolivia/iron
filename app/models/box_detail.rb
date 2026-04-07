@@ -1,6 +1,6 @@
 class BoxDetail < ApplicationRecord
 	belongs_to :box
-	# belongs_to :payment
+	belongs_to :payment, optional: true
 	enum state: [:input, :output]
 	 validate  :custom_validation_method_with_message
 
@@ -16,7 +16,7 @@ class BoxDetail < ApplicationRecord
 			    	end
 			     
 			    end
-			    if self.box.saldo <= amount and self.output?
+			    if self.box.saldo.to_f.round(2) < amount.to_f.round(2) and self.output?
 			    	errors.add(:_, "Su saldo es insuficiente, su saldo actual es: "+ self.box.saldo.to_s )	    	
 			    end
 			   

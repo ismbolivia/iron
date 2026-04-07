@@ -1,0 +1,47 @@
+<div class="row bg-title">
+  <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
+    <h4 class="page-title">Gestión de Sucursales</h4>
+  </div>
+  <div class="col-lg-9 col-sm-8 col-md-8 col-xs-12">
+    <%= link_to 'Nueva Sucursal', new_branch_path, class: "btn btn-info pull-right m-l-20 hidden-xs hidden-sm waves-effect waves-light" %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-12">
+    <div class="white-box">
+      <h3 class="box-title">Listado de Sucursales Registradas</h3>
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>Nombre de la Sucursal</th>
+              <th>Dirección / Locación</th>
+              <th>Teléfono</th>
+              <th colspan="2" class="text-center">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @branches.each do |branch| %>
+              <tr>
+                <td><strong><%= branch.name %></strong></td>
+                <td><%= branch.address %></td>
+                <td><%= branch.phone %></td>
+                <td class="text-center">
+                  <%= link_to edit_branch_path(branch), class: "btn btn-sm btn-warning", title: "Editar" do %>
+                    <i class="fas fa-edit"></i> Editar
+                  <% end %>
+                </td>
+                <td class="text-center">
+                  <%= link_to branch, method: :delete, data: { confirm: '¿Está seguro de eliminar esta sucursal del sistema?' }, class: "btn btn-sm btn-danger", title: "Eliminar" do %>
+                    <i class="fas fa-trash"></i> Eliminar
+                  <% end %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

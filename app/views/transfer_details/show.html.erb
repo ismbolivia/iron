@@ -1,0 +1,24 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Transfer:</strong>
+  <%= @transfer_detail.transfer %>
+</p>
+
+<p>
+  <strong>Item:</strong>
+  <%= @transfer_detail.item %>
+</p>
+
+<p>
+  <strong>Quantity:</strong>
+  <%= @transfer_detail.quantity %>
+</p>
+
+<p>
+  <strong>Observation:</strong>
+  <%= @transfer_detail.observation %>
+</p>
+
+<%= link_to 'Edit', edit_transfer_detail_path(@transfer_detail) %> |
+<%= link_to 'Back', transfer_details_path %>

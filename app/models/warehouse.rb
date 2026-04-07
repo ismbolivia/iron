@@ -1,6 +1,7 @@
 class Warehouse < ApplicationRecord
 	
 	belongs_to :company
+	belongs_to :branch, optional: true
 
 	has_many :stocks, inverse_of: :warehouse, dependent: :destroy
     has_many :items, through: :stocks

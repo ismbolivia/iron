@@ -1,0 +1,77 @@
+<h1>Reporte de Productos Vendidos por Periodo</h1>
+
+<div class="row">
+  <div class="col-md-12">
+    <div class="box box-primary">
+      <div class="box-header with-border">
+        <h3 class="box-title">Filtros</h3>
+      </div>
+      <div class="box-body">
+        <%= form_tag reports_sales_by_period_path, method: :get, class: "form-inline" do %>
+          <div class="form-group" style="margin-right: 15px;">
+            <label>Fecha de Referencia:</label>
+            <%= date_field_tag :date, @date, class: "form-control" %>
+          </div>
+          <div class="form-group" style="margin-right: 15px;">
+            <label>Buscar Producto:</label>
+            <%= text_field_tag :search, @search, placeholder: "Nombre o Código...", class: "form-control" %>
+          </div>
+          <%= submit_tag "Buscar y Generar", class: "btn btn-primary" %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-12">
+    <div class="box">
+      <div class="box-header">
+        <h3 class="box-title">Detalle de Ventas por Producto</h3>
+        <p class="text-muted">Mostrando cantidades vendidas relativas a la fecha: <%= @date.strftime("%d/%m/%Y") %></p>
+      </div>
+      <div class="box-body table-responsive">
+        <table class="table table-bordered table-striped table-hover">
+          <thead>
+            <tr>
+              <th>Código</th>
+              <th>Producto</th>
+              <th class="text-center">Día<br><small><%= @date.strftime("%d/%m") %></small></th>
+              <th class="text-center">Semana<br><small>Semana Actual</small></th>
+              <th class="text-center">Mes<br><small><%= @date.strftime("%B") %></small></th>
+              <th class="text-center">Trimestre<br><small>Trimestre actual</small></th>
+              <th class="text-center">Semestre<br><small>Semestre actual</small></th>
+              <th class="text-center">Año<br><small><%= @date.year %></small></th>
+              <th class="text-center" style="border-left: 2px solid #ddd;">Año<br><small><%= @date.year - 1 %></small></th>
+              <th class="text-center">Año<br><small><%= @date.year - 2 %></small></th>
+              <th class="text-center">Año<br><small><%= @date.year - 3 %></small></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if @products_data.any? %>
+              <% @products_data.each do |product| %>
+                <tr>
+                  <td><%= product.code %></td>
+                  <td><%= product.name %></td>
+                  <td class="text-center"><%= product.qty_day %></td>
+                  <td class="text-center"><%= product.qty_week %></td>
+                  <td class="text-center"><%= product.qty_month %></td>
+                  <td class="text-center"><%= product.qty_quarter %></td>
+                  <td class="text-center"><%= product.qty_semester %></td>
+                  <td class="text-center"><%= product.qty_year %></td>
+                  <td class="text-center" style="border-left: 2px solid #ddd;"><%= product.qty_last_year %></td>
+                  <td class="text-center"><%= product.qty_year_minus_2 %></td>
+                  <td class="text-center"><%= product.qty_year_minus_3 %></td>
+                </tr>
+              <% end %>
+            <% else %>
+              <tr>
+                <td colspan="11" class="text-center">No se encontraron productos.</td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset='utf-8' />
+  <style>
+    body { 
+      font-family: 'Helvetica', 'Arial', sans-serif; 
+      font-size: 11px; 
+      color: #334155; 
+      line-height: 1.3;
+    }
+    .main-header { margin-bottom: 20px; border-bottom: 2px solid #e2e8f0; padding-bottom: 12px; }
+    .title-date-container { text-align: center; margin-bottom: 10px; }
+    h2 { 
+      color: #0f172a; 
+      text-transform: uppercase; 
+      font-size: 18px; 
+      letter-spacing: 1px;
+      margin-bottom: 2px;
+      font-weight: 800;
+      margin-top: 0;
+    }
+    .meta-date { font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase; }
+    
+    .info-grid { width: 100%; border-collapse: collapse; }
+    .col-left { text-align: left; width: 50%; vertical-align: bottom; }
+    .col-right { text-align: right; width: 50%; vertical-align: bottom; }
+    
+    .info-label { font-size: 8px; color: #94a3b8; font-weight: 800; text-transform: uppercase; margin-bottom: -2px; }
+    .info-value { font-size: 11px; font-weight: 700; color: #1e293b; }
+    .vendedor-val { color: #0369a1; }
+    
+    table.data-table { width: 100%; border-collapse: collapse; margin-top: 5px; }
+    thead tr { background-color: #1e293b; color: #ffffff; }
+    th { padding: 8px 4px; font-weight: 800; text-transform: uppercase; font-size: 10px; border: 1px solid #0f172a; }
+    td { padding: 4px 8px; border: 1px solid #e2e8f0; vertical-align: middle; }
+    
+    .category-cell { 
+       background-color: #ffffff; 
+       text-align: center; 
+       font-weight: 900; 
+       color: #0f172a;
+       border-right: 1px solid #cbd5e1;
+       text-transform: uppercase;
+       font-size: 12px;
+    }
+    
+    .text-center { text-align: center; }
+    .nombre-item { font-weight: 800; color: #0f172a; font-size: 14px; display: inline; }
+    .bloque-presentaciones { font-weight: 700; color: #4f46e5; font-size: 8px; margin-left: 5px; }
+    
+    .price-main { font-weight: 800; color: #0369a1; font-size: 15px; }
+    .price-secondary { font-weight: 700; color: #15803d; font-size: 14px; }
+    .unidad-label { font-weight: 600; color: #64748b; font-size: 11px; }
+  </style>
+</head>
+<body>
+  <div class="main-header">
+    <div class="title-date-container">
+      <h2><%= @price_list.name rescue 'LISTA DE PRECIOS' %></h2>
+      <div class="meta-date">Actualizado al: <%= Time.now.strftime('%d/%m/%Y') %></div>
+    </div>
+    
+    <table class="info-grid">
+      <tr>
+        <td class="col-left" style="border:none;">
+          <div class="info-label">Sucursal Matriz</div>
+          <div class="info-value"><%= @mycompany.try(:name).to_s.upcase rescue 'IRON' %></div>
+          <div class="info-value" style="font-size:10px;">TEL: <%= @mycompany.try(:phone) rescue 'S/T' %></div>
+        </td>
+        <td class="col-right" style="border:none;">
+          <div class="info-label">Vendedor Asignado</div>
+          <div class="info-value vendedor-val"><%= current_user.try(:name).to_s.upcase rescue 'SISTEMA' %></div>
+          <div class="info-value vendedor-val" style="font-size:10px;">CEL: <%= current_user.try(:mobile).presence || current_user.try(:phone) rescue 'S/C' %></div>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th style="width: 15%;">Categoría</th>
+        <th style="width: 45%;">Descripción del Producto</th>
+        <th style="width: 8%;">Und.</th>
+        <th style="width: 16%;">Precio USD ($)</th>
+        <% @mycompany.try(:get_current_currency).try(:getChangePrices).to_a.each do |price_rate| %>
+          <th style="width: 16%;"><%= price_rate.try(:currencyReference).try(:name) rescue 'M.L.' %></th>
+        <% end %>
+      </tr>
+    </thead>
+    <tbody>
+      <% current_cat = nil %>
+      <% (@datas[1] || []).each do |element| %>
+        <% if element.is_a?(Category) %>
+          <% current_cat = element %>
+        <% elsif element.is_a?(Array) && current_cat %>
+          <% element.each_with_index do |item, index| %>
+            <% 
+               begin
+                 price_obj = item.prices.find_by(price_list_id: @price_list.id)
+                 base_price = price_obj.present? ? price_obj.price_sale.to_f : 0.0
+               rescue
+                 base_price = 0.0
+               end
+            %>
+            <tr>
+              <% if index == 0 %>
+                <td rowspan="<%= element.count %>" class="category-cell" style="vertical-align: top; padding-top: 15px;">
+                  <% 
+                    image_path = nil
+                    begin
+                      if current_cat.try(:pictures).present?
+                        image_path = current_cat.pictures.url
+                      elsif element.first.present? && element.first.try(:image).present?
+                        image_path = element.first.image.url
+                      end
+                    rescue
+                      image_path = nil
+                    end
+                  %>
+                  <% if image_path.present? %>
+                    <img src="<%= "#{Rails.root}/public#{image_path}" %>" style="max-width: 70px; max-height: 70px; margin-bottom: 5px;" />
+                  <% end %>
+                  <div style="letter-spacing: 0.5px;"><%= current_cat.try(:name) rescue 'N/A' %></div>
+                </td>
+              <% end %>
+              <td style="vertical-align: middle;">
+                <span class="nombre-item"><%= item.try(:name) %></span>
+                <% 
+                   pres_labels = []
+                   begin
+                     (item.try(:presentations) || []).each do |p|
+                        if (p.get_total_stock rescue 0) > 0
+                           pres_labels << "#{p.name.upcase}/#{p.qty.to_i}pz"
+                        end
+                     end
+                   rescue
+                   end
+                %>
+                <% if pres_labels.any? %>
+                   <span class="bloque-presentaciones"><%= pres_labels.join(" ") %></span>
+                <% end %>
+              </td>
+              <td class="text-center unidad-label"><%= item.unit.try(:name) rescue 'Und.' %></td>
+              <td class="text-center price-main"><%= number_to_currency(base_price, precision: 4) %></td>
+              <% @mycompany.try(:get_current_currency).try(:getChangePrices).to_a.each do |price_rate| %>
+                <td class="text-center price-secondary">
+                   <%= price_rate.try(:currencyReference).try(:symbol) rescue '$' %> 
+                   <%= number_with_precision(price_rate.getPriceCurrencyRate(base_price), precision: 4) rescue '0.00' %>
+                </td>
+              <% end %>
+            </tr>
+          <% end %>
+        <% end %>
+      <% end %>
+    </tbody>
+  </table>
+</body>
+</html>

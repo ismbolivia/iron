@@ -1,66 +1,187 @@
-<table class="table table-bordered">
-  <thead>
-      <tr>
- 
-      <th>N° Recibo</th>
-      <th>Fecha</th>
-      <th>Cliente</th>
-      <th> Estado</th>
-      <th>Total</th>
-      <th>Saldo</th>
-      <th>dis</th>
-      <th colspan="1">Opciones</th>
-    </tr>
-  </thead>
+<div class="white-box" style="border: none; padding: 0; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border-radius: 12px; overflow: hidden;">
+  <div class="table-responsive">
+    <table class="table table-hover" style="margin-bottom: 0; border-collapse: separate;">
+      <thead style="background: #f8fafc; border-bottom: 2px solid #e2e8f0;">
+        <tr>
+          <th style="padding: 1.2rem; color: #475569; font-weight: 800; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px;">Documento</th>
+          <th style="padding: 1.2rem; color: #475569; font-weight: 800; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px;">Fecha</th>
+          <th style="padding: 1.2rem; color: #475569; font-weight: 800; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px;">Cliente</th>
+          <th style="padding: 1.2rem; color: #475569; font-weight: 800; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px; text-align: center;">Estado</th>
+          <th style="padding: 1.2rem; color: #475569; font-weight: 800; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px; text-align: right;">Total</th>
+          <th style="padding: 1.2rem; color: #475569; font-weight: 800; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px; text-align: right;">Saldo</th>
+          <th style="padding: 1.2rem; color: #475569; font-weight: 800; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px; text-align: center;">% Desc.</th>
+          <th style="padding: 1.2rem; color: #475569; font-weight: 800; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px; text-align: center;">Acciones</th>
+        </tr>
+      </thead>
 
-  <tbody>
-    <% @sales.each do |sale| %>
-      <tr class="<%= status_row_class(sale.payment_status) %>">
-     
-        <%if  sale.proformas.count > 0 %>
-           <th><%= sale.proformas.first.number_recibo %></th>
-        <%else%>
-        <td></td>
-        <%end%>
-        <td><%= sale.date.strftime("%d/%m/%Y") %></td>
-        <td> <%=sale.client.name %></td>      
-        <td><%= status_badge_html(sale.payment_status) %></td>  
-        <td><%= number_to_currency(sale.total_final) %></td>
-        <td><%= number_to_currency(sale.saldo) %></td>
-        <td><%= number_to_percentage(sale.discount_total, precision: 1) %></td>
-        <td> <div class="col-md-12">
-          <div class="col-md-4">
-          <% if can? :read, sale %>
-            <%= button_to sale_path(sale), {method: :get, class: "btn btn-success", id:"show_id"} do %>
-              <span class="fa fa-eye" aria-hidden="true"> </span> 
-            <% end %>
-          <% end %></div>
-        <div class="col-md-4">
-        
-           <% if can? :update, sale %>
-              <%= button_to edit_sale_path(sale), {method: :get, class: "btn btn-info"} do %>
-                <span class=" fas fa-edit" aria-hidden="true"> </span> 
+      <tbody style="background: white;">
+        <% @sales.each do |sale| %>
+          <tr class="<%= status_row_class(sale.payment_status) %> <%= 'observed-row' if sale.observed? %>" style="transition: all 0.2s; border-bottom: 1px solid #f1f5f9; <%= 'background-color: #fff1f2;' if sale.observed? %>">
+            <td style="padding: 1.2rem; vertical-align: middle;">
+              <% if sale.proformas.count > 0 %>
+                <%= link_to sale_path(sale), remote: true, style: "text-decoration: none;" do %>
+                  <span style="font-weight: 800; color: #1e293b; background: #f1f5f9; padding: 4px 10px; border-radius: 6px; font-family: monospace; border: 1px solid #e2e8f0; transition: all 0.2s;" class="btn-recibo-hover">
+                    <i class="fas fa-file-pdf mr-1" style="color: #ef4444; font-size: 0.8rem;"></i>
+                    <%= sale.proformas.first.number_recibo %>
+                  </span>
+                <% end %>
+              <% elsif sale.draft? || sale.quoted? || sale.observed? %>
+                <%= link_to sale_path(sale), remote: true, style: "text-decoration: none;" do %>
+                  <span style="font-weight: 800; color: #1e293b; background: #fff7ed; padding: 4px 10px; border-radius: 6px; font-family: monospace; border: 1px solid #fed7aa; color: #ea580c;">
+                    <i class="fas fa-file-invoice mr-1" style="font-size: 0.8rem;"></i>
+                    COT-<%= sale.number_sale || sale.id %>
+                  </span>
+                <% end %>
+              <% else %>
+                <span style="color: #94a3b8; font-style: italic; font-size: 0.9rem;">Sin Nota</span>
               <% end %>
-          <% end %>
-        </div>
-        <div class="col-md-4">
+              
+              <% if sale.observed? %>
+                <div style="margin-top: 8px;">
+                  <span class="label label-danger pulsate" style="font-size: 0.65rem; border-radius: 4px; padding: 2px 6px;">OBSERVADA</span>
+                  <div style="font-size: 0.75rem; color: #991b1b; font-weight: 700; margin-top: 4px; max-width: 200px; line-height: 1.2;">
+                    <i class="fas fa-comment-dots mr-1"></i><%= sale.observation_note %>
+                  </div>
+                </div>
+              <% elsif sale.resolution_note.present? %>
+                <div style="margin-top: 8px;">
+                   <div style="font-size: 0.75rem; color: #166534; font-weight: 700;">
+                    <i class="fas fa-check-circle mr-1"></i>Resuelto: <%= sale.resolution_note %>
+                  </div>
+                </div>
+              <% end %>
+            </td>
+            <td style="padding: 1.2rem; vertical-align: middle; color: #64748b; font-weight: 500;">
+              <%= sale.date.strftime("%d/%m/%Y") %>
+            </td>
+            <td style="padding: 1.2rem; vertical-align: middle; color: #0f172a; font-weight: 700;">
+              <%= sale.client.name %>
+            </td>
+            <td style="padding: 1.2rem; vertical-align: middle; text-align: center;">
+              <%= status_badge_html(sale.payment_status) %>
+            </td>
+            <td style="padding: 1.2rem; vertical-align: middle; text-align: right; color: #0f172a; font-weight: 800; font-size: 1.05rem;">
+              <%= number_to_currency(sale.total_final) %>
+            </td>
+            <td style="padding: 1.2rem; vertical-align: middle; text-align: right; color: #ef4444; font-weight: 700;">
+              <%= number_to_currency(sale.saldo) %>
+            </td>
+            <td style="padding: 1.2rem; vertical-align: middle; text-align: center;">
+              <% if sale.discount_total.to_f > 0 %>
+                <span class="label label-warning" style="font-weight: 700;"><%= number_to_percentage(sale.discount_total, precision: 1) %></span>
+              <% else %>
+                <span style="color: #cbd5e1;">-</span>
+              <% end %>
+            </td>
+            <td style="padding: 1.2rem; vertical-align: middle; text-align: center;">
+              <div style="display: flex; gap: 8px; justify-content: center;">
+                <% if can? :read, sale %>
+                  <%= link_to sale_path(sale), class: "btn btn-circle", title: "Ver Detalle", style: "width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: #10b981; color: white; border: none;" do %>
+                    <i class="fa fa-eye"></i>
+                  <% end %>
+                  <%= link_to sale_path(sale), remote: true, class: "btn btn-circle", title: "Imprimir PDF", style: "width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: #6366f1; color: white; border: none;" do %>
+                    <i class="fa fa-print"></i>
+                  <% end %>
+                <% end %>
+
+                <% if (can? :update, sale) && (sale.draft? || sale.quoted? || sale.observed? || current_user.is_admin?) %>
+                  <%= link_to "/pos?sale_id=#{sale.id}", class: "btn btn-circle btn-primary", title: "Editar en POS", style: "width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; border-radius: 50%; padding: 0;" do %>
+                    <i class="fa fa-cash-register"></i>
+                  <% end %>
+                <% end %>
+
+                <% if sale.confirmed? && (can? :observe, sale) %>
+                  <button type="button" class="btn btn-circle" onclick="openObserveModal(<%= sale.id %>, '<%= sale.proformas.first.try(:number_recibo) || sale.number_sale || sale.id %>')" title="Marcar como Observada" style="width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: #ea580c; color: white; border: none;">
+                    <i class="fas fa-eye-slash"></i>
+                  </button>
+                <% end %>
+
+                <% if sale.observed? && (can? :confirm_observed, sale) %>
+                   <button type="button" class="btn btn-circle" onclick="openResolveModal(<%= sale.id %>, '<%= sale.proformas.first.try(:number_recibo) || sale.number_sale || sale.id %>')" title="Resolver Observación" style="width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: #10b981; color: white; border: none;">
+                    <i class="fas fa-check-double"></i>
+                  </button>
+                <% end %>
+              </div>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Paginación Premium -->
+  <% if @number_of_pages && @number_of_pages > 1 %>
+    <div style="background: #f8fafc; padding: 1.5rem; text-align: center; border-top: 1px solid #e2e8f0;">
+      <div style="display: inline-flex; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.03); border: 1px solid #e2e8f0;">
         
-          <% if can? :destroy, sale %>
-              <%= button_to sale, { method: :delete, data: { confirm: '¿Está seguro?' }, class: "btn btn-danger" } do %>
-                <span class="fas fa-trash" aria-hidden="true"> </span> 
+        <% if @page > 0 %>
+          <%= link_to sales_path(page: @page - 1, keywords: @keywords, filter: params[:filter], data_init: @data_init, data_limit: @data_limit, client_id: params[:client_id]), style: "padding: 10px 18px; color: #64748b; font-weight: 700; text-decoration: none; border-right: 1px solid #e2e8f0; transition: 0.2s;", onmouseover: "this.style.background='#f1f5f9'", onmouseout: "this.style.background='white'" do %>
+            <i class="fas fa-chevron-left mr-1"></i> Anterior
           <% end %>
+        <% end %>
+
+        <% (0..(@number_of_pages - 1)).each do |p| %>
+          <% if p == @page %>
+            <span style="padding: 10px 18px; background: #6366f1; color: white; font-weight: 800; border-right: 1px solid #e2e8f0;"><%= p + 1 %></span>
+          <% elsif (p - @page).abs < 3 || p == 0 || p == @number_of_pages - 1 %>
+            <%= link_to p + 1, sales_path(page: p, keywords: @keywords, filter: params[:filter], data_init: @data_init, data_limit: @data_limit, client_id: params[:client_id]), style: "padding: 10px 18px; color: #475569; font-weight: 700; text-decoration: none; border-right: 1px solid #e2e8f0; transition: 0.2s;", onmouseover: "this.style.background='#f1f5f9'", onmouseout: "this.style.background='white'" %>
+          <% elsif (p - @page).abs == 3 %>
+            <span style="padding: 10px 18px; color: #94a3b8; font-weight: 700; border-right: 1px solid #e2e8f0;">...</span>
           <% end %>
-        </div>
-          </div>
-        </td>
-      </tr>
-    <% end %>
-  </tbody>  
-</table>
-<table>
-   <thead>
-    <tr>
-      <%= render partial: "pager", locals: { keywords: @keywords, page: @page, filter: params[:filter] } %>
-    </tr>
-  </thead>
-</table>
+        <% end %>
+
+        <% if @page < @number_of_pages - 1 %>
+          <%= link_to sales_path(page: @page + 1, keywords: @keywords, filter: params[:filter], data_init: @data_init, data_limit: @data_limit, client_id: params[:client_id]), style: "padding: 10px 18px; color: #64748b; font-weight: 700; text-decoration: none; transition: 0.2s;", onmouseover: "this.style.background='#f1f5f9'", onmouseout: "this.style.background='white'" do %>
+            Siguiente <i class="fas fa-chevron-right ml-1"></i>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+</div>
+
+<style>
+  .pulsate { animation: pulsate-animation 2s infinite; }
+  @keyframes pulsate-animation {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+  }
+  .observed-row { border-left: 4px solid #ef4444 !important; }
+</style>
+
+<script>
+  function openObserveModal(saleId, noteNumber) {
+    var note = prompt("Ingrese el motivo de la observación:");
+    if (note != null && note.trim() != "") {
+      $.ajax({
+        url: "/sales/" + saleId + "/observe",
+        method: "POST",
+        data: { 
+          observation_note: note,
+          authenticity_token: $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(response) {
+          if (response.success) { location.reload(); }
+        }
+      });
+    }
+  }
+
+  function openResolveModal(saleId, noteNumber) {
+    var note = prompt("Ingrese nota de resolución (opcional):");
+    if (note != null) {
+      $.ajax({
+        url: "/sales/" + saleId + "/confirm_observed",
+        method: "POST",
+        data: { 
+          resolution_note: note,
+          authenticity_token: $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(response) {
+          if (response.success) { location.reload(); }
+        }
+      });
+    }
+  }
+</script>

@@ -8,7 +8,19 @@ class PriceList < ApplicationRecord
 
 	# has_many :price_lists
 	enum state: [:activo, :desactivo]
+	enum list_type: { sistema: 0, cliente: 1, publico: 2 }
 
+	scope :operativas, -> { where(list_type: :sistema) }
+	scope :catalogos, -> { where(list_type: [:cliente, :publico]) }
+
+
+	validate :only_sistema_can_be_default
+
+	def only_sistema_can_be_default
+		if default && !sistema?
+			errors.add(:default, "Solo las listas de tipo Sistema pueden ser marcadas como predeterminadas.")
+		end
+	end
 
 	def myprice
 		res = 0.0

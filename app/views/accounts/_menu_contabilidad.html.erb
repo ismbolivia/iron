@@ -27,6 +27,10 @@
             <li class="<%= current_page?(currencies_path) ? "active" : "" %>"><%= link_to 'Registro de ventas', currencies_path %>
             </li>
             <% end %>
+             <% if can? :read, Sale %>
+            <li class="<%= current_page?(reports_sales_by_period_path) ? "active" : "" %>"><%= link_to 'Reporte Productos Vendidos', reports_sales_by_period_path %>
+            </li>
+            <% end %>
           </ul>
         </li>
 

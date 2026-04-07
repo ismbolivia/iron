@@ -18,8 +18,12 @@
 
  	 		 $('#price_utility').on('blur', function() {
 			 	$("#price_price_sale").val(get_prise_sale());
-			 	$("#price_utility").val(set_round($('#price_utility').val(), 2));
+ 			 	$("#price_utility").val(set_round($('#price_utility').val(), 4));
 			    
+ 				});
+ 	 		 $('#price_opex_margin').on('blur', function() {
+			 	$("#price_price_sale").val(get_prise_sale());
+ 			 	$("#price_opex_margin").val(set_round($('#price_opex_margin').val(), 4));
  				});
  	 		 $('#price_price_purchase').on('blur', function() {
 			 	$("#price_price_sale").val(get_prise_sale());
@@ -37,15 +41,37 @@
 
 
  	 	function get_prise_sale() {
- 	 		ppp =  parseFloat($('#price_price_purchase').val());
- 	 		mu = parseFloat((($('#price_price_purchase').val()*$('#price_utility').val())/100));
- 	 		return parseFloat(mu+ppp).toFixed(4);
+            let ppp =  parseFloat($('#price_price_purchase').val()) || 0;
+            let opex = parseFloat($('#price_opex_margin').val()) || 0;
+            let costo_operativo = ppp;
+            
+            if (opex > 0 && opex <= 100) {
+              costo_operativo = ppp * (1 + (opex / 100));
+            } else if (opex > 100) {
+              costo_operativo = ppp + opex;
+            }
+
+            let utility = parseFloat($('#price_utility').val()) || 0;
+            let mu = parseFloat((costo_operativo * utility) / 100);
+            return parseFloat(costo_operativo + mu).toFixed(4);
  	 		}
  	 	function calculate_utility(){
- 	 			price_purchase =  parseFloat($('#price_price_purchase').val());
- 	 			price_sale =  parseFloat($('#price_price_sale').val());
- 	 			utility = (price_sale - price_purchase)/price_purchase
- 	 			return parseFloat(utility*100).toFixed(2);
+            let price_purchase =  parseFloat($('#price_price_purchase').val()) || 0;
+            let opex = parseFloat($('#price_opex_margin').val()) || 0;
+            let costo_operativo = price_purchase;
+            
+            if (opex > 0 && opex <= 100) {
+              costo_operativo = price_purchase * (1 + (opex / 100));
+            } else if (opex > 100) {
+              costo_operativo = price_purchase + opex;
+            }
+
+            let price_sale =  parseFloat($('#price_price_sale').val()) || 0;
+            let utility = 0;
+            if (costo_operativo > 0) {
+               utility = (price_sale - costo_operativo) / costo_operativo;
+            }
+            return parseFloat(utility*100).toFixed(4);
  	 	}
  	 	function set_round(data_n, nd){
  	 		pps =  parseFloat(data_n).toFixed(nd);

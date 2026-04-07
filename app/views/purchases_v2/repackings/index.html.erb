@@ -1,0 +1,114 @@
+<style>
+  .repack-list-card { background: white; border-radius: 16px; padding: 2rem; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; }
+  .repack-title-section { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+  .table-modern { width: 100%; border-collapse: collapse; }
+  .table-modern th { text-align: left; padding: 16px; font-weight: 800; color: #64748b; font-size: 0.8rem; text-transform: uppercase; border-bottom: 2px solid #f1f5f9; }
+  .table-modern td { padding: 16px; border-bottom: 1px solid #f1f5f9; color: #1e293b; font-weight: 600; font-size: 0.95rem; }
+  .badge-iron { padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 900; vertical-align: middle; }
+  .btn-new-repack { background: #1e293b; color: white; padding: 10px 20px; border-radius: 8px; font-weight: 800; text-decoration: none; transition: 0.2s; }
+  .btn-new-repack:hover { background: #0f172a; color: white; transform: translateY(-2px); }
+  .btn-undo { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; padding: 6px 12px; border-radius: 6px; font-size: 0.75rem; font-weight: 800; cursor: pointer; transition: 0.2s; }
+  .btn-undo:hover { background: #ef4444; color: white; }
+</style>
+
+<div class="row" style="padding: 40px 0; background: #fafafa; min-height: 100vh;">
+  <div class="col-lg-1"></div>
+  <div class="col-lg-10">
+    <div class="repack-list-card">
+      <div class="repack-title-section">
+        <div>
+          <h1 style="font-weight: 950; color: #0f172a; font-size: 2rem; margin: 0;">📜 Historial de Re-Clasificaciones</h1>
+          <p style="color: #64748b; font-weight: 500;">Sesiones de transformación de stock y lotes.</p>
+        </div>
+        <%= link_to new_purchases_v2_repacking_path, class: "btn-new-repack" do %>
+          <i class="fas fa-plus"></i> NUEVO RE-EMPAQUE
+        <% end %>
+      </div>
+
+      <table class="table-modern">
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Producto / Lote Origen</th>
+            <th>Configuración Destino</th>
+            <th>Usuario</th>
+            <th width="150px">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if @repackings.any? %>
+            <% @repackings.each do |repacking| %>
+              <tr id="repacking-row-<%= repacking.id %>">
+                <td>
+                   <span style="display: block;"><%= repacking.created_at.strftime("%d/%m/%Y") %></span>
+                   <small style="color: #94a3b8;"><%= repacking.created_at.strftime("%H:%M") %></small>
+                </td>
+                <td>
+                  <span style="display: block; color: #0f172a;"><%= repacking.item&.name %></span>
+                  <code style="font-size: 0.75rem; background: #fffbeb;"><%= repacking.origin_stock&.lote %></code>
+                </td>
+                <td>
+                   <div style="display: flex; flex-wrap: wrap; gap: 4px;">
+                     <% repacking.result_stocks.each do |rs| %>
+                        <span class="badge-iron" style="background: #f1f5f9; color: #1e293b;">
+                          <%= rs.total %> pzs (<%= rs.presentation&.name || 'Sueltas' %>)
+                        </span>
+                     <% end %>
+                   </div>
+                </td>
+                <td>
+                  <small style="font-weight: 800;"><%= repacking.user&.email %></small>
+                </td>
+                <td style="text-align: right;">
+                  <button type="button" class="btn-undo undo-repacking-btn" data-id="<%= repacking.id %>" data-confirm-msg="¿Estás seguro de anular este re-empaque? Las piezas volverán al lote original.">
+                    <i class="fas fa-undo"></i> ANULAR
+                  </button>
+                </td>
+              </tr>
+            <% end %>
+          <% else %>
+            <tr>
+              <td colspan="5" style="text-align: center; padding: 60px; color: #94a3b8;">
+                <i class="fas fa-history" style="font-size: 3rem; display: block; margin-bottom: 15px;"></i>
+                No se han registrado sesiones de re-empaque todavía.
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    $('.undo-repacking-btn').on('click', function() {
+      const btn = $(this);
+      const id = btn.data('id');
+      const msg = btn.data('confirm-msg');
+      
+      if (!confirm(msg)) return;
+
+      btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Procesando...');
+
+      $.ajax({
+        url: `/purchases_v2/repackings/${id}`,
+        type: 'DELETE',
+        dataType: 'json',
+        success: function(res) {
+          if (res.success) {
+            toastr.success(res.message);
+            $(`#repacking-row-${id}`).fadeOut(500, function() { $(this).remove(); });
+          } else {
+            toastr.error(res.message);
+            btn.prop('disabled', false).html('<i class="fas fa-undo"></i> ANULAR');
+          }
+        },
+        error: function() {
+          toastr.error('Error de conexión al intentar anular.');
+          btn.prop('disabled', false).html('<i class="fas fa-undo"></i> ANULAR');
+        }
+      });
+    });
+  });
+</script>

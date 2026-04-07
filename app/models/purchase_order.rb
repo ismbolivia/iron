@@ -1,13 +1,16 @@
 class PurchaseOrder < ApplicationRecord
 	belongs_to :supplier
 	belongs_to :payment_term
+	belongs_to :importacion, optional: true
+	belongs_to :currency, optional: true
 	has_many :purchase_order_lines, inverse_of: :purchase_order, dependent: :destroy
 	has_many :items, through: :purchase_order_lines
 
 	has_many :box_purchase_order_payments, inverse_of: :purchase_order, dependent: :destroy
 	has_many :boxes, through: :box_purchase_order_payments
 
-	enum state: [:draft, :borrador, :confirmado, :comprado, :cancelado]
+	enum state: { draft: 0, borrador: 1, confirmed: 2, paid: 3, canceled: 4, annulled: 5 }
+	belongs_to :user, foreign_key: :create_uid, optional: true
 	def getFullName
 		supplier = self.supplier.name
 		full_name = name+"---"+ created_at.strftime("%d/%m/%Y").to_s+"---"+supplier		

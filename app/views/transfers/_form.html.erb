@@ -1,0 +1,167 @@
+<%= form_with(model: transfer, local: true, class: "form-material") do |form| %>
+  <% if transfer.errors.any? %>
+    <div class="alert alert-danger">
+      <h4>Revise los siguientes errores:</h4>
+      <ul>
+      <% transfer.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <%# Auto asignación para campos ocultos %>
+  <%= form.hidden_field :user_id, value: current_user.id %>
+  <%= form.hidden_field :date, value: Date.today %>
+  <%= form.hidden_field :state, value: "in_transit" %>
+
+  <div class="row">
+    <div class="col-md-3">
+      <div class="form-group">
+        <%= form.label :origin_branch_id, "Sucursal de Origen", class: "control-label" %>
+        <%= form.collection_select :origin_branch_id, Branch.all, :id, :name, { prompt: "Seleccione..." }, { class: "form-control", required: true, id: "origin_branch_select" } %>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="form-group">
+        <%= form.label :origin_warehouse_id, "Almacén Origen", class: "control-label" %>
+        <%= form.collection_select :origin_warehouse_id, Warehouse.all, :id, :name, { prompt: "Seleccione..." }, { class: "form-control", required: true, id: "transfer_origin_warehouse_id" } %>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="form-group">
+        <%= form.label :destination_branch_id, "Sucursal de Destino", class: "control-label" %>
+        <%= form.collection_select :destination_branch_id, Branch.all, :id, :name, { prompt: "Seleccione..." }, { class: "form-control", required: true, id: "destination_branch_select" } %>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="form-group">
+        <%= form.label :destination_warehouse_id, "Almacén Destino", class: "control-label" %>
+        <%= form.collection_select :destination_warehouse_id, Warehouse.all, :id, :name, { prompt: "Seleccione..." }, { class: "form-control", required: true, id: "transfer_destination_warehouse_id" } %>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="form-group">
+        <%= form.label :observations, "Observaciones o Motivo del Traspaso (Opcional)", class: "control-label" %>
+        <%= form.text_area :observations, class: "form-control", rows: 2, placeholder: "Ej. Reposición de inventario mensual a la sucursal La Paz..." %>
+      </div>
+    </div>
+  </div>
+
+  <hr>
+  <h4 class="box-title">Productos a Enviar</h4>
+  
+  <div class="table-responsive">
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th width="350">Producto / Ítem</th>
+          <th width="280">Lote (Origen) / Presentación</th>
+          <th width="120">Cant. a Enviar</th>
+          <th>Observación</th>
+          <th width="50"><i class="fas fa-trash"></i></th>
+        </tr>
+      </thead>
+      <tbody id="transfer-details">
+         <%= form.fields_for :transfer_details do |detail_form| %>
+            <%= render 'transfer_detail_fields', f: detail_form %>
+         <% end %>
+      </tbody>
+    </table>
+    
+    <div class="links mb-4 m-t-10 text-right">
+      <%= link_to_add_fields "<i class='fas fa-plus'></i> Añadir Fila de Producto".html_safe, form, :transfer_details, class: "btn btn-outline btn-success" %>
+    </div>
+  </div>
+
+  <div class="row m-t-20">
+    <div class="col-xs-12 text-center">
+      <%= link_to 'Cancelar', transfers_path, class: "btn btn-default waves-effect" %>
+      <%= form.submit "Guardar Boleta de Traspaso", class: "btn btn-info waves-effect waves-light" %>
+    </div>
+  </div>
+<% end %>
+
+<script>
+  $(document).ready(function() {
+    // 🚚 Sistema de Carga de Lotes y Presentaciones para Traspasos
+    const refreshLineData = ($row) => {
+      const itemId = $row.find('.item-select').val();
+      const warehouseId = $('#transfer_origin_warehouse_id').val() || ''; // Asumimos id del select de origen en el form
+      
+      const $lotSelect = $row.find('.lot-select');
+      const $presSelect = $row.find('.presentation-select');
+      
+      if (!itemId) return;
+
+      $lotSelect.html('<option>Cargando...</option>');
+      $presSelect.html('<option>...</option>');
+
+      $.getJSON(`/items/${itemId}/available_lots?warehouse_id=${warehouseId}`, function(data) {
+        // Llenar Lotes
+        $lotSelect.html('<option value="">-- Elige el Lote --</option>');
+        data.lots.forEach(l => {
+          $lotSelect.append(`<option value="${l.id}">LOTE: ${l.lote} (${l.qty_available} pzs)</option>`);
+        });
+
+        // Llenar Presentaciones
+        $presSelect.html('<option value="">Unidades Sueltas (Pzs)</option>');
+        if (data.presentations) {
+          data.presentations.forEach(p => {
+            $presSelect.append(`<option value="${p.id}">${p.name} (${p.qty} pzas)</option>`);
+          });
+        }
+      });
+    };
+
+    // 🔢 Calculadora de Piezas en la fila
+    const updateCalculatedRow = ($row) => {
+        const qty = parseFloat($row.find('input[type="number"]').val()) || 0;
+        const presText = $row.find('.presentation-select option:selected').text();
+        const match = presText.match(/\((\d+)\s/);
+        const factor = match ? parseInt(match[1]) : 1;
+        const total = qty * factor;
+        $row.find('.total-preview').text(`${total.toLocaleString()} pzs`);
+    };
+
+    // Escuchadores dinámicos (para filas nuevas y existentes)
+    $('#transfer-details').on('change', '.item-select', function() {
+      refreshLineData($(this).closest('tr'));
+    });
+
+    $('#transfer-details').on('input change', 'input[type="number"], .presentation-select', function() {
+      updateCalculatedRow($(this).closest('tr'));
+    });
+
+    // Delegación para eliminar filas (si fuera necesario)
+    $('#transfer-details').on('click', '.remove_fields', function(e) {
+      $(this).closest('tr').fadeOut(300, function() { $(this).remove(); });
+      e.preventDefault();
+    });
+
+    // 🏘️ Sincronización Sucursal -> Almacén
+    const filterWarehouses = (branchId, $warehouseSelect) => {
+      $warehouseSelect.html('<option>Cargando...</option>');
+      $.getJSON(`/branches/${branchId}/warehouses`, function(data) {
+        $warehouseSelect.html('<option value="">Seleccione...</option>');
+        data.forEach(w => {
+          $warehouseSelect.append(`<option value="${w.id}">${w.name}</option>`);
+        });
+      });
+    };
+
+    $('#origin_branch_select').on('change', function() {
+      filterWarehouses($(this).val(), $('#transfer_origin_warehouse_id'));
+    });
+
+    $('#destination_branch_select').on('change', function() {
+      filterWarehouses($(this).val(), $('#transfer_destination_warehouse_id'));
+    });
+
+    // Re-inicialización de Select2 para las filas
+    $('.select2').select2({ width: '100%' });
+  });
+</script>

@@ -1,16 +1,159 @@
-<div class="panel panel-purchase">
-  <div class="panel-head">Pedidos de compra</div>
-  <div class="panel-wrapper collapse in">
-    <div class="panel-body table-responsive ">
-        <%= render partial: 'layouts/partials/search_form', locals: { search_entity: 'purchse_orders', word: "Pedido", view_kamback: '', view_list: '', url_pdf:'', url: new_purchase_order_path, ban: false , url_pdf:'',url_csv:'',url_xls:''} %> 
-         <%= render partial: 'results_search' %>
-         <div class="col-md-5 col-md-offset-5 col-sm-5 col-sm-offset-5">
-      <p>       
-           <%= button_to suppliers_path, {method: :get, class: "btn btn-success"} do %>
-          <span class="glyphicon glyphicon-plus" aria-hidden="true"> </span> Nuevo Pedido
-          <% end %>
-      </p>
+<style>
+  :root {
+    --primary-gradient: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    --bg-light: #f8fafc;
+    --border-color: #e2e8f0;
+    --text-main: #1e293b;
+    --text-muted: #64748b;
+  }
+
+  .premium-wrapper {
+    background: var(--bg-light); padding: 2rem; font-family: 'Inter', system-ui, sans-serif; min-height: 100vh;
+  }
+
+  .premium-header-banner {
+    background: var(--primary-gradient); padding: 2.5rem; border-radius: 20px;
+    color: white; margin-bottom: 2rem; position: relative; overflow: hidden;
+    box-shadow: 0 10px 30px rgba(16, 185, 129, 0.2);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+
+  .banner-title h1 { font-size: 2.2rem; font-weight: 800; letter-spacing: -0.02em; margin: 0; }
+  .banner-title p { font-size: 1rem; opacity: 0.9; margin-top: 4px; }
+
+  .btn-premium-solid {
+    background: white; border: none; border-radius: 12px;
+    color: #059669 !important; font-weight: 700; padding: 12px 24px; font-size: 0.95rem;
+    box-shadow: 0 4px 14px rgba(255,255,255,0.2); transition: all 0.2s;
+    display: inline-flex; align-items: center; gap: 8px; text-decoration: none; cursor: pointer;
+  }
+  .btn-premium-solid:hover {
+    transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255,255,255,0.3);
+  }
+
+  .btn-premium-dark {
+    background: rgba(0,0,0,0.2); backdrop-filter: blur(10px); color: white !important; border-radius: 12px;
+    font-weight: 700; padding: 12px 24px; font-size: 0.95rem; border: 1px solid rgba(255,255,255,0.2);
+    display: inline-flex; align-items: center; gap: 8px; text-decoration: none; transition: all 0.2s;
+  }
+  .btn-premium-dark:hover { background: rgba(0,0,0,0.3); color: white; }
+
+  .dashboard-kpis { display: flex; gap: 1.5rem; margin-bottom: 2.5rem; }
+  .kpi-card {
+    background: white; border-radius: 20px; padding: 1.5rem; flex: 1;
+    border: 1px solid var(--border-color); box-shadow: 0 4px 16px rgba(0,0,0,0.02);
+    display: flex; align-items: center; gap: 15px;
+  }
+  .kpi-icon {
+    width: 60px; height: 60px; border-radius: 16px; display: flex; align-items: center; justify-content: center;
+    font-size: 1.8rem;
+  }
+  .kpi-bg-primary { background: #eff6ff; color: #3b82f6; }
+  .kpi-bg-success { background: #ecfdf5; color: #10b981; }
+  .kpi-bg-warning { background: #fffbeb; color: #f59e0b; }
+  
+  .kpi-content span { font-size: 0.8rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; display: block; }
+  .kpi-content h3 { margin: 0; font-size: 1.6rem; font-weight: 800; color: #1e293b; }
+
+  .search-container {
+    background: white; border-radius: 20px; padding: 1.5rem; margin-bottom: 1.5rem;
+    border: 1px solid var(--border-color); box-shadow: 0 4px 16px rgba(0,0,0,0.02);
+  }
+
+  .table-container {
+    background: white; border-radius: 20px; border: 1px solid var(--border-color); overflow: hidden;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.02); padding: 5px;
+  }
+
+  /* Table Styles Centralizadas para mejor lectura y evitar duplicados en AJAX */
+  .po-table th {
+    background: transparent !important; color: #64748b !important; font-weight: 700 !important; font-size: 0.9rem !important;
+    text-transform: uppercase !important; border-top: none !important; border-bottom: 2px solid #e2e8f0 !important;
+    padding: 16px 12px !important;
+  }
+  .po-table td {
+    vertical-align: middle !important; color: #334155; font-size: 1rem; border-bottom: 1px solid #f8fafc; padding: 16px 12px !important;
+  }
+  .po-table tr:hover td {
+    background-color: #f8fafc !important;
+  }
+  
+  .badge-status { padding: 6px 16px; border-radius: 9999px; font-weight: 800; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; display: inline-block; text-align: center; min-width: 110px; }
+  .bg-status-borrador { background: #f1f5f9; color: #64748b; border: 1px solid #cbd5e1; }
+  .bg-status-draft { background: #f1f5f9; color: #64748b; border: 1px solid #cbd5e1; }
+  .bg-status-confirmed { background: #ecfdf5; color: #10b981; border: 1px solid #a7f3d0; }
+  .bg-status-paid { background: #eff6ff; color: #3b82f6; border: 1px solid #bfdbfe; }
+  .bg-status-canceled { background: #fef2f2; color: #ef4444; border: 1px solid #fecaca; }
+  .bg-status-annulled { background: #fef2f2; color: #ef4444; border: 1px solid #fecaca; }
+
+  .action-btn {
+    width: 36px; height: 36px; border-radius: 10px; display: inline-flex; align-items: center; justify-content: center;
+    transition: all 0.2s; border: none; text-decoration: none; margin: 0 2px; font-size: 1.1rem;
+  }
+  .action-view { background: #eff6ff; color: #3b82f6; }
+  .action-view:hover { background: #3b82f6; color: white; }
+  .action-edit { background: #fefce8; color: #eab308; }
+  .action-edit:hover { background: #eab308; color: white; }
+  .action-delete { background: #fef2f2; color: #ef4444; }
+  .action-delete:hover { background: #ef4444; color: white; }
+</style>
+
+<div class="premium-wrapper">
+  <!-- Header Banner -->
+  <div class="premium-header-banner">
+    <div class="banner-title">
+      <h1><i class="fas fa-shopping-cart mr-2"></i> Gestión de Compras</h1>
+      <p>Control de abastecimiento, proveedores y órdenes de compra</p>
+    </div>
+    <div style="display: flex; gap: 12px;">
+      <%= link_to purchases_v2_dashboard_path, class: "btn-premium-dark" do %>
+        <i class="fas fa-brain"></i> IA Compras V2
+      <% end %>
+      <%= button_to suppliers_path, method: :get, class: "btn-premium-solid" do %>
+        <i class="fas fa-plus"></i> Nuevo Pedido Manual
+      <% end %>
+    </div>
+  </div>
+
+  <!-- KPIs -->
+  <div class="dashboard-kpis">
+    <div class="kpi-card">
+      <div class="kpi-icon kpi-bg-primary"><i class="fas fa-file-invoice"></i></div>
+      <div class="kpi-content">
+        <span>Total de Órdenes</span>
+        <h3><%= PurchaseOrder.count %></h3>
       </div>
     </div>
+    <div class="kpi-card">
+      <div class="kpi-icon kpi-bg-warning"><i class="fas fa-clock"></i></div>
+      <div class="kpi-content">
+        <span>En Borrador</span>
+        <h3><%= PurchaseOrder.where(state: ['borrador', 'draft']).count %></h3>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon kpi-bg-success"><i class="fas fa-dollar-sign"></i></div>
+      <div class="kpi-content">
+        <span>Total Aprobado</span>
+        <%
+           # Utilizo suma combinada segura y rápida
+           total_aprobado = PurchaseOrderLine.joins(:purchase_order)
+                              .where(purchase_orders: { state: ['confirmed', 'paid'] })
+                              .sum('item_qty * price_unit')
+        %>
+        <h3><%= number_to_currency(total_aprobado) %></h3>
+      </div>
+    </div>
+  </div>
+
+  <!-- Búsqueda -->
+  <div class="search-container">
+    <label class="small font-weight-bold text-muted mb-3 d-block"><i class="fas fa-search mr-1"></i> BÚSQUEDA RÁPIDA</label>
+    <%= render partial: 'layouts/partials/search_form', locals: { search_entity: 'purchase_orders', word: "Pedido", view_kamback: '', view_list: '', url_pdf:'', url: new_purchase_order_path, ban: true , url_pdf:'',url_csv:'',url_xls:''} %> 
+  </div>
+
+  <!-- Table Results -->
+  <div class="table-container table-responsive" id="purchase-orders-results">
+    <%= render partial: 'results_search' %>
   </div>
 </div>

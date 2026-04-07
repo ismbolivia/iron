@@ -1,20 +1,18 @@
 <div class="">
-	<br>
- <div class="row">
-  <% if notice.present? %>
-   <div class="alert alert-success" role="alert"><%= notice %></div>
-   <script type="text/javascript">
-        toastr.success('<%= notice %>')
-        // swal('<%= notice %>');
-    </script>
-  <% end %>
+  <br>
+  <div class="row">
+    <script type="text/javascript">
+      $(document).ready(function() {
+        <% if notice.present? %>
+            toastr.success('<%= j notice %>');
+        <% end %>
 
-  <% if alert.present? %>
-   <div class="alert alert-danger" role="alert"><%= alert %></div>
-      <script type="text/javascript">
-        toastr.error('<%= alert %>')
-        // swal('<%= alert %>');
+
+        <% if alert.present? %>
+            toastr.error('<%= j alert %>');
+        <% end %>
+
+      });
     </script>
-  <% end %>
- </div>
+  </div>
 </div>

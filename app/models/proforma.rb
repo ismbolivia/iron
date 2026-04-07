@@ -1,6 +1,9 @@
 class Proforma < ApplicationRecord
 	belongs_to :sale
 
+	after_save :update_sale_status_priority
+	after_destroy :update_sale_status_priority
+
 	def number_recibo
 		num = self.sale.number_sale
 		res = ''
@@ -17,5 +20,11 @@ class Proforma < ApplicationRecord
 			res = num.to_s
 		end
 		res
+	end
+
+	private
+
+	def update_sale_status_priority
+		self.sale.update_status_priority! if self.sale
 	end
 end

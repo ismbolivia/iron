@@ -1,0 +1,98 @@
+<div id="header">
+    <h3 class="text-center">📄 EXTRACTO DE VENTAS Y CARTERA</h3>
+    <p class="text-center">
+        <b>Vendedor:</b> <%= User.find_by(id: @vendedor_id)&.name || 'Todos' %> &nbsp;|&nbsp; 
+        <b>Ubicación:</b> <%= Departamento.find_by(id: @depto_id)&.name || 'Todas' %>
+    </p>
+    <p class="text-center">Desde: <%= @desde.strftime("%d/%m/%Y") %> - Hasta: <%= @hasta.strftime("%d/%m/%Y") %></p>
+</div>
+
+<!-- 📦 Tabla Detallada Estructurada -->
+<table class="table table-bordered table-striped" style="width: 100%; border-collapse: collapse;">
+    <thead>
+        <tr style="background-color: #2c3e50; color: white;">
+            <th>N° Nota</th>
+            <th>Cliente</th>
+                        <th>Fecha</th>
+            <th>Total Venta</th>
+            <th>🧭 Estado</th>
+            <th>N° Recibo</th>
+            <th>Fecha Pago</th>
+            <th>Monto Cobro</th>
+            <th>🔴 Saldo Deuda</th>
+        </tr>
+    </thead>
+    <tbody>
+        <%
+  short_status = {
+    "PENDIENTE DE PAGO" => "Pendiente",
+    "PARCIALMENTE PAGADA" => "Parcial",
+    "VENCIDA PENDIENTE DE PAGO" => "Vencida (P)",
+    "VENCIDA PARCIALMENTE PAGADA" => "Vencida (Parc)",
+    "PAGADA" => "Pagada",
+    "ANULADO" => "Anulado",
+    "BORRADOR" => "Borrador",
+    "PARA ANULAR" => "Por Anular",
+    "COTIZACION" => "Cotizar"
+  }
+%>
+<% @grouped_sales.each do |client, s_list| %>
+            <tr style="background-color: #ecf0f1; font-weight: bold;">
+                <td colspan="9"><strong>👤 Cliente: <%= client&.name || 'Sin Cliente' %></strong></td>
+            </tr>
+            
+            <% s_list.each do |s| %>
+                <% payments = s.payments.to_a %>
+                <% status_label = s.payment_status_cache %>
+                
+                <% if payments.any? %>
+                    <% payments.each_with_index do |p, index| %>
+                        <tr>
+                            <% if index == 0 %>
+                                <td><%= s.number_sale %></td>
+                                <td style="white-space: nowrap;"><%= client&.name %></td>
+                                                                <td><%= s.date.strftime("%d/%m/%Y") %></td>
+                                <td style="white-space: nowrap;"><strong>$ <%= '%.2f' % s.total_final %></strong></td>
+                                <td><small><%= short_status[status_label] || status_label %></small></td>
+                            <% else %>
+                                <td colspan="5" style="text-align: right; color: #7f8c8d;"><small><i>Amortización Nota #<%= s.number_sale %></i></small></td>
+                            <% end %>
+                            
+                            <td><%= p.get_num_payment %></td>
+                            <td><%= p.date&.strftime('%d/%m/%Y') %></td>
+                            <td style="color: #27ae60; white-space: nowrap;">+ $ <%= '%.2f' % p.rode %></td>
+                            
+                            <% if index == 0 %>
+                                <td style="color: #c0392b;"><strong>$ <%= '%.2f' % s.saldo %></strong></td>
+                            <% else %>
+                                <td>-</td>
+                            <% end %>
+                        </tr>
+                    <% end %>
+                <% else %>
+                    <tr>
+                        <td><%= s.number_sale %></td>
+                        <td style="white-space: nowrap;"><%= client&.name %></td>
+                                                <td><%= s.date.strftime("%d/%m/%Y") %></td>
+                        <td style="white-space: nowrap;"><strong>$ <%= '%.2f' % s.total_final %></strong></td>
+                        <td><small><%= short_status[status_label] || status_label %></small></td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td style="color: #c0392b;"><strong>$ <%= '%.2f' % s.saldo %></strong></td>
+                    </tr>
+                <% end %>
+            <% end %>
+            <tr style="background-color: #f2dede; font-weight: bold;">
+                <td colspan="8" style="text-align: right;">Subtotal Deuda (<%= client&.name || 'Sin Cliente' %>):</td>
+                <td style="color: #c0392b; white-space: nowrap;">$ <%= '%.2f' % s_list.sum { |s| s.saldo.to_f }.round(2) %></td>
+            </tr>
+        <% end %>
+    </tbody>
+</table>
+
+<div style="margin-top: 30px; text-align: right;">
+    <h4><strong>Total Ventas:</strong> $ <%= '%.2f' % @total_ventas %></h4>
+    <h4><strong style="color: #27ae60;">Total Cobros:</strong> $ <%= '%.2f' % @total_pagos %></h4>
+    <h4><strong style="color: #c0392b;">Deuda Total:</strong> $ <%= '%.2f' % @total_deuda %></h4>
+</div>

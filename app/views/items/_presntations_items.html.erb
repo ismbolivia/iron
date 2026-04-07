@@ -1,30 +1,112 @@
- <div class="white-box">
-    <div class="table-responsive">
-        <table class="table product-overview">
-           <thead>                               
-              <tr>
-                  <th>Imagen</th>
-                  <th>Nombre</th>
-                  <th>Cantidad</th>
-                  <th>Unidad</th>
-                  <th>Producto</th>
-                  <th>Precio</th>
-                </tr>
-            </thead>
-            <tbody>
-              <% @item.presentations.each do |presentation| %>
-                <tr>
-                  <td><%= image_tag(presentation.image_presentation.midium.url, :alt => "imge-item", :style => "width: 70px;") %></td>
-                  <td><%= presentation.name %></td>
-                  <td><%= presentation.qty %></td>
-                  <td><%= presentation.unit.name  %></td>
-                  <td><%= presentation.item.name%></td> 
-                  <td><%= @mycompany.get_current_currency.symbol%> <%= presentation.price%></td>                                
-                </tr>
+<div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
+  <table class="table product-overview" style="margin-bottom: 0;">
+    <thead style="background: #f8fafc; border-bottom: 2px solid #e2e8f0;">
+      <tr>
+        <th style="padding: 1.2rem; width: 80px; color: #0f172a; font-weight: 800;">IMAGEN</th>
+        <th style="padding: 1.2rem; color: #0f172a; font-weight: 800;">PRESENTACIÓN</th>
+        <th style="padding: 1.2rem; text-align: center; color: #0f172a; font-weight: 800;">CONTENIDO</th>
+        <th style="padding: 1.2rem; text-align: center; color: #0f172a; font-weight: 800;">DISPONIBILIDAD</th>
+        <th style="padding: 1.2rem; text-align: right; color: #0f172a; font-weight: 800;">PRECIO VENTA</th>
+        <th style="padding: 1.2rem; text-align: right; color: #0f172a; font-weight: 800;">ACCIONES</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% 
+        total_stock = item.get_total_stock.to_i rescue 0
+        # Separamos raíces (sin padre) de hijos
+        root_presentations = item.presentations.where(parent_id: nil).order(:qty => :desc)
+        all_presentations = []
+        
+        # Función recursiva para ordenar el árbol
+        def sort_hierarchy(roots, all_items, level = 0)
+          res = []
+          roots.each do |r|
+            res << { item: r, level: level }
+            children = all_items.select { |c| c.parent_id == r.id }
+            res += sort_hierarchy(children, all_items, level + 1) if children.any?
+          end
+          res
+        end
+        
+        sorted_list = sort_hierarchy(root_presentations, item.presentations)
+      %>
+      <% sorted_list.each do |node| %>
+        <% 
+           presentation = node[:item]
+           level = node[:level]
+        %>
+        <tr style="transition: all 0.2s; border-bottom: 1px solid #f1f5f9; <%= level > 0 ? 'background: #fdfdfd;' : 'background: white;' %>">
+          <td style="padding: 1.2rem; vertical-align: middle;">
+            <div style="width: 65px; height: 65px; background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.02); margin-left: <%= level * 20 %>px;">
+              <% if presentation.image_presentation.present? %>
+                <%= image_tag(presentation.image_presentation.midium.url, alt: presentation.name, style: "max-width: 100%; max-height: 100%; object-fit: contain;") %>
+              <% else %>
+                <i class="fas <%= level > 0 ? 'fa-box' : 'fa-boxes' %>" style="color: <%= level > 0 ? '#94a3b8' : '#6366f1' %>; font-size: 1.8rem;"></i>
               <% end %>
-            </tbody>
-         </table>
-      </div>     
-  </div>
+            </div>
+          </td>
+          <td style="padding: 1.2rem; vertical-align: middle;">
+            <div style="padding-left: <%= level * 10 %>px;">
+              <div style="font-weight: 800; color: var(--text-main); font-size: 1.1rem; margin-bottom: 2px;">
+                <% if level > 0 %>
+                  <span style="color: #6366f1; margin-right: 5px;">↳</span>
+                <% end %>
+                <%= presentation.name %>
+              </div>
+              
+              <% if presentation.parent_id.present? %>
+                <div style="font-size: 0.75rem; color: #4f46e5; font-weight: 800; text-transform: uppercase;">
+                   Contiene <%= presentation.qty_in_parent %> en cada <%= presentation.parent.name %>
+                </div>
+              <% end %>
+              
+              <div style="font-size: 0.7rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px;">
+                <i class="fas fa-barcode mr-1" style="font-size: 0.6rem;"></i> 1 <%= presentation.name %> = <%= presentation.qty %> <%= presentation.unit.name %>s
+              </div>
+            </div>
+          </td>
+          <td style="padding: 1.2rem; vertical-align: middle; text-align: center;">
+            <div style="font-weight: 900; color: var(--text-main); font-size: 1.3rem;"><%= presentation.qty %></div>
+            <div style="font-size: 0.7rem; color: var(--text-muted); font-weight: 800; text-transform: uppercase;"><%= presentation.unit.name %>(S)</div>
+          </td>
+          <td style="padding: 1.2rem; vertical-align: middle; text-align: center;">
+            <% 
+               pres_qty = presentation.qty.to_i
+               if pres_qty > 0
+                 packs = (total_stock / pres_qty.to_f).floor 
+                 remainder = total_stock % pres_qty
+               else
+                 packs = 0
+                 remainder = total_stock
+               end
+            %>
+            <div style="background: <%= packs > 0 ? '#f0fdf4' : '#fef2f2' %>; padding: 0.8rem; border-radius: 12px; border: 1px solid <%= packs > 0 ? '#dcfce7' : '#fee2e2' %>;">
+              <div style="font-weight: 900; color: <%= packs > 0 ? '#15803d' : '#b91c1c' %>; font-size: 1.4rem;">
+                <%= packs %> <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase;"><%= presentation.name.pluralize(packs) %></span>
+              </div>
+            </div>
+          </td>
+          <td style="padding: 1.2rem; vertical-align: middle; text-align: right;">
+             <div style="font-weight: 900; color: var(--accent-indigo); font-size: 1.6rem; letter-spacing: -0.5px;">
+               <span style="font-size: 0.9rem; font-weight: 700; vertical-align: middle; margin-right: 2px;"><%= @mycompany.get_current_currency.symbol rescue '$' %></span>
+               <%= number_with_precision(presentation.price, precision: 2) %>
+             </div>
+             <div style="font-size: 0.7rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Precio Sugerido</div>
+          </td>
+          <td style="padding: 1.2rem; vertical-align: middle; text-align: right;">
+            <div class="btn-group">
+               <%= link_to edit_presentation_path(presentation), class: "btn btn-sm", style: "background: #f8fafc; color: #475569; border: 1px solid #e2e8f0; margin-right: 5px;", remote: true, title: "Editar" do %>
+                 <i class="fas fa-edit"></i>
+               <% end %>
+               <%= link_to presentation, method: :delete, remote: true, data: { confirm: '¿Está seguro de eliminar esta presentación?' }, class: "btn btn-sm", style: "background: #fff1f2; color: #e11d48; border: 1px solid #ffe4e6;", title: "Eliminar" do %>
+                 <i class="fas fa-trash"></i>
+               <% end %>
+            </div>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
 
         

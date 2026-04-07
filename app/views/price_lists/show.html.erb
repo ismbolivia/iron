@@ -1,15 +1,112 @@
-    <div class="row">
-           <div class="col-lg-1"> </div>
-                  <div class="col-lg-10 panel panel-info">
-                   <div class="white-box">
-                    <div class="">
-                        <%= render 'shower', price_list: @price_list %>
-                         <%= render 'price_list_access', items: @items, price_list: @price_lis %>
+<style>
+  :root {
+    --primary-gradient: linear-gradient(135deg, #0ea5e9 0%, #2563eb 100%);
+    --bg-light: #f8fafc;
+    --border-color: #e2e8f0;
+    --text-main: #1e293b;
+    --text-muted: #64748b;
+  }
 
-                    </div>
-                  </div>
-                </div>
-              <div class="col-lg-1">
-              </div>
+  .premium-show-wrapper {
+    background: var(--bg-light); padding: 1.5rem; font-family: 'Inter', system-ui, sans-serif; min-height: 100vh;
+  }
+
+  .premium-banner-show {
+    background: var(--primary-gradient); padding: 2.5rem; border-radius: 20px;
+    color: white; margin-bottom: 2rem; position: relative; overflow: hidden;
+    box-shadow: 0 10px 30px rgba(14, 165, 233, 0.15);
+    display: flex; justify-content: space-between; align-items: flex-end;
+  }
+
+  .banner-show-info h1 { font-size: 2.6rem; font-weight: 800; letter-spacing: -0.02em; margin: 0; }
+  .banner-show-info p { font-size: 1.2rem; opacity: 0.9; margin-top: 8px; }
+
+  .show-metrics {
+    display: flex; gap: 1rem;
+  }
+  .metric-badge-premium {
+    background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.25); border-radius: 12px;
+    padding: 10px 18px; display: flex; flex-direction: column; align-items: flex-start;
+  }
+  .metric-badge-label { font-size: 0.75rem; opacity: 0.8; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+  .metric-badge-value { font-size: 1.2rem; font-weight: 800; margin-top: 2px; }
+
+  .action-bar-show {
+    display: flex; gap: 12px; margin-top: 20px;
+  }
+
+  .btn-premium-back {
+    background: white; border: 1px solid #cbd5e1; border-radius: 10px;
+    color: #475569; font-weight: 700; padding: 10px 20px; font-size: 0.95rem;
+    transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px; text-decoration: none !important;
+  }
+  .btn-premium-back:hover { background: #f1f5f9; color: #1e293b; transform: translateX(-3px); }
+
+  .btn-premium-main {
+    background: var(--primary-gradient); border: none; border-radius: 10px;
+    color: white !important; font-weight: 700; padding: 10px 22px; font-size: 0.95rem;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2); transition: all 0.2s;
+    display: inline-flex; align-items: center; gap: 8px; text-decoration: none !important;
+  }
+  .btn-premium-main:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(37, 99, 235, 0.3); }
+
+  .table-background {
+    background: white; border-radius: 20px; padding: 1rem; border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+  }
+</style>
+
+<div class="premium-show-wrapper">
+  
+  <div class="premium-banner-show">
+    <div class="banner-show-info">
+      <div style="margin-bottom: 12px;">
+        <%= link_to price_lists_path, class: "btn-premium-back" do %>
+          <i class="fa fa-arrow-left"></i> Volver
+        <% end %>
+      </div>
+      <h1><%= @price_list.name %></h1>
+      <p><i class="fa fa-calendar-alt mr-2" style="opacity: 0.7;"></i> Vigente desde el <%= @price_list.date&.strftime("%d/%m/%Y") %></p>
+      
+      <div class="action-bar-show">
+        <%= link_to builder_price_list_path(@price_list), class: "btn-premium-main" do %>
+          <i class="fa fa-sliders-h"></i> Abrir Constructor POS
+        <% end %>
+        <%= link_to price_list_item_price_list_path(@price_list, format: :pdf), class: "btn-premium-main", style: "background: white; color: #1e293b !important; border: 1px solid #cbd5e1;", target: "_blank" do %>
+          <i class="fa fa-print"></i> Exportar Lista
+        <% end %>
+      </div>
     </div>
+
+    <div class="show-metrics">
+      <div class="metric-badge-premium">
+        <span class="metric-badge-label">Artículos</span>
+        <span class="metric-badge-value"><%= @price_list.items.where(active: true).count %></span>
+      </div>
+      <div class="metric-badge-premium">
+        <span class="metric-badge-label">Estado</span>
+        <span class="metric-badge-value">
+          <span style="color: <%= @price_list.activo? ? '#4ade80' : '#f87171' %>;">
+            <%= @price_list.activo? ? 'ACTIVO' : 'INACTIVO' %>
+          </span>
+        </span>
+      </div>
+      <div class="metric-badge-premium">
+        <span class="metric-badge-label">Utilidad</span>
+        <span class="metric-badge-value"><%= @price_list.utilidad %>%</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="table-background">
+     <!-- 🔍 Buscador específico para esta lista -->
+     <div style="margin-bottom: 2rem;">
+        <%= render partial: 'layouts/partials/search_form', locals: { search_entity: 'price_lists', word: "Item" , view_kamback: '', view_list: '', url_pdf: nil, url: nil, ban: true, url_csv: '', url_xls: '' } %>
+     </div>
+
+     <%= render 'price_list_access' %>
+  </div>
+
+</div>
 

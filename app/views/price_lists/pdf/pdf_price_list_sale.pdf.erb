@@ -19,7 +19,6 @@
 				                <tr>
 				                  <th>Cod.</th>
 				                  <th>Nombre</th>
-				                  <th>Descripción</th>
 				                  <th>Imagen</th>
 				                  <th>Unidad.</th>
 				                  <th>Precio.</th>
@@ -32,7 +31,6 @@
 					                  <tr>
 					                    <td><%= item.code %></td>
 					                    <td><%= item.name  %></td>
-					                    <td><%= item.item_description %> </td>
 					                    <td><% if item.image.present?  %>
 				                    	 <%= wicked_pdf_image_tag item.image.large.url, :alt => "imge-item", :width => "50" %>	               				              <% end %>
 							                  <% if !item.image.present?  %>

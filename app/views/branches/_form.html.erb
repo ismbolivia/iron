@@ -1,0 +1,58 @@
+<div class="row bg-title">
+  <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
+    <h4 class="page-title"><%= branch.new_record? ? "Nueva Sucursal" : "Editar Sucursal" %></h4>
+  </div>
+  <div class="col-lg-9 col-sm-8 col-md-8 col-xs-12">
+    <%= link_to 'Volver a Sucursales', branches_path, class: "btn btn-default pull-right m-l-20 hidden-xs hidden-sm waves-effect waves-light" %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-12">
+    <div class="white-box">
+      <%= form_with(model: branch, local: true, class: "form-material") do |form| %>
+        <% if branch.errors.any? %>
+          <div class="alert alert-danger">
+            <h4>Se encontraron los siguientes errores:</h4>
+            <ul>
+            <% branch.errors.full_messages.each do |message| %>
+              <li><%= message %></li>
+            <% end %>
+            </ul>
+          </div>
+        <% end %>
+
+        <%= form.hidden_field :company_id, value: Company.first&.id %>
+
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <%= form.label :name, "Nombre de Sucursal (Ej: La Paz)", class: "control-label" %>
+              <%= form.text_field :name, class: "form-control", required: true %>
+            </div>
+          </div>
+          
+          <div class="col-md-4">
+            <div class="form-group">
+              <%= form.label :address, "Dirección o Ubicación Fiscal", class: "control-label" %>
+              <%= form.text_field :address, class: "form-control" %>
+            </div>
+          </div>
+          
+          <div class="col-md-4">
+            <div class="form-group">
+              <%= form.label :phone, "Teléfono de Contacto", class: "control-label" %>
+              <%= form.text_field :phone, class: "form-control" %>
+            </div>
+          </div>
+        </div>
+
+        <div class="row m-t-20">
+          <div class="col-xs-12 text-center">
+            <%= form.submit "Guardar Datos de la Sucursal", class: "btn btn-info waves-effect waves-light" %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

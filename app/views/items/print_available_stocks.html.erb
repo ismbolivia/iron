@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Lotes Disponibles - <%= @item.code %></title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; font-size: 12px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th, td { border: 1px solid #ccc; padding: 6px; text-align: left; }
+    th { background: #f0f0f0; }
+    h2 { margin-bottom: 5px; }
+    .text-right { text-align: right; }
+    .text-center { text-align: center; }
+    @media print {
+      .no-print { display: none; }
+    }
+  </style>
+</head>
+<body onload="window.print()">
+  <div class="no-print" style="margin-bottom: 10px;">
+    <button onclick="window.print()" style="padding: 10px 20px; font-size: 14px; cursor: pointer; background: #4f46e5; color: white; border: none; border-radius: 4px;"><i class="fas fa-print"></i> Imprimir</button>
+    <button onclick="window.close()" style="padding: 10px 20px; font-size: 14px; cursor: pointer; background: #e2e8f0; color: #475569; border: none; border-radius: 4px; margin-left: 10px;"><i class="fas fa-times"></i> Cerrar</button>
+  </div>
+
+  <h2>Lotes Disponibles</h2>
+  <div style="margin-bottom: 15px;">
+    <strong>Producto:</strong> <%= @item.code %> - <%= @item.name %><br>
+    <strong>Fecha de Impresión:</strong> <%= Time.now.strftime("%d/%m/%Y %H:%M") %>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th class="text-center">#</th>
+        <th>Fecha Ingreso</th>
+        <th>Lote / Documento</th>
+        <th class="text-center">Detalle / Empaque</th>
+        <th class="text-right">Saldo (<%= @item.unit.name %>s)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% if @available_stocks.empty? %>
+        <tr>
+          <td colspan="5" class="text-center">No hay lotes disponibles.</td>
+        </tr>
+      <% else %>
+        <% @available_stocks.each_with_index do |(main_stock, balance, moves_count), index| %>
+          <% 
+            lot_display_name = main_stock.lote.presence || (main_stock.purchase_order_line ? "LOTE OC-#{main_stock.purchase_order_line.purchase_order.name}" : "SISTEMA") 
+            presentation = main_stock.presentation
+            repacked = main_stock.respond_to?(:repacking_id) && main_stock.repacking_id.present?
+          %>
+          <tr>
+             <td class="text-center" style="width: 5%;"><%= index + 1 %></td>
+             <td style="width: 15%;"><%= main_stock.created_at.strftime("%d/%m/%Y") %></td>
+             <td style="width: 35%;">
+               <strong><%= lot_display_name %></strong>
+               <% if moves_count > 1 %><br/><small style="color: #0ea5e9;"><i class="fas fa-sync"></i> Lote consolidado</small><% end %>
+               <% if repacked %> <br/><small style="color: #8b5cf6; font-weight: bold;"><i class="fas fa-box-open"></i> Lote Re-empacado</small> <% end %>
+             </td>
+             <td class="text-center" style="width: 25%;">
+                <% if presentation %>
+                    <strong><%= presentation.name %></strong> <br/>
+                    <small>(<%= presentation.qty %> <%= @item.unit.name %>s)</small>
+                <% else %>
+                    Sin Presentación
+                <% end %>
+             </td>
+             <td class="text-right" style="font-size: 14px; width: 20%;"><strong><%= number_with_precision(balance, precision: 0) %></strong></td>
+          </tr>
+        <% end %>
+      <% end %>
+    </tbody>
+    <% unless @available_stocks.empty? %>
+      <tfoot>
+        <tr>
+          <td colspan="4" class="text-right" style="font-size: 14px; padding: 10px;"><strong>SUMATORIA TOTAL DE STOCK DISPONIBLE:</strong></td>
+          <td class="text-right" style="font-size: 16px; background: #f0fdf4; color: #166534; padding: 10px;"><strong><%= number_with_precision(@available_stocks.sum { |g| g[1] }, precision: 0) %></strong></td>
+        </tr>
+      </tfoot>
+    <% end %>
+  </table>
+</body>
+</html>

@@ -1,13 +1,52 @@
-$("ul.errors").html("");
 <% if @payment.errors.any? %>
-    $("#payment_sale").val("")
-	$('#payment_sale').css('border-color', 'red');
-	$('#div-errores').addClass('alert alert-danger');
-	 document.getElementById("div-errores").innerHTML = "<h2><%= pluralize(@payment.errors.count, 'error') %> prohibited this zona from being saved:</h2>"+
-	" <ul><% @payment.errors.full_messages.each do |message| %><li><%= message %></li><% end %></ul>";
-<% else %>
+  // Handle POS errors
+  if ($("#pos-payment-errors").length > 0) {
+    $("#pos-payment-errors").html("<div class='alert alert-danger shadow-sm border-0' style='border-radius:12px'><i class='fas fa-exclamation-circle mr-2'></i> <strong>Error:</strong><ul class='mb-0 small'><% @payment.errors.full_messages.each do |msg| %><li><%= msg %></li><% end %></ul></div>");
+  }
 
-		 $("#panel_payment_sale").html("<%= escape_javascript(render(partial: 'payments/table', locals: { payments: @sale.payments, show_actions: true })) %>");
-		 $("#new-payment-modal-current").html("<%= escape_javascript(render 'show_recibo') %>");		
+  // Legacy error handling
+  if ($("#div-errores").length > 0) {
+    $("#div-errores").addClass('alert alert-danger');
+    document.getElementById("div-errores").innerHTML = "<h2><%= pluralize(@payment.errors.count, 'error') %> prohibited this zona from being saved:</h2>"+
+    " <ul><% @payment.errors.full_messages.each do |message| %><li><%= message %></li><% end %></ul>";
+  }
+<% else %>
+    $("#panel_payment_sale").html("<%= escape_javascript(render(partial: 'payments/table', locals: { payments: @sale.payments, show_actions: true })) %>");
+    $("#new-payment-modal-current").html("<%= escape_javascript(render 'show_recibo') %>");
+    
+    // Refresh POS results if in POS mode
+    if ($(".pos-payment-container").length > 0) {
+      // 1. Refresh the sidebar list
+      var keywords = $("#pos-payment-search").val();
+      $.ajax({
+        url: '/payments_pos_search',
+        type: 'GET',
+        data: { keywords: keywords },
+        dataType: 'script'
+      });
+      
+      // Mostrar Modal del recibo de pago
+      $('#new-payment-modal-current').modal('show');
+      
+      // Mostrar notificación de éxito
+      if (typeof showPosNotification === 'function') {
+        showPosNotification("Cobro de <%= @mycompany.get_current_currency.symbol %><%= number_with_precision(@payment.rode, precision: 2) %> registrado exitosamente.");
+      }
+
+      // 2. Also refresh the current detail view to show updated balance/history
+      var currentSaleId = $("#payment_sale_id").val();
+      if (currentSaleId) {
+        $.ajax({
+          url: '/payments_pos_search',
+          type: 'GET',
+          data: { sale_id: currentSaleId },
+          dataType: 'script'
+        }).done(function() {
+          if (typeof highlightNewPayment === 'function') {
+            highlightNewPayment(<%= @payment.id %>);
+          }
+        });
+      }
+    }
 <% end %>
  

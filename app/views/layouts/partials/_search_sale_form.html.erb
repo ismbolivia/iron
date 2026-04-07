@@ -3,7 +3,7 @@
    <div class="input-group">    
 
          <%= label_tag :keywords, nil, class: "sr-only" %>
-         <%= text_field_tag :keywords, nil, placeholder: "Buscar", class: "form-control", value: "#{@keywords}" %>    
+         <%= text_field_tag :keywords, nil, placeholder: "Cliente, Producto, Nro. Nota...", class: "form-control", value: "#{@keywords}" %>    
 
 
     
@@ -42,10 +42,6 @@
        <span class="input-group-btn" >
           <%= button_tag(type: 'submit', class: "btn btn-success") do %>
           <span class="fas fa-search"></span> Buscar <%= "#{word}" %><% end %>
-
-          <%= link_to '', "#{view_kamback}", class: "btn btn-primary pull-right fas fa-th" %>
-          <%= link_to '', "#{view_list}", class: "btn btn-info pull-right fas fa-list" %>
-          <%= link_to '', "#{url}",  remote: ban, class: "btn btn-success pull-right fas fa-plus" %>         
        </span>
 
    </div>

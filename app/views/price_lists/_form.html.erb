@@ -25,12 +25,26 @@
                     <%= form.text_field :name, placeholder: "Nombre", class: "form-controles m-t-50" %>
                   </div>
                  
-                    <div class="input-group m-t-50 ">
-                      <p class="form-control">
-                        <%= form.label :default, 'Por defecto' %>
-                        <%= form.check_box :default %> 
+                    <div class="input-group m-t-50 " id="default_container">
+                      <p class="form-control" style="height: auto; padding: 10px; border-radius: 8px;">
+                        <%= form.label :default, '¿Es Predeterminada?' %>
+                        <%= form.check_box :default, style: "margin-left: 10px;" %> 
                       </p>
-                    
+                   </div>
+
+                    <div class="input-group m-t-20 ">
+                      <p class="form-control" style="height: auto; padding: 10px; border-radius: 8px;">
+                        <%= form.label :list_type, 'Categoría de Lista' %>
+                        <%= form.select :list_type, PriceList.list_types.keys.map { |lt| [lt.humanize, lt] }, {}, class: "form-control", id: "price_list_list_type", style: "margin-top: 5px; font-weight: 800; color: #4338ca;" %>
+                      </p>
+                      <small style="color: #64748b; font-style: italic; margin-top: 5px; display: block;">Las listas tipo 'Cliente' u 'Otras' no son usables en el POS y siguen el precio default.</small>
+                   </div>
+
+                    <div class="input-group m-t-20 ">
+                      <p class="form-control" style="height: auto; padding: 10px; border-radius: 8px;">
+                        <%= form.label :state, 'Estado Operativo' %>
+                        <%= form.select :state, PriceList.states.keys.map { |s| [s.humanize, s] }, {}, class: "form-control", style: "margin-top: 5px;" %>
+                      </p>
                    </div>
                                     
               </div>
@@ -76,3 +90,23 @@
         </div>
       </div>
 <% end %>
+
+<script>
+  $(document).ready(function() {
+    function toggleDefaultVisibility() {
+      var listType = $('#price_list_list_type').val();
+      if (listType === 'sistema') {
+        $('#default_container').fadeIn();
+      } else {
+        $('#default_container').fadeOut();
+        $('#price_list_default').prop('checked', false);
+      }
+    }
+
+    var listTypeSelect = document.getElementById('price_list_list_type');
+    if (listTypeSelect) {
+      listTypeSelect.addEventListener('change', toggleDefaultVisibility);
+      toggleDefaultVisibility();
+    }
+  });
+</script>

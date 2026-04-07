@@ -27,14 +27,25 @@
             
               <div class="input-group m-t-50">
                   <div class="input-group-addon "><i class="fas fa-list-ul"></i></div>
-                   <%= form.text_area :description, class: "form-control" %>
-                  
+                   <%= form.text_area :description, class: "form-control", placeholder: "Descripción de la caja..." %>
               </div>
-              <div class="input-group ">
-                  <div class="input-group-addon"><i class="fas fa-diagnoses"></i></div>
+              <div class="input-group" style="margin-top: 10px;">
+                  <div class="input-group-addon"><i class="fas fa-money-bill-wave"></i></div>
                <%= form.collection_select :currency_id, @currencies, :id, :get_full_name, 
                       {selected: @box.currency_id, include_blank: 'Seleccione una moneda'},
                       {class: "form-control"} %>  
+              </div>
+              <div class="input-group" style="margin-top: 10px;">
+                  <div class="input-group-addon"><i class="fas fa-barcode"></i></div>
+                  <%= form.text_field :code, class: "form-control", placeholder: "Código (Ej. CR-001)" %>
+              </div>
+              <div class="input-group" style="margin-top: 10px;">
+                  <div class="input-group-addon"><i class="fas fa-tags"></i></div>
+                  <%= form.select :box_type, options_for_select(Box.box_types.keys.map { |k| [k.titleize, k] }, form.object.box_type), { include_blank: 'Seleccione Tipo de Caja' }, { class: "form-control", id: "box_type_select", required: true } %>
+              </div>
+              <div class="input-group" style="margin-top: 10px;" id="parent_box_container">
+                  <div class="input-group-addon"><i class="fas fa-sitemap"></i></div>
+                  <%= form.collection_select :parent_box_id, Box.where.not(id: box.id).where(box_type: Box.box_types.values_at(:central_matriz, :central_sucursal, :almacen_matriz)), :id, :name_with_currency, { include_blank: 'Reporta/Rinde Cuentas a (Caja Superior)' }, { class: "form-control" } %>
               </div>
           </div>
       </div>

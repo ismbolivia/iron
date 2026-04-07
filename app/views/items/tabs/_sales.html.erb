@@ -1,0 +1,103 @@
+                <div class="white-box" style="border: none; padding: 0;">
+                      <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
+                              <table class="table product-overview" style="margin-bottom: 0;">
+                                  <thead style="background: #e2e8f0; border-bottom: 2px solid #cbd5e1;"> <%# Darker header %>
+                                    <tr>
+                                      <th style="padding: 1.2rem; color: #0f172a; font-weight: 800;">Fecha</th>
+                                      <th style="padding: 1.2rem; color: #0f172a; font-weight: 800;">Nro Nota</th>
+                                      <th style="padding: 1.2rem; color: #0f172a; font-weight: 800;">Usuario</th>
+                                      <th style="padding: 1.2rem; color: #0f172a; font-weight: 800;">Cliente</th>
+                                      <th style="padding: 1.2rem; text-align: right; color: #0f172a; font-weight: 800;">Cantidad (<%= item.unit.name.upcase %>S)</th>
+                                      <th style="padding: 1.2rem; color: #1e3a8a; font-weight: 800;">Instrucción Despacho</th>
+                                    </tr>
+                                  </thead>
+
+                                <tbody>
+  <%
+    base_query = item.sale_details.joins(:sale).where(sales: { status_priority: [1, 2, 3, 4, 5] })
+    grand_total_qty = base_query.sum(:qty)
+    sale_details = base_query.includes(:sale => [:user, :client, :proformas]).order("sales.created_at DESC").limit(50)
+    details_by_year = sale_details.group_by { |sd| sd.sale.created_at.year }
+                                    
+                                    details_by_year.each do |year, details|
+                                      year_subtotal = 0
+                                  %>
+                                    <%# Encabezado de Año %>
+                                    <tr style="background: #f1f5f9;">
+                                      <td colspan="5" style="padding: 0.8rem 1.2rem; font-weight: 800; color: var(--accent-indigo); font-size: 1rem;">
+                                        <i class="far fa-calendar-alt mr-2"></i> Gestión <%= year %>
+                                      </td>
+                                    </tr>
+
+                                    <% details.each do |detail| 
+                                       sale = detail.sale
+                                       qty = detail.qty.to_f
+                                       year_subtotal += qty
+                                       grand_total_qty += qty
+                                    %>
+                                      <tr>
+                                        <td style="padding: 1.2rem; color: var(--text-muted); font-size: 1.1rem;">
+                                          <%= sale.created_at.strftime("%d/%m/%Y") %>
+                                        </td>
+                                        <td style="padding: 1.2rem;">
+                                          <% if sale.proformas.any? %>
+                                            <%= link_to proforma_path(sale.proformas.first), remote: true, style: "text-decoration: none;" do %>
+                                              <span class="badge" style="background: #eff6ff; color: #3b82f6; border: 1px solid #dbeafe; font-weight: 800; padding: 6px 10px; font-size: 1rem; cursor: pointer;">
+                                                <%= sale.proformas.first.number_recibo %>
+                                              </span>
+                                            <% end %>
+                                          <% else %>
+                                            <span class="badge" style="background: #fff1f2; color: #e11d48; border: 1px solid #ffe4e6; font-weight: 700; padding: 6px 10px; font-size: 0.9rem;">Sin Nota</span>
+                                          <% end %>
+                                        </td>
+                                        <td style="padding: 1.2rem; color: var(--text-main); font-size: 1.1rem; font-weight: 600;"><%= sale.user.name || sale.user.email %></td>
+                                        <td style="padding: 1.2rem; color: var(--text-main); font-size: 1.1rem; font-weight: 700;"><%= sale.client.name %></td>
+                                        <td style="padding: 1.2rem; text-align: right; font-weight: 900; color: var(--text-main); font-size: 1.3rem;">
+                                          <%= number_with_precision(qty, precision: 0) %> <small style="font-size: 0.8rem; color: var(--text-muted);"><%= item.unit.name.downcase %>s</small>
+                                        </td>
+                                        <td style="padding: 1.2rem; color: #1e3a8a; font-weight: 700; font-size: 0.85rem; background: #f8faff;">
+                                          <i class="fas fa-truck-loading mr-2"></i>
+                                          <%= detail&.dispatch_instructions.presence || 'N/A' %>
+                                        </td>
+                                      </tr>
+                                    <% end %>
+
+                                    <%# Subtotal por Año %>
+                                    <tr style="background: #f8fafc; border-bottom: 2px solid #e2e8f0;">
+                                      <td colspan="4" style="text-align: right; padding: 1.2rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; font-size: 1rem; letter-spacing: 0.5px;">
+                                        Subtotal Gestión <%= year %>:
+                                      </td>
+                                      <td style="text-align: right; padding: 1.2rem; font-weight: 800; color: var(--text-main); font-size: 1.4rem;">
+                                        <%= number_with_precision(year_subtotal, precision: 0) %>
+                                      </td>
+                                    </tr>
+                                  <% end %>
+                                  
+                                  <tr style="background: #f8fafc; border-top: 2px solid #cbd5e1;">
+                                    <td colspan="4" style="text-align: right; padding: 1.5rem 1.2rem; font-weight: 800; text-transform: uppercase; font-size: 1.25rem; letter-spacing: 1px;">
+                                      TOTAL HISTÓRICO DE VENTAS:
+                                    </td>
+                                    <td style="text-align: right; padding: 1.5rem 1.2rem; font-weight: 900; font-size: 2rem;">
+                                      <%= number_with_precision(grand_total_qty, precision: 0) %>
+                                    </td>
+                                  </tr>
+                                  
+                                  <% if base_query.count > 50 %>
+                                    <tr>
+                                      <td colspan="6" class="text-center" style="padding: 1.5rem; color: #64748b; font-weight: 600; font-style: italic; background: #f8fafc;">
+                                        <i class="fas fa-info-circle mr-1"></i> Mostrando solo las últimas 50 ventas registradas.
+                                      </td>
+                                    </tr>
+                                  <% end %>
+<% if base_query.count > 50 %>
+  <tr>
+    <td colspan="6" class="text-center" style="padding: 1.5rem; color: #64748b; font-weight: 600; font-style: italic; background: #f8fafc;">
+      <i class="fas fa-info-circle mr-1"></i> Mostrando solo las últimas 50 ventas registradas.
+    </td>
+  </tr>
+<% end %>
+                                </tbody>
+                              </table>
+                        </div>
+                  </div>
+             <div class="clearfix"></div>

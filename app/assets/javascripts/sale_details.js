@@ -72,51 +72,51 @@ $(document).ready(function () {
             }
           } else {
             // Item correcto
+            var lotData = res["0"];
+            window.currentAvailableLots = lotData.available_lots;
+            
+            $('#sale_details_item_id').val(lotData.id.toString());
+            $('#sale_details_price').val(lotData.price.toString());
+            $('#sale_details_discount').val(lotData.discount.toString());
+            $('#sale_details_price_id').val(lotData.my_prices);
 
-            $('#sale_details_item_id').val(res["0"].id.toString());
-            $('#sale_details_price').val(res["0"].price.toString());
-            $('#sale_details_discount').val(res["0"].discount.toString());
-            $('#sale_details_price_id').val(res["0"].my_prices);
-            $('#sale_details_price').disabled = false;
+            $('#sale_details_price_sale').val(parseFloat(lotData.price_sale_unit).toFixed(4))
+            document.getElementById('unit_item_id').innerHTML = lotData.my_unidad;
+            
+            // Stock del Primer Lote
+            var firstLot = window.currentAvailableLots[0];
+            document.getElementById('stock_current').innerHTML = firstLot ? firstLot.qty_available : '0';
 
-            $('#sale_details_price_sale').val(res["0"].price_sale_unit)
-            document.getElementById('unit_item_id').innerHTML = res["0"].my_unidad;
-            document.getElementById('stock_current').innerHTML = res["0"].stock_current;
-            a = $('#price_list_id_').val();
-            var bar = JSON.parse(res["0"].my_prices);
-            var pres = res["0"].presentations;
+            var prices = JSON.parse(lotData.my_prices);
+            var presentations = lotData.presentations;
+            var activePriceListId = $('#price_list_id_').val();
 
+            $("#sale_details_price_id").empty();
+            for (var i = 0; i < prices.length; i++) {
+              var selected = (parseInt(activePriceListId) == parseInt(prices[i].price_list_id)) ? 'selected' : '';
+              $("#sale_details_price_id").append('<option ' + selected + ' value=' + prices[i].id + ' >' + prices[i].name + '</option>');
+            }
 
-            for (var i = 0; i < bar.length; i++) {
-              if (parseInt(a) == parseInt(bar[i].price_list_id)) {
-                $("#sale_details_price_id").append('<option selected value=' + bar[i].id + ' >' + bar[i].name + '</option>');
-
-              } else {
-                $("#sale_details_price_id").append('<option value=' + bar[i].id + ' >' + bar[i].name + '</option>');
+            var $selPres = $('#sel_presentation_id');
+            $selPres.empty();
+            if (firstLot && firstLot.presentation) {
+              $selPres.append('<option value="' + firstLot.presentation.factor + '" selected>' + firstLot.presentation.name + ' (Sugerido Lote)</option>');
+            }
+            presentations.forEach(function(p) {
+              if (!firstLot || !firstLot.presentation || p.id !== firstLot.presentation.id) {
+                $selPres.append('<option value=' + p.qty + '>' + p.name + ' (' + p.qty + ' ' + lotData.my_unidad + ')</option>');
               }
-            }
-            document.getElementById('sel_presentation_id').innerHTML = '';
+            });
 
-
-
-            for (var i = 0; i < pres.length; i++) {
-              document.getElementById('sel_presentation_id').innerHTML += '<option value=' + pres[i].qty + '>' + pres[i].name + ' (' + pres[i].qty + ' ' + res["0"].my_unidad + ')</option>';
-            }
-
-            var qty_unit = document.getElementById("sel_presentation_id").value;
-            var qty_pres = document.getElementById("qty_presentation_id").value;
-            if (pres.length <= 0) {
+            if (presentations.length <= 0 && (!firstLot || !firstLot.presentation)) {
               document.getElementById("sale_details_qty").focus();
-              document.getElementById('qty_presentation_id').value = ' ';
-              //document.getElementById("qty_presentation_id").disabled=  true;
-              document.getElementById("sale_details_qty").value = " ";
+              document.getElementById('qty_presentation_id').value = '';
+              document.getElementById("sale_details_qty").value = "";
             } else {
               document.getElementById("qty_presentation_id").focus();
-              //document.getElementById("sale_details_qty").disabled = true;
-              document.getElementById("sale_details_qty").value = qty_unit * qty_pres;
-
+              document.getElementById("qty_presentation_id").value = "1";
+              document.getElementById("sale_details_qty").value = $selPres.val() || 0;
             }
-            // document.getElementById("sale_details_price").disabled=  true;
 
             $('#sale_details_item').css('border-color', '#ccc');
             update_price();
@@ -126,19 +126,25 @@ $(document).ready(function () {
       });
     });
 
-
-    $('#qty_presentation_id').on('blur', function () {
-
-      // control de stock
-      document.getElementById("sale_details_qty").value = document.getElementById("sel_presentation_id").value * document.getElementById("qty_presentation_id").value;
-      document.getElementById("sale_details_qty").focus();
+    $('#qty_presentation_id').on('input change', function () {
+      var qty = (document.getElementById("sel_presentation_id").value || 0) * (document.getElementById("qty_presentation_id").value || 0);
+      document.getElementById("sale_details_qty").value = qty;
+      validate_lot_coverage(qty);
       update_price();
-
+      subtotal();
     });
 
-    $('#sale_details_price_id').on('blur', function () {
-      update_price();
+    function validate_lot_coverage(requestedQty) {
+      if (!window.currentAvailableLots || window.currentAvailableLots.length <= 1) return;
+      var firstLot = window.currentAvailableLots[0];
+      if (requestedQty > firstLot.qty_available) {
+        var nextLot = window.currentAvailableLots[1];
+        toastr.info('⚠️ Lote actual agotado ('+firstLot.qty_available+' '+document.getElementById('unit_item_id').innerHTML+'). El resto se tomará del ' + nextLot.lote, 'Despacho Mixto', {timeOut: 5000});
+      }
+    }
 
+    $('#sale_details_price_id').on('change', function () {
+      update_price();
     });
     function subtotal() {
       $('#sale_details_subtotal').val(get_subtotal());

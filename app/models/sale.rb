@@ -7,8 +7,10 @@ class Sale < ApplicationRecord
     paid: "PAGADA",
     annulled: "ANULADO",
     draft: "BORRADOR",
+    quoted: "COTIZACION",
     to_annul: "PARA ANULAR",
-    canceled: "CANCELADO"
+    canceled: "PAGADA",
+    observed: "OBSERVADA"
   }.freeze
 
 	has_many :sale_details, inverse_of: :sale, dependent: :destroy
@@ -22,15 +24,59 @@ class Sale < ApplicationRecord
 	has_many :devolutions
 	belongs_to :user
 	belongs_to :client
+	belongs_to :branch, optional: true
+	belongs_to :observer, class_name: 'User', foreign_key: 'observed_by_user_id', optional: true
 	validates :number, presence: true
 	validates :date, presence: true
 	accepts_nested_attributes_for :sale_details, reject_if: :sale_detail_rejectable?,
 									allow_destroy: true
-	enum state: [:draft, :confirmed, :canceled, :annulled]
+	enum state: [:draft, :confirmed, :canceled, :annulled, :quoted, :observed]
 	enum invoiced: [:por_facturar, :facturado]
 
+	after_save :process_stock_changes, if: -> { saved_change_to_state? || confirmed? }
 	after_save :update_status_priority!
+	before_destroy :restore_all_stock
+	after_commit :clear_dashboard_cache
 
+	def process_stock_changes
+		if confirmed?
+			# Siempre recalculamos para asegurar consistencia en ediciones
+			recalculate_stock_fifo
+		elsif draft? || annulled? || quoted?
+			# Si se anuló o volvió a borrador, restauramos stock
+			restore_all_stock
+		end
+	end
+
+	def recalculate_stock_fifo
+		# 1. Restaurar stock actual sin borrar los detalles, solo movimientos
+		self.sale_details.reload.each do |detail|
+			detail.movements.each do |m|
+				s = m.stock
+				if s
+					s.update_columns(qty_out: s.qty_out - m.qty_out, state: :disponible)
+				end
+				m.destroy
+			end
+		end
+		
+		# 2. Volver a descontar usando FIFO con las cantidades nuevas
+		self.sale_details.reload.each do |detail|
+			Sale.deduct_stock(detail.qty, detail.item_id, detail.id) if detail.qty.to_f > 0
+		end
+	end
+
+	def restore_all_stock
+		self.sale_details.reload.each do |detail|
+			detail.movements.each do |m|
+				s = m.stock
+				if s
+					s.update_columns(qty_out: s.qty_out - m.qty_out, state: :disponible)
+				end
+				m.destroy
+			end
+		end
+	end
 
 	def total
 		des = self.duscount_mount_all
@@ -100,7 +146,7 @@ end
 	end
 
 	def sub_total_before_devolution_op
-		details = self.sale_details
+		details = self.sale_details.includes(:item)
 		total = 0.0
 		details.flat_map do |d|
 			total += d.subtotal
@@ -108,7 +154,7 @@ end
 		total.round(2)
 	end
 	def sub_total_before_devolution
-		details = self.sale_details
+		details = self.sale_details.includes(:item)
 		total = 0.0
 		details.flat_map do |d|
 			if d.todiscount
@@ -119,7 +165,7 @@ end
 		total.round(2)
 	end
 	def sub_total_afther_devolution
-		details = self.sale_details
+		details = self.sale_details.includes(:item)
 		total = 0.0
 		details.flat_map do |d|
 			if !d.todiscount
@@ -130,7 +176,7 @@ end
 		total.round(2)
 	end
 	def sub_total_op
-		details = self.sale_details
+		details = self.sale_details.includes(:item)
 		total = 0.0
 		details.flat_map do |d|
 			total += d.subtotal
@@ -138,7 +184,7 @@ end
 		(total).round(2)
 	end
 	def sub_total
-		details = self.sale_details
+		details = self.sale_details.includes(:item)
 		total = 0.0
 		details.flat_map do |d|
 			if d.todiscount
@@ -149,7 +195,7 @@ end
 		(total).round(2)
 	end
 	def total_pagos
-		my_payments = self.payments
+		my_payments = self.payments.where.not(state: :rejected)
 
 		total = 0.0
 		my_payments.flat_map do |p|
@@ -158,7 +204,7 @@ end
 		total.round(2)
 	end
 	def total_des_pagos
-		my_payments = self.payments
+		my_payments = self.payments.where.not(state: :rejected)
 		total = 0.0
 		my_payments.flat_map do |p|
 			total += p.get_discount_payment
@@ -178,7 +224,7 @@ end
 	end
 	def iscredit
 		if self.credit
-			res = "VALIDO 30 DIAS"
+			res = "VALIDO 3 DIAS"
 		else
 			res = " "
 		end
@@ -188,13 +234,13 @@ end
 		discount_total = discount_sal.to_i
 	end
 	def duscount_mount_all
-		 mount = (self.sub_total ? ((sub_total)*self.discount_all)/100 : 0).round(2)
+		 mount = (self.sub_total.to_f * self.discount_all.to_f / 100.0).round(2)
 	end
 	def duscount_mount_all_final
-		 mount = (self.sub_total ? ((sub_total)*self.discount_total)/100 : 0).round(2)
+		 mount = (self.sub_total.to_f * self.discount_total.to_f / 100.0).round(2)
 	end
 	def duscount_mount_all_final_op
-		 mount = (self.sub_total_op ? ((sub_total_op)*self.discount_total)/100 : 0).round(2)
+		 mount = (self.sub_total_op.to_f * self.discount_total.to_f / 100.0).round(2)
 	end
 	# verifica que si s epuede efectivisar la venta  mediante la disponivilidad de credito actual del cliente  en caso de que la venta sea a credito
 	def destroy_sale_details_all
@@ -226,15 +272,22 @@ end
 	end
 
 	def getSaleDetail(id)
-		sale_detail_item = self.sale_details.where(item_id: id).first
-		qty = sale_detail_item.qty
-
+		sale_detail_item = self.sale_details.find_by(item_id: id)
+		sale_detail_item
 	end
 
 	def payment_status
 		# 1. Estados que anulan o borran la venta
-		if draft? || (confirmed? && proformas.empty?)
+		if draft?
 		  return PAYMENT_STATUSES[:draft]
+		end
+
+		if quoted?
+			return PAYMENT_STATUSES[:quoted]
+		end
+
+		if observed?
+			return PAYMENT_STATUSES[:observed]
 		end
 	  
 		if annulled?
@@ -252,8 +305,10 @@ end
 			return PAYMENT_STATUSES[:to_annul]
 		  end
 
-		  # 2. Estado de Pagada (siempre tiene la mayor prioridad si el saldo es 0 o menos)
-		  if balance <= 0
+		  # 2. Estado de Pagada
+		  # Se considera PAGADA si el saldo es menor o igual a 1.0 (incluye margen para errores históricos de redondeo).
+		  # Esto protege las ventas a crédito nuevas (Saldo > 1.0) y rescata las antiguas pagadas correctamente.
+		  if balance <= 1.0
 			return PAYMENT_STATUSES[:paid]
 		  end
 	  
@@ -275,8 +330,12 @@ end
 		  end
 		end
 	  
-		# Valor por defecto en caso de no entrar en las condiciones anteriores (esto no debería ocurrir si todos los casos están cubiertos)
-		self.state.humanize
+		# Valor por defecto - Basado en saldo real si es confirmado/cerrado
+		if confirmed? || canceled?
+		  (self.total_pagos.to_f > 0) ? PAYMENT_STATUSES[:partially_paid] : PAYMENT_STATUSES[:pending_payment]
+		else
+		  self.annulled? ? PAYMENT_STATUSES[:annulled] : PAYMENT_STATUSES[:draft]
+		end
 	  end
 	  
 
@@ -290,7 +349,9 @@ end
 		  PAYMENT_STATUSES[:annulled]                     => 6,
 		  PAYMENT_STATUSES[:to_annul]                 => 7,
 		  PAYMENT_STATUSES[:draft]                    => 8,
-		  PAYMENT_STATUSES[:canceled]                   => 9
+		  PAYMENT_STATUSES[:quoted]                   => 9,
+		  PAYMENT_STATUSES[:canceled]                   => 5,
+		  PAYMENT_STATUSES[:observed]                   => 10
 		}
 		
 		current_status = self.payment_status
@@ -303,8 +364,69 @@ end
 		end
 	end
 
+	def self.deduct_stock(qty, item_id, sale_detail_id)
+		cantidad = qty.to_i
+		
+		detail = SaleDetail.find(sale_detail_id)
+		sale = detail.sale
+		stocks = Item.find(item_id).stocks
+		
+		# Filtrar por almacenes de la sucursal de la venta si existe asignada
+		if sale&.branch_id.present?
+			warehouse_ids = Warehouse.where(branch_id: sale.branch_id, active: true).pluck(:id)
+			stocks = stocks.where(warehouse_id: warehouse_ids) if warehouse_ids.any?
+		end
+		
+		# Usamos el saldo real (entrada - salida > 0) para determinar disponibilidad
+		# PRIORIDAD 1: FIFO (Los lotes más antiguos primero)
+		# PRIORIDAD 2: Presentación (Si el lote tiene varias presentaciones, prioriza la seleccionada)
+		mystocks = stocks.where("qty_in - qty_out > 0").lock(true)
+		mystocks = mystocks.order(created_at: :asc)
+		
+		if detail.presentation_id.present?
+			# Dentro de los lotes habilitados por fecha, intentamos que coincida la presentación
+			# Pero el orden de created_at manda para el despacho secuencial
+			mystocks = mystocks.order(Arel.sql("created_at ASC, CASE WHEN presentation_id = #{detail.presentation_id.to_i} THEN 0 ELSE 1 END"))
+		else
+			mystocks = mystocks.order(created_at: :asc)
+		end
+		
+		stock_current = mystocks.first
+
+		raise "Stock insuficiente e inesperado durante la transacción" unless stock_current
+
+		if stock_current.total > qty
+		  stock_current.qty_out += qty
+		  stock_current.save!
+		  Movement.create!(qty_out: qty, qty_in: 0, sale_detail_id: sale_detail_id, stock_id: stock_current.id)
+
+		elsif stock_current.total == qty
+		  stock_current.qty_out += qty
+		  stock_current.state = 'agotado' 
+		  stock_current.save!
+		  Movement.create!(qty_out: qty, qty_in: 0, sale_detail_id: sale_detail_id, stock_id: stock_current.id)
+
+		elsif stock_current.total < qty
+		  qty_current_movement = stock_current.total 
+		  new_qty = qty - stock_current.total
+		  
+		  stock_current.qty_out += stock_current.total
+		  stock_current.state = 'agotado' 
+		  stock_current.save!
+
+		  Movement.create!(qty_out: qty_current_movement, qty_in: 0, sale_detail_id: sale_detail_id, stock_id: stock_current.id)   
+		  
+		  # Llamada recursiva segura dentro de la transacción
+		  deduct_stock(new_qty, item_id, sale_detail_id) 
+		end
+	end
+	def clear_dashboard_cache
+		# Invalida automáticamente el cache para que el Dashboard se refresque en la siguiente visita
+		Rails.cache.delete("user_#{self.user_id}_total_ventas_v1")
+		Rails.cache.delete("user_#{self.user_id}_total_por_cobrar_v1")
+	end
 	private
 		def sale_detail_rejectable?(att)
-			att[:item_id].blank? || att[:qty].blank? || att[:price].blank? || att[:qty].to_f <= 0 || att[:price].to_f <= 0
+			att[:item_id].blank? || att[:qty].blank? || att[:qty].to_f <= 0
 		end
 end

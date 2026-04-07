@@ -1,18 +1,20 @@
-<div class="panel panel-success">
-  <div class="panel-head">Cajas</div>
-  <div class="panel-wrapper collapse in">
-    <div class="panel-body table-responsive ">  
-
-      <%= render partial: 'results_search' %>
-    <div class="col-md-5 col-md-offset-5 col-sm-5 col-sm-offset-5">
-      <p>
-          <%= button_to new_box_path, {method: :get, class: "btn btn-success"} do %>
-          <span class="glyphicon glyphicon-plus" aria-hidden="true"> </span> Nueva Caja
-          <% end %>
-      </p>
-      </div>
+<div class="row bg-title" style="margin-bottom: 25px;">
+    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+        <h4 class="page-title" style="font-weight: 800; font-size: 1.4rem; color: #1e293b;">📦 Cajas del Sistema</h4>
     </div>
-  </div>
+    <div class="col-lg-8 col-sm-8 col-md-8 col-xs-12 text-right">
+        <% if can? :create, Box %>
+            <%= button_to new_box_path, {method: :get, class: "btn btn-success", style: "background: #10b981; border: none; font-weight: 700; border-radius: 8px; box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.2);"} do %>
+                <i class="fas fa-plus"></i> Nueva Caja
+            <% end %>
+        <% end %>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <%= render partial: 'results_search' %>
+    </div>
 </div>
 
 

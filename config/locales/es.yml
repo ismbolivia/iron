@@ -23,6 +23,13 @@ es:
         discount: "Descuento"
         price_list_id: "Lista de precio"
         web_site: "Sitio web"
+      sale:
+        states:
+          draft: "Borrador"
+          confirmed: "Confirmada"
+          canceled: "Pagada"
+          annulled: "Anulada"
+          quoted: "Cotización"
     errors:
       models:
         contact:

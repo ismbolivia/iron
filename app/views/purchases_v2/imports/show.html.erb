@@ -1,0 +1,798 @@
+<style>
+  :root {
+    --primary-gradient: linear-gradient(135deg, #4f46e5 0%, #2563eb 100%);
+    --bg-light: #f8fafc;
+    --border-color: #e2e8f0;
+    --text-main: #1e293b;
+    --text-muted: #64748b;
+  }
+
+  .premium-wrapper {
+    background: var(--bg-light); padding: 1.5rem; font-family: 'Inter', system-ui, sans-serif; min-height: 100vh; font-size: 1.1rem;
+  }
+
+  .premium-header-banner {
+    background: var(--primary-gradient); padding: 2.2rem; border-radius: 20px;
+    color: white; margin-bottom: 1rem; position: relative; overflow: hidden;
+    box-shadow: 0 10px 30px rgba(79, 70, 229, 0.15);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+
+  .banner-title h1 { font-size: 2.5rem; font-weight: 800; letter-spacing: -0.02em; margin: 0; }
+  .banner-title p { font-size: 1.15rem; opacity: 0.9; margin-top: 4px; }
+
+  .badge-status {
+    padding: 6px 14px; border-radius: 9999px; font-weight: 800; font-size: 1rem; text-transform: uppercase;
+    background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3);
+  }
+
+  .banner-metrics {
+    display: flex; gap: 1.5rem;
+  }
+  .metric-glass {
+    background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 16px;
+    padding: 12px 20px; text-align: right; min-width: 140px;
+  }
+  .metric-glass .m-label { font-size: 0.9rem; opacity: 0.8; font-weight: 600; text-transform: uppercase; }
+  .metric-glass .m-value { font-size: 1.6rem; font-weight: 800; margin-top: 2px; display: block; }
+
+  .premium-grid {
+    display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem;
+  }
+
+  .card-premium {
+    background: white; border-radius: 20px; border: 1px solid var(--border-color);
+    padding: 1.8rem; box-shadow: 0 4px 16px rgba(0,0,0,0.02); margin-bottom: 1.5rem;
+  }
+
+  .card-header {
+    border-bottom: 1px solid #f1f5f9; padding-bottom: 1.2rem; margin-bottom: 1.5rem;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .card-header h3 { font-weight: 800; color: var(--text-main); font-size: 1.4rem; margin: 0; }
+
+  .progress-bar-premium {
+    background: #e2e8f0; border-radius: 12px; height: 16px; overflow: hidden; margin-top: 8px;
+  }
+  .progress-inner {
+    background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+    height: 100%; border-radius: 12px; transition: width 0.3s;
+  }
+
+  .btn-premium-solid {
+    background: var(--primary-gradient); border: none; border-radius: 12px;
+    color: white !important; font-weight: 700; padding: 12px 24px; font-size: 1.1rem;
+    box-shadow: 0 4px 14px rgba(79,70,229,0.3); transition: all 0.2s;
+    display: inline-flex; align-items: center; gap: 8px; cursor: pointer; text-decoration: none;
+  }
+  .btn-premium-solid:hover {
+    box-shadow: 0 6px 20px rgba(79,70,229,0.4); transform: translateY(-1px);
+  }
+
+  .btn-premium-outline {
+    background: white; border: 1.5px solid #cbd5e1; border-radius: 12px;
+    color: #475569; font-weight: 700; padding: 10px 20px; font-size: 1.1rem;
+    transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px; text-decoration: none;
+  }
+  .btn-premium-outline:hover {
+    background: #f8fafc; border-color: #94a3b8; color: #1e293b;
+  }
+
+  .table-premium {
+    width: 100%; border-collapse: collapse;
+  }
+  .table-premium th {
+    background: #f8fafc; color: #64748b; font-weight: 700; font-size: 0.95rem;
+    text-transform: uppercase; padding: 12px; text-align: center; border-bottom: 2px solid #e2e8f0;
+  }
+  .table-premium td {
+    padding: 14px 12px; border-bottom: 1px solid #f1f5f9; color: #334155;
+    font-size: 1.05rem; vertical-align: middle;
+  }
+
+  /* Stepper Pipeline */
+  .stepper-wrapper { display: flex; justify-content: space-between; margin-bottom: 1.5rem; position: relative; }
+  .step-item { flex: 1; text-align: center; position: relative; }
+  .step-item::before {
+    content: ''; position: absolute; top: 18px; width: 100%; height: 4px; background: #e2e8f0; z-index: 1; left: 50%;
+  }
+  .step-item:last-child::before { display: none; }
+  .step-counter {
+    width: 40px; height: 40px; border-radius: 50%; background: #f8fafc; border: 4px solid #e2e8f0;
+    display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; position: relative; z-index: 2;
+    font-weight: 800; color: #64748b; font-size: 1.1rem; transition: all 0.3s;
+  }
+  .step-name { font-weight: 800; color: #64748b; font-size: 1rem; text-transform: uppercase; letter-spacing: 0.05em; }
+  
+  .step-item.active .step-counter { border-color: #4f46e5; background: #4f46e5; color: white; box-shadow: 0 0 0 6px rgba(79, 70, 229, 0.15); }
+  .step-item.active .step-name { color: #4f46e5; }
+  .step-item.completed .step-counter { border-color: #10b981; background: #10b981; color: white; }
+  .step-item.completed::before { background: #10b981; }
+  .step-item.completed .step-name { color: #10b981; }
+</style>
+
+<div class="premium-wrapper">
+  <!-- Header Banner -->
+  <div class="premium-header-banner">
+    <div class="banner-title">
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <h1><i class="fas fa-box-open mr-2" style="color: #6366f1;"></i> <%= @import.name %></h1>
+        <span class="badge-status"><%= @import.state.capitalize %></span>
+      </div>
+      <p><i class="fas fa-calendar-alt"></i> ETA: <%= @import.eta_date.present? ? @import.eta_date.strftime("%d/%m/%Y") : "Por definir" %> | Contenedor: <%= @import.container_type || "No definido" %></p>
+    </div>
+
+      <div class="metric-glass" style="text-align: center; border-color: rgba(255,255,255,0.4); min-width: 180px;">
+        <span class="m-label" style="color: white; opacity: 1; font-weight: 800;"><i class="fas fa-calculator"></i> Lógica de Precios</span>
+        <div class="logic-selector" style="display: flex; background: rgba(0,0,0,0.2); padding: 4px; border-radius: 12px; margin-top: 6px; gap: 4px;">
+           <button type="button" class="btn-import-logic <%= 'active' if @import.pricing_logic != 'markup' %>" data-logic="margin" style="flex: 1; border: none; border-radius: 8px; padding: 4px 5px; font-size: 0.7rem; cursor: pointer; font-weight: 800; <%= @import.pricing_logic != 'markup' ? 'background: #10b981; color: white;' : 'background: transparent; color: rgba(255,255,255,0.6);' %>">MARGEN (%)</button>
+           <button type="button" class="btn-import-logic <%= 'active' if @import.pricing_logic == 'markup' %>" data-logic="markup" style="flex: 1; border: none; border-radius: 8px; padding: 4px 5px; font-size: 0.7rem; cursor: pointer; font-weight: 800; <%= @import.pricing_logic == 'markup' ? 'background: #f59e0b; color: white;' : 'background: transparent; color: rgba(255,255,255,0.6);' %>">MARKUP (+%)</button>
+           <input type="hidden" id="import-logic-toggle" value="<%= @import.pricing_logic || 'margin' %>">
+        </div>
+      </div>
+    </div>
+
+  <div class="stepper-wrapper" style="margin-top: -0.5rem; margin-bottom: 0.8rem;">
+    <% states = ['borrador', 'transito', 'aduana', 'recibido'] %>
+    <% current_index = states.index(@import.state) || 0 %>
+    <% states.each_with_index do |st, idx| %>
+      <div class="step-item <%= 'completed' if idx < current_index %> <%= 'active' if idx == current_index %>">
+        <div class="step-counter"><%= idx < current_index ? '✓' : (idx + 1) %></div>
+        <div class="step-name"><%= st %></div>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="premium-grid">
+    <!-- Columna Izquierda: Carga y Gastos -->
+    <div class="left-col">
+      <!-- 1. Capacidad del Contenedor -->
+      <div class="card-premium">
+        <div class="card-header">
+          <h3>📊 Cubicación de Contenedor</h3>
+          <span style="font-size: 1rem; color: #64748b; font-weight: 600;">Volumen Máx. estimado: 76 m³</span>
+        </div>
+        <div>
+          <div style="display: flex; justify-content: space-between; font-size: 1.05rem; font-weight: 700; color: #334155;">
+            <span><i class="fas fa-cube text-primary mr-1"></i> Volumen Ocupado</span>
+            <span><%= format("%.2f", @import.total_volume_m3) %> m³</span>
+          </div>
+          <div class="progress-bar-premium">
+            <% fill_vol = (@import.total_volume_m3 / 76.0 * 100).clamp(0, 100) %>
+            <div class="progress-inner" style="width: <%= fill_vol %>%; background: <%= fill_vol > 90 ? '#ef4444' : '#10b981' %>;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 1.5. Órdenes de Compra Vinculadas -->
+      <div class="card-premium">
+        <div class="card-header">
+          <h3>📑 Órdenes de Compra Vinculadas</h3>
+          <% if @import.borrador? %>
+            <button class="btn-premium-solid" style="background: white; color: #475569 !important; border: 1.5px solid #cbd5e1; box-shadow: none;" data-toggle="modal" data-target="#modalLinkPO">
+              <i class="fas fa-link"></i> Vincular O.C.
+            </button>
+          <% end %>
+        </div>
+        <div class="table-responsive">
+          <table class="table-premium">
+            <thead>
+              <tr>
+                <th>Código</th>
+                <th>Proveedor</th>
+                <th>Total FOB</th>
+                <th>Estado</th>
+                <th style="width: 60px;"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <% if @import.purchase_orders.any? %>
+                <% @import.purchase_orders.each do |po| %>
+                  <tr>
+                    <td><strong><%= po.name %></strong></td>
+                    <td><%= po.supplier&.name %></td>
+                    <td style="font-weight: 700;"><%= number_to_currency(po.purchase_order_lines.sum { |l| l.item_qty.to_f * l.price_unit.to_f }) %></td>
+                    <td><span class="badge" style="background: #eff6ff; color: #1e40af;"><%= po.state.capitalize %></span></td>
+                    <td style="text-align: right;">
+                      <% if @import.borrador? %>
+                        <%= link_to remove_purchase_order_purchases_v2_import_path(@import, purchase_order_id: po.id), method: :delete, data: { confirm: '¿Estás seguro de desvincular esta Orden de Compra?' }, class: "btn btn-sm btn-outline-danger", style: "border-radius: 8px; border: 1.5px solid #ef4444; color: #ef4444; padding: 4px 8px;", title: "Desvincular" do %>
+                          <i class="fas fa-unlink"></i>
+                        <% end %>
+                      <% elsif @import.state == 'recibido' || @import.completado? %>
+                        <% # Si ya está en fase Recibido o superior, permitimos la recepción física individual %>
+                        <%= link_to new_purchases_v2_reception_path(purchase_order_id: po.id), class: "btn btn-sm", style: "background: var(--success-gradient); color: white; border-radius: 8px; padding: 4px 10px; font-weight: 700; border: none;", title: "Iniciar Recepción Física" do %>
+                           <i class="fas fa-truck-loading"></i> Recibir
+                        <% end %>
+                      <% else %>
+                        <i class="fas fa-lock text-muted" title="Bloqueado en esta etapa"></i>
+                      <% end %>
+                    </td>
+                  </tr>
+                <% end %>
+              <% else %>
+                <tr><td colspan="5" style="text-align: center; padding: 1.5rem; color: #94a3b8;">No hay órdenes vinculadas.</td></tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="card-premium">
+        <div class="card-header">
+          <h3>💰 Hojas de Costo Logístico</h3>
+          <% unless @import.borrador? %>
+            <button class="btn-premium-solid" data-toggle="modal" data-target="#modalExpense">
+              <i class="fas fa-plus"></i> Registrar Gasto de <%= @import.state.capitalize %>
+            </button>
+          <% end %>
+        </div>
+        
+        <% if @import.gastos_importaciones.where.not(id: nil).any? %>
+          <% @import.gastos_importaciones.where.not(id: nil).group_by(&:etapa).each do |etapa, gastos| %>
+            <h5 style="font-weight: 800; color: #1e293b; margin-top: 1rem; border-left: 4px solid #4f46e5; padding-left: 10px;">Costos en Fase: <%= etapa.upcase %></h5>
+            <div class="table-responsive" style="margin-bottom: 2rem;">
+              <table class="table-premium">
+                <thead>
+                  <tr>
+                    <th>Descripción</th>
+                    <th>Monto</th>
+                    <th>Tipo Gasto</th>
+                    <th style="width: 50px;"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% gastos.each do |g| %>
+                    <tr>
+                      <td><strong><%= g.description %></strong></td>
+                      <td style="font-weight: 800; color: #1e293b;"><%= number_to_currency(g.amount) %></td>
+                      <td><span class="badge" style="background:#f1f5f9; color:#475569;"><%= g.gasto_type.to_s.gsub('_', ' ').capitalize %></span></td>
+                      <td style="text-align: right;">
+                        <%= link_to remove_expense_purchases_v2_import_path(@import, expense_id: g.id), method: :delete, data: { confirm: '¿Estás seguro de eliminar este gasto?' }, class: "btn btn-sm btn-outline-danger", style: "border-radius: 8px; border: 1.5px solid #ef4444; color: #ef4444; padding: 4px 8px;", title: "Eliminar" do %>
+                          <i class="fas fa-trash"></i>
+                        <% end %>
+                      </td>
+                    </tr>
+                  <% end %>
+                </tbody>
+              </table>
+            </div>
+          <% end %>
+        <% else %>
+          <div style="text-align: center; padding: 2rem; color: #94a3b8;">
+             <i class="fas fa-receipt fa-2x mb-2" style="opacity: 0.5;"></i>
+             <p>Sin gastos registrados. Los gastos (fletes, seguros) se almacenarán aquí a partir de la fase de Tránsito.</p>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- Columna Derecha: Resumen y Acciones de Cierre -->
+    <div class="right-col">
+      <div class="card-premium">
+        <div class="card-header">
+          <h3>📈 Resumen Financiero</h3>
+        </div>
+        <div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.75rem;">
+            <span style="color: #64748b;">Valor FOB Total:</span>
+            <span style="font-weight: 700;"><%= number_to_currency(@import.total_fob) %></span>
+          </div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.75rem;">
+            <span style="color: #64748b;">Gastos Operativos:</span>
+            <span style="font-weight: 700; color: #f59e0b;"><%= number_to_currency(@import.gastos_importaciones.where.not(id: nil).sum(:amount)) %></span>
+          </div>
+          <hr style="border-color: #f1f5f9;">
+          <div style="display: flex; justify-content: space-between; font-size: 1.1rem; font-weight: 800; margin-top: 1rem;">
+            <span>Costo Total Landed:</span>
+            <span style="color: #4f46e5;"><%= number_to_currency(@import.total_fob + @import.gastos_importaciones.where.not(id: nil).sum(:amount)) %></span>
+          </div>
+        </div>
+        <div style="margin-top: 1.5rem;">
+          <%= link_to update_prices_purchases_v2_import_path(@import), method: :post, data: { confirm: '¿Estás seguro de actualizar la lista de precios de venta con el costo Landed?' }, class: "btn-premium-solid", style: "width: 100%; display: flex; justify-content: center;" do %>
+            <i class="fas fa-sync"></i> Actualizar Precios de Venta
+          <% end %>
+        </div>
+
+        <hr style="border-color: #f1f5f9; margin-top: 1.5rem;">
+        
+        <!-- Fase Logística Action -->
+        <div style="margin-top: 1rem; padding: 1.5rem; background: #f8fafc; border-radius: 12px; border: 1px dashed #cbd5e1; text-align: center;">
+          <h4 style="font-weight: 800; color: #1e293b; margin-bottom: 0.5rem;"><i class="fas fa-truck-loading" style="color: #4f46e5;"></i> Fase Actual: <%= @import.state.upcase %></h4>
+          <p style="font-size: 1rem; color: #64748b; margin-bottom: 1.5rem;">
+            <% if @import.state == 'borrador' %>
+              Añade Órdenes de Compra. Cuando el contenedor zarpe, avanza a Tránsito.
+            <% elsif @import.state == 'transito' %>
+              Registra los Fletes de Naviera y Seguros en progreso.
+            <% elsif @import.state == 'aduana' %>
+              Registra los Aranceles de póliza y Costos de Frontera.
+            <% else %>
+              El contenedor está siendo recepcionado. Registra transporte local o peones.
+            <% end %>
+          </p>
+          
+          <% next_states = { 'borrador' => 'transito', 'transito' => 'aduana', 'aduana' => 'recibido' } %>
+          <% if next_states[@import.state] %>
+            <%= form_tag update_state_purchases_v2_import_path(@import), method: :post do %>
+               <%= hidden_field_tag :state, next_states[@import.state] %>
+               <button type="submit" class="btn-premium-solid" data-confirm="¿Estás seguro de sellar de forma permanente esta fase y avanzar a <%= next_states[@import.state].upcase %>?" style="width: 100%; justify-content: center; background: #1e293b; color: white !important;">
+                 Cerrar Fase y Avanzar a <%= next_states[@import.state].capitalize %> <i class="fas fa-arrow-right"></i>
+               </button>
+            <% end %>
+          <% else %>
+             <div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 12px; border-radius: 12px; font-weight: 800; box-shadow: 0 4px 14px rgba(16,185,129,0.3);">
+               ✅ SELLO LOGÍSTICO CERRADO
+             </div>
+          <% end %>
+        </div>
+
+        <% if @import.state == 'recibido' %>
+          <div style="margin-top: 1rem;">
+             <%= link_to confirm_reception_purchases_v2_import_path(@import), method: :post, data: { confirm: '¿Estás seguro de procesar el ingreso de stock de todos los productos vinculados a tu almacén?' }, class: "btn-premium-solid", style: "width: 100%; display: flex; justify-content: center; background: linear-gradient(135deg, #10b981 0%, #059669 100%); box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3);" do %>
+               <i class="fas fa-boxes"></i> Ingresar a Inventarios
+             <% end %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. Órdenes de Compra Vinculadas -->
+  <div class="card-premium" style="border-top: 4px solid #6366f1;">
+    <div class="card-header">
+      <h3>📦 Órdenes de Compra en este Contenedor</h3>
+      <% if @import.borrador? %>
+        <button class="btn-premium-outline" data-toggle="modal" data-target="#modalLinkPO" style="font-size: 0.9rem; padding: 6px 15px;">
+          <i class="fas fa-link"></i> Vincular O.C.
+        </button>
+      <% end %>
+    </div>
+    
+    <div class="table-responsive">
+      <table class="table-premium">
+        <thead>
+          <tr>
+            <th>Documento</th>
+            <th>Proveedor</th>
+            <th>Estado</th>
+            <th style="text-align: right;">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if @import.purchase_orders.any? %>
+            <% @import.purchase_orders.each do |po| %>
+              <tr>
+                <td>
+                  <strong style="color: #4f46e5;"><%= po.name %></strong>
+                  <br><small class="text-muted"><%= po.created_at.strftime("%d/%m/%Y") %></small>
+                </td>
+                <td><%= po.supplier&.name %></td>
+                <td>
+                  <% if po.state == 'received' %>
+                    <span class="badge" style="background: #d1fae5; color: #065f46;">RECIBIDA</span>
+                  <% else %>
+                    <span class="badge" style="background: #fef3c7; color: #92400e;">PENDIENTE</span>
+                  <% end %>
+                </td>
+                <td style="text-align: right;">
+                  <div style="display: flex; gap: 8px; justify-content: flex-end;">
+                    <% if po.state != 'received' && (@import.recibido? || @import.completado?) %>
+                      <%= link_to new_purchases_v2_reception_path(purchase_order_id: po.id), class: "btn btn-sm btn-success", style: "border-radius: 8px; font-weight: 700; padding: 5px 12px;" do %>
+                         <i class="fas fa-download"></i> Recibir
+                      <% end %>
+                    <% end %>
+
+                    <%= link_to purchase_order_path(po), class: "btn btn-sm btn-outline-primary", style: "border-radius: 8px; padding: 5px 8px;", title: "Ver Detalle" do %>
+                      <i class="fas fa-eye"></i>
+                    <% end %>
+
+                    <% if @import.borrador? %>
+                      <%= link_to remove_purchase_order_purchases_v2_import_path(@import, purchase_order_id: po.id), method: :delete, data: { confirm: '¿Desvincular esta O.C. de la importación?' }, class: "btn btn-sm btn-outline-danger", style: "border-radius: 8px; padding: 5px 8px;" do %>
+                        <i class="fas fa-unlink"></i>
+                      <% end %>
+                    <% end %>
+                  </div>
+                </td>
+              </tr>
+            <% end %>
+          <% else %>
+            <tr><td colspan="4" style="text-align: center; padding: 2rem; color: #94a3b8;">No hay órdenes vinculadas.</td></tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 4. Modulo Analitico -->
+  <% if @import.borrador? || @import.transito? || @import.aduana? %>
+    <!-- Matriz Normal de Gastos (Previo a recibir) -->
+    <div class="card-premium" style="margin-top: 1.5rem;">
+      <div class="card-header">
+        <h3>🔍 Desglose Operativo y Dimensional</h3>
+        <span style="font-size: 1rem; color: #64748b;">Información utilitaria para rellenar campos FOB, pesos y volúmenes</span>
+      </div>
+      <div class="table-responsive">
+        <table class="table-premium">
+          <thead>
+            <tr style="border-bottom: 2px solid #e2e8f0;">
+              <th colspan="3" style="background: #f8fafc; text-align: center; border-right: 1px solid #e2e8f0; font-size: 0.75rem; color: #64748b; text-transform: uppercase;">Producto</th>
+              <th colspan="2" style="background: #eff6ff; text-align: center; border-right: 1px solid #e2e8f0; font-size: 0.75rem; color: #1e40af; text-transform: uppercase;">📦 Logística Dimensional</th>
+              <th colspan="3" style="background: #fff7ed; text-align: center; font-size: 0.75rem; color: #c2410c; text-transform: uppercase;">🧪 Análisis de Costos (Landed)</th>
+            </tr>
+            <tr>
+              <th style="width: 100px;">Código</th>
+              <th>Descripción</th>
+              <th style="width: 80px;">Cant.</th>
+              <th style="width: 110px; background: #f0f9ff; color: #1e40af;">Volumen ($m^3$)</th>
+              <th style="width: 110px; background: #f0f9ff; color: #1e40af; border-right: 1px solid #e2e8f0;">Peso ($Kg$)</th>
+              <th style="width: 120px; background: #fffbeb; color: #c2410c;">Costo FOB (U)</th>
+              <th style="width: 110px; background: #fffbeb; color: #f59e0b;">Gasto Extra</th>
+              <th style="width: 130px; background: #fff7ed; color: #9a3412; font-weight: 800;">Landed Unit.</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if @landed_costs.any? %>
+              <% @landed_costs.each do |cost| %>
+                <% item = Item.find_by(id: cost[:item_id]) %>
+                <tr>
+                  <td style="font-weight: 700; color: #4f46e5;"><%= cost[:item_code] %></td>
+                  <td><%= cost[:item_name] %></td>
+                  <td style="text-align: center;"><%= cost[:qty].to_i %></td>
+                  <td><input type="number" class="form-control item-dim-input" value="<%= item&.volume_m3 %>" step="0.001" data-id="<%= cost[:item_id] %>" data-field="volume_m3" style="width: 90px; text-align: center; border-radius: 8px; border: 1.5px solid #cbd5e1; height: 38px;"></td>
+                  <td><input type="number" class="form-control item-dim-input" value="<%= item&.weight_kg %>" step="0.1" data-id="<%= cost[:item_id] %>" data-field="weight_kg" style="width: 90px; text-align: center; border-radius: 8px; border: 1.5px solid #cbd5e1; height: 38px;"></td>
+                  <td><input type="number" class="form-control item-dim-input <%= 'disabled' unless @import.borrador? %>" <%= 'disabled' unless @import.borrador? %> value="<%= cost[:costo_fob] %>" step="0.01" data-id="<%= cost[:item_id] %>" data-line-id="<%= cost[:line_id] %>" data-field="costo_fob" style="width: 100px; text-align: right; border-radius: 8px; border: 1.5px solid #cbd5e1; height: 38px;"></td>
+                  <td style="text-align: right; color: #f59e0b; font-weight: 700;">+ <%= number_to_currency(cost[:gasto_extra_unit], precision: 4) %></td>
+                  <td style="text-align: right; font-weight: 800; color: #10b981; font-size: 1rem;"><%= number_to_currency(cost[:costo_landed], precision: 4) %></td>
+                </tr>
+              <% end %>
+            <% else %>
+              <tr><td colspan="8" style="text-align: center; padding: 2rem; color: #94a3b8;">No hay productos vinculados.</td></tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  <% else %>
+    <!-- Laboratorio de Precios (Fase: Recibido / Completado) -->
+    <div class="card-premium" style="margin-top: 1.5rem; border: 3px solid #4f46e5; border-radius: 20px;">
+      <div class="card-header" style="background: #eef2ff; border-radius: 17px 17px 0 0; padding: 1.5rem; display: flex; align-items: center; justify-content: space-between;">
+        <div>
+          <h3 style="color: #312e81; font-weight: 900; margin: 0;"><i class="fas fa-flask"></i> Laboratorio de Precios</h3>
+          <span style="font-size: 1.05rem; color: #4f46e5; font-weight: 700;">Define tus márgenes 1 a 1 frente a la competencia</span>
+        </div>
+      </div>
+      <div class="table-responsive">
+        <table class="table-premium" style="margin: 0; min-width: 1100px;">
+          <thead style="background: #1e1b4b;">
+            <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+              <th style="color: rgba(255,255,255,0.6); font-size: 0.75rem; text-align: center; border: none;">IDENTIFICACIÓN</th>
+              <th colspan="2" style="color: #fbbf24; font-size: 0.75rem; text-align: center; border: none; background: rgba(255,255,255,0.05);">📉 ANÁLISIS DE COSTOS</th>
+              <th colspan="3" style="color: #93c5fd; font-size: 0.75rem; text-align: center; border: none;">🔎 COMPETENCIA</th>
+              <th colspan="2" style="color: #a5b4fc; font-size: 0.75rem; text-align: center; border: none; background: rgba(255,255,255,0.05);">
+                📊 MÁRGENES
+                <br>
+                <button type="button" id="apply-all-utility" class="btn btn-xs" style="background: #4f46e5; color: white; border-radius: 4px; padding: 1px 6px; font-size: 0.6rem; border: none; margin-top: 2px;" title="Aplicar el primer margen a TODOS">
+                  <i class="fas fa-check-double"></i> APLICAR TODO
+                </button>
+              </th>
+              <th colspan="2" style="color: #34d399; font-size: 0.75rem; text-align: center; border: none; vertical-align: middle;">
+                <div style="text-transform: uppercase; font-weight: 800;"><i class="fas fa-tag"></i> RESULTADO DE VENTA</div>
+              </th>
+            </tr>
+            <tr>
+              <th style="color: white; border: none;">Producto / Lista</th>
+              <th style="color: white; border: none; text-align: right; background: rgba(255,255,255,0.05);">Ant.</th>
+              <th style="color: white; border: none; text-align: right; background: rgba(255,255,255,0.05);">Landed Final</th>
+              <th style="color: white; border: none; text-align: center; width: 100px;">C1 ($)</th>
+              <th style="color: white; border: none; text-align: center; width: 100px;">C2 ($)</th>
+              <th style="color: white; border: none; text-align: center; width: 100px;">C3 ($)</th>
+              <th style="color: white; border: none; text-align: center; width: 110px; background: rgba(255,255,255,0.05);">% OPEX</th>
+              <th style="color: white; border: none; text-align: center; width: 110px; background: rgba(255,255,255,0.05);">% Util. Neta</th>
+              <th style="color: white; border: none; text-align: right;">Ant.</th>
+              <th style="color: white; border: none; text-align: right;">PROPUESTO</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @landed_costs.each do |cost| %>
+              <% item = Item.find_by(id: cost[:item_id]) %>
+              <% if item %>
+                <tr style="background: #f8fafc; border-top: 3px solid #cbd5e1;">
+                  <td colspan="7">
+                    <strong style="color: #1e293b; font-size: 1.1rem;"><i class="fas fa-box text-primary"></i> <%= item.name %> <span style="color:#64748b;">(<%= item.code %>)</span></strong>
+                  </td>
+                </tr>
+                <% item.prices.activo.each do |price| %>
+                  <% old_cost = price.price_purchase.to_f %>
+                  <% new_cost = cost[:costo_landed].to_f %>
+                  <% delta = old_cost > 0 ? (((new_cost - old_cost) / old_cost) * 100).round(1) : 0 %>
+                  
+                  <% c_operativo = new_cost * (1 + (price.opex_margin.to_f / 100)) %>
+                  <% factor = 1 - (price.utility.to_f / 100) %>
+                  <% sugerido = price.utility.to_f < 100 && price.utility.to_f > 0 ? (c_operativo / (factor.zero? ? 1 : factor)).round(4) : (c_operativo + price.utility.to_f).round(4) %>
+
+                  <tr>
+                    <td style="padding-left: 3rem; font-weight: 700; color: #475569;"><i class="fas fa-tag"></i> <%= price.price_list.name %></td>
+                    <td style="text-align: right; color: #64748b;"><%= number_to_currency(old_cost, precision: 4) %></td>
+                    <td style="text-align: right; font-weight: 800; font-size: 1.1rem; color: #1e293b;">
+                      <%= number_to_currency(new_cost, precision: 4) %>
+                      <% if delta > 0 %>
+                        <br><span style="color: #ef4444; font-size: 0.75rem;"><i class="fas fa-arrow-up"></i> +<%= delta %>%</span>
+                      <% elsif delta < 0 %>
+                        <br><span style="color: #10b981; font-size: 0.75rem;"><i class="fas fa-arrow-down"></i> <%= delta.abs %>%</span>
+                      <% else %>
+                        <br><span style="color: #94a3b8; font-size: 0.75rem;">---</span>
+                      <% end %>
+                    </td>
+                    <td>
+                      <input type="number" class="form-control pricing-lab px-comp1 <%= 'disabled' if @import.completado? %>" <%= 'disabled' if @import.completado? %> data-id="<%= price.id %>" value="<%= price.comp_1_price %>" step="0.5" style="font-weight: 700; text-align: center; border: 1.5px dashed #94a3b8; border-radius: 6px; font-size: 0.95rem; color: #475569;" placeholder="C1">
+                    </td>
+                    <td>
+                      <input type="number" class="form-control pricing-lab px-comp2 <%= 'disabled' if @import.completado? %>" <%= 'disabled' if @import.completado? %> data-id="<%= price.id %>" value="<%= price.comp_2_price %>" step="0.5" style="font-weight: 700; text-align: center; border: 1.5px dashed #94a3b8; border-radius: 6px; font-size: 0.95rem; color: #475569;" placeholder="C2">
+                    </td>
+                    <td>
+                      <input type="number" class="form-control pricing-lab px-comp3 <%= 'disabled' if @import.completado? %>" <%= 'disabled' if @import.completado? %> data-id="<%= price.id %>" value="<%= price.comp_3_price %>" step="0.5" style="font-weight: 700; text-align: center; border: 1.5px dashed #94a3b8; border-radius: 6px; font-size: 0.95rem; color: #475569;" placeholder="C3">
+                    </td>
+                    <td>
+                      <input type="number" class="form-control pricing-lab px-opex <%= 'disabled' if @import.completado? %>" <%= 'disabled' if @import.completado? %> data-id="<%= price.id %>" data-landed="<%= new_cost %>" value="<%= price.opex_margin %>" step="0.1" style="font-weight: 800; text-align: center; border: 2px solid #cbd5e1; border-radius: 8px; font-size: 1.05rem; color: #f59e0b;">
+                    </td>
+                    <td>
+                      <input type="number" class="form-control pricing-lab px-util <%= 'disabled' if @import.completado? %>" <%= 'disabled' if @import.completado? %> data-id="<%= price.id %>" data-landed="<%= new_cost %>" value="<%= price.utility %>" step="0.1" style="font-weight: 800; text-align: center; border: 2px solid #cbd5e1; border-radius: 8px; font-size: 1.05rem; color: #4f46e5;">
+                    </td>
+                    <td style="text-align: right; color: #94a3b8; text-decoration: line-through;"><%= number_to_currency(price.price_sale, precision: 4) %></td>
+                    <td class="px-new-sale-<%= price.id %>" style="text-align: right; font-weight: 900; color: #10b981; font-size: 1.25rem;"><%= number_to_currency(sugerido, precision: 4) %></td>
+                  </tr>
+                <% end %>
+              <% end %>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+
+      <% if @import.recibido? %>
+        <div style="padding: 2.5rem; background: #f8fafc; text-align: center; border-radius: 0 0 17px 17px; border-top: 1px solid #e2e8f0;">
+          <h3 style="font-weight: 900; color: #1e293b; margin-bottom: 0.5rem;">Cierre Definitivo de Importación</h3>
+          <p style="color: #64748b; margin-bottom: 2rem;">Confirma que has revisado los márgenes propuestos. Este botón re-escribirá todos los precios de venta públicamente y enviará los productos al inventario para la venta.</p>
+          
+          <%= link_to confirm_reception_purchases_v2_import_path(@import), method: :post, data: { confirm: 'ATENCIÓN: ¿Estás completamente seguro de APROBAR los precios actuales y habilitar el stock? Esta acción SELLA PERMANENTEMENTE la carpeta logística.' }, class: "btn-premium-solid", style: "background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white !important; font-size: 1.2rem; padding: 16px 40px; box-shadow: 0 10px 25px rgba(16, 185, 129, 0.4); text-transform: uppercase;" do %>
+            <i class="fas fa-check-double mr-2"></i> Aprobar Precios e Inyectar Stock
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+
+  <!-- Script del Laboratorio de Precios -->
+  <script>
+    $(document).on('change', '.px-opex, .px-util, .px-comp1, .px-comp2, .px-comp3', function() {
+      calculatePrice($(this).closest('tr'));
+    });
+
+    function calculatePrice($row) {
+      const priceId = $row.find('.px-util').data('id');
+      const landedCost = parseFloat($row.find('.px-util').data('landed')) || 0;
+      const logic = $('#import-logic-toggle').val();
+      
+      const opex = parseFloat($row.find('.px-opex').val()) || 0;
+      const util = parseFloat($row.find('.px-util').val()) || 0;
+      const comp1 = parseFloat($row.find('.px-comp1').val()) || 0;
+      const comp2 = parseFloat($row.find('.px-comp2').val()) || 0;
+      const comp3 = parseFloat($row.find('.px-comp3').val()) || 0;
+      
+      let c_operativo = landedCost;
+      if (opex > 0 && opex <= 100) {
+        c_operativo = landedCost * (1 + (opex / 100));
+      } else if (opex > 100) {
+        c_operativo = landedCost + opex;
+      }
+
+      let sugerido = 0;
+      if (logic === 'margin') {
+        if (util > 0 && util < 100) {
+          const factor = 1 - (util / 100);
+          sugerido = c_operativo / factor;
+        } else {
+          sugerido = c_operativo + util;
+        }
+      } else {
+        // Lógica de Markup sobre Costo
+        sugerido = c_operativo * (1 + (util / 100));
+      }
+      
+      // Formatear a moneda con 4 decimales
+      const formatter = new Intl.NumberFormat('en-US', { 
+        style: 'currency', 
+        currency: 'USD',
+        minimumFractionDigits: 4,
+        maximumFractionDigits: 4
+      });
+      $('.px-new-sale-' + priceId).text(formatter.format(sugerido.toFixed(4)));
+
+      $.ajax({
+        url: '<%= update_price_margins_purchases_v2_import_path(@import) rescue "#" %>',
+        method: 'POST',
+        data: {
+          price_id: priceId,
+          pricing_logic: logic, // Siempre enviamos la lógica actual
+          opex_margin: opex,
+          utility: util,
+          comp_1: comp1,
+          comp_2: comp2,
+          comp_3: comp3,
+          authenticity_token: '<%= form_authenticity_token %>'
+        },
+        success: function(response) {
+          if(response.success) {
+            $row.find('.pricing-lab').css('border-color', '#10b981'); // Verde "guardado"
+          } else {
+            console.error('Error al guardar el margen.');
+          }
+        }
+      });
+    }
+
+    $('.btn-import-logic').on('click', function() {
+      const logic = $(this).data('logic');
+      
+      // Update UI
+      $('.btn-import-logic').removeClass('active').css({ 'background': 'transparent', 'color': 'rgba(255,255,255,0.6)' });
+      $(this).addClass('active');
+      if (logic === 'margin') {
+        $(this).css({ 'background': '#10b981', 'color': 'white' });
+      } else {
+        $(this).css({ 'background': '#f59e0b', 'color': 'white' });
+      }
+
+      // Update Logic Value
+      $('#import-logic-toggle').val(logic);
+
+      // Guardar lógica en el servidor
+      $.ajax({
+        url: '<%= update_price_margins_purchases_v2_import_path(@import) %>',
+        method: 'POST',
+        data: { pricing_logic: logic, authenticity_token: '<%= form_authenticity_token %>' }
+      });
+
+      $('.table-premium tbody tr').each(function() {
+        if ($(this).find('.px-util').length > 0) {
+          calculatePrice($(this));
+        }
+      });
+    });
+
+    $('#apply-all-utility').on('click', function() {
+      const firstUtil = $('.px-util').first().val();
+      if (confirm('¿Deseas aplicar el margen del ' + firstUtil + '% a TODOS los productos de esta importación?')) {
+        $('.px-util').val(firstUtil);
+        $('.table-premium tbody tr').each(function() {
+          if ($(this).find('.px-util').length > 0) {
+            calculatePrice($(this));
+          }
+        });
+      }
+    });
+  </script>
+
+  <!-- Botón Regresar -->
+  <div style="margin-top: 1rem;">
+    <%= link_to purchases_v2_imports_path, class: "btn-premium-outline" do %>
+      <i class="fas fa-arrow-left"></i> Volver al listado
+    <% end %>
+  </div>
+</div>
+
+<!-- Modal Registrar Gasto -->
+<div class="modal fade" id="modalExpense" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg" style="max-width: 800px; width: 95%;" role="document">
+    <div class="modal-content" style="border-radius: 20px; overflow: visible;">
+      <div class="modal-header" style="background: var(--bg-light); border-bottom: 1px solid var(--border-color); border-top-left-radius: 20px; border-top-right-radius: 20px;">
+        <h5 class="modal-title" style="font-weight: 800; color: var(--text-main);"><i class="fas fa-dollar-sign mr-2"></i> Registrar Gasto de Importación</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <%= form_for @expense, url: add_expense_purchases_v2_import_path(@import), method: :post do |f| %>
+        <div class="modal-body" style="padding: 2rem;">
+          <div class="row">
+            <div class="col-md-6 form-group mb-3">
+              <label style="font-weight: 700; font-size: 1rem; color: #475569;">Descripción del Gasto:</label>
+              <%= f.text_field :description, class: "form-control", style: "height: 42px; border-radius: 8px;", placeholder: "Ej. Flete Marítimo, Agencia...", required: true %>
+            </div>
+            <div class="col-md-6 form-group mb-3">
+              <label style="font-weight: 700; font-size: 1rem; color: #475569;">Monto ($):</label>
+              <%= f.number_field :amount, class: "form-control", style: "height: 42px; border-radius: 8px;", step: "0.01", required: true %>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 form-group mb-3">
+              <label style="font-weight: 700; font-size: 1rem; color: #475569;">Tipo de Gasto:</label>
+              <%= f.select :gasto_type, GastoImportacion.gasto_types.keys.map { |k| [k.to_s.gsub('_', ' ').capitalize, k] }, {}, class: "form-control", style: "height: 42px; border-radius: 8px;" %>
+            </div>
+            <div class="col-md-6 form-group mb-3">
+              <label style="font-weight: 700; font-size: 1rem; color: #475569;">Método de Prorrateo:</label>
+              <%= f.select :prorrateo_method, GastoImportacion.prorrateo_methods.keys.map { |k| [k.to_s.gsub('_', ' ').capitalize, k] }, {}, class: "form-control", style: "height: 42px; border-radius: 8px;" %>
+            </div>
+          </div>
+          <p style="font-size: 0.8rem; color: #64748b; margin-top: 0.5rem;"><i class="fas fa-info-circle"></i> Los gastos se distribuirán proporcionalmente sobre el coste de cada producto al calcular el costeo Landed.</p>
+        </div>
+        <div class="modal-footer" style="border-top: 1px solid var(--border-color);">
+          <button type="button" class="btn btn-secondary" style="border-radius: 12px; font-weight: 700;" data-dismiss="modal">Cancelar</button>
+          <%= f.submit "Registrar", class: "btn-premium-solid" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+<!-- Modal Vincular Orden de Compra -->
+<div class="modal fade" id="modalLinkPO" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg" style="max-width: 800px; width: 95%;" role="document">
+    <div class="modal-content" style="border-radius: 20px; overflow: visible;">
+      <div class="modal-header" style="background: var(--bg-light); border-bottom: 1px solid var(--border-color); border-top-left-radius: 20px; border-top-right-radius: 20px;">
+        <h5 class="modal-title" style="font-weight: 800; color: var(--text-main);"><i class="fas fa-link mr-2"></i> Vincular Orden de Compra</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <%= form_tag add_purchase_order_purchases_v2_import_path(@import), method: :post do %>
+        <div class="modal-body" style="padding: 2rem;">
+          <div class="form-group mb-3">
+            <label style="font-weight: 700; font-size: 1rem; color: #475569;">Selecciona la Orden de Compra:</label>
+            <% pos = PurchaseOrder.where(importacion_id: nil).order(created_at: :desc).limit(10) %>
+            <%= select_tag :purchase_order_id, options_for_select(pos.map { |po| ["#{po.name} - #{po.supplier&.name} - TOTAL: $#{po.purchase_order_lines.sum { |l| l.item_qty.to_f * l.price_unit.to_f }}", po.id] }), class: "form-control", style: "height: 45px; border-radius: 8px;", required: true %>
+          </div>
+          <p style="font-size: 1rem; color: #64748b; margin-top: 1rem;"><i class="fas fa-info-circle"></i> Al vincular una O.C., sus kilogramos y metros cúbicos se sumarán instantáneamente al volumen de este contenedor.</p>
+        </div>
+        <div class="modal-footer" style="border-top: 1px solid var(--border-color);">
+          <button type="button" class="btn btn-secondary" style="border-radius: 12px; font-weight: 700;" data-dismiss="modal">Cancelar</button>
+          <%= submit_tag "Vincular", class: "btn-premium-solid" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+<!-- Script AJAX para guardar peso y volumen al cambiar los inputs -->
+<script>
+  $(document).on('change', '.item-dim-input', function() {
+    const itemId = $(this).data('id');
+    const field = $(this).data('field');
+    const val = $(this).val();
+
+    // Encontrar el otro input de la misma fila para mandar ambos valores
+    const $row = $(this).closest('tr');
+    const vol = $row.find(`[data-field="volume_m3"]`).val();
+    const weight = $row.find(`[data-field="weight_kg"]`).val();
+    const costoFob = $row.find(`[data-field="costo_fob"]`).val();
+    const lineId = $row.find(`[data-field="costo_fob"]`).data('line-id');
+
+    let postData = {
+      item_id: itemId,
+      line_id: lineId,
+      volume_m3: vol,
+      weight_kg: weight,
+      costo_fob: costoFob,
+      authenticity_token: '<%= form_authenticity_token %>'
+    };
+
+    $(this).css('border-color', '#f59e0b'); // Indicador de guardado
+
+    $.ajax({
+      url: '<%= update_item_dims_purchases_v2_import_path(@import) %>',
+      method: 'POST',
+      data: postData,
+      success: function(response) {
+        if (response.success) {
+          $row.find('.item-dim-input').css('border-color', '#10b981'); // Guardado ok
+          // Opcional: Recargar la pagina para que se recalcule la cubicación del contenedor general
+          setTimeout(() => { location.reload(); }, 600);
+        } else {
+          $row.find('.item-dim-input').css('border-color', '#ef4444');
+          alert('Error al guardar dimensiones.');
+        }
+      },
+      error: function() {
+        $row.find('.item-dim-input').css('border-color', '#ef4444');
+      }
+    });
+  });
+</script>
+</div>

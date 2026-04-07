@@ -38,15 +38,15 @@
         </div>
         <div class="col-lg-6 col-md-4 col-sm-6">
             <a class="btn btn-app">
-              <span class="badge bg-yellow"><%= @mycompany.currencies.first.symbol %> <%= @purchase_order.total%></span>
+              <span class="badge bg-yellow"><%= @mycompany.currencies.first.symbol %> <%= number_with_precision(@purchase_order.total, precision: 2, delimiter: ',') %></span>
                 <i class="fa fa-money-bill-alt"></i> Total
             </a>
             <a class="btn btn-app">
-                <span class="badge bg-green"><%= @mycompany.currencies.first.symbol %> <%= @purchase_order.total_payment_purchase_order%></span>
+                <span class="badge bg-green"><%= @mycompany.currencies.first.symbol %> <%= number_with_precision(@purchase_order.total_payment_purchase_order, precision: 2, delimiter: ',') %></span>
                   <i class=" fa fa-hand-holding-usd"></i> Total pagos
             </a>
             <a class="btn btn-app">
-                <span class="badge bg-purple"><%= @mycompany.currencies.first.symbol %> <%= @purchase_order.saldo%></span>
+                <span class="badge bg-purple"><%= @mycompany.currencies.first.symbol %> <%= number_with_precision(@purchase_order.saldo, precision: 2, delimiter: ',') %></span>
                    <i class="fa fa-piggy-bank"></i> Saldo
             </a>
             <a class="btn btn-app">

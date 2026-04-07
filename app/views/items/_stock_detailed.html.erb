@@ -1,0 +1,193 @@
+<div class="white-box" style="border: none; padding: 0;">
+    <div class="row mb-5" style="margin-bottom: 2rem; align-items: center;">
+        <div class="col-md-3">
+            <div style="background: #f0f9ff; padding: 1.5rem; border-radius: 16px; border: 1px solid #bae6fd; text-align: center; position: relative;">
+                <span style="display: block; font-size: 0.75rem; font-weight: 800; color: #0369a1; text-transform: uppercase; letter-spacing: 1px;">Saldos Disponibles</span>
+                <strong style="font-size: 2rem; color: #0c4a6e;"><%= item.get_total_stock %></strong>
+                <div style="font-size: 0.75rem; color: #0ea5e9; font-weight: 600; margin-top: 4px;">UNIDADES <%= item.unit.name.upcase %>S</div>
+                
+                <div style="position: absolute; top: -10px; right: -10px;">
+                    <%= link_to print_available_stocks_item_path(item), target: "_blank", class: "btn btn-circle", style: "background: #4f46e5; color: white; border: none; box-shadow: 0 4px 6px rgba(79, 70, 229, 0.3); width: 35px; height: 35px; display: flex; align-items: center; justify-content: center;", title: "Imprimir Reporte de Lotes Disponibles" do %>
+                        <i class="fas fa-print"></i>
+                    <% end %>
+                </div>
+            </div>
+        </div>
+        <% 
+           # Segmentar stock por presentaciones etiquetadas
+           stock_by_pres = {}
+           item.stocks.where("qty_in - qty_out > 0").each do |s|
+               pres = s.presentation
+               pres_id = pres&.id || 0
+               stock_by_pres[pres_id] ||= { name: pres&.name || 'SIN ETIQUETAR', qty_total: 0, items: [] }
+               stock_by_pres[pres_id][:qty_total] += (s.qty_in - s.qty_out)
+               stock_by_pres[pres_id][:items] << s
+           end
+        %>
+        
+        <% stock_by_pres.first(3).each do |id, data| %>
+            <div class="col-md-3">
+                <div style="background: #f8fafc; padding: 1.5rem; border-radius: 16px; border: 1px solid #e2e8f0; text-align: center;">
+                    <span style="display: block; font-size: 0.75rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 1px;"><%= data[:name] %></span>
+                    <strong style="font-size: 2rem; color: #0f172a;">
+                        <% if id == 0 %>
+                           <%= data[:qty_total] %> - <%= item.unit.name.downcase %>s
+                        <% else %>
+                           <%= (data[:qty_total] / Presentation.find(id).qty.to_f).floor %> <small style="font-size: 0.8rem;">u.</small>
+                        <% end %>
+                    </strong>
+                    <div style="font-size: 0.75rem; color: #94a3b8; font-weight: 600; margin-top: 4px;">SEGMENTO ACTUAL</div>
+                </div>
+            </div>
+        <% end %>
+    </div>
+
+    <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
+        <table class="table product-overview" style="margin-bottom: 0;">
+            <thead style="background: #f1f5f9; border-bottom: 2px solid #e2e8f0;">
+                <tr>
+                    <th style="padding: 1.2rem; color: #475569; font-weight: 800;">PRIORIDAD FIFO</th>
+                    <th style="padding: 1.2rem; color: #475569; font-weight: 800;">LOTE / DOCUMENTO</th>
+                    <th style="padding: 1.2rem; text-align: center; color: #475569; font-weight: 800;">ESTADO</th>
+                    <th style="padding: 1.2rem; text-align: center; color: #475569; font-weight: 800;">ENTRADA</th>
+                    <th style="padding: 1.2rem; text-align: center; color: #475569; font-weight: 800;">SALIDA</th>
+                    <th style="padding: 1.2rem; text-align: right; color: #1e3a8a; font-weight: 800;">SALDO (<%= item.unit.name.upcase %>S)</th>
+                    <th style="padding: 1.2rem; text-align: right; color: #4f46e5; font-weight: 800;">TIPO EMPAQUE / DETALLE</th>
+                    <th style="padding: 1.2rem; text-align: center; color: #475569; font-weight: 800;">ACCIÓN</th>
+                </tr>
+            </thead>
+
+            <tbody>
+               <% 
+                   # Agrupamos los stocks por lote y presentación para manejar saldos de re-empaques
+                   grouped_stocks = item.stocks.includes({:purchase_order_line => :purchase_order}, :stock_adjustment, :repacking)
+                                        .group_by { |s| [s.purchase_order_line_id || "SISTEMA-#{s.lote}", s.presentation_id] }
+                   
+                   # Ordenamos: Primero disponibles (balance > 0), luego agotados. Y por fecha más antigua.
+                   sorted_groups = grouped_stocks.to_a.sort_by do |lot_id, stocks|
+                     balance = stocks.sum(&:qty_in) - stocks.sum(&:qty_out)
+                     is_available = balance > 0 ? 0 : 1
+                     oldest_date = stocks.min_by(&:created_at).created_at || Time.now
+                     [is_available, oldest_date]
+                   end
+
+                   if sorted_groups.empty?
+                %>
+                    <tr>
+                        <td colspan="7" class="text-center" style="padding: 4rem; color: #94a3b8;">
+                            <i class="fas fa-boxes fa-4x mb-3" style="opacity: 0.2;"></i>
+                            <p style="font-size: 1.1rem; font-weight: 600;">No hay movimientos de stock registrados.</p>
+                        </td>
+                    </tr>
+                <% else %>
+                    <% index = 0 %>
+                    <% sorted_groups.each do |lot_id, stocks| 
+                       index += 1
+                       # Calculamos totales del grupo
+                       total_in = stocks.sum(&:qty_in)
+                       total_out = stocks.sum(&:qty_out)
+                       balance = total_in - total_out
+                       
+                       # Tomamos el primer registro para mostrar metadatos del lote (fecha original, nombre, etc)
+                       main_stock = stocks.min_by(&:created_at)
+                       lot_display_name = main_stock.lote.presence || (main_stock.purchase_order_line ? "LOTE OC-#{main_stock.purchase_order_line.purchase_order.name}" : "SISTEMA")
+                    %>
+                        <tr style="<%= balance <= 0 ? 'opacity: 0.5; background: #fafafa;' : '' %> border-bottom: 1px solid #f1f5f9;">
+                            <td style="padding: 1.2rem;">
+                                <div style="display: flex; align-items: center;">
+                                    <div style="background: <%= balance > 0 ? '#4f46e5' : '#94a3b8' %>; color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.8rem; margin-right: 12px;">
+                                        <%= index %>
+                                    </div>
+                                    <div>
+                                        <div style="font-size: 0.9rem; font-weight: 700; color: #0f172a;"><%= main_stock.created_at.strftime("%d/%m/%Y") %></div>
+                                        <div style="font-size: 0.75rem; color: #64748b;">Primer ingreso</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td style="padding: 1.2rem;">
+                                <div style="margin-bottom: 4px;">
+                                    <span class="badge" style="background: <%= main_stock.purchase_order_line ? '#f59e0b' : '#64748b' %>; color: white; font-weight: 800; padding: 4px 10px; border-radius: 6px;">
+                                        <%= lot_display_name %>
+                                    </span>
+                                </div>
+                                 <% if main_stock.purchase_order_line %>
+                                    <div style="font-size: 0.8rem; color: #64748b; font-weight: 700;">
+                                        <i class="fas fa-file-invoice"></i> Ref OC# <%= main_stock.purchase_order_line.purchase_order.name %>
+                                    </div>
+                                <% end %>
+                                <% if stocks.count > 1 %>
+                                    <div style="font-size: 0.7rem; color: #0ea5e9; font-weight: 700; margin-top: 4px;">
+                                        <i class="fas fa-sync"></i> Lote consolidado (<%= stocks.count %> movimientos)
+                                    </div>
+                                <% end %>
+                                <% if main_stock.respond_to?(:repacking_id) && main_stock.repacking_id.present? %>
+                                    <div style="font-size: 0.72rem; color: #7c3aed; font-weight: 800; margin-top: 6px; background: #f5f3ff; padding: 4px 8px; border-radius: 4px; border: 1px solid #ddd6fe; display: inline-block;">
+                                        <i class="fas fa-box-open"></i> Lote Re-empacado
+                                    </div>
+                                <% end %>
+                                <% if main_stock.stock_adjustment %>
+                                    <div style="font-size: 0.72rem; color: #059669; font-weight: 800; margin-top: 6px; background: #ecfdf5; padding: 4px 8px; border-radius: 4px; border: 1px solid #a7f3d0; display: inline-block;" title="Motivo: <%= main_stock.stock_adjustment.reason %>">
+                                        <i class="fas fa-tools"></i> Ajuste: <%= main_stock.stock_adjustment.reason.truncate(20) %>
+                                    </div>
+                                <% end %>
+                            </td>
+                            <td style="padding: 1.2rem; text-align: center;">
+                                <% if balance > 0 %>
+                                    <div style="background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; border-radius: 20px; padding: 4px 12px; font-size: 0.7rem; font-weight: 800; display: inline-block;">
+                                        <i class="fas fa-check-circle"></i> DISPONIBLE
+                                    </div>
+                                <% else %>
+                                    <div style="background: #f1f5f9; color: #94a3b8; border: 1px solid #e2e8f0; border-radius: 20px; padding: 4px 12px; font-size: 0.7rem; font-weight: 800; display: inline-block;">
+                                        <i class="fas fa-times-circle"></i> AGOTADO
+                                    </div>
+                                <% end %>
+                            </td>
+                            <td style="padding: 1.2rem; text-align: center; color: #64748b; font-weight: 600;">
+                                <%= number_with_precision(total_in, precision: 0) %>
+                            </td>
+                            <td style="padding: 1.2rem; text-align: center; color: #94a3b8;">
+                                <%= number_with_precision(total_out, precision: 0) %>
+                            </td>
+                            <td style="padding: 1.2rem; text-align: right;">
+                                <strong style="font-size: 1.4rem; color: <%= balance > 0 ? '#0f172a' : '#94a3b8' %>; font-family: 'JetBrains Mono', monospace;">
+                                    <%= number_with_precision(balance, precision: 0) %>
+                                </strong>
+                            </td>
+                            <td style="padding: 1.2rem; text-align: right; vertical-align: middle;">
+                                <% presentation = main_stock.presentation %>
+                                <% if presentation %>
+                                    <div style="font-weight: 800; color: #4f46e5; font-size: 0.9rem; margin-bottom: 4px;">
+                                        <i class="fas fa-box-open"></i> <%= presentation.name %>
+                                    </div>
+                                    <div style="font-size: 0.75rem; color: #6366f1; margin-bottom: 6px; font-weight: 600;">
+                                        (Contiene <%= presentation.qty %> <%= item.unit.name %>s)
+                                    </div>
+                                    <% if balance > 0 %>
+                                        <% 
+                                           packs = (balance / presentation.qty.to_f).floor 
+                                           remainder = balance % presentation.qty.to_i
+                                        %>
+                                        <div style="background: #4f46e5; color: white; padding: 6px 12px; border-radius: 8px; display: inline-block; font-size: 1rem; font-weight: 900; box-shadow: 0 2px 4px rgba(79, 70, 229, 0.2);">
+                                            <%= packs %> <small style="font-size: 0.6rem; vertical-align: middle; opacity: 0.8;">u. de</small> EMPAQUE
+                                        </div>
+                                    <% end %>
+                                <% else %>
+                                    <div style="color: #94a3b8; font-style: italic; font-size: 0.85rem; background: #f8fafc; padding: 8px; border-radius: 8px; border: 1px dashed #e2e8f0;">
+                                        <i class="fas fa-info-circle"></i> Sin Presentación
+                                    </div>
+                                <% end %>
+                            </td>
+                            <td style="padding: 1.2rem; text-align: center; vertical-align: middle;">
+                                <div style="display: flex; gap: 8px; justify-content: center;">
+                                    <%= link_to edit_stock_path(main_stock), remote: true, class: "btn btn-circle", style: "background: #f1f5f9; border: 1px solid #e2e8f0; color: #475569; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; transition: all 0.2s;", title: "Editar" do %>
+                                        <i class="fas fa-edit"></i>
+                                    <% end %>
+                                </div>
+                            </td>
+                        </tr>
+                    <% end %>
+                <% end %>
+            </tbody>
+        </table>
+    </div>
+</div>

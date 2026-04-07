@@ -9,14 +9,13 @@ class CompaniesController < ApplicationController
    @page = (params[:page] || 0).to_i
     @keywords = params[:keywords]
 
-    search = Search.new(@page, PAGE_SIZE, @keywords, current_user, nil)
+    search = Search.new(@page, PAGE_SIZE, @keywords, current_user, nil, nil)
     @companies, @number_of_pages = search.companies_by_name
   end
 
   # GET /companies/1
   # GET /companies/1.json
   def show
-      @clients = Client.all
   end
 
   # GET /companies/new
@@ -26,7 +25,6 @@ class CompaniesController < ApplicationController
 
   # GET /companies/1/edit
   def edit
-    @clients = Client.all
   end
 
   # POST /companies
@@ -48,7 +46,6 @@ class CompaniesController < ApplicationController
   # PATCH/PUT /companies/1
   # PATCH/PUT /companies/1.json
   def update
-     @clients = Client.all
     respond_to do |format|
       if @company.update(company_params)
         format.html { redirect_to companies_url, notice: 'Company was successfully updated.' }

@@ -113,6 +113,29 @@ $(document).on('turbolinks:load', function () {
         $('#credit-label-status').text(isCredit ? 'Venta a Crédito' : 'Venta al Contado');
         $('#credit-label-status').toggleClass('text-primary', isCredit);
     });
+
+    // Navegación con TAB en inputs de cantidad
+    $(document).on('keydown', '.input-qty-ajax', function (e) {
+        if (e.which === 9) { // Tab key
+            e.preventDefault();
+
+            const inputs = $('.input-qty-ajax');
+            const currentIndex = inputs.index(this);
+
+            if (currentIndex < inputs.length - 1) {
+                // Ir al siguiente input de cantidad
+                inputs.eq(currentIndex + 1).focus().select();
+            } else {
+                // Si es el último, volver al buscador
+                $('#pos-product-search').focus();
+            }
+        }
+    });
+
+    // Seleccionar todo el texto al recibir foco
+    $(document).on('focus', '.input-qty-ajax', function () {
+        $(this).select();
+    });
 });
 
 // Estilos extra para el dropdown de búsqueda (inyectados si es necesario o en el CSS)

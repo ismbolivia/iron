@@ -1,101 +1,182 @@
 
+<div class="row">
+  <div class="col-lg-12">
+    <div class="white-box">
+      <!-- 🛠️ Controles de Cabecera (Ocultos en Impresión) -->
+      <div class="row no-print" style="margin-bottom: 20px;">
+        <div class="col-md-6">
+          <h3 class="box-title" style="margin-top: 10px;">
+            <i class="fa fa-list-alt"></i> <%= @datas[0].name %> 
+          </h3>
+        </div>
+        <div class="col-md-6 text-right">
+          <a href="<%= price_list_item_price_list_path(@price_list, format: :pdf) %>" target="_blank" class="btn btn-danger btn-outline">
+            <i class="fa fa-file-pdf-o"></i> Descargar PDF (Servidor)
+          </a>
+          <button onclick="window.print();" class="btn btn-info btn-outline">
+            <i class="fa fa-print"></i> Vista de Impresión
+          </button>
+          <button onclick="exportTableToExcel('price-list-table', '<%= @datas[0].name.parameterize %>')" class="btn btn-success btn-outline">
+            <i class="fa fa-file-excel-o"></i> Exportar a Excel
+          </button>
+        </div>
+      </div>
 
-    <div class="row">
-           <div class="col-lg-1"> </div>
-                  <div class="col-lg-10 panel panel-info">
-                   <div class="white-box">
-                    <div class="">
-                    	 <div class="row">
-						      <div class = "col-lg-12 col-md-12 col-sm-12" >
-						        <div class="col-lg-4 col-md-4 col-sm-4">
-						           <div class="product-img "> 
-						             <%= image_tag(  ActionController::Base.helpers.asset_path('list_prices.png'), :alt => "imge-item", class: "image-form") %>
-						                     
-						           </div>
-						          </div>  
-						           
-						         	<div class="col-lg-8 col-md-8 col-sm-8">
-						              <div class="form-group">
-						                  <span  class = "form-label-control m-t-50"><%=@datas[0].name %></span>                  
-						                    </div>
-						              <div class="form-group ">
-						                 <label >Utilidad <%=@datas[0].utilidad %>%</label>
-						              </div>
-						             </div>					          
-						         </div>
-						      </div>    
-						       <% @datas[1].each do |data| %>     
-						        <%if data.class == Category %>	
+      <!-- 📊 Tabla Unificada con Rowspan -->
+      <div class="table-responsive">
+        <table class="table table-bordered table-striped" id="price-list-table" style="vertical-align: middle;">
+          <thead>
+            <tr class="bg-dark text-white" style="background: #2c3e50; color: white;">
+              <th class="text-center" style="width: 15%; vertical-align: middle;">Categoría</th>
+              <th style="width: 45%; vertical-align: middle;">Producto</th>
+              <th class="text-center" style="width: 10%; vertical-align: middle;">Unidad</th>
+              <th class="text-center" style="width: 15%; vertical-align: middle;">Precio ($)</th>
+              <% @mycompany.get_current_currency.getChangePrices.each do |price_rate| %>
+                <th class="text-center" style="width: 15%; vertical-align: middle;">
+                  Precio (<%= price_rate.currencyReference.symbol %>)
+                </th>
+              <% end %>
+            </tr>
+          </thead>
+          <tbody>
+            <% current_category = nil %>
+            <% @datas[1].each do |data| %>
+              
+              <% if data.is_a?(Category) %>
+                <% current_category = data %>
+              <% end %>
 
-						      	<div align="center" class="text-info">
-					  				<h4 ><strong>PRODUCTOS DE LA CATEGORIA (<%= data.name %>)</strong></h4>
-								</div>
-									<table class="table table-bordered text-center">
-										<thead>
-										   <tr>		
-										   <% data.items.order(:name).limit(6).each_with_index do |item, index| %>
-									    	<% if index == 2 or index==3 %>
-									    		<th><%= link_to edit_item_path(item), {method: :get, remote:true  } do %> 
-									    			<%= image_tag(item.image.large.url, :alt => "imge-item",  :style => "iwidth:100%; height:100px;", id: item.id) %>
-									    				<% end %>
-									    			</th>
-									    			
-									    	<% else %>
-										    		<th><%= link_to edit_item_path(item), {method: :get, remote:true } do %> 
-										    			<%= image_tag(item.image.large.url, :alt => "imge-item",  :style => "iwidth:100%; height:100px;" , id: item.id ) %>
-														<% end %>
-														
-										    		</th>
-										    	<% end%>
-										    <%end%> 	    
-										    </tr>
-										  </thead>					
-									</table>
-						  	  	 <hr>
-						  	  	 <% end %>
+              <% if data.is_a?(Array) && current_category %>
+                <% data.each_with_index do |item, index| %>
+                  <tr style="page-break-inside: avoid;">
+                    
+                    <!-- 🖼️ Celda de Imagen Combinada (Rowspan) -->
+                    <% if index == 0 %>
+                      <td rowspan="<%= data.count %>" class="text-center" style="vertical-align: middle; background: #fbfbfb; ">
+                        <% 
+                          category_image_url = nil
+                          if current_category.pictures.present?
+                            category_image_url = current_category.pictures.url
+                          elsif data.first.present? && data.first.image.present?
+                            category_image_url = data.first.image.large.url rescue data.first.image.url
+                          end
+                        %>
+                        <% if category_image_url.present? %>
+                          <%= image_tag(category_image_url, style: "max-width: 100px; max-height: 100px; object-fit: contain;") %>
+                        <% end %>
+                        <div style="margin-top: 8px; font-weight: bold; font-size: 11px;"><%= current_category.name.upcase %></div>
+                      </td>
+                    <% end %>
 
+                    <td style="vertical-align: middle; padding: 10px;">
+                      <div style="font-weight: 800; color: #1e293b; font-size: 14px; display: inline-block;"><%= item.name %></div>
+                      
+                      <!-- 🏷️ Súper Concatenación Blindada -->
+                      <% 
+                        begin
+                          valid_presentations = item.presentations.select { |p| (p.get_total_stock rescue 0) > 0 }
+                          base_price = item.getPriceAsignado(@datas[0].name).to_f rescue 0.0
+                        rescue
+                          valid_presentations = []
+                          base_price = 0.0
+                        end
+                      %>
+                      <% if valid_presentations.any? %>
+                         <span style="font-size: 12px; color: #64748b; margin-left: 5px;">
+                           <% valid_presentations.each do |pres| %>
+                              <% 
+                                 begin
+                                    qty = pres.qty.to_f > 0 ? pres.qty.to_f : 1.0
+                                    pres_price = (base_price * qty).round(4)
+                                 rescue
+                                    pres_price = 0.0
+                                 end
+                              %>
+                              | <span style="font-weight: 700; color: #334155;"><%= pres.name.to_s.upcase %>/<%= qty.to_i %>pz</span>
+                              <span style="color: #0369a1; font-weight: 800;">($<%= number_with_precision(pres_price, precision: 4) %>)</span>
+                           <% end %>
+                         </span>
+                      <% end %>
+                    </td>
 
-						  	  	 <%if data.class == Array %>	
+                    <!-- 📦 Unidad Base -->
+                    <td class="text-center" style="vertical-align: middle; font-size: 12px; color: #64748b;">
+                      <%= item.unit.name rescue 'N/A' %>
+                    </td>
+                    
+                    <!-- 💰 Precio Unitario ($) -->
+                    <td class="text-center text-info" style="vertical-align: middle; font-weight: 800; font-size: 15px;">
+                      <%= number_to_currency(base_price, precision: 4) %>
+                    </td>
 
-						  	  	
-						  	  	 <table class="table">
-								    <thead>
-									    <tr>
-									      <th>Nombre</th>
-									      <th>Descripción</th>
-									      <th>Precio $</th>
-									      <% @mycompany.get_current_currency.getChangePrices.each do |price_rate| %>
-									      <th>Precio  <%=price_rate.currencyReference.symbol %></th>
-									      <% end %>
-									      <th colspan="1"></th>
-										</tr>
-										  </thead>
-										  <tbody>
-										    <% data.each do |item| %> 
-										      <tr>
-										        <td><%= item.name %></td>
-										        <td><%= item.description %></td>
-										        <td><%= number_to_currency(item.getPriceAsignado(@datas[0].name)) %></td>
+                    <!-- 💱 Conversiones Unitarias -->
+                    <% @mycompany.get_current_currency.getChangePrices.each do |price_rate| %>
+                      <td class="text-center text-success" style="vertical-align: middle; font-weight: 800; font-size: 15px;">
+                        <%= price_rate.currencyReference.symbol %> <%= number_with_precision(price_rate.getPriceCurrencyRate(base_price), precision: 4) %>
+                      </td>
+                    <% end %>
+                  </tr>
+                <% end %>
+              <% end %>
 
-										         <% @mycompany.get_current_currency.getChangePrices.each do |price_rate| %>
-										        <td> <%=price_rate.currencyReference.symbol %> <%= price_rate.getPriceCurrencyRate(item.getPriceAsignado(@datas[0].name)) %></td>	
-										        <% end %>				   
-										        <td>
-										        <% if can? :read, Item %>
-										        	  <%= link_to 'Ver', item, class: "btn btn-info" %>
-										        <% end %>
-										        </td>
-										      
-										      </tr>
-										    <% end %>
-										  </tbody>
-										</table>
-										 <% end %>
-						  	  	 <%end %>
-					                               	  	
-                    </div>
-                  </div>
-                </div>
-              <div class="col-lg-1">
-              </div>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+
     </div>
+  </div>
+</div>
+
+<!-- 📜 Scripts Útiles (Impresión y Excel) -->
+<script>
+  function exportTableToExcel(tableID, filename = '') {
+    var tableSelect = document.getElementById(tableID);
+    
+    // Clonamos la tabla para no alterar la vista del usuario
+    var cloneTable = tableSelect.cloneNode(true);
+    
+    // 🧹 Removemos las imágenes de la copia para evitar que Excel dé error al cargar imágenes externas
+    var imgs = cloneTable.getElementsByTagName('img');
+    while(imgs.length > 0) {
+      imgs[0].parentNode.removeChild(imgs[0]);
+    }
+
+    var tableHTML = cloneTable.outerHTML;
+    filename = filename ? filename + '.xls' : 'lista_de_precios.xls';
+    
+    var dataType = 'application/vnd.ms-excel';
+    
+    // Añadimos el BOM (Byte Order Mark) para soporte de caracteres con tildes y eñes en Excel
+    var htmlContent = '\ufeff' + tableHTML; 
+    
+    var blob = new Blob([htmlContent], { type: dataType });
+
+    // Soporte para navegadores antiguos de Microsoft
+    if (navigator.msSaveOrOpenBlob) {
+      navigator.msSaveOrOpenBlob(blob, filename);
+    } else {
+      var downloadLink = document.createElement("a");
+      document.body.appendChild(downloadLink);
+      
+      // Creamos un link temporal usando Blob URL
+      downloadLink.href = URL.createObjectURL(blob);
+      downloadLink.download = filename;
+      downloadLink.click();
+      
+      document.body.removeChild(downloadLink);
+    }
+  }
+</script>
+
+<style>
+  /* 🖨️ Estilos para Impresión */
+  @media print {
+    .no-print, .breadcrumb, .navbar, .sidebar, .footer { display: none !important; }
+    .white-box { border: none !important; box-shadow: none !important; padding: 0 !important; }
+    table { width: 100% !important; border-collapse: collapse !important; }
+    th { background-color: #2c3e50 !important; -webkit-print-color-adjust: exact; color: white !important; }
+    tr { page-break-inside: avoid !important; }
+    td { -webkit-print-color-adjust: exact; }
+  }
+</style>

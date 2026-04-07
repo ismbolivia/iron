@@ -1,0 +1,81 @@
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body { font-family: 'Helvetica', sans-serif; margin: 0; padding: 0; }
+    .label-container {
+      display: inline-block;
+      width: 48%; /* Dos etiquetas por fila aproximado */
+      border: 1px dashed #ccc;
+      padding: 15px;
+      margin: 5px;
+      height: 140px;
+      overflow: hidden;
+      box-sizing: border-box;
+      border-radius: 8px;
+    }
+    .item-name { font-size: 14px; font-weight: bold; display: block; margin-bottom: 5px; height: 35px; overflow: hidden; }
+    .item-code { font-size: 11px; color: #666; font-family: 'Courier', monospace; }
+    .lote-info { margin-top: 10px; font-size: 12px; }
+    .price-tag { 
+      float: right; 
+      font-size: 18px; 
+      font-weight: 900; 
+      background: #000; 
+      color: #fff; 
+      padding: 4px 8px; 
+      border-radius: 4px;
+    }
+    .badge-lote { background: #eee; padding: 2px 5px; border-radius: 3px; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <div style="text-align: center; margin-bottom: 20px;">
+    <h2>HOJA DE ETIQUETADO - OC: <%= @purchase_order.name %></h2>
+    <p>Proveedor: <%= @purchase_order.supplier.name %> | Fecha: <%= Date.current %></p>
+  </div>
+
+  <% @stocks.each do |stock| %>
+    <% item = stock.item %>
+    <% price = item.prices.activo.first %>
+    <% 
+        # Calcular cuántas etiquetas imprimir basadas en la presentación
+        num_labels = 1
+        qty_info = ""
+        if stock.presentation_id.present?
+          pres = stock.presentation
+          num_labels = (stock.qty_in.to_f / pres.qty.to_f).to_i
+          qty_info = "Empaque: #{pres.name} (x#{pres.qty})"
+          qty_info += " [↳ #{pres.qty_in_parent} p/ #{pres.parent.name}]" if pres.parent_id.present?
+        end
+    %>
+
+    <% num_labels.times do |i| %>
+      <div class="label-container">
+        <div class="price-tag">
+          $<%= price&.price_sale || "0.00" %>
+        </div>
+        <span class="item-name"><%= item.name %></span>
+        <span class="item-code">SKU: <%= item.code %></span>
+        
+        <div class="lote-info" style="font-size: 10px; color: #555;">
+          <%= qty_info %><br>
+          Lote: <span class="badge-lote"><%= stock.lote %></span> | Etiqueta: <%= i + 1 %> / <%= num_labels %><br>
+          <% if stock.expiration_date.present? %>
+            Vence: <strong><%= stock.expiration_date.strftime("%d/%m/%Y") %></strong>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  <% end %>
+
+  <script type="text/javascript">
+    // Autoprint if viewed in browser
+    window.onload = function() {
+      if (!window.location.href.includes('.pdf')) {
+        // window.print();
+      }
+    }
+  </script>
+</body>
+</html>

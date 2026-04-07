@@ -1,0 +1,43 @@
+<% 
+   # Calculate simple average for estimation
+   months_passed = date.month 
+   avg_monthly = months_passed > 0 ? (product.qty_year.to_f / months_passed).round(1) : 0
+   
+   # Historic averages (assuming full years)
+   avg_last_year = (product.qty_last_year.to_f / 12).round(1)
+   avg_year_minus_2 = (product.qty_year_minus_2.to_f / 12).round(1)
+   avg_year_minus_3 = (product.qty_year_minus_3.to_f / 12).round(1)
+%>
+<tr id="row_item_<%= product.id %>">
+  <td><%= product.code %></td>
+  <td><%= product.name %></td>
+  <td class="info font-weight-bold"><%= product.get_total_stock %></td>
+  <td class="info"><%= product.get_precio_last rescue 0 %></td>
+<%
+   # Logic for estimation
+   current_stock = product.get_total_stock
+   estimated_qty = (avg_monthly - current_stock).round
+   estimated_qty = 0 if estimated_qty < 0
+%>
+  <td class="text-center info" style="border-left: 2px solid #ddd; border-right: 2px solid #ddd;">
+    <input type="number" class="form-control input-sm text-center" value="<%= estimated_qty %>" style="width: 80px; margin: 0 auto; font-weight: bold;">
+  </td>
+  <td class="text-center success font-weight-bold"><%= product.qty_day %></td>
+  <td class="text-center"><%= product.qty_week %></td>
+  <td class="text-center"><%= product.qty_month %></td>
+  <td class="text-center"><%= product.qty_quarter %></td>
+  <td class="text-center"><%= product.qty_semester %></td>
+  <td class="text-center"><%= product.qty_year %></td>
+  <td class="text-center warning font-weight-bold"><%= avg_monthly %></td>
+  <td class="text-center" style="border-left: 2px solid #ddd;"><%= product.qty_last_year %></td>
+  <td class="text-center warning text-muted"><%= avg_last_year %></td>
+  <td class="text-center"><%= product.qty_year_minus_2 %></td>
+  <td class="text-center warning text-muted"><%= avg_year_minus_2 %></td>
+  <td class="text-center"><%= product.qty_year_minus_3 %></td>
+  <td class="text-center warning text-muted"><%= avg_year_minus_3 %></td> 
+  <td class="text-center">
+    <button type="button" class="btn btn-danger btn-xs btn-delete-row" onclick="removeRow(this)">
+      <i class="fa fa-trash"></i>
+    </button>
+  </td>
+</tr>

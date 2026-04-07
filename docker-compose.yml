@@ -1,6 +1,6 @@
 services:
   db:
-    image: postgres:12
+    image: postgres:17
     volumes:
       - postgres_data:/var/lib/postgresql/data
     environment:
@@ -24,7 +24,8 @@ services:
       - DATABASE_HOST=db
       - DATABASE_USERNAME=sejas
       - DATABASE_PASSWORD=sejas
-      - RAILS_ENV=development
+      - RAILS_ENV=production
+      - RAILS_SERVE_STATIC_FILES=true
 
 volumes:
   postgres_data:

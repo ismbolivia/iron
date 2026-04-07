@@ -1,72 +1,262 @@
 
 
-<div class="card">
-  <div class="card-body">
-  
-      <h2 class="text-center"><strong>PRESENTACIONES DE LOS PRODUCTOS</strong> </h2>
-    <div class="table-responsive">
-      <div id="zero_config_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4 no-footer">
-        <div class="row">
+<style>
+.premium-dashboard {
+  background: #fdfdfd;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.03);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
 
-          <div class="col-sm-12">
-            <table class="table product-overview dataTable no-footer" id="zero_config" role="grid" aria-describedby="zero_config_info">
-                <thead>
-                 <tr role="row">
-                  <th class="sorting_asc" tabindex="0" aria-controls="zero_config" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Customer: activate to sort column descending" style="width: 0px;">Nombre</th>
-                  <th class="sorting" tabindex="0" aria-controls="zero_config" rowspan="1" colspan="1" aria-label="Order ID: activate to sort column ascending" style="width: 0px;">Cantidad</th>
-                  <th class="sorting" tabindex="0" aria-controls="zero_config" rowspan="1" colspan="1" aria-label="Status: activate to sort column ascending" style="width: 0px;">Item</th>
-                  <th class="sorting" tabindex="0" aria-controls="zero_config" rowspan="1" colspan="1" aria-label="Photo: activate to sort column ascending" style="width: 0px;">Photo</th>
-                  <th class="sorting" tabindex="0" aria-controls="zero_config" rowspan="1" colspan="1" aria-label="Product: activate to sort column ascending" style="width: 0px;">Unnidad</th>
-                  <th class="sorting" tabindex="0" aria-controls="zero_config" rowspan="1" colspan="1" aria-label="Product: activate to sort column ascending" style="width: 0px;">Precio</th>
+.gradient-banner {
+  background: linear-gradient(135deg, #09203f 0%, #537895 100%);
+  color: white;
+  border-radius: 12px;
+  padding: 1.8rem 2.22rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 
-               
-                  <th class="sorting" tabindex="0" aria-controls="zero_config" rowspan="1" colspan="1" aria-label="Actions: activate to sort column ascending" style="width: 0px;">Actions</th></tr>
-                </thead>
-                <tbody>   
-                  <% @presentations.each do |presentation| %>                                                                                                                                        
-                <tr role="row" class="odd">
-                    <td class="sorting_1"><%= presentation.name %></td>
-                    <td><%= presentation.qty %></td>
-                     <td> <span class="label label-success font-weight-100"><%= presentation.item.name %></span> </td>
-                    <td><%= image_tag(presentation.image_presentation.medium.url, :alt => "imge-item", :style => "width: 70px;") %></td>
-                    <td><%= presentation.unit.name %></td>
-                    <td><%=@mycompany.get_current_currency.symbol %> <%= presentation.price %></td>
-                   
-                    <td>
-                    <% if can? :update, presentation %>
-                    <%= link_to edit_presentation_path(presentation), {method: :get, class: "text-inverse  btn btn-default"} do %><i class="ti-marker-alt" aria-hidden="true"> </i> 
-                        <% end %>  
+.table-custom {
+  border-collapse: separate;
+  border-spacing: 0 10px;
+  width: 100%;
+}
+
+.table-custom thead th {
+  border: none;
+  font-weight: 600;
+  color: #718096;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 0.75rem 1rem;
+}
+
+.custom-row {
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.custom-row:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.05);
+}
+
+.custom-row td {
+  border: none;
+  padding: 1rem 1rem;
+  vertical-align: middle;
+}
+
+.custom-row td:first-child { border-top-left-radius: 10px; border-bottom-left-radius: 10px; }
+.custom-row td:last-child { border-top-right-radius: 10px; border-bottom-right-radius: 10px; }
+
+.image-circle {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid white;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.image-circle img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.badge-outline {
+  background: rgba(43, 108, 176, 0.06);
+  color: #2b6cb0;
+  border: 1px solid rgba(43, 108, 176, 0.15);
+  border-radius: 6px;
+  padding: 5px 12px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  display: inline-block;
+}
+
+.action-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: #f7fafc;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #4a5568;
+  margin: 0 2px;
+  transition: all 0.2s;
+  border: 1px solid #edf2f7;
+}
+
+.action-icon:hover {
+  background: #2b6cb0;
+  color: white !important;
+  border-color: #2b6cb0;
+  transform: translateY(-1px);
+}
+
+.action-icon.danger:hover {
+  background: #e53e3e;
+  border-color: #e53e3e;
+}
+
+.btn-premium-new {
+  background: white;
+  color: #2a4365 !important;
+  font-weight: 600;
+  padding: 10px 22px;
+  border-radius: 25px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  transition: all 0.2s;
+  border: none;
+  font-size: 0.88rem;
+  text-decoration: none !important;
+}
+
+.btn-premium-new:hover {
+  background: #f7fafc;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.12);
+}
+
+/* Custom Pager override styles strictly following items/pager output nodes */
+.pager {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  padding: 1rem;
+  list-style: none;
+}
+
+.pager li a {
+  background: white;
+  border: 1px solid #e2e8f0;
+  padding: 8px 16px;
+  border-radius: 8px;
+  color: #4a5568;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.pager li a:hover {
+  background: #f7fafc;
+  border-color: #cbd5e1;
+}
+
+.pager li.disabled a {
+  opacity: 0.5;
+  pointer-events: none;
+}
+</style>
+
+<div class="premium-dashboard">
+  <div class="gradient-banner">
+    <div>
+      <h2 class="m-0" style="font-weight: 700; font-size: 1.4rem; letter-spacing: -0.3px;">Presentaciones de Productos</h2>
+      <p class="m-0" style="color: rgba(255,255,255,0.75); font-size: 0.88rem; margin-top: 4px;">Gestión de variantes, unidades y formatos de empaque.</p>
+    </div>
+    <div class="d-flex align-items-center">
+      <%= link_to 'Nueva Presentación', new_presentation_path, remote: true, class: 'btn-premium-new d-flex align-items-center' %>
+    </div>
+  </div>
+
+  <!-- Barra de Búsqueda -->
+  <%= form_tag presentations_path, method: :get, class: "mb-4" do %>
+    <div style="display: flex; gap: 8px; align-items: stretch; max-width: 480px;">
+      <div style="flex-grow: 1; display: flex; align-items: center; background: white; border: 1px solid #edf2f7; border-radius: 12px; padding: 0 14px; box-shadow: 0 1px 3px rgba(0,0,0,0.02); transition: all 0.2s; border-color: #cbd5e1;">
+        <i class="ti-search" style="color: #a0aec0; font-size: 0.95rem; margin-right: 8px;"></i>
+        <%= text_field_tag :keywords, @keywords, placeholder: "Buscar por nombre de presentación...", class: "form-control border-0 p-0", style: "background: transparent; height: 38px; box-shadow: none; font-size: 0.9rem; color: #4a5568;" %>
+      </div>
+      <%= submit_tag "Buscar", class: "btn", style: "background: #2b6cb0; color: white !important; border-radius: 10px; font-weight: 600; font-size: 0.88rem; padding: 0 18px; border: none; cursor: pointer;" %>
+    </div>
+  <% end %>
+
+  <div class="table-responsive">
+    <table class="table-custom">
+      <thead>
+        <tr>
+          <th style="width: 70px;">Imagen</th>
+          <th>Nombre</th>
+          <th>Cant.</th>
+          <th>Artículo</th>
+          <th>Unidad</th>
+          <th>Precio</th>
+          <th style="text-align: right; width: 120px;">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if @presentations.any? %>
+          <% @presentations.each do |presentation| %>
+            <tr class="custom-row">
+              <td>
+                <div class="image-circle">
+                  <%= image_tag(presentation.image_presentation.midium.url, :alt => presentation.name) %>
+                </div>
+              </td>
+              <td>
+                <span style="font-weight: 600; color: #2d3748; font-size: 0.95rem;"><%= presentation.name %></span>
+              </td>
+              <td>
+                <span class="font-weight-600" style="color: #4a5568;"><%= presentation.qty %></span>
+              </td>
+              <td>
+                <span class="badge-outline"><%= presentation.item&.name %></span>
+              </td>
+              <td style="color: #718096; font-size: 0.9rem;"><%= presentation.unit&.name %></td>
+              <td>
+                <span class="font-weight-600" style="color: #38a169; font-size: 0.95rem;">
+                  <small style="font-size: 0.75em;"><%= @mycompany.get_current_currency.symbol %></small><%= presentation.price %>
+                </span>
+              </td>
+              <td style="text-align: right;">
+                <div class="d-inline-flex">
+                  <% if can? :update, presentation %>
+                    <%= link_to edit_presentation_path(presentation), class: "action-icon", title: "Editar" do %>
+                      <i class="ti-marker-alt"></i>
                     <% end %>
-                    <% if can? :read, presentation %>
-                         <%= link_to  presentation, class: "text-inverse btn btn-default " do %>
-                         <i class="ti-eye" aria-hidden="true"> </i> 
-                          <% end %> 
+                  <% end %>
+                  <% if can? :read, presentation %>
+                    <%= link_to presentation, class: "action-icon", title: "Ver" do %>
+                      <i class="ti-eye"></i>
                     <% end %>
-                    <% if can? :destroy, presentation %>
-                        <%= link_to presentation, { method: :delete, data: { confirm: '¿Está seguro?' }, class: "text-inverse btn btn-default" } do %>
-                        <span class="ti-trash" aria-hidden="true"> </span> 
-                        <% end %> 
+                  <% end %>
+                  <% if can? :destroy, presentation %>
+                    <%= link_to presentation, method: :delete, data: { confirm: '¿Está seguro de eliminar?' }, class: "action-icon danger", title: "Eliminar" do %>
+                      <i class="ti-trash text-danger"></i>
                     <% end %>
-                    </td>                           
-                </tr>
-                 <% end %>
-               </tbody>                                                                               
-            </table>
+                  <% end %>
+                </div>
+              </td>
+            </tr>
+          <% end %>
+        <% else %>
+          <tr>
+            <td colspan="7" class="text-center text-secondary" style="padding: 2.5rem; font-size: 0.95rem;">
+              No se encontraron presentaciones.
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Controles de Paginación -->
+  <div style="margin-top: 1.5rem;">
+    <%= render partial: "items/pager", locals: { keywords: @keywords, page: @page } %>
   </div>
 </div>
-    <div class="row">
-      <div class="col-sm-12 col-md-5">
-        <div class="dataTables_info" id="zero_config_info" role="status" aria-live="polite">Showing 1 to 8 of 8 entries</div>
-      </div>
-      <div class="col-sm-12 col-md-7">
-        <div class="dataTables_paginate paging_simple_numbers" id="zero_config_paginate"><ul class="pagination"><li class="paginate_button page-item previous disabled" id="zero_config_previous"><a href="#" aria-controls="zero_config" data-dt-idx="0" tabindex="0" class="page-link">Previous</a></li><li class="paginate_button page-item active"><a href="#" aria-controls="zero_config" data-dt-idx="1" tabindex="0" class="page-link">1</a></li><li class="paginate_button page-item next disabled" id="zero_config_next"><a href="#" aria-controls="zero_config" data-dt-idx="2" tabindex="0" class="page-link">Next</a></li>
-          <li class="paginate_button page-item active info"><%= link_to 'Nueva presentación', new_presentation_path, remote:true, class: 'paginate_button page-item active' %></li>
-        </ul>
-        </div>
-      </div>
-    </div>
-</div>
-</div>    
 
-</div>                                                                  
-</div>

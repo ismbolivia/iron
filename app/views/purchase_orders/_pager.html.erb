@@ -1,12 +1,68 @@
-<nav>
-	<ul class="pager">
-		<li class="previous <%= page == 0 ? 'disabled' : '' %>">
-			<%= link_to_if page > 0, "&larr; Anterior".html_safe,
-						purchase_orders_path(keywords: keywords, page: page - 1) %>
-		</li>
-		<li class="next <%= page == @number_of_pages ? 'disabled' : '' %>">
-			<%= link_to_if page < @number_of_pages, "Siguiente &rarr;".html_safe,
-						purchase_orders_path(keywords: keywords, page: page + 1) %>
-		</li>
-	</ul>
-</nav>
+<% if @number_of_pages.to_i > 0 %>
+  <nav aria-label="Navegación de páginas" class="d-flex justify-content-between align-items-center mt-3">
+    <div class="text-muted font-weight-bold small">
+      PÁGINA <%= page + 1 %> DE <%= @number_of_pages + 1 %>
+    </div>
+    
+    <ul class="pagination pagination-rounded mb-0">
+      <% if page > 0 %>
+        <li class="page-item">
+          <%= link_to purchase_orders_path(keywords: keywords, page: page - 1, filter: params[:filter]), 
+                      class: "page-link", 
+                      aria: { label: "Anterior" } do %>
+            <i class="fas fa-chevron-left mr-1"></i> Anterior
+          <% end %>
+        </li>
+      <% else %>
+        <li class="page-item disabled">
+          <span class="page-link"><i class="fas fa-chevron-left mr-1"></i> Anterior</span>
+        </li>
+      <% end %>
+
+      <% if page < @number_of_pages %>
+        <li class="page-item ml-2">
+          <%= link_to purchase_orders_path(keywords: keywords, page: page + 1, filter: params[:filter]), 
+                      class: "page-link", 
+                      aria: { label: "Siguiente" } do %>
+            Siguiente <i class="fas fa-chevron-right ml-1"></i>
+          <% end %>
+        </li>
+      <% else %>
+        <li class="page-item disabled ml-2">
+          <span class="page-link">Siguiente <i class="fas fa-chevron-right ml-1"></i></span>
+        </li>
+      <% end %>
+    </ul>
+  </nav>
+<% end %>
+
+<style>
+  .pagination-rounded {
+    display: flex;
+    list-style: none;
+    padding-left: 0;
+  }
+  .pagination-rounded .page-link {
+    border-radius: 12px !important;
+    border: 1px solid #e2e8f0;
+    color: #64748b;
+    font-weight: 700;
+    padding: 10px 20px;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    background: white;
+  }
+  .pagination-rounded .page-link:hover {
+    background-color: #f8fafc;
+    color: #10b981;
+    border-color: #10b981;
+  }
+  .page-item.disabled .page-link {
+    background-color: #f8fafc;
+    color: #cbd5e1;
+    border-color: #e2e8f0;
+    cursor: default;
+  }
+</style>

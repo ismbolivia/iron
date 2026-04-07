@@ -1,0 +1,2 @@
+$("#presentation_id").html("<%= escape_javascript(render(partial: 'items/presntations_items', locals: { item: @item, show_actions: true })) %>");
+toastr.success('Presentación eliminada correctamente');

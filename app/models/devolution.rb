@@ -7,10 +7,11 @@ class Devolution < ApplicationRecord
 	end
 
 	def mount_devolution
-			self.qty ? self.qty * self.get_price_unidad : 0
+		(self.qty.to_i * self.get_price_unidad.to_f).round(2)
 	end
+
 	def get_discount
-		self.qty ? ((qty * self.get_price_unidad)*self.sale_detail.discount)/100 : 0
+		(self.qty.to_i * self.get_price_unidad.to_f * self.sale_detail.discount.to_f / 100.0).round(2)
 	end
 
 	after_save :update_sale_status_priority

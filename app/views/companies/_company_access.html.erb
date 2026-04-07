@@ -38,7 +38,8 @@
         <div role="tabpanel" class="tab-pane" id="clients">
           <div class="white-box">
           <div class="table-responsive">    
-              <%= (@clients.count > 0) ? render(partial: 'table_client', locals: { clietns: @clients, show_actions: true }) : 'No hay clientes registrados ' %>                
+              <% latest_clients = Client.order(created_at: :desc).limit(20) %>
+              <%= (latest_clients.count > 0) ? render(partial: 'table_client', locals: { latest_clients: latest_clients, show_actions: true }) : 'No hay clientes registrados ' %>                
 
           </div>
         </div>

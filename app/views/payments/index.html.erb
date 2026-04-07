@@ -1,59 +1,164 @@
-<div class="panel panel-info">
-  <div class="panel-heading">Pagos efectuados</div>
-  <div class="panel-body">
-    <div class="col-md-6 col-sm-6">
-    <%= render partial: 'layouts/partials/search_form', locals: { search_entity: 'payments', word: "Pagos", view_kamback: '', view_list: '', url_pdf: '/get_payment_pdf',url:  new_payment_path, ban: false, url_csv: '', url_xls:'' } %>
+<div class="payments-dashboard">
+  <!-- Header con Título y Botón Principal -->
+  <div class="row mb-4 align-items-center">
+    <div class="col-md-5">
+      <h2 class="dashboard-title">
+        <i class="fas fa-hand-holding-usd text-primary mr-2"></i> <%= @pos_mode ? "Punto de Cobro" : "Pagos Efectuados" %>
+      </h2>
+      <p class="text-muted"><%= @pos_mode ? "Cobranza activa y registro de deuda." : "Gestione y visualice todos los ingresos de caja y pagos de clientes." %></p>
     </div>
-     <div class="col-md-6 col-sm-6">
-
-       <% content_for :filter do %>
-         <select name="filter" id="filters" class="form-control ">
-        <option value="0" >All</option>
-            
-            
-        </select> 
-          <% end %>
-          <%= render partial: 'layouts/partials/report_form', locals: { report_entity: 'report', state: '' } %> 
-
-      </div>
-    <br>
-    <div class="col-md-5 col-md-offset-5 col-sm-5 col-sm-offset-5">
-      <p>
-        <%= button_to new_payment_path, {method: :get, class: "btn btn-success", remote: true} do %>
-          <span class="glyphicon glyphicon-plus" aria-hidden="true"> </span> Nuevo Pago
+    <div class="col-md-3 text-center">
+      <div class="btn-group btn-group-toggle shadow-sm rounded-pill p-1 bg-light" style="border: 1px solid #e2e8f0;">
+        <%= link_to payments_path(mode: 'history'), class: "btn btn-sm rounded-pill px-4 #{@pos_mode ? 'btn-light text-muted' : 'btn-primary shadow-sm'}" do %>
+          <i class="fas fa-history mr-1"></i> Historial
         <% end %>
-      </p>
+        <%= link_to payments_path(mode: 'pos'), class: "btn btn-sm rounded-pill px-4 #{@pos_mode ? 'btn-primary shadow-sm' : 'btn-light text-muted'}" do %>
+          <i class="fas fa-cash-register mr-1"></i> POS Cobro
+        <% end %>
+      </div>
+    </div>
+    <div class="col-md-4 text-right d-flex align-items-center justify-content-end">
+      <!-- 💰 Comisión Acumulada Premium -->
+      <%
+        comisiones_header = Payment.joins(:sale)
+                                   .where(sales: { user_id: current_user.id })
+                                   .where(state: :confirmed, commission_paid: false)
+                                   .sum(:commission_amount).to_f.round(2)
+      %>
+      <div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border-radius: 15px; padding: 10px 18px; display: flex; align-items: center; gap: 12px; box-shadow: 0 8px 20px rgba(16, 185, 129, 0.25); border: 1px solid rgba(255,255,255,0.1);">
+          <div style="background: rgba(255,255,255,0.2); width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.25rem;">
+              <i class="fas fa-coins"></i>
+          </div>
+          <div style="text-align: left;">
+              <span style="font-size: 0.72rem; font-weight: 700; opacity: 0.85; text-transform: uppercase; letter-spacing: 0.5px; display: block;">COMISIONES ACUMULADAS</span>
+              <strong style="font-size: 1.4rem; font-weight: 800; font-family: 'Outfit', 'Inter', sans-serif; display: block; line-height: 1.1;">
+                <%= @mycompany.get_current_currency.symbol %> <%= number_with_precision(comisiones_header, precision: 2) %>
+              </strong>
+          </div>
+      </div>
+    </div>
+  </div>
+
+  <% if @pos_mode %>
+    <%= render partial: 'pos_mode' %>
+  <% else %>
+    <!-- Tarjetas de Resumen (KPIs) -->
+    <div class="row mb-4">
+      <div class="col-md-4">
+        <div class="kpi-card bg-white shadow-sm border-0 rounded-lg p-3">
+          <div class="d-flex align-items-center">
+            <div class="kpi-icon bg-light-primary rounded-circle p-3 mr-3 text-primary">
+              <i class="fas fa-money-bill-wave fa-2x"></i>
+            </div>
+            <div>
+              <span class="text-muted small d-block">PAGOS EN ESTA VISTA</span>
+              <h3 class="mb-0 font-weight-bold"><%= @total_count %> Pagos</h3>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="kpi-card bg-white shadow-sm border-0 rounded-lg p-3">
+          <div class="d-flex align-items-center">
+            <div class="kpi-icon bg-light-success rounded-circle p-3 mr-3 text-success">
+              <i class="fas fa-chart-line fa-2x"></i>
+            </div>
+            <div>
+              <span class="text-muted small d-block">TOTAL RECAUDADO</span>
+              <h3 class="mb-0 font-weight-bold">
+                <%= @mycompany.get_current_currency.symbol %><%= number_with_precision(@total_amount, precision: 2) %>
+              </h3>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+          <div class="kpi-card bg-white shadow-sm border-0 rounded-lg p-3">
+            <div class="d-flex align-items-center">
+              <div class="kpi-icon bg-light-info rounded-circle p-3 mr-3 text-info">
+                <i class="fas fa-calendar-alt fa-2x"></i>
+              </div>
+              <div>
+                <span class="text-muted small d-block">RANGO FILTRADO</span>
+                <h4 class="mb-0 font-weight-bold"><%= @data_init.strftime("%d/%m") %> - <%= @data_limit.strftime("%d/%m/%y") %></h4>
+              </div>
+            </div>
+          </div>
+        </div>
     </div>
 
-    <div class="col-md-12"> <%= render partial: 'results_search' %></div>
-  </div>
- 
+    <!-- Barra de Herramientas y Filtros -->
+    <div class="card shadow-sm border-0 rounded-lg mb-4">
+      <div class="card-body bg-light-faded">
+        <div class="row align-items-end">
+          <div class="col-md-5">
+            <label class="small font-weight-bold text-muted mb-1"><i class="fas fa-search mr-1"></i> BÚSQUEDA RÁPIDA</label>
+            <%= render partial: 'layouts/partials/search_form', locals: { search_entity: 'payments', word: "Pagos", view_kamback: '', view_list: '', url_pdf: '/get_payment_pdf', url: new_payment_path, ban: true, url_csv: '', url_xls:'' } %>
+          </div>
+          <div class="col-md-7">
+            <label class="small font-weight-bold text-muted mb-1"><i class="fas fa-filter mr-1"></i> REPORTES Y FILTROS POR FECHA</label>
+            <div class="d-flex">
+              <%= render partial: 'layouts/partials/report_form', locals: { report_entity: 'report', state: '' } %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabla de Resultados -->
+    <div class="card shadow-sm border-0 rounded-lg overflow-hidden">
+      <div class="card-header bg-white py-3">
+        <h5 class="mb-0 font-weight-bold text-secondary">
+          <i class="fas fa-list-ul mr-2"></i> Listado de Pagos Registrados
+        </h5>
+      </div>
+      <div class="table-responsive">
+        <div id="payments-results">
+          <%= render partial: 'results_search' %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+
   <div class="modal fade" id="new-payment-modal" title="Modal"></div>
+  <div class="modal fade" id="new-payment-modal-current" title="Modal"></div>
 </div>
+
+<style>
+  .payments-dashboard { padding: 20px 0; }
+  .dashboard-title { font-weight: 800; color: #1a2a40; letter-spacing: -1px; }
+  .bg-light-primary { background-color: #e3f2fd; }
+  .bg-light-success { background-color: #e8f5e9; }
+  .bg-light-info { background-color: #e0f7fa; }
+  .kpi-card { transition: transform 0.2s; border-left: 4px solid #ddd !important; }
+  .kpi-card:hover { transform: translateY(-5px); }
+  .kpi-card.border-left { border-left-color: #007bff !important; }
+  .bg-light-faded { background-color: #f8fbff; }
+  .shadow-icon { margin-right: 8px; }
+  .rounded-lg { border-radius: 12px !important; }
+</style>
+
 <script>
   var ranges = {
-  "Ultimos 7 dias": ["<%= format_date(Date.current - 7)%>", "<%=  format_date(Date.current + 1)%>"],
-  "Ultimos 30 dias": ["<%= format_date(Date.current - 30)%>", "<%=  format_date(Date.current)%>"],  
-  "Este mes": ["<%= format_date(Date.current.beginning_of_month)%>", "<%=  format_date(Date.current) %>"],
-  "Mes pasado": ["<%= format_date(1.month.ago.beginning_of_month)%>", "<%=  format_date(1.month.ago.end_of_month)%>"],
-  "Este año": ["<%= format_date(Date.current.beginning_of_year)%>", "<%=  format_date(Date.current)%>"],
-  "Año pasado": ["<%= format_date(1.year.ago.beginning_of_year)%>", "<%=  format_date(1.year.ago.end_of_year)%>"]
-};
+    "Hoy": [moment(), moment()],
+    "Ayer": [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+    "Últimos 7 días": [moment().subtract(6, 'days'), moment()],
+    "Últimos 30 días": [moment().subtract(29, 'days'), moment()],
+    "Este mes": [moment().startOf('month'), moment().endOf('month')],
+    "Mes pasado": [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+  };
 
   $('input[name="dateranges"]').daterangepicker({
       startDate: moment("<%= l @data_init, format:'%Y-%m-%d' %>"),
       endDate: moment("<%= l @data_limit, format:'%Y-%m-%d' %>"),
       ranges: ranges,
+      locale: { format: 'DD/MM/YYYY', separator: ' - ', applyLabel: 'Aplicar', cancelLabel: 'Cancelar', fromLabel: 'Desde', toLabel: 'Hasta', customRangeLabel: 'Personalizado' },
       alwaysShowCalendars: true
-
   }, function(start, end, label){
-
     $("#data_init").val(start.format('YYYY-MM-DD'));
     $("#data_limit").val(end.format('YYYY-MM-DD'));
-    // $("#state").val('input');
-   // $("#submit-button").click();
+    $("#report_form").submit(); // Auto-submit si el formulario tiene este ID
   });
-
 </script>
 
 

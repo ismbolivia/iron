@@ -10,7 +10,7 @@ class UnitsController < ApplicationController
     @page = (params[:page] || 0).to_i
     @keywords = params[:keywords]
 
-    search = Search.new(@page, PAGE_SIZE, @keywords, current_user, nil)
+    search = Search.new(@page, PAGE_SIZE, @keywords, current_user, nil, nil)
     @units, @number_of_pages = search.units_by_name
   end
 
@@ -76,6 +76,6 @@ class UnitsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def unit_params
-      params.require(:unit).permit(:name)
+      params.require(:unit).permit(:name, :allow_decimals)
     end
 end

@@ -1,0 +1,143 @@
+<h1>Estimaciones de Compra por Proveedor</h1>
+
+<div class="row">
+  <div class="col-md-12">
+    <div class="box box-primary">
+      <div class="box-header with-border">
+        <h3 class="box-title">Filtros</h3>
+      </div>
+      <div class="box-body">
+        <%= form_tag reports_purchase_predictions_path, method: :get, class: "form-inline" do %>
+          <div class="form-group" style="margin-right: 15px;">
+            <label>Fecha de Referencia:</label>
+            <%= date_field_tag :date, @date, class: "form-control" %>
+          </div>
+          </div>
+          <div class="form-group" style="margin-right: 15px;">
+            <label>Proveedor:</label>
+            <%= select_tag :supplier_id, options_from_collection_for_select(@suppliers, 'id', 'name', @supplier_id), prompt: "Todos los Proveedores", class: "form-control", onchange: "this.form.submit()" %>
+          </div>
+
+
+          <div class="form-group" style="margin-right: 15px;">
+            <label>Buscar (Producto):</label>
+            <input type="text" id="product_search_add" class="form-control" placeholder="Escribe para añadir..." autocomplete="off">
+          </div>
+          <%= submit_tag "Generar Estimación", class: "btn btn-primary" %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-12">
+    <div class="box">
+      <div class="box-header">
+        <h3 class="box-title">Análisis de Stock y Ventas</h3>
+        <p class="text-muted">Calculado al: <%= @date.strftime("%d/%m/%Y") %></p>
+      </div>
+      <div class="box-body table-responsive">
+        <table class="table table-bordered table-striped table-hover">
+          <thead>
+            <tr>
+              <th>Código</th>
+              <th>Producto</th>
+              <th class="info">Stock Actual</th>
+              <th class="info">Última Compra</th>
+              <th class="info" style="border-left: 2px solid #ddd; border-right: 2px solid #ddd;">Cant.<br><small>Estimada</small></th>
+              <th class="text-center success">Ventas<br><small><%= @date.strftime("%d/%m") %></small></th>
+              <th class="text-center">Semana<br><small>Actual</small></th>
+              <th class="text-center">Mes<br><small><%= @date.strftime("%B") %></small></th>
+              <th class="text-center">Trim.<br><small>Actual</small></th>
+              <th class="text-center">Sem.<br><small>Actual</small></th>
+              <th class="text-center">Año<br><small><%= @date.year %></small></th>
+              <th class="text-center warning">Prom.<br><small>Mensual</small></th>
+              <th class="text-center" style="border-left: 2px solid #ddd;">Año<br><small><%= @date.year - 1 %></small></th>
+              <th class="text-center warning">Prom.<br><small>Mensual</small></th>
+              <th class="text-center">Año<br><small><%= @date.year - 2 %></small></th>
+              <th class="text-center warning">Prom.<br><small>Mensual</small></th>
+              <th class="text-center">Año<br><small><%= @date.year - 3 %></small></th>
+              <th class="text-center warning">Prom.<br><small>Mensual</small></th>
+              <th class="text-center">Acción</th>
+            </tr>
+          </thead>
+          <tbody id="predictions-table-body">
+            <% if @products_data.any? %>
+              <% @products_data.each do |product| %>
+                <%= render partial: 'reports/prediction_row', locals: { product: product, date: @date } %>
+              <% end %>
+            <% else %>
+              <tr id="no-products-msg">
+                <td colspan="11" class="text-center">No se encontraron productos.</td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function removeRow(btn) {
+    $(btn).closest('tr').remove();
+  }
+
+  $(document).ready(function() {
+    // Typeahead initialization
+    var products = new Bloodhound({
+      datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
+      queryTokenizer: Bloodhound.tokenizers.whitespace,
+      remote: {
+        url: '/items_suggestion?query=%QUERY',
+        wildcard: '%QUERY'
+      }
+    });
+
+    $('#product_search_add').typeahead(null, {
+      name: 'products',
+      display: 'name',
+      source: products,
+      limit: 10,
+      templates: {
+        empty: [
+          '<div class="empty-message">',
+            'No se encontraron productos',
+          '</div>'
+        ].join('\n'),
+        suggestion: function(data) {
+          return '<div><strong>' + data.code + '</strong> – ' + data.name + '</div>';
+        }
+      }
+    });
+
+    $('#product_search_add').bind('typeahead:select', function(ev, suggestion) {
+      // Clear input
+      $('#product_search_add').typeahead('val', '');
+
+      // Check if row already exists
+      if ($('#row_item_' + suggestion.id).length > 0) {
+        toastr.warning('Este producto ya está en la lista.');
+        return;
+      }
+
+      // AJAX call to get the row
+      $.ajax({
+        url: '/reports/purchase_prediction_item',
+        data: {
+          item_id: suggestion.id,
+          date: '<%= @date.to_s %>'
+        },
+        success: function(html) {
+          $('#no-products-msg').remove();
+          $('#predictions-table-body').prepend(html);
+          toastr.success('Producto añadido.');
+        },
+        error: function() {
+          toastr.error('Error al cargar datos del producto.');
+        }
+      });
+    });
+  });
+</script>

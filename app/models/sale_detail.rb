@@ -8,13 +8,29 @@ class SaleDetail < ApplicationRecord
 	validates :price, presence: true
 	validates :discount, presence: true
 
+  before_save :validate_discount_rules
+
+  private
+
+  def validate_discount_rules
+    if self.item && !self.item.todiscount
+      self.todiscount = false
+      self.discount = 0.0
+      self.price_sale = self.price
+    elsif self.item && self.item.todiscount
+      self.todiscount = true
+    end
+  end
+
+  public
+
 	accepts_nested_attributes_for :item
 
 	def subtotal
-		self.qty ? ((self.qty - qty_devolutions) * price_sale ).round(2) : 0
+		self.qty ? ((self.qty.to_i - qty_devolutions.to_i) * price_sale.to_f ).round(4) : 0
 	end
 	def sTotal
-		self.qty ? ((self.qty - qty_devolutions) * price ).round(2) : 0
+		self.qty ? ((self.qty.to_i - qty_devolutions.to_i) * price.to_f ).round(4) : 0
 	end
 
 	def unit_price
@@ -45,12 +61,12 @@ class SaleDetail < ApplicationRecord
 		devolutions = self.devolutions
 		total = 0
 			devolutions.flat_map do |d|
-				total += d.qty
+				total += d.qty.to_i
 			end
 		total
 	end
 	def get_qty_total
-		total = self.qty - self.qty_devolutions
+		total = self.qty.to_i - self.qty_devolutions.to_i
 	end
 	def getTotalDiscount
 		res = 0
@@ -58,19 +74,88 @@ class SaleDetail < ApplicationRecord
 
 	end
 	def getTotalSaleDetailsAmounto
-		total = self.qty*price_sale
-		dis =1 - (self.sale.discount/100)
+		total = self.qty.to_i * price_sale.to_f
+		dis = 1 - (self.sale.discount.to_f / 100)
 		if self.todiscount
-			total = total*dis
+			total = total * dis
 		end
 		total
-	  # code
+	end
+
+	def dispatch_instructions
+		# Agrupamos movimientos por stock (lote y presentación) para un cálculo preciso
+		valid_movs = self.movements.select { |m| m.qty_out.to_f > 0 && m.stock }
+		grouped = valid_movs.group_by { |m| [m.stock.purchase_order_line_id || "SISTEMA-#{m.stock.lote}", m.stock.presentation_id] }
+		
+		results = []
+		grouped.each do |key, movs|
+			total_out = movs.sum(&:qty_out)
+			stock = movs.first.stock
+			pres = stock.presentation
+			unit_name = self.item.unit.name.upcase rescue 'PZS'
+
+			repacked_label = (stock.respond_to?(:repacking_id) && stock.repacking_id.present?) ? " (RE-EMPACADO)" : ""
+
+			if pres && pres.qty.to_f > 0
+				packs = (total_out / pres.qty.to_f).floor
+				remainder = total_out % pres.qty.to_i
+				
+				if remainder > 0 && packs > 0
+					results << "#{packs} #{pres.name.upcase} + #{remainder} #{unit_name}#{repacked_label}"
+				elsif packs > 0
+					results << "#{packs} #{pres.name.upcase}#{repacked_label}"
+				else
+					results << "#{total_out} #{unit_name}#{repacked_label}"
+				end
+			else
+				results << "#{total_out} #{unit_name}#{repacked_label}"
+			end
+		end
+
+		results.present? ? results.join(" Y ") : format_qty_with_presentations(self.qty, self.item)
+	end
+
+	private
+
+	def format_qty_with_presentations(total_qty, item, exclude_id: nil)
+		qty_val = total_qty.to_i
+		unit_name = item&.unit&.name&.upcase || 'PZS'
+		return "#{qty_val} #{unit_name}" if qty_val <= 0 || item.nil?
+		
+		# Buscar presentaciones del item de mayor a menor (ej. Caja -> Paquete)
+		available_pres = item.presentations.where("qty > 0").order(qty: :desc)
+		available_pres = available_pres.where.not(id: exclude_id) if exclude_id
+		
+		return "#{qty_val} #{unit_name}" if available_pres.empty?
+
+		parts = []
+		remaining = qty_val
+
+		available_pres.each do |pres|
+			pres_qty = pres.qty.to_i
+			next if pres_qty == 0
+			
+			num = (remaining / pres_qty)
+			if num > 0
+				parts << "#{num} #{pres.name.upcase}"
+				remaining %= pres_qty
+			end
+		end
+
+		parts << "#{remaining} #{unit_name}" if remaining > 0
+		parts.join(" + ")
 	end
 	
+	after_save :trigger_stock_recalculation, if: -> { sale.confirmed? }
+	after_destroy :trigger_stock_recalculation, if: -> { sale.confirmed? }
 	after_save :update_sale_status_priority
 	after_destroy :update_sale_status_priority
-  
+
 	private
+	
+	def trigger_stock_recalculation
+		sale.recalculate_stock_fifo
+	end
   
 	def update_sale_status_priority
 	  self.sale.update_status_priority!

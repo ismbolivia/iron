@@ -1,0 +1,345 @@
+<style>
+  :root {
+    --primary-gradient: linear-gradient(135deg, #4f46e5 0%, #2563eb 100%);
+    --bg-light: #f8fafc;
+    --border-color: #e2e8f0;
+    --text-main: #1e293b;
+  }
+
+  .reception-wrapper { background: var(--bg-light); padding: 2rem; font-family: 'Inter', sans-serif; min-height: 100vh; }
+  .reception-header { background: white; border-radius: 20px; padding: 2rem; margin-bottom: 2rem; box-shadow: 0 4px 12px rgba(0,0,0,0.03); border: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
+  .reception-card { background: white; border-radius: 20px; padding: 2rem; border: 1px solid var(--border-color); box-shadow: 0 10px 25px rgba(0,0,0,0.02); }
+  .table-reception { width: 100%; border-collapse: separate; border-spacing: 0 8px; }
+  .table-reception th { padding: 12px; color: #64748b; font-weight: 700; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 0.05em; border-bottom: 2px solid #f1f5f9; }
+  .table-reception td { padding: 16px 12px; background: #fff; border-top: 1px solid #f1f5f9; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
+  .table-reception tr td:first-child { border-left: 1px solid #f1f5f9; border-top-left-radius: 12px; border-bottom-left-radius: 12px; }
+  .table-reception tr td:last-child { border-right: 1px solid #f1f5f9; border-top-right-radius: 12px; border-bottom-right-radius: 12px; }
+  .input-reception { width: 100%; padding: 8px; border: 2px solid #e2e8f0; border-radius: 10px; font-weight: 700; text-align: center; transition: all 0.2s; font-size: 0.9rem;}
+  .input-reception:focus { border-color: #4f46e5; outline: none; box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1); }
+  .btn-confirm-reception { background: var(--primary-gradient); color: white; border: none; padding: 16px 32px; border-radius: 14px; font-weight: 800; font-size: 1.1rem; box-shadow: 0 10px 20px rgba(37, 99, 235, 0.2); cursor: pointer; }
+  .btn-confirm-reception:hover { transform: translateY(-2px); box-shadow: 0 15px 30px rgba(37, 99, 235, 0.3); }
+</style>
+
+<div class="reception-wrapper">
+  <div class="reception-header">
+    <div>
+      <h1 style="font-weight: 900; color: #0f172a; margin: 0; font-size: 2rem;">📦 Recepción de Mercadería</h1>
+      <p style="color: #64748b; font-weight: 500; font-size: 1.1rem; margin-top: 5px;">Orden: <%= @purchase_order.name %> | Proveedor: <%= @purchase_order.supplier.name %></p>
+    </div>
+  </div>
+
+  <%= form_tag purchases_v2_receptions_path, method: :post do %>
+    <%= hidden_field_tag :purchase_order_id, @purchase_order.id %>
+    
+    <div class="reception-card">
+      <div class="table-responsive">
+        <table class="table-reception">
+          <thead>
+            <!-- Fila de Títulos Principal -->
+            <tr style="background: #f8fafc; border-bottom: 2px solid #e2e8f0;">
+              <th style="width: 20%; padding: 12px;">PRODUCTO / DESGLOSE</th>
+              <th style="width: 12%; text-align: center;">PRESENTACIÓN</th>
+              <th style="width: 6%; text-align: center;">CANT.</th>
+              <th style="width: 9%; text-align: center; background: #fffbeb;">COSTO OC</th>
+              <th style="width: 6%; text-align: center; background: #fffbeb;">DESC%</th>
+              <th style="width: 9%; text-align: center; background: #fff7ed; color: #c2410c;">COSTO FINAL</th>
+              <th style="width: 9%; text-align: center; background: #eff6ff; color: #1e40af;">
+                UTIL %
+                <div class="logic-selector" style="margin-top: 5px; display: flex; gap: 2px;">
+                   <button type="button" class="btn-logic active" data-logic="margin" style="background: #4f46e5; color: white; border: none; border-radius: 4px; padding: 2px 4px; font-size: 0.55rem; cursor: pointer;">MAR</button>
+                   <button type="button" class="btn-logic" data-logic="markup" style="border: 1px solid #bfdbfe; background: white; color: #1e40af; border-radius: 4px; padding: 2px 4px; font-size: 0.55rem; cursor: pointer;">MUP</button>
+                   <input type="hidden" id="pricing-logic-toggle" value="margin">
+                </div>
+                <button type="button" id="apply-all-reception" style="margin-top: 4px; font-size: 0.55rem; background: #10b981; color: white; border: none; border-radius: 4px; padding: 2px 4px; cursor: pointer; width: 100%;">APLICAR TODO</button>
+              </th>
+              <th style="width: 10%; text-align: center; background: #e0e7ff; color: #3730a3;">P. VENTA</th>
+              <th style="width: 10%; text-align: center;">LOTE</th>
+              <th style="width: 9%; text-align: center;">BODEGA</th>
+              <th style="width: 3%;"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @purchase_order.purchase_order_lines.each do |line| %>
+              <% item = line.item %>
+              <% 
+                # Lógica de Precios
+                active_price = item.prices.activo.first
+                prev_cost = item.purchase_order_lines.where("id < ?", line.id).order(created_at: :desc).first&.price_unit.to_f
+                util_pct = active_price&.utility.to_f
+                
+                import = @purchase_order.importacion
+                landed_costs = import ? PurchasesV2::ImportingService.new(import).calculate_landed_costs : []
+                item_landed = landed_costs.find { |c| c[:item_id] == item.id }
+                costo_base = item_landed ? item_landed[:costo_landed] : line.final_cost
+              %>
+              <!-- Cabecera de Producto -->
+              <tr style="background: #f1f5f9;">
+                <td colspan="10" style="padding: 8px 15px; border-bottom: 1px solid #cbd5e1;">
+                  <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                      <span style="font-weight: 900; color: #0f172a; font-size: 0.95rem;"><%= item.name %></span>
+                      <span style="font-size: 0.75rem; color: #64748b; margin-left: 10px;">CÓDIGO: <%= item.code %> | PEDIDO: <%= line.item_qty.to_i %> pzs</span>
+                    </div>
+                    <div style="display: flex; gap: 8px; align-items: center;">
+                      <button type="button" class="btn-auto-split" data-item-id="<%= item.id %>" 
+                              style="background: #6366f1; color: white; border: none; border-radius: 8px; padding: 5px 12px; font-size: 0.7rem; cursor: pointer; font-weight: 800; transition: all 0.2s;">
+                        <i class="fas fa-sitemap"></i> DESGLOSE AUTO (X EMBALAJE)
+                      </button>
+                      <button type="button" class="btn-add-stock-entry" data-item-id="<%= item.id %>" 
+                              style="background: #10b981; color: white; border: none; border-radius: 8px; padding: 5px 12px; font-size: 0.7rem; cursor: pointer; font-weight: 800; transition: all 0.2s;">
+                        <i class="fas fa-plus-circle"></i> (+) MANUAL
+                      </button>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              
+              <!-- Contenedor de Desgloses para este ítem -->
+              <%# Observación: Usamos un tbody separado por cada producto para organizar mejor los desgloses dinámicos %>
+              <tbody class="stock-entries-container" data-item-id="<%= item.id %>">
+                <tr class="stock-entry-row" data-item-id="<%= item.id %>">
+                  <td style="padding-left: 30px; font-weight: 700; color: #64748b; font-size: 0.75rem;">
+                    <i class="fas fa-level-up-alt fa-rotate-90"></i> Ingreso 1:
+                  </td>
+                  <td>
+                    <%= select_tag "items[#{item.id}][entries][][presentation_id]", 
+                        options_for_select(item.presentations.map { |p| 
+                          ["#{p.name} (x#{p.qty} pzas)", p.id] 
+                        }), 
+                        include_blank: "Unidades Sueltas",
+                        class: "input-reception presentation-select", 
+                        style: "font-size: 0.75rem; width: 100%;" %>
+                  </td>
+                  <td>
+                    <input type="number" name="items[<%= item.id %>][entries][][qty]" value="<%= line.item_qty.to_i %>" class="input-reception" required style="font-weight: 800;">
+                  </td>
+                  <td style="background: #fffbeb;">
+                    <input type="number" step="0.0001" name="items[<%= item.id %>][price_unit]" value="<%= line.price_unit %>" class="input-reception cost-trigger" data-type="price" <%= 'readonly' if import %>>
+                  </td>
+                  <td style="background: #fffbeb;">
+                    <input type="number" step="0.0001" name="items[<%= item.id %>][discount]" value="<%= line.discount || 0 %>" class="input-reception cost-trigger" data-type="discount" <%= 'readonly' if import %>>
+                  </td>
+                  <td style="background: #fff7ed;">
+                    <input type="number" step="0.0001" name="items[<%= item.id %>][final_cost]" value="<%= costo_base %>" class="input-reception cost-trigger" data-type="final_cost" style="color: #c2410c; font-weight: 900;" <%= 'readonly' if import %>>
+                  </td>
+                  <td style="background: #eff6ff;">
+                    <input type="number" step="0.01" name="items[<%= item.id %>][utility_pct]" value="<%= util_pct %>" class="input-reception price-trigger" data-type="utility">
+                  </td>
+                  <td style="background: #e0e7ff;">
+                    <input type="number" step="0.0001" name="items[<%= item.id %>][price_sale]" value="<%= active_price&.price_sale %>" class="input-reception price-trigger" data-type="sale">
+                    <input type="hidden" name="items[<%= item.id %>][price_id]" value="<%= active_price&.id %>">
+                  </td>
+                  <td>
+                    <input type="text" name="items[<%= item.id %>][entries][][lote]" value="<%= "L-#{Time.now.strftime('%y%m%d')}-#{item.id}" %>" class="input-reception" style="font-size: 0.7rem;">
+                  </td>
+                  <td>
+                    <%= select_tag "items[#{item.id}][entries][][warehouse_id]", options_from_collection_for_select(@warehouses, :id, :name, item.warehouse_id || @warehouses.first&.id), class: "input-reception", style: "font-size: 0.75rem;" %>
+                  </td>
+                  <td style="text-align: center;">
+                    <button type="button" class="btn-remove-entry" style="color: #ef4444; background: transparent; border: none; cursor: pointer; visibility: hidden;">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+              <!-- Espaciador -->
+              <tr style="height: 10px;"></tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+
+      <div style="margin-top: 2rem; display: flex; justify-content: flex-end;">
+        <button type="submit" class="btn-confirm-reception">
+          <i class="fas fa-check-circle mr-2"></i> Finalizar Ingreso, Precios e Inventarios
+        </button>
+      </div>
+    </div>
+  <% end %>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const table = document.querySelector('.table-reception');
+    
+    // --- Lógica de Clonación de Filas ---
+    table.addEventListener('click', function(e) {
+      if (e.target.closest('.btn-auto-split')) {
+        const btn = e.target.closest('.btn-auto-split');
+        const itemId = btn.dataset.itemId;
+        const container = document.querySelector(`.stock-entries-container[data-item-id="${itemId}"]`);
+        const row = container.querySelector('.stock-entry-row');
+        
+        const presSelect = row.querySelector('.presentation-select');
+        const presentationId = presSelect.value;
+        const currentQty = parseInt(row.querySelector('input[name*="[qty]"]').value) || 0;
+        
+        if (!presentationId) {
+          alert("Primero selecciona una presentación (ej: Caja o Master) para desglosarla.");
+          return;
+        }
+
+        $.getJSON(`/presentations/${presentationId}`, function(presentation) {
+            if (presentation.children && presentation.children.length > 0) {
+                const child = presentation.children[0]; // Tomamos el primer nivel jerárquico
+                const qtyToSplit = child.qty_in_parent; // Cuántos caben en 1 unidad del padre
+                const totalRows = currentQty * qtyToSplit;
+
+                if (confirm(`¿Deseas desglosar esta unidad en ${totalRows} unidades de "${child.name}" según el embalaje configurado?`)) {
+                    // Borramos la fila original
+                    row.remove();
+                    
+                    // Creamos las nuevas filas
+                    for (let i = 0; i < totalRows; i++) {
+                        const newRow = row.cloneNode(true);
+                        newRow.querySelector('input[name*="[qty]"]').value = 1;
+                        newRow.querySelector('.presentation-select').value = child.id;
+                        newRow.querySelector('td:first-child').innerHTML = `<i class="fas fa-level-up-alt fa-rotate-90"></i> Ingreso ${i + 1}:`;
+                        newRow.querySelector('.btn-remove-entry').style.visibility = 'visible';
+                        
+                        // Generar lote automático para cada uno o secuencial
+                        const baseLote = newRow.querySelector('input[name*="[lote]"]').value;
+                        newRow.querySelector('input[name*="[lote]"]').value = `${baseLote}-${i+1}`;
+                        
+                        container.appendChild(newRow);
+                    }
+                }
+            } else {
+                alert("Esta presentación no tiene 'hijos' configurados (ej: Paquetes dentro de esta Caja). Configúralo primero en la pestaña de Presentaciones.");
+            }
+        });
+      }
+
+      if (e.target.closest('.btn-add-stock-entry')) {
+        const btn = e.target.closest('.btn-add-stock-entry');
+        const itemId = btn.dataset.itemId;
+        const container = document.querySelector(`.stock-entries-container[data-item-id="${itemId}"]`);
+        const firstRow = container.querySelector('.stock-entry-row');
+        
+        // Clonar la primera fila
+        const newRow = firstRow.cloneNode(true);
+        
+        // Limpiar inputs de la nueva fila
+        newRow.querySelectorAll('input').forEach(input => {
+          if (input.type !== 'hidden') input.value = '';
+        });
+        
+        // Actualizar el label del contador
+        const entryCount = container.querySelectorAll('.stock-entry-row').length + 1;
+        newRow.querySelector('td:first-child').innerHTML = `<i class="fas fa-level-up-alt fa-rotate-90"></i> Ingreso ${entryCount}:`;
+        
+        // Mostrar botón de eliminar
+        const deleteBtn = newRow.querySelector('.btn-remove-entry');
+        if (deleteBtn) deleteBtn.style.visibility = 'visible';
+        
+        container.appendChild(newRow);
+      }
+      
+      if (e.target.closest('.btn-remove-entry')) {
+        const row = e.target.closest('.stock-entry-row');
+        const container = row.closest('.stock-entries-container');
+        if (container.querySelectorAll('.stock-entry-row').length > 1) {
+          row.remove();
+          // Renumerar ingresos
+          container.querySelectorAll('.stock-entry-row').forEach((r, idx) => {
+            r.querySelector('td:first-child').innerHTML = `<i class="fas fa-level-up-alt fa-rotate-90"></i> Ingreso ${idx + 1}:`;
+          });
+        }
+      }
+    });
+
+    // --- Lógica de Cálculos (Costo/Precio) ---
+    table.addEventListener('input', function(e) {
+      if (e.target.classList.contains('cost-trigger') || e.target.classList.contains('price-trigger')) {
+        const row = e.target.closest('.stock-entry-row');
+        calculateRow(row, e.target.dataset.type);
+      }
+    });
+
+    function calculateRow(row, triggerType) {
+      const priceUnitInput = row.querySelector('[name*="[price_unit]"]');
+      const discountInput = row.querySelector('[name*="[discount]"]');
+      const finalCostInput = row.querySelector('[name*="[final_cost]"]');
+      const utilityInput = row.querySelector('[name*="[utility_pct]"]');
+      const saleInput = row.querySelector('[name*="[price_sale]"]');
+      
+      const logic = document.getElementById('pricing-logic-toggle').value || 'margin';
+
+      let priceUnit = parseFloat(priceUnitInput.value) || 0;
+      let discount = parseFloat(discountInput.value) || 0;
+      let finalCost = parseFloat(finalCostInput.value) || 0;
+
+      if (triggerType === 'price' || triggerType === 'discount') {
+        finalCost = priceUnit * (1 - (discount / 100));
+        finalCostInput.value = finalCost.toFixed(4);
+      } else if (triggerType === 'final_cost') {
+        if (priceUnit > 0) {
+          discount = ((priceUnit - finalCost) / priceUnit) * 100;
+          discountInput.value = discount.toFixed(2);
+        }
+      }
+      
+      if (triggerType === 'price' || triggerType === 'discount' || triggerType === 'utility' || triggerType === 'final_cost') {
+        const utilPct = parseFloat(utilityInput.value) || 0;
+        let salePrice = 0;
+        
+        if (logic === 'margin') {
+           if (utilPct < 100) {
+             salePrice = finalCost / (1 - (utilPct / 100));
+           } else {
+             salePrice = finalCost + utilPct;
+           }
+        } else {
+           salePrice = finalCost * (1 + (utilPct / 100));
+        }
+        saleInput.value = salePrice.toFixed(4);
+      } else if (triggerType === 'sale') {
+        const salePrice = parseFloat(saleInput.value) || 0;
+        if (finalCost > 0) {
+          let utilPct = 0;
+          if (logic === 'margin') {
+            utilPct = ((salePrice - finalCost) / salePrice) * 100;
+          } else {
+            utilPct = ((salePrice - finalCost) / finalCost) * 100;
+          }
+          utilityInput.value = utilPct.toFixed(2);
+        }
+      }
+    }
+
+    // --- Otros Controles (Lógica de Margen/Markup y Aplicar Todo) ---
+    const logicButtons = document.querySelectorAll('.btn-logic');
+    logicButtons.forEach(btn => {
+      btn.addEventListener('click', function() {
+        const selectedLogic = this.dataset.logic;
+        logicButtons.forEach(b => {
+          b.classList.remove('active');
+          b.style.background = 'transparent';
+          b.style.color = '#1e40af';
+        });
+        this.classList.add('active');
+        this.style.background = '#4f46e5';
+        this.style.color = 'white';
+        document.getElementById('pricing-logic-toggle').value = selectedLogic;
+        
+        document.querySelectorAll('.stock-entry-row').forEach(row => { calculateRow(row, 'utility'); });
+      });
+    });
+
+    const applyAllBtn = document.getElementById('apply-all-reception');
+    if (applyAllBtn) {
+      applyAllBtn.addEventListener('click', function() {
+        const firstRow = document.querySelector('.stock-entry-row');
+        if (!firstRow) return;
+        const firstUtilVal = firstRow.querySelector('[name*="[utility_pct]"]').value;
+        if (confirm('¿Deseas aplicar el margen del ' + firstUtilVal + '% a TODOS los productos del listado?')) {
+          document.querySelectorAll('.stock-entry-row').forEach(row => {
+             const utilInput = row.querySelector('[name*="[utility_pct]"]');
+             utilInput.value = firstUtilVal;
+             calculateRow(row, 'utility');
+          });
+        }
+      });
+    }
+  });
+</script>

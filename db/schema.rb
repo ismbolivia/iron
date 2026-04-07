@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2025_12_22_145233) do
+ActiveRecord::Schema.define(version: 2026_04_06_151739) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -22,6 +22,8 @@ ActiveRecord::Schema.define(version: 2025_12_22_145233) do
     t.string "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "expense_type", default: 0
+    t.integer "expense_category", default: 0
   end
 
   create_table "account_sales", force: :cascade do |t|
@@ -30,6 +32,19 @@ ActiveRecord::Schema.define(version: 2025_12_22_145233) do
     t.decimal "amount"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "account_transfers", force: :cascade do |t|
+    t.integer "from_account_id"
+    t.integer "to_account_id"
+    t.decimal "amount", precision: 12, scale: 2
+    t.decimal "exchange_rate", precision: 12, scale: 4, default: "1.0"
+    t.text "note"
+    t.integer "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "from_box_id"
+    t.integer "to_box_id"
   end
 
   create_table "accounts", force: :cascade do |t|
@@ -117,6 +132,22 @@ ActiveRecord::Schema.define(version: 2025_12_22_145233) do
     t.integer "active"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "branch_id"
+    t.integer "box_type", default: 0
+    t.string "code"
+    t.integer "parent_box_id"
+    t.index ["branch_id"], name: "index_boxes_on_branch_id"
+    t.index ["parent_box_id"], name: "index_boxes_on_parent_box_id"
+  end
+
+  create_table "branches", force: :cascade do |t|
+    t.string "name"
+    t.string "address"
+    t.string "phone"
+    t.bigint "company_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_branches_on_company_id"
   end
 
   create_table "brands", force: :cascade do |t|
@@ -280,6 +311,29 @@ ActiveRecord::Schema.define(version: 2025_12_22_145233) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "gastos_importaciones", force: :cascade do |t|
+    t.integer "importacion_id"
+    t.string "description"
+    t.decimal "amount", precision: 12, scale: 2
+    t.integer "gasto_type"
+    t.integer "prorrateo_method"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "etapa"
+    t.index ["importacion_id"], name: "index_gastos_importaciones_on_importacion_id"
+  end
+
+  create_table "importaciones", force: :cascade do |t|
+    t.string "name"
+    t.integer "state", default: 0
+    t.string "container_type"
+    t.date "eta_date"
+    t.text "notes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "pricing_logic"
+  end
+
   create_table "inventories", force: :cascade do |t|
     t.string "ref"
     t.string "name_company"
@@ -290,6 +344,7 @@ ActiveRecord::Schema.define(version: 2025_12_22_145233) do
     t.float "sales_value"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "state", default: 0
   end
 
   create_table "inventory_items", force: :cascade do |t|
@@ -305,6 +360,8 @@ ActiveRecord::Schema.define(version: 2025_12_22_145233) do
     t.integer "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "physical_quantity"
+    t.integer "quantity_variance"
   end
 
   create_table "items", force: :cascade do |t|
@@ -328,6 +385,8 @@ ActiveRecord::Schema.define(version: 2025_12_22_145233) do
     t.boolean "todiscount"
     t.boolean "sold"
     t.boolean "bought"
+    t.decimal "weight_kg", precision: 10, scale: 4, default: "0.0"
+    t.decimal "volume_m3", precision: 10, scale: 6, default: "0.0"
     t.index ["brand_id"], name: "index_items_on_brand_id"
     t.index ["category_id"], name: "index_items_on_category_id"
     t.index ["unit_id"], name: "index_items_on_unit_id"
@@ -360,6 +419,8 @@ ActiveRecord::Schema.define(version: 2025_12_22_145233) do
     t.integer "stock_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "user_id"
+    t.string "description"
   end
 
   create_table "payment_currencies", force: :cascade do |t|
@@ -405,7 +466,7 @@ ActiveRecord::Schema.define(version: 2025_12_22_145233) do
     t.decimal "rode"
     t.integer "num_payment"
     t.integer "discount"
-    t.integer "state"
+    t.integer "state", default: 1
     t.decimal "saldo"
     t.integer "account_id"
     t.integer "bank_account_id"
@@ -414,6 +475,11 @@ ActiveRecord::Schema.define(version: 2025_12_22_145233) do
     t.integer "payment_currency_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.date "date"
+    t.integer "box_id"
+    t.text "audit_note"
+    t.decimal "commission_amount", precision: 12, scale: 2, default: "0.0"
+    t.boolean "commission_paid", default: false
   end
 
   create_table "presentations", force: :cascade do |t|
@@ -424,6 +490,8 @@ ActiveRecord::Schema.define(version: 2025_12_22_145233) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "image_presentation"
+    t.integer "parent_id"
+    t.integer "qty_in_parent"
   end
 
   create_table "price_lists", force: :cascade do |t|
@@ -436,6 +504,7 @@ ActiveRecord::Schema.define(version: 2025_12_22_145233) do
     t.boolean "default"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "list_type", default: 0
   end
 
   create_table "prices", force: :cascade do |t|
@@ -448,6 +517,10 @@ ActiveRecord::Schema.define(version: 2025_12_22_145233) do
     t.integer "price_list_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.decimal "opex_margin"
+    t.decimal "comp_1_price"
+    t.decimal "comp_2_price"
+    t.decimal "comp_3_price"
   end
 
   create_table "proformas", force: :cascade do |t|
@@ -467,18 +540,19 @@ ActiveRecord::Schema.define(version: 2025_12_22_145233) do
 
   create_table "purchase_order_lines", force: :cascade do |t|
     t.string "name"
-    t.integer "item_qty"
+    t.decimal "item_qty", precision: 12, scale: 4, default: "0.0"
     t.date "date_planned"
     t.integer "item_id"
     t.decimal "price_unit", precision: 8, scale: 4
     t.float "price_tax"
     t.integer "company_id"
     t.integer "state"
-    t.integer "qty_received"
+    t.decimal "qty_received", precision: 12, scale: 4, default: "0.0"
     t.integer "purchase_order_id"
     t.boolean "to_prices"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.decimal "discount"
   end
 
   create_table "purchase_order_lines_taxes", force: :cascade do |t|
@@ -507,10 +581,12 @@ ActiveRecord::Schema.define(version: 2025_12_22_145233) do
     t.integer "payment_term_id"
     t.integer "create_uid"
     t.integer "company_id"
+    t.integer "importacion_id"
+    t.index ["importacion_id"], name: "index_purchase_orders_on_importacion_id"
   end
 
   create_table "receptions", force: :cascade do |t|
-    t.integer "qty_in"
+    t.decimal "qty_in", precision: 12, scale: 4, default: "0.0"
     t.integer "total"
     t.date "fecha"
     t.text "ob"
@@ -520,6 +596,19 @@ ActiveRecord::Schema.define(version: 2025_12_22_145233) do
     t.integer "purchase_order_line_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "repackings", force: :cascade do |t|
+    t.bigint "item_id"
+    t.bigint "warehouse_id"
+    t.integer "origin_stock_id"
+    t.bigint "user_id"
+    t.text "notes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["item_id"], name: "index_repackings_on_item_id"
+    t.index ["user_id"], name: "index_repackings_on_user_id"
+    t.index ["warehouse_id"], name: "index_repackings_on_warehouse_id"
   end
 
   create_table "rols", force: :cascade do |t|
@@ -542,6 +631,7 @@ ActiveRecord::Schema.define(version: 2025_12_22_145233) do
     t.boolean "todiscount"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "presentation_id"
   end
 
   create_table "sales", force: :cascade do |t|
@@ -564,7 +654,16 @@ ActiveRecord::Schema.define(version: 2025_12_22_145233) do
     t.bigint "client_id"
     t.integer "status_priority", default: 99
     t.string "payment_status_cache"
+    t.integer "priority"
+    t.boolean "show_bs", default: false
+    t.bigint "branch_id"
+    t.text "observation_note"
+    t.datetime "observed_at"
+    t.integer "observed_by_user_id"
+    t.text "resolution_note"
+    t.index ["branch_id"], name: "index_sales_on_branch_id"
     t.index ["client_id"], name: "index_sales_on_client_id"
+    t.index ["observed_by_user_id"], name: "index_sales_on_observed_by_user_id"
   end
 
   create_table "setting_currency_companies", force: :cascade do |t|
@@ -574,16 +673,35 @@ ActiveRecord::Schema.define(version: 2025_12_22_145233) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "stock_adjustments", force: :cascade do |t|
+    t.integer "warehouse_id"
+    t.integer "item_id"
+    t.string "adjustment_type"
+    t.integer "quantity"
+    t.string "reason"
+    t.integer "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "stock_id"
+    t.integer "purchase_order_line_id"
+    t.integer "presentation_id"
+  end
+
   create_table "stocks", force: :cascade do |t|
-    t.integer "qty_in"
-    t.integer "qty_out"
-    t.integer "total"
+    t.decimal "qty_in", precision: 12, scale: 4, default: "0.0"
+    t.decimal "qty_out", precision: 12, scale: 4, default: "0.0"
+    t.decimal "total", precision: 12, scale: 4, default: "0.0"
     t.integer "item_id"
     t.integer "warehouse_id"
     t.integer "purchase_order_line_id"
     t.integer "state"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "presentation_id"
+    t.string "lote"
+    t.date "expiration_date"
+    t.integer "repacking_id"
+    t.index ["presentation_id"], name: "index_stocks_on_presentation_id"
   end
 
   create_table "suppliers", force: :cascade do |t|
@@ -635,10 +753,40 @@ ActiveRecord::Schema.define(version: 2025_12_22_145233) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "transfer_details", force: :cascade do |t|
+    t.bigint "transfer_id"
+    t.bigint "item_id"
+    t.decimal "quantity"
+    t.string "observation"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "purchase_order_line_id"
+    t.integer "presentation_id"
+    t.index ["item_id"], name: "index_transfer_details_on_item_id"
+    t.index ["transfer_id"], name: "index_transfer_details_on_transfer_id"
+  end
+
+  create_table "transfers", force: :cascade do |t|
+    t.bigint "origin_branch_id"
+    t.bigint "destination_branch_id"
+    t.date "date"
+    t.integer "state"
+    t.bigint "user_id"
+    t.text "observations"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "origin_warehouse_id"
+    t.integer "destination_warehouse_id"
+    t.index ["destination_branch_id"], name: "index_transfers_on_destination_branch_id"
+    t.index ["origin_branch_id"], name: "index_transfers_on_origin_branch_id"
+    t.index ["user_id"], name: "index_transfers_on_user_id"
+  end
+
   create_table "units", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "allow_decimals", default: false
   end
 
   create_table "user_modulos", force: :cascade do |t|
@@ -661,6 +809,11 @@ ActiveRecord::Schema.define(version: 2025_12_22_145233) do
     t.string "name"
     t.integer "rol_id"
     t.string "initials"
+    t.bigint "branch_id"
+    t.decimal "commission_rate", precision: 10, scale: 2, default: "0.0"
+    t.string "phone"
+    t.string "mobile"
+    t.index ["branch_id"], name: "index_users_on_branch_id"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
@@ -673,6 +826,8 @@ ActiveRecord::Schema.define(version: 2025_12_22_145233) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "company_id"
+    t.bigint "branch_id"
+    t.index ["branch_id"], name: "index_warehouses_on_branch_id"
   end
 
   create_table "zonas", force: :cascade do |t|
@@ -683,11 +838,26 @@ ActiveRecord::Schema.define(version: 2025_12_22_145233) do
     t.integer "day"
   end
 
+  add_foreign_key "boxes", "boxes", column: "parent_box_id"
+  add_foreign_key "boxes", "branches"
+  add_foreign_key "branches", "companies"
   add_foreign_key "companies", "countries"
   add_foreign_key "contacts", "clients"
   add_foreign_key "items", "brands"
   add_foreign_key "items", "categories"
   add_foreign_key "items", "units"
   add_foreign_key "items", "warehouses"
+  add_foreign_key "repackings", "items"
+  add_foreign_key "repackings", "users"
+  add_foreign_key "repackings", "warehouses"
+  add_foreign_key "sales", "branches"
   add_foreign_key "sales", "clients"
+  add_foreign_key "stocks", "presentations"
+  add_foreign_key "transfer_details", "items"
+  add_foreign_key "transfer_details", "transfers"
+  add_foreign_key "transfers", "branches", column: "destination_branch_id"
+  add_foreign_key "transfers", "branches", column: "origin_branch_id"
+  add_foreign_key "transfers", "users"
+  add_foreign_key "users", "branches"
+  add_foreign_key "warehouses", "branches"
 end

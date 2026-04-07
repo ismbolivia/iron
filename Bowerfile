@@ -1,2 +1,4 @@
 asset 'bootstrap-sass-official'
 asset 'typeahead.js'
+asset 'moment'
+asset 'bootstrap-daterangepicker'

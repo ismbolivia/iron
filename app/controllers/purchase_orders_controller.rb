@@ -1,5 +1,7 @@
 class PurchaseOrdersController < ApplicationController
-  before_action :set_purchase_order, only: [:create, :show, :edit, :update, :destroy]
+  include DraftCleaner
+  include NumberGenerator
+  before_action :set_purchase_order, only: [:create, :show, :edit, :update, :destroy, :confirm_reception]
   before_action :set_combo_values, only: [:new, :edit, :update, :create]
   load_and_authorize_resource
   PAGE_SIZE = 10
@@ -7,11 +9,7 @@ class PurchaseOrdersController < ApplicationController
   # GET /purchase_orders.json
   def index
     # eliminando los pedidos de compra que no fueron confirmados
-    unsaved_purchase_orders = PurchaseOrder.where(state: "draft", create_uid: current_user.id)
-    unsaved_purchase_orders.each do |p_o|  
-    
-    p_o.destroy
-    end
+    clean_old_drafts(PurchaseOrder, :create_uid)
     unsaved_suppliers = Supplier.where(state: "draft", create_uid: current_user.id)
     unsaved_suppliers.each do |supplier|
     supplier.destroy
@@ -61,23 +59,33 @@ class PurchaseOrdersController < ApplicationController
 
   # GET /purchase_orders/new
   def new  
+    clean_old_drafts(PurchaseOrder, :create_uid)
     
-    payment_term = PaymentTerm.create(name: "draft")
-    last_purchase_orders = PurchaseOrder.all.maximum('number')   
-    number_purchase_order =  (last_purchase_orders != nil) ? last_purchase_orders + 1 : 1
-     @purchase_order = PurchaseOrder.new
-     @purchase_order.supplier_id = params[:supplier] 
-     @purchase_order.state = 'draft'
-     @purchase_order.create_uid = current_user.id
-     @purchase_order.date_order  = Date::current
-     @purchase_order.payment_term_id = payment_term.id
-     @purchase_order.number = number_purchase_order
-     @purchase_order.name =  @purchase_order.getPurchaseORderNumber
-     @purchase_order.save
-     @purchase_order.purchase_order_lines.build
-     params[:purchase_oreder_id] = @purchase_order.id.to_s      
-      payment_term.destroy
-   
+    number = generate_next_number(PurchaseOrder)
+    
+    # Find a default payment term to satisfy validation, or create a temporary one if needed
+    payment_term = PaymentTerm.find_by(name: "draft") || PaymentTerm.first || PaymentTerm.create(name: "draft")
+
+    @purchase_order = PurchaseOrder.new(
+      supplier_id: params[:supplier],
+      state: :confirmed,
+      create_uid: current_user.id,
+      date_order: Date.current,
+      payment_term: payment_term,
+      number: number
+    )
+    
+    @purchase_order.name = @purchase_order.getPurchaseORderNumber
+    
+    if @purchase_order.save
+      @purchase_order.purchase_order_lines.build
+      params[:purchase_order_id] = @purchase_order.id.to_s
+    else
+      # Handle potential validation errors gracefully, though for a draft it should be minimal
+      flash[:alert] = "Error creating draft purchase order: " + @purchase_order.errors.full_messages.join(", ")
+      redirect_to purchase_orders_path
+    end
+
   end
 
   # GET /purchase_orders/1/edit
@@ -89,10 +97,10 @@ class PurchaseOrdersController < ApplicationController
   # POST /purchase_orders.json
   def create
     @purchase_order = PurchaseOrder.new(purchase_order_params)
-    @purchase_order.state = 'borrador'
+    @purchase_order.state = :confirmed
     respond_to do |format|
       if @purchase_order.save
-        format.html { redirect_to @purchase_order, notice: 'Purchase order was successfully created.' }
+        format.html { redirect_to @purchase_order, notice: 'Orden de compra creada exitosamente.' }
         format.json { render :show, status: :created, location: @purchase_order }
       else
         format.html { render :new }
@@ -105,9 +113,10 @@ class PurchaseOrdersController < ApplicationController
   # PATCH/PUT /purchase_orders/1.json
   def update
     respond_to do |format|
-      @purchase_order.state = 'borrador'
+      # When updating (finalizing), we transition to confirmed
+      @purchase_order.state = :confirmed
       if @purchase_order.update(purchase_order_params)
-        format.html { redirect_to @purchase_order, notice: 'Purchase order was successfully updated.' }
+        format.html { redirect_to @purchase_order, notice: 'Orden de compra actualizada exitosamente.' }
         format.json { render :show, status: :ok, location: @purchase_order }
       else
         format.html { render :edit }
@@ -128,6 +137,51 @@ class PurchaseOrdersController < ApplicationController
 
   private
     # Use callbacks to share common setup or constraints between actions.
+  # Acción para ingresar el stock de Compras Locales a Almacén
+  def confirm_reception
+    # 1. Evitar doble ingreso
+    p_order_line_ids = @purchase_order.purchase_order_lines.map(&:id)
+    if Stock.where(purchase_order_line_id: p_order_line_ids).any?
+      return redirect_to @purchase_order, alert: 'El stock de esta Orden de Compra ya fue ingresado a inventarios.'
+    end
+
+    # 2. Selección de Almacén por defecto
+    warehouse_id = params[:warehouse_id].presence || Warehouse.first&.id
+
+    if warehouse_id.nil?
+      return redirect_to @purchase_order, alert: 'No hay ningún almacén disponible para ingresar el stock.'
+    end
+
+    begin
+      ActiveRecord::Base.transaction do
+        @purchase_order.purchase_order_lines.each do |line|
+          next if line.item_qty.to_f <= 0
+
+          # Crear registro de stock
+          stock = Stock.create!(
+            item_id: line.item_id,
+            warehouse_id: warehouse_id,
+            qty_in: line.item_qty.to_f,
+            qty_out: 0,
+            purchase_order_line_id: line.id,
+            state: :disponible
+          )
+
+          # Crear movimiento para trazabilidad
+          Movement.create!(
+            qty_in: line.item_qty.to_f,
+            qty_out: 0,
+            stock_id: stock.id
+          )
+        end
+        @purchase_order.update!(state: 'confirmed') # Marcar cerrada
+      end
+      redirect_to @purchase_order, notice: '📦 Stock de Compra Local ingresado correctamente a inventarios.'
+    rescue => e
+      redirect_to @purchase_order, alert: 'Error al ingresar stock: ' + e.message
+    end
+  end
+
     def set_purchase_order
       @purchase_order = PurchaseOrder.find(params[:id])
     end
@@ -137,6 +191,6 @@ def set_combo_values
 end
     # Never trust parameters from the scary internet, only allow the white list through.
     def purchase_order_params
-      params.require(:purchase_order).permit(:name, :date_order, :supplier_id, :currency_id, :state, :note, :number, :origen, :date_aroved, :date_planned, :amount_untaxed, :amount_tax, :amount_total, :payment_term_id, :create_uid, :company_id, purchase_order_lines_attributes:[:id, :name, :item_qty, :date_planned, :item_id, :price_unit, :price_tax, :company_id, :state, :qty_received, :purchase_order_id, :_destroy]  )
+      params.require(:purchase_order).permit(:name, :date_order, :supplier_id, :currency_id, :state, :note, :number, :origen, :date_aroved, :date_planned, :amount_untaxed, :amount_tax, :amount_total, :payment_term_id, :create_uid, :company_id, purchase_order_lines_attributes:[:id, :name, :item_qty, :date_planned, :item_id, :price_unit, :discount, :price_tax, :company_id, :state, :qty_received, :purchase_order_id, :_destroy]  )
     end
 end

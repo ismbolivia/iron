@@ -12,30 +12,15 @@ class ModulosController < ApplicationController
   def show
     mymodule_users = UserModulo.where(user_id: current_user.id, modulo_id: @modulo.id)
 
-   UserModulo.where(user_id: current_user.id).each do |module_user|
-        module_user.update(state: false)
-   end
+    UserModulo.where(user_id: current_user.id).update_all(state: false)
 
     if mymodule_users.count == 0
-       usermodulo = UserModulo.new
-       usermodulo.user_id = current_user.id
-       usermodulo.modulo_id = @modulo.id
-       usermodulo.state = true
-       usermodulo.save 
+      UserModulo.create(user_id: current_user.id, modulo_id: @modulo.id, state: true)
     else
-        mymodule_users.each do |us_mod|
-           us_mod.update(state: true)  
-        end
-        # usermodulo.update(state: true)   
+      mymodule_users.update_all(state: true)
     end
-   
-     Modulo.where.not(id: @modulo.id).each do |modulo|
-       modulo.update(active: false)
 
-     end
-      @modulo.update(active:true)
-       redirect_to root_url
- 
+    redirect_to root_url
   end
 
   # GET /modulos/new

@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  origin_branch: one
+  destination_branch: one
+  date: 2026-03-15
+  state: 1
+  user: one
+  observations: MyText
+
+two:
+  origin_branch: two
+  destination_branch: two
+  date: 2026-03-15
+  state: 1
+  user: two
+  observations: MyText

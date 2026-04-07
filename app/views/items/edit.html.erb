@@ -1,19 +1,47 @@
+<%= render 'premium_item_styles' %>
 
-
-        <div class="row">
-           <div class="col-lg-1"> </div>
-                  <div class="col-lg-10 panel panel-info">
-                   <div class="white-box">
-                    <div class="">
-                        <%= render 'form', item: @item %>	
-                        <%= render 'item_access', item: @item %>		
-
-                    </div>
-                  </div>
-                </div>
-              <div class="col-lg-1">
-              </div>
+<div class="pv2-item-show">
+  <!-- Header Section -->
+  <div class="item-header-premium">
+    <div class="container-fluid">
+      <div class="item-breadcrumb">
+        <span>PRODUCTOS</span> <i class="fas fa-chevron-right mx-2" style="font-size: 0.7rem;"></i> 
+        <span><%= @item.category&.name || "Sin Categoría" %></span>
+      </div>
+      <div class="row align-items-center">
+        <div class="col-md-8">
+          <div class="item-title-area">
+            <h1>Editar Producto</h1>
+            <div class="mt-2" style="opacity: 0.9; font-weight: 500; font-size: 1.2rem;">
+              <i class="fas fa-barcode mr-2"></i> <strong><%= @item.name %></strong>
+            </div>
+          </div>
         </div>
+        <div class="col-md-4 text-right hidden-xs">
+          <%= link_to item_path(@item), class: "btn-premium-action btn-indigo", style: "background: rgba(255, 255, 255, 0.2); color: white; border: 1px solid rgba(255, 255, 255, 0.4); box-shadow: none;" do %>
+             <i class="fas fa-eye"></i> Ver Vista Detalle
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
 
+  <!-- Content Section -->
+  <div class="item-content-grid container-fluid">
+    <div class="row">
+      <!-- Edit Form Card -->
+      <div class="col-lg-12 animate-up" style="animation-delay: 0.1s;">
+        <div class="item-card">
+          <%= render 'form', item: @item %>
+        </div>
+      </div>
+    </div>
 
-
+    <!-- Active Tab Panel -->
+    <div class="custom-tabs-wrapper animate-up" style="animation-delay: 0.2s; margin-top: 2rem;">
+       <div class="nav-tabs-premium-container">
+         <%= render 'item_access', item: @item %>
+       </div>
+    </div>
+  </div>
+</div>

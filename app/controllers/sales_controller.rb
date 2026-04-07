@@ -1,10 +1,13 @@
 
 class SalesController < ApplicationController
-   before_action :set_sale, only: [:create, :show, :edit, :update, :destroy]
+  include DraftCleaner
+  include NumberGenerator
+   before_action :set_sale, only: [:create, :show, :edit, :update, :destroy, :note_sale, :dispatch_note]
    before_action :set_combo_values, only: [:new, :edit, :update, :create]
     before_action :set_index, only: [:index]
     PAGE_SIZE = 10
     load_and_authorize_resource
+    skip_before_action :verify_authenticity_token, only: [:show, :note_sale]
   # GET /sales
   # GET /sales.json
   def index
@@ -14,11 +17,7 @@ class SalesController < ApplicationController
      search = Search.new(@page, PAGE_SIZE, @keywords, current_user, params[:client_id], params[:filter])
      @sales, @number_of_pages = search.mysales
     else
-    unsaved_sales = Sale.where(state: "draft", user: current_user)
-    unsaved_sales.each do |sale|
-    sale.destroy_sale_details_all  
-    sale.destroy
-    end
+    clean_old_drafts(Sale, :user_id)
 
     unsaved_clients = Client.where(state: "draft", user_id: current_user.id)
     unsaved_clients.each do |client|
@@ -66,30 +65,67 @@ class SalesController < ApplicationController
   def show   
     respond_to do |format|
         format.html
+        format.js
         format.json
-        format.pdf {
-          render template: 'sales/proforma', 
+        format.pdf do
+          render template: 'sales/note_sale_modern', 
           layout: 'pdf_layout.html.erb',
-          pdf: 'Nota',
-          title: 'Proforma',
+          pdf: @sale.quoted? ? 'Cotización' : 'Nota',
+          title: @sale.quoted? ? 'Cotización' : 'Nota de Venta',
           orientation: 'Portrait',
-          page_height:  215,
-          page_width:   163,
-          print_media_type:  false,
-          
-          margin:  { 
-                  left: 15,
-                  top: 13,
-                  right: 1}, 
-
-           footer: {
-             right: '[page] de [topage]',
-         
-          
-        }                        
-         
-        }
+          page_height: 215,
+          page_width: 163,
+          print_media_type: false,
+          margin: { left: 15, top: 20, right: 1, bottom: 15 },
+          header: { html: { template: 'sales/pdf_header', layout: nil, formats: [:pdf] }, spacing: 0 },
+          footer: { html: { template: 'sales/pdf_footer', layout: nil, formats: [:pdf] }, spacing: 0 }
+        end
       end
+  end
+
+  def note_sale
+    template_name = 'sales/note_sale_modern'
+    
+    respond_to do |format|
+        format.js { render 'show' }
+        format.pdf do
+          render template: template_name, 
+          layout: 'pdf_layout.html.erb',
+          pdf: @sale.quoted? ? 'Cotizacion' : 'Nota',
+          title: @sale.quoted? ? 'Cotizacion' : 'Nota de Venta',
+          orientation: 'Portrait',
+          page_height: 215,
+          page_width: 163,
+          print_media_type: false,
+          margin: { left: 15, top: 20, right: 1, bottom: 15 },
+          header: { html: { template: 'sales/pdf_header', layout: nil, formats: [:pdf] }, spacing: 0 },
+          footer: { html: { template: 'sales/pdf_footer', layout: nil, formats: [:pdf] }, spacing: 0 }
+        end
+        format.html { render template: template_name, layout: 'pdf_layout.html.erb', formats: [:pdf] }
+        format.all { render template: template_name, layout: 'pdf_layout.html.erb', formats: [:pdf] }
+    end
+  end
+
+  def dispatch_note
+    template_name = 'sales/dispatch_note'
+    
+    respond_to do |format|
+        format.js { render 'show' }
+        format.pdf do
+          render template: template_name, 
+          layout: 'pdf_layout.html.erb',
+          pdf: "Orden_Despacho_#{@sale.number}",
+          title: "Orden de Despacho ##{@sale.number}",
+          orientation: 'Portrait',
+          page_height: 215,
+          page_width: 163,
+          print_media_type: false,
+          margin: { left: 15, top: 20, right: 1, bottom: 15 },
+          header: { html: { template: 'sales/pdf_header', layout: nil, formats: [:pdf] }, spacing: 0 },
+          footer: { html: { template: 'sales/pdf_footer', layout: nil, formats: [:pdf] }, spacing: 0 }
+        end
+        format.html { render template: template_name, layout: 'pdf_layout.html.erb', formats: [:pdf] }
+    end
   end
   
   def sale_details
@@ -127,29 +163,13 @@ class SalesController < ApplicationController
 
   # GET /sales/new
   def new 
-    unsaved_sales = Sale.where(state: "draft", user: current_user, discount: "0")
-    unsaved_sales.each do |sale|
-      # se debe obtimisar el codigo se esta repidiendo muchas veses
-      # sale.sale_details.each do |sale_details|        
-      #   movements = sale_details.movements
-      #   movements.each do |movement|
-      #   stock = Stock.find(movement.stock_id)
-      #   stock.qty_out -= movement.qty_out
-      #   stock.state = 'disponible'
-      #   stock.save
-      #   movement.destroy
-      #   end
-      #   sale_details.destroy
-      # end
-    sale.destroy_sale_details_all
-    sale.destroy
-    end
+    clean_old_drafts(Sale, :user_id)
     last_sale = Sale.where(state: "confirmed", user: current_user).maximum('number')
     last_sale_all = Sale.where(state: "confirmed").maximum('number_sale')
     number_sale =  (last_sale_all != nil) ? last_sale_all + 1 : 1
     
     number =  (last_sale != nil) ? last_sale + 1 : 1
-    @sale = Sale.create(date: Date::current, number: number, state: "draft", user: current_user, client_id: params[:client], credit_expiration: Date::current, number_sale: number_sale, completed:false, canceled:false,  discount: "0")
+    @sale = Sale.create(date: Date::current, number: number, state: "draft", user: current_user, client_id: params[:client], credit_expiration: Date::current, number_sale: number_sale, completed:false, canceled:false,  discount: "0", branch_id: current_user.branch_id)
     @sale.por_facturar!
     @sale.sale_details.build
     params[:sale_id] = @sale.id.to_s
@@ -174,8 +194,9 @@ class SalesController < ApplicationController
            if @sale.draft?
               number_sale =  (last_sale_all != nil) ? last_sale_all + 1 : 1
               @sale.number_sale = number_sale
+              @sale.confirmed!
            end
-          @sale.confirmed! 
+          
            @sale.discount_total = @sale.discount    
            @sale.penalty = false
           
@@ -211,6 +232,33 @@ class SalesController < ApplicationController
       format.json { head :no_content }
     end
   end
+
+  def observe
+    @sale = Sale.find(params[:id])
+    if @sale.update(state: :observed, observation_note: params[:observation_note], observed_at: Time.current, observed_by_user_id: current_user.id)
+      result = { success: true, notice: 'Venta marcada como observada.' }
+    else
+      result = { success: false, notice: 'Error al observar la venta.' }
+    end
+    render json: result
+  end
+
+  def confirm_observed
+    @sale = Sale.find(params[:id])
+    last_sale_all = Sale.where(state: "confirmed").maximum('number_sale')
+    
+    updates = { state: :confirmed, resolution_note: params[:resolution_note] }
+    if @sale.number_sale.nil?
+      updates[:number_sale] = (last_sale_all != nil) ? last_sale_all + 1 : 1
+    end
+
+    if @sale.update(updates)
+      result = { success: true, notice: 'Observación resuelta y venta confirmada.' }
+    else
+      result = { success: false, notice: 'Error al confirmar la observación.' }
+    end
+    render json: result
+  end
   
   private
     # Use callbacks to share common setup or constraints between actions.
@@ -233,17 +281,19 @@ class SalesController < ApplicationController
        end
        
 
+       state_names = { "draft" => "Borrador", "confirmed" => "Venta Efectiva", "canceled" => "Cancelada", "annulled" => "Anulada", "quoted" => "Cotización" }
+
        if current_user.is_admin?
-       @column_data = Sale.states.keys.map do |state|
-         { name: state.capitalize, data: group_by_period(Sale.where(state: state),ranges).sum(:total) }
-        end
-      @pie_chart = Sale.where(created_at: ranges).group(:state).sum(:total)
-      else
          @column_data = Sale.states.keys.map do |state|
-         { name: state.capitalize, data: group_by_period(Sale.where(state: state, user_id: current_user.id),ranges).sum(:total) }
-        end
-      @pie_chart = Sale.where(created_at: ranges, user_id: current_user.id).group(:state).sum(:total)
-      end    
+           { name: state_names[state] || state.capitalize, data: group_by_period(Sale.where(state: state),ranges).sum(:total) }
+         end
+         @pie_chart = Sale.where(created_at: ranges).group(:state).sum(:total)
+       else
+         @column_data = Sale.states.keys.map do |state|
+           { name: state_names[state] || state.capitalize, data: group_by_period(Sale.where(state: state, user_id: current_user.id),ranges).sum(:total) }
+         end
+         @pie_chart = Sale.where(created_at: ranges, user_id: current_user.id).group(:state).sum(:total)
+       end    
 
     end
      def group_by_period(data, ranges)
@@ -275,6 +325,6 @@ class SalesController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def sale_params
       # params.require(:sale).permit(:number, :date, :state, :user_id)
-        params.require(:sale).permit(:number, :date, :client_id, :credit, :discount_total, :total, :penalty, :credit_expiration, :discount, :number_sale, :invoiced, sale_details_attributes: [:id, :sale_id, :item_id, :number, :qty, :price, :price_list_id, :_destroy] )
+        params.require(:sale).permit(:number, :date, :client_id, :credit, :discount_total, :total, :penalty, :credit_expiration, :discount, :number_sale, :invoiced, :priority, :show_bs, sale_details_attributes: [:id, :sale_id, :item_id, :number, :qty, :price, :price_list_id, :_destroy] )
     end
 end

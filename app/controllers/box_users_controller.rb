@@ -55,9 +55,8 @@ class BoxUsersController < ApplicationController
   # DELETE /box_users/1
   # DELETE /box_users/1.json
   def destroy
-    @box_user.desactivo!
+    @box_user.destroy
      @box_users = BoxUser.where(box_id: @box_user.box_id);
-   
   end
 
   private

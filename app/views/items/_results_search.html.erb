@@ -1,71 +1,129 @@
-<div class="white-box" >
-    <div class="table-responsive" >  
+<div class="white-box" style="border-radius: 20px; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05); border: 1px solid #e2e8f0; padding: 1.5rem;">
+    <div class="table-responsive" style="max-height: 700px; overflow-y: auto;">  
 
               <%= render partial: "pager", locals: { keywords: @keywords, page: @page } %>              
           <div id="helos">
-            <table class="table product-overview">
-              <thead>
+            <table class="table product-overview" style="border-collapse: separate; border-spacing: 0 10px; margin-top: -10px;">
+              <thead style="background: #f8fafc; border-bottom: 2px solid #e2e8f0; position: sticky; top: 0; z-index: 10;">
                 <tr>
-                  <th>Código</th>
-                  <th>Nombre</th>
-                  <th>Descripción</th>
-                  <th>Imagen</th>
-                  <th>Unidad</th>
-                  <th>Stock</th>
-                  <th>Stock Mínimo</th>
-                  <th>Categoría</th>
-                 <!--  <th>Almacen</th> -->
-                  <th>Precio</th>
-                  <th>Fecha de Alta</th>
-                  <th>Fecha de Modificación</th>
-                  <th colspan="2"></th>
+                  <th style="padding: 1.2rem; color: #475569; font-weight: 800; border: none;">PRODUCTO</th>
+                  <th style="padding: 1.2rem; color: #475569; font-weight: 800; border: none;">CÓDIGO / SKU</th>
+                  <th style="padding: 1.2rem; color: #475569; font-weight: 800; border: none;">CATEGORÍA</th>
+                  <th style="padding: 1.2rem; text-align: center; color: #475569; font-weight: 800; border: none;">STOCK ACTUAL</th>
+                  <th style="padding: 1.2rem; text-align: right; color: #475569; font-weight: 800; border: none;">PRECIO VENTA</th>
+                  <th style="padding: 1.2rem; text-align: center; color: #475569; font-weight: 800; border: none;">ACCIONES</th>
                 </tr>
               </thead>
 
               <tbody>
                 <% @items.each do |item| %>
-                  <tr>
-                    <td><%= item.code %></td>
-                    <td><%= item.name  %></td>
-                    <td><%= item.item_description %></td>
-                    <td><%= image_tag(item.image.large.url, :alt => "imge-item",  :style => "iwidth:100%; height:50px;") %>
-                     </td>
-                    <td><%= item.unit ? item.unit.name : '' %></td>
-                    <td><%= item.stock %></td>
-                    <td><%= item.min_stock %></td>
-                    <td><%= item.category ? item.category.name : '' %></td>
-                    
-                    <td><%= number_to_currency(item.price) %></td>
-                    <td><%= item.created_at.strftime("%d/%m/%Y") %></td>
-                    <td><%= item.updated_at.strftime("%d/%m/%Y") %></td>
-                    <td>
-                      <%= button_to edit_item_path(item), {method: :get, class: "btn btn-info"} do %>
-                        <span class="glyphicon glyphicon-pencil" aria-hidden="true"> </span> 
-                      <% end %>
+                  <tr style="background: white; box-shadow: 0 2px 8px rgba(0,0,0,0.04); transition: all 0.2s;">
+                    <td style="padding: 1.2rem; border-radius: 12px 0 0 12px; border: 1px solid #f1f5f9; border-right: none;">
+                       <div style="display: flex; align-items: center; gap: 1rem;">
+                           <div style="width: 50px; height: 50px; background: #fff; border: 1px solid #e2e8f0; border-radius: 10px; overflow: hidden; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.02); flex-shrink: 0;">
+                              <% if item.image.present? && item.image.large.url %>
+                                 <%= image_tag(item.image.large.url, alt: item.name, style: "max-width: 100%; max-height: 100%; object-fit: contain;") %>
+                              <% else %>
+                                 <i class="fas fa-cube" style="font-size: 1.5rem; color: #cbd5e1;"></i>
+                              <% end %>
+                           </div>
+                           <div style="min-width: 150px;">
+                               <div style="font-weight: 800; color: #1e293b; font-size: 1rem; line-height: 1.2; margin-bottom: 2px;"><%= item.name %></div>
+                               <div style="display: flex; gap: 4px; align-items: center;">
+                                   <small style="color: #64748b; font-weight: 600; text-transform: uppercase; font-size: 0.75rem;"><%= item.brand ? item.brand_name : 'GENÉRICO' %></small>
+                                   <% 
+                                      # Resumen de orígenes para la lista principal
+                                      has_re_main = item.stocks.where.not(repacking_id: nil).where("qty_in - qty_out > 0").exists?
+                                      has_aj_main = item.stocks.joins(:stock_adjustment).where("stocks.qty_in - stocks.qty_out > 0").exists?
+                                   %>
+                                   <% if has_re_main %>
+                                      <span class="badge" style="background: #7c3aed; color: white; padding: 1px 4px; border-radius: 3px; font-size: 0.6rem; vertical-align: middle;" title="RE-EMPAQUE">RE</span>
+                                   <% end %>
+                                   <% if has_aj_main %>
+                                      <span class="badge" style="background: #059669; color: white; padding: 1px 4px; border-radius: 3px; font-size: 0.6rem; vertical-align: middle;" title="AJUSTE MANUAL">AJ</span>
+                                   <% end %>
+                               </div>
+                           </div>
+                       </div>
                     </td>
-                    <td>
-                      <%= button_to item, { method: :delete, data: { confirm: '¿Está seguro?' }, class: "btn btn-warning" } do %>
-                        <span class="glyphicon glyphicon-trash" aria-hidden="true"> </span>
-                      <% end %>
+
+                    <td style="padding: 1.2rem; vertical-align: middle; border-top: 1px solid #f1f5f9; border-bottom: 1px solid #f1f5f9;">
+                       <span class="badge" style="background: #f1f5f9; color: #334155; border: 1px solid #e2e8f0; font-weight: 800; font-family: monospace; font-size: 0.85rem;">
+                          <%= item.code %>
+                       </span>
+                    </td>
+
+                    <td style="padding: 1.2rem; vertical-align: middle; color: #475569; font-weight: 600; border-top: 1px solid #f1f5f9; border-bottom: 1px solid #f1f5f9;">
+                       <%= item.category ? item.category.name : 'S/C' %>
+                    </td>
+
+                    <td style="padding: 1.2rem; vertical-align: middle; text-align: center; border-top: 1px solid #f1f5f9; border-bottom: 1px solid #f1f5f9; min-width: 180px;">
+                       <% 
+                          # Obtenemos los stocks agrupados por lote para la sucursal actual (con seguro de nil)
+                          branch = current_user.branch
+                          warehouse_ids = branch ? branch.warehouses.pluck(:id) : Warehouse.pluck(:id)
+                          lot_stocks = item.stocks.where(warehouse_id: warehouse_ids).where("qty_in - qty_out > 0").order(created_at: :asc)
+                          stock_total = lot_stocks.sum("qty_in - qty_out").to_i
+                          low_stock = stock_total <= item.min_stock.to_i
+                       %>
+                       <div style="margin-bottom: 8px;">
+                         <span class="badge" style="padding: 6px 12px; font-weight: 900; font-size: 1.1rem; box-shadow: 0 2px 4px rgba(0,0,0,0.05); <%= low_stock ? 'background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca;' : 'background: #f0fdf4; color: #166534; border: 1px solid #dcfce7;' %>">
+                            <%= stock_total %> <small style="font-size: 0.75rem; text-transform: lowercase;"><%= item.unit&.name || 'unid' %>s</small>
+                         </span>
+                       </div>
+
+                       <% if lot_stocks.any? %>
+                         <div style="display: flex; flex-direction: column; gap: 3px; align-items: center;">
+                           <% lot_stocks.group_by(&:purchase_order_line_id).each do |line_id, stocks| %>
+                              <% 
+                                total_lot = stocks.sum { |s| s.qty_in.to_f - s.qty_out.to_f }.to_i 
+                                first_stock = stocks.first
+                                lot_color = if first_stock.repacking_id.present?
+                                              '#7c3aed' # Violeta
+                                            elsif first_stock.stock_adjustment.present?
+                                              '#059669' # Esmeralda
+                                            elsif first_stock.purchase_order_line_id.present?
+                                              '#6366f1' # Indigo
+                                            else
+                                              '#475569' # Gris
+                                            end
+                             %>
+                             <div style="font-size: 0.75rem; background: #fff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 3px 10px; color: #475569; font-weight: 800; width: fit-content; cursor: help; border-left: 5px solid <%= lot_color %>; margin-bottom: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);" title="Fecha de Ingreso: <%= first_stock.created_at.strftime('%d/%m/%Y') %><%= " | Motivo: #{first_stock.stock_adjustment.reason}" if first_stock.stock_adjustment %>">
+                                <span style="color: <%= lot_color %>; text-transform: uppercase;"><%= first_stock.stock_adjustment ? 'AJUSTE' : (first_stock.repacking ? 'RE-EMP' : 'LOTE') %> #<%= first_stock.lote.presence || first_stock.id %></span>: <span style="color: #1e293b; font-size: 0.9rem;"><%= total_lot %></span>
+                             </div>
+<% end %>
+                         </div>
+<% end %>
+
+                       <% if low_stock %>
+                          <div style="font-size: 0.6rem; color: #ef4444; font-weight: 900; margin-top: 6px; text-transform: uppercase; letter-spacing: 0.5px;">🚩 REPOSICIÓN MÍN: <%= item.min_stock.to_i %></div>
+                       <% end %>
+                    </td>
+
+                    <td style="padding: 1.2rem; vertical-align: middle; text-align: right; border-top: 1px solid #f1f5f9; border-bottom: 1px solid #f1f5f9;">
+                       <strong style="color: #4338ca; font-size: 1.1rem; letter-spacing: -0.5px;">
+                          <%= @mycompany.get_current_currency.symbol %> <%= number_with_precision(item.price_default, precision: 2) %>
+                       </strong>
+                    </td>
+
+                    <td style="padding: 1.2rem; vertical-align: middle; text-align: center; border-radius: 0 12px 12px 0; border: 1px solid #f1f5f9; border-left: none;">
+                       <div class="d-flex justify-content-center" style="gap: 5px; display: inline-flex;">
+                          <%= link_to item_path(item), class: "btn btn-sm", style: "background: #f8fafc; color: #475569; border: 1px solid #e2e8f0;", title: "Ver Detalle" do %>
+                             <i class="fas fa-eye"></i>
+                          <% end %>
+                          <%= link_to edit_item_path(item), class: "btn btn-sm", style: "background: #f8fafc; color: #475569; border: 1px solid #e2e8f0;", title: "Editar" do %>
+                             <i class="fas fa-edit"></i>
+                          <% end %>
+                          <%= link_to item, method: :delete, data: { confirm: '¿Está seguro de eliminar este producto?' }, class: "btn btn-sm", style: "background: #fff1f2; color: #e11d48; border: 1px solid #ffe4e6;", title: "Eliminar" do %>
+                             <i class="fas fa-trash"></i>
+                          <% end %>
+                       </div>
                     </td>
                   </tr>
                 <% end %>
               </tbody>
             </table>
-
-
-
           </div>
       </div>     
 
-
-  <div id="loading-spinner">
-  <div class="spin-icon"></div>
 </div>
-  <div id="loader" class="">
-    <h1>Cargando</h1>
-    <div class="spinner"></div>
-    <div class="spinner2"></div>
-  </div>
-</div>
-         

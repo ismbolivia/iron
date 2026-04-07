@@ -13,7 +13,7 @@ class CurrencyRate < ApplicationRecord
 	def getPriceCurrencyRate(price)
 		total = 0.0
 		 total = price*self.rate
-		 total.round(2)
+		 total.round(4)
 		
 	end
 	def currencyReference

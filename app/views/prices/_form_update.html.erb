@@ -19,6 +19,15 @@
               </div>
             </div>
         </div>
+        <div class="col-xs-6">
+            <div class="form-group">
+                <%= form.label :opex_margin, class: "sr-only" %>
+                <div class="input-group" title="Gastos Fijos y Operativos (%)">
+                  <div class="input-group-addon"><label>% OPEX</label></div>
+                <%= form.text_field :opex_margin, placeholder: "Ej. 15", class: "form-control" %>
+              </div>
+            </div>
+        </div>
         <div class="col-xs-6">         
           <div class="form-group">
             <%= form.label :price_purchase, class: "sr-only" %>

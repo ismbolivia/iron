@@ -1,0 +1,647 @@
+<style>
+  :root {
+    --primary-gradient: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%);
+    --card-bg: #ffffff;
+    --text-main: #1e293b;
+    --text-muted: #64748b;
+    --border-color: #e2e8f0;
+    --hover-bg: #f8fafc;
+    --accent-red: #ef4444;
+    --accent-green: #10b981;
+    --glass-bg: rgba(255, 255, 255, 0.95);
+  }
+
+  .purchase-type-toggle {
+    display: inline-flex; background: #f1f5f9; padding: 4px; border-radius: 12px; border: 1px solid #e2e8f0; margin-right: 15px; vertical-align: middle;
+  }
+  .purchase-type-btn {
+    padding: 8px 16px; border-radius: 10px; font-weight: 700; font-size: 0.9rem; cursor: pointer; transition: all 0.2s; border: none; outline: none; display: flex; align-items: center; gap: 6px; color: #64748b; background: transparent;
+  }
+  .purchase-type-btn.active[data-type="local"] { background: white; color: #0f172a; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+  .purchase-type-btn.active[data-type="importacion"] { background: #4f46e5; color: white; box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.3); }
+
+  /* Reset for container padding inside AdminLTE if needed */
+  .content-wrapper { background-color: #f1f5f9 !important; }
+
+  .pv2-dashboard {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    color: var(--text-main);
+    background-color: #f1f5f9;
+    padding: 2rem;
+    min-height: 100vh;
+  }
+
+  .pv2-header {
+    background: var(--primary-gradient);
+    border-radius: 16px;
+    padding: 2.5rem 3rem;
+    color: white;
+    box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.4);
+    margin-bottom: 2.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Decorative background shape */
+  .pv2-header::after {
+    content: '';
+    position: absolute;
+    right: -5%;
+    top: -50%;
+    width: 300px;
+    height: 300px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 50%;
+    transform: rotate(45deg);
+  }
+
+  .pv2-header-title {
+    position: relative;
+    z-index: 2;
+  }
+
+  .pv2-header h2 {
+    margin: 0;
+    font-weight: 800;
+    font-size: 2.25rem;
+    letter-spacing: -0.025em;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+  .pv2-header p {
+    margin: 0.5rem 0 0;
+    opacity: 0.9;
+    font-size: 1.1rem;
+    font-weight: 400;
+  }
+
+  .pv2-icon-bg {
+    position: relative;
+    z-index: 2;
+    background: rgba(255,255,255,0.2);
+    backdrop-filter: blur(10px);
+    padding: 1rem;
+    border-radius: 16px;
+  }
+
+  .pv2-card {
+    background: var(--card-bg);
+    border-radius: 20px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+  }
+
+  .pv2-toolbar {
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid var(--border-color);
+    background: var(--glass-bg);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .pv2-table-container {
+    overflow-x: auto;
+    max-height: 65vh;
+  }
+
+  .pv2-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 1.0rem; /* Aumentado de 0.875rem */
+  }
+
+  .pv2-table th {
+    background: #f8fafc;
+    color: var(--text-muted);
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.85rem; /* Aumentado de 0.75rem */
+    letter-spacing: 0.05em;
+    padding: 1.25rem 1rem;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    border-bottom: 2px solid var(--border-color);
+    white-space: nowrap;
+  }
+  
+  .pv2-table thead tr:nth-child(2) th {
+    top: 55px;
+    border-bottom: 2px solid #cbd5e1;
+  }
+
+  .pv2-table td {
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-color);
+    vertical-align: middle;
+    transition: background-color 0.2s;
+  }
+
+  .pv2-table tbody tr:hover td {
+    background-color: var(--hover-bg);
+  }
+
+  .pv2-qty-input, .pv2-cost-input {
+    width: 85px;
+    padding: 0.6rem;
+    border: 2px solid transparent;
+    background-color: transparent;
+    border-radius: 8px;
+    text-align: center;
+    font-weight: 700;
+    font-size: 1rem;
+    color: #0f172a;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: none;
+    cursor: pointer;
+  }
+
+  .pv2-qty-input:hover, .pv2-cost-input:hover {
+    background-color: rgba(248, 250, 252, 0.8);
+    border-color: #e2e8f0;
+  }
+
+  .pv2-cost-input {
+    color: #059669; /* Green text for cost */
+    width: 100px;
+  }
+
+  .pv2-qty-input:focus, .pv2-cost-input:focus {
+    outline: none;
+    background-color: #ffffff;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
+    transform: translateY(-1px);
+    cursor: text;
+  }
+
+  .pv2-btn-generate {
+    background: var(--primary-gradient);
+    color: white;
+    border: none;
+    padding: 1.25rem 2.5rem;
+    border-radius: 9999px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    cursor: pointer;
+    box-shadow: 0 10px 25px -5px rgba(79, 70, 229, 0.5);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .pv2-btn-generate:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 15px 30px -5px rgba(79, 70, 229, 0.6);
+  }
+
+  .pv2-btn-generate:active {
+    transform: translateY(0);
+  }
+
+  .pv2-badge {
+    padding: 0.45rem 1rem;
+    border-radius: 9999px;
+    font-weight: 700;
+    font-size: 0.95rem; /* Aumentado de 0.8rem */
+    display: inline-block;
+  }
+  .pv2-badge-danger { background: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
+  .pv2-badge-success { background: #d1fae5; color: #047857; border: 1px solid #a7f3d0; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  .pv2-fade-in {
+    animation: fadeIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+
+  .col-historic {
+    background-color: #f8fafc;
+    border-left: 1px dashed var(--border-color);
+  }
+
+  .pv2-select {
+    appearance: none;
+    background-color: white;
+    border: 2px solid var(--border-color);
+    border-radius: 10px;
+    padding: 0.6rem 2.5rem 0.6rem 1rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-main);
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2364748b'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 1rem;
+    transition: all 0.2s;
+  }
+
+  .pv2-select:focus {
+    outline: none;
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+  }
+
+  /* Spinner styles */
+  .pv2-loader {
+    display: none;
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(255,255,255,0.7);
+    z-index: 50;
+    align-items: center;
+    justify-content: center;
+    border-radius: 20px;
+  }
+  .pv2-spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #3b82f6;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  .loading #matrix-table-results {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  .pv2-btn-remove {
+    background: #f1f5f9;
+    color: #94a3b8;
+    border: none;
+    padding: 0.5rem;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    width: 36px;
+    height: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid transparent;
+  }
+  
+  .pv2-btn-remove:hover {
+    background: #fee2e2;
+    color: #ef4444;
+    border-color: #fecaca;
+    transform: rotate(90deg) scale(1.1);
+  }
+
+  .pv2-row-removing {
+    transform: translateX(100px);
+    opacity: 0;
+    transition: all 0.4s ease-in;
+  }
+
+  /* Rediseño del Buscador Global Compacto */
+  .pv2-search-wrapper {
+    position: relative;
+    flex-grow: 1;
+    max-width: 450px;
+    margin: 0 1.5rem;
+  }
+
+  .pv2-search-input {
+    width: 100% !important;
+    height: 42px !important;
+    background: #f8fafc !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 12px !important;
+    padding: 0 1rem 0 2.5rem !important;
+    font-size: 0.9rem !important;
+    font-weight: 500 !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    color: var(--text-main) !important;
+    box-shadow: inset 0 2px 4px 0 rgba(0,0,0,0.02) !important;
+  }
+
+  .pv2-search-input:focus {
+    background: #ffffff !important;
+    border-color: #4f46e5 !important;
+    box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1), 0 4px 6px -1px rgba(0,0,0,0.05) !important;
+    outline: none !important;
+  }
+
+  .pv2-search-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8;
+    z-index: 10;
+    pointer-events: none;
+    transition: color 0.3s;
+  }
+
+  .pv2-search-input:focus + .pv2-search-icon {
+    color: #4f46e5;
+  }
+
+  .tt-menu {
+    background: white;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+    width: 100%;
+    margin-top: 8px;
+    max-height: 350px;
+    overflow-y: auto;
+    z-index: 2000 !important;
+  }
+
+  .tt-suggestion {
+    padding: 10px 15px;
+    border-bottom: 1px solid #f1f5f9;
+    cursor: pointer;
+    font-size: 0.85rem;
+  }
+
+  .tt-suggestion:hover, .tt-cursor {
+    background-color: #f5f3ff;
+    color: #4f46e5;
+  }
+</style>
+
+<div class="pv2-dashboard">
+  <!-- Header -->
+  <div class="pv2-header pv2-fade-in">
+    <div class="pv2-header-title">
+      <h2><i class="fas fa-brain mr-3"></i>Inteligencia de Compras V2</h2>
+      <p>Módulo Autónomo de Abastecimiento Predictivo</p>
+    </div>
+    <div style="display: flex; gap: 12px; align-items: center; position: relative; z-index: 5;">
+      <%= link_to purchases_v2_imports_path, style: "background: white; color: #4f46e5; border: none; border-radius: 14px; font-weight: 800; padding: 12px 20px; font-size: 0.95rem; box-shadow: 0 4px 14px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 8px; text-decoration: none; transition: all 0.2s;" do %>
+        <i class="fas fa-ship"></i> Gestión de Importaciones
+      <% end %>
+      <div class="pv2-icon-bg">
+        <i class="fas fa-chart-pie fa-2x" style="color: white;"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- Planification Card -->
+  <div class="pv2-card pv2-fade-in" style="animation-delay: 0.1s; opacity: 0;">
+    <div class="pv2-toolbar">
+      <div class="d-flex align-items-center">
+        <div style="background: #eff6ff; padding: 0.6rem; border-radius: 10px; margin-right: 0.8rem;">
+          <i class="fas fa-filter text-primary" style="font-size: 1.1rem;"></i>
+        </div>
+        <div>
+          <h5 class="m-0 font-weight-bold" style="color: var(--text-main); font-size: 1.1rem;">Matriz de Rotación</h5>
+          <span style="font-size: 0.75rem; color: var(--text-muted);">Análisis de 3 años</span>
+        </div>
+      </div>
+
+      <!-- Buscador Global Integrado -->
+      <div class="pv2-search-wrapper">
+        <input type="text" id="pv2-global-search" class="pv2-search-input" placeholder="Agregar producto manualmente...">
+        <i class="fas fa-search pv2-search-icon"></i>
+      </div>
+      
+      <div>
+        <%= form_with(url: purchases_v2_dashboard_path, method: :get, remote: true, class: "d-flex align-items-center", id: "matrix-filter-form") do |f| %>
+          <div class="mr-4 d-flex align-items-center">
+            <span class="mr-2" style="color: var(--text-muted); font-weight: 600;">Cobertura:</span>
+            <%= f.select :months, 
+                options_for_select([["15 días", 0.5], ["1 mes", 1], ["1.5 meses", 1.5], ["2 meses", 2], ["3 meses", 3], ["4 meses", 4], ["5 meses", 5], ["6 meses", 6], ["8 meses", 8], ["10 meses", 10], ["12 meses", 12]], @months), 
+                {}, 
+                { id: "months_selector", class: "pv2-select", onchange: "Rails.fire(this.form, 'submit')", style: "min-width: 140px;" } %>
+          </div>
+
+          <div class="d-flex align-items-center">
+            <span class="mr-2" style="color: var(--text-muted); font-weight: 600;">Proveedor:</span>
+            <%= f.collection_select :supplier_id, Supplier.all.order(:name), :id, :name, 
+                                    { prompt: "Todos los Proveedores", selected: params[:supplier_id] }, 
+                                    { id: "supplier_selector", class: "pv2-select", onchange: "Rails.fire(this.form, 'submit')" } %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <div id="matrix-table-results" style="position: relative;">
+      <div id="pv2-table-loader" class="pv2-loader">
+        <div class="pv2-spinner"></div>
+      </div>
+      <div id="matrix-table-container-inner">
+        <%= render 'matrix_table' %>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    $(document)
+      .on('ajax:beforeSend', '#matrix-filter-form', function() {
+        $('#matrix-table-results').addClass('loading');
+        $('#pv2-table-loader').css('display', 'flex');
+      })
+      .on('ajax:complete', '#matrix-filter-form', function() {
+        $('#matrix-table-results').removeClass('loading');
+        $('#pv2-table-loader').hide();
+      });
+
+    // Lógica para eliminar fila de la vista (sin confirmación)
+    $(document).on('click', '.pv2-btn-remove', function(e) {
+      e.preventDefault();
+      const $row = $(this).closest('tr');
+      
+      $row.addClass('pv2-row-removing');
+      setTimeout(() => {
+        $row.remove();
+        // Actualizar numeración
+        $('.pv2-table tbody tr').each(function(i) {
+          $(this).find('td:first span').text(i + 1);
+        });
+      }, 400);
+    });
+
+    // Inicializar Buscador Global con Typeahead.js
+    (function() {
+      const itemsSuggestion = new Bloodhound({
+        datumTokenizer: Bloodhound.tokenizers.obj.whitespace("text"),
+        queryTokenizer: Bloodhound.tokenizers.whitespace,
+        remote: {
+          url: window.location.origin + '/purchases_v2/dashboard/search_items?q=%QUERY',
+          wildcard: '%QUERY'
+        }
+      });
+
+      $('#pv2-global-search').typeahead({
+        hint: true,
+        highlight: true,
+        minLength: 2
+      }, {
+        display: 'text',
+        displayKey: 'text',
+        source: itemsSuggestion,
+        templates: {
+          suggestion: function (item) {
+            return '<div class="tt-suggestion">#' + item.id.toString() + ' - ' + item.text.toString() + '</div>';
+          }
+        }
+      });
+
+      $('#pv2-global-search').on('typeahead:select', function(event, datum) {
+        // Obtenemos los meses y el proveedor actual
+        const currentMonths = $('#months_selector').val();
+        const currentSupplier = $('#supplier_selector').val();
+        const currentIndex = $('.pv2-table tbody tr').length;
+
+        $('#matrix-table-results').addClass('loading');
+        $('#pv2-table-loader').css('display', 'flex');
+
+        $.ajax({
+          url: '/purchases_v2/dashboard/add_item_row',
+          data: { 
+            item_id: datum.id,
+            supplier_id: currentSupplier,
+            months: currentMonths,
+            index: currentIndex
+          },
+          dataType: 'script'
+        }).always(function() {
+          $('#matrix-table-results').removeClass('loading');
+          $('#pv2-table-loader').hide();
+        });
+
+        // Limpiar el input
+        $(this).typeahead('val', '');
+      });
+    })();
+
+    // Mover foco hacia abajo en la misma columna de Costo al presionar TAB
+    $(document).on('keydown', '.pv2-cost-input', function(e) {
+      if (e.key === 'Tab' || e.keyCode === 9) {
+        e.preventDefault();
+        const $nextRow = $(this).closest('tr').next('tr');
+        if ($nextRow.length > 0) {
+          const $nextInput = $nextRow.find('.pv2-cost-input');
+          if ($nextInput.length > 0) {
+            $nextInput.focus();
+            $nextInput.select();
+          }
+        }
+      }
+    });
+
+    // Mover foco hacia abajo en la misma columna de Cantidad al presionar TAB (Consistency)
+    $(document).on('keydown', '.pv2-qty-input', function(e) {
+      if (e.key === 'Tab' || e.keyCode === 9) {
+        e.preventDefault();
+        const $nextRow = $(this).closest('tr').next('tr');
+        if ($nextRow.length > 0) {
+          const $nextInput = $nextRow.find('.pv2-qty-input');
+          if ($nextInput.length > 0) {
+            $nextInput.focus();
+            $nextInput.select();
+          }
+        }
+      }
+    });
+
+    // Lógica para Generar Borrador V2 - Protegida contra clics múltiples
+    $(document).off('click', '.pv2-btn-generate').on('click', '.pv2-btn-generate', function(e) {
+      e.preventDefault();
+      const $btn = $(this);
+      
+      const supplierId = $('#supplier_selector').val();
+      if (!supplierId) {
+        toastr.warning('Por favor, seleccione un proveedor para generar el borrador.');
+        return;
+      }
+
+      const items = {};
+      const costs = {};
+      let hasItems = false;
+      
+      $('.pv2-qty-input').each(function() {
+        const itemId = $(this).data('item-id');
+        const qty = parseFloat($(this).val());
+        const row = $(this).closest('tr');
+        const cost = parseFloat(row.find('.pv2-cost-input').val()) || 0;
+
+        if (qty > 0 && itemId) {
+          items[itemId] = qty;
+          costs[itemId] = cost;
+          hasItems = true;
+        }
+      });
+
+      if (!hasItems) {
+        toastr.warning('No hay cantidades válidas para generar una orden.');
+        return;
+      }
+
+      // Bloquear botón y mostrar Loader
+      $btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin mr-2"></i> Generando Borrador...');
+      $('#matrix-table-results').addClass('loading');
+      $('#pv2-table-loader').css('display', 'flex');
+
+      $.ajax({
+        url: '/purchases_v2/dashboard/generate_draft',
+        type: 'POST',
+        data: {
+          supplier_id: supplierId,
+          order_type: $('.purchase-type-btn.active').data('type') || 'local',
+          items: items,
+          costs: costs
+        },
+        dataType: 'json',
+        success: function(response) {
+          if (response.success) {
+            toastr.success(response.message);
+            setTimeout(() => {
+              window.location.href = response.redirect_url;
+            }, 1000);
+          } else {
+            toastr.error(response.message);
+            $btn.prop('disabled', false).html('<i class="fas fa-rocket mr-2"></i> Confirmar y Generar Borrador V2');
+          }
+        },
+        error: function() {
+          toastr.error('Error al procesar la solicitud.');
+          $btn.prop('disabled', false).html('<i class="fas fa-rocket mr-2"></i> Confirmar y Generar Borrador V2');
+        },
+        complete: function() {
+          $('#matrix-table-results').removeClass('loading');
+          $('#pv2-table-loader').hide();
+        }
+      });
+    });
+    $(document).on('click', '.purchase-type-btn', function() {
+      $('.purchase-type-btn').removeClass('active');
+      $(this).addClass('active');
+    });
+  </script>
+
+  <!-- Botón Generador Flotante -->
+  <div class="mt-5 text-right pv2-fade-in" style="animation-delay: 0.3s; opacity: 1;">
+    <div class="purchase-type-toggle">
+      <button type="button" class="purchase-type-btn active" data-type="local">
+        <i class="fas fa-truck text-primary"></i> Compra Local
+      </button>
+      <button type="button" class="purchase-type-btn" data-type="importacion">
+        <i class="fas fa-ship"></i> Importación
+      </button>
+    </div>
+    <button class="pv2-btn-generate">
+      <i class="fas fa-rocket mr-2"></i> Confirmar y Generar Borrador V2
+    </button>
+  </div>
+</div>

@@ -4,7 +4,7 @@
 	$("#new-detail-modal").modal("show");
 <% else %>
 	if ($('#Checkboxes_Grape').is(':checked')){
-		swal({ type: 'error', title: '¡Oops...!', text: '¡No cuenta con credito suficiente, por favor debe cancelar las notas pendientes!' })
+		toastr.error('¡No cuenta con crédito suficiente, por favor debe cancelar las notas pendientes!');
 	}else{		
 		$("#new-detail-modal").html("<%= escape_javascript(render 'new') %>");
 		$("#new-detail-modal").modal("show");

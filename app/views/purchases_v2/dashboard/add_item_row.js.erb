@@ -1,0 +1,37 @@
+(function() {
+  const tableBody = $('.pv2-table tbody');
+  const noDataRow = tableBody.find('td[colspan="20"]').closest('tr');
+  
+  if (noDataRow.length) {
+    noDataRow.remove();
+  }
+
+  // Comprobar si el ítem ya existe en la tabla para no duplicar
+  const existingRow = tableBody.find(`tr`).filter(function() {
+    return $(this).text().indexOf("<%= j @item[:name] %>") !== -1;
+  });
+
+  if (existingRow.length) {
+    existingRow.css('background-color', '#fff7ed');
+    setTimeout(() => { existingRow.css('background-color', ''); }, 2000);
+    toastr.warning('El ítem ya se encuentra en la lista');
+    return;
+  }
+
+  const newRowHtml = "<%= j render('matrix_row', item: @item, index: @index) %>";
+  const $newRow = $(newRowHtml);
+  
+  $newRow.addClass('pv2-fade-in').css('background-color', '#f0fdf4');
+  tableBody.prepend($newRow);
+  
+  // Actualizar numeración
+  $('.pv2-table tbody tr').each(function(i) {
+    $(this).find('td:first span').text(i + 1);
+  });
+
+  setTimeout(() => { $newRow.css('background-color', ''); }, 2000);
+  toastr.success('Ítem agregado a la matriz');
+  
+  // Limpiar buscador
+  $('#pv2-global-search').val(null).trigger('change');
+})();

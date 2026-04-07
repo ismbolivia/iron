@@ -1,0 +1,15 @@
+[Unit]
+Description=Servidor Puma para el Sistema Iron (Produccion)
+After=network.target
+
+[Service]
+Type=simple
+User=devcode
+Group=devcode
+WorkingDirectory=/home/devcode/sistemas/iron
+ExecStart=/home/devcode/sistemas/iron/start_production.sh
+Restart=always
+Environment=RAILS_ENV=production
+
+[Install]
+WantedBy=multi-user.target

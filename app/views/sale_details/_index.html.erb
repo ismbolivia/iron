@@ -4,9 +4,9 @@
     <td class="text-right"><small><%= detail.qty %></small> </td>
     <td> <%= detail.item.unit.name %></td>
     <td width="450"><small><%= detail.item.item_description %></small> </td>
-    <td class="text-right"> <small><%= @mycompany.get_current_currency.symbol%><%=(detail.price.round(4)) %></small></td>
+    <td class="text-right"> <small><%= @mycompany.get_current_currency.symbol%><%= number_with_precision(detail.price, precision: 4) %></small></td>
     <td class="text-right" ondblclick=' edit_discount_item(<%=detail.discount %>, <%= detail.id%>);'> <div id="<%= detail.id%>" ><small><strong> <%= number_to_percentage(detail.discount, precision: 0)%></strong></small></div>   </td>
-    <td class="text-right"><%= @mycompany.get_current_currency.symbol%><small id="label_id_price_sale_<%= detail.id%>"><%= detail.price_sale %></small> </td>
+    <td class="text-right"><%= @mycompany.get_current_currency.symbol%><small id="label_id_price_sale_<%= detail.id%>"><%= number_with_precision(detail.price_sale, precision: 4) %></small> </td>
 
     <td class="text-right"><strong><%= @mycompany.get_current_currency.symbol%> <small id="label_id_subtotal_<%= detail.id%>"> <%=(detail.subtotal) %> </small> </strong></td>
     <% if show_actions %>
@@ -21,7 +21,7 @@
       <td class="text-right"> DEVOLUCION: <%= devolution.sale_detail.item.item_description %> </td> 
       <td></td>
       <td></td>
-      <td class="text-right">-<%= @mycompany.get_current_currency.symbol%><%= devolution.sale_detail.price_sale  %></td>
+      <td class="text-right">-<%= @mycompany.get_current_currency.symbol%><%= number_with_precision(devolution.sale_detail.price_sale, precision: 4) %></td>
       <td class="text-right">-<%= @mycompany.get_current_currency.symbol%><%=(devolution.mount_devolution) %></td>
 
     </tr>

@@ -21,6 +21,26 @@
             <span style="font-size:16px;" class="pull-right hidden-xs showopacity far fa-building "></span>
           </a>
         </li>   
+            <li class="<%= current_page?(new_stock_adjustment_path) ? "active" : "" %>">
+               <a href="<%= new_stock_adjustment_path %>">
+                 Ajustes Manuales
+                 <span style="font-size:16px;" class="pull-right hidden-xs showopacity fas fa-tools"></span>
+               </a>
+             </li>   
+            <li class="<%= current_page?(purchases_v2_repackings_path) ? "active" : "" %>">
+               <a href="<%= purchases_v2_repackings_path %>">
+                 Re-empaques de Lote
+                 <span style="font-size:16px;" class="pull-right hidden-xs showopacity fas fa-box-open"></span>
+               </a>
+             </li>   
+        <% end %>
+        <% if can? :read, Transfer.all.first %>
+        <li class="<%= current_page?(transfers_path) ? "active" : "" %>">
+          <a href="<%= transfers_path %>">
+            Traspasos 
+            <span style="font-size:16px;" class="pull-right hidden-xs showopacity fas fa-truck"></span>
+          </a>
+        </li>   
         <% end %>
         <% if can? :read, PriceList.all.first %>
        <li class="<%= current_page?(price_lists_path) ? "active" : "" %>">

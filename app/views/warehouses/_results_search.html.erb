@@ -7,6 +7,7 @@
     <tr>
       <th>Referencia</th>
       <th>Nombre del almacen</th>
+      <th>Sucursal</th>
       <th>Descripción</th>
       <th>Cantidad</th> 
       <th>Precio total</th>
@@ -20,6 +21,13 @@
       <tr>
         <td><%= warehouse.ref %></td>
         <td><%= warehouse.name %></td>
+        <td>
+          <% if warehouse.branch_id.present? %>
+             <span class="label label-success"><%= warehouse.branch.name %></span>
+          <% else %>
+             <span class="label label-default">Independiente</span>
+          <% end %>
+        </td>
         <td><%= warehouse.description %></td>
         <td><%= warehouse.total_quantity %></td>   
         <th><%= number_to_currency(warehouse.total_price) %></th>     

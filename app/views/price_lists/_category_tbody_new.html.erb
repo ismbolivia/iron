@@ -1,0 +1,52 @@
+<% 
+  current_currency = @mycompany.get_current_currency
+  bob_currency = Currency.find_by(symbol: 'Bs') || Currency.find_by(name: 'BOB')
+  exch_rate = 1.0
+  if bob_currency && current_currency && current_currency.id != bob_currency.id
+     rate_obj = CurrencyRate.where(currency_id: current_currency.id, currency_ref: bob_currency.id, state: true).first
+     exch_rate = rate_obj.rate.to_f if rate_obj
+  end
+%>
+<tbody id="cat-group-<%= category.id %>" style="border-top: 3px solid #e2e8f0; page-break-inside: avoid;">
+  <% items.each_with_index do |item, index| %>
+    <tr id="row-item-<%= item.id %>">
+      
+      <!-- 🖼️ Imagen Combinada (Rowspan) -->
+      <% if index == 0 %>
+        <td rowspan="<%= items.count %>" class="text-center" style="vertical-align: middle; background: #fafafa; width: 140px;">
+          <% 
+            category_image_url = nil
+            if category.pictures.present?
+              category_image_url = category.pictures.url
+            elsif items.first.present? && items.first.image.present?
+              category_image_url = items.first.image.large.url rescue items.first.image.url
+            end
+          %>
+          <% if category_image_url.present? %>
+            <%= image_tag(category_image_url, style: "max-width: 90px; max-height: 90px; object-fit: contain; border-radius: 6px;") %>
+          <% else %>
+            <span style="font-size: 11px; color: #aaa; font-style: italic;">Sin Foto</span>
+          <% end %>
+          <div style="margin-top: 5px; font-weight: bold; font-size: 12px; color: #1e293b; text-transform: uppercase;"><%= category.name %></div>
+          
+          <button type="button" onclick="removeCategoryFromNew('<%= category.id %>')" class="btn btn-xs btn-outline btn-danger" style="margin-top: 5px; font-size: 10px;">
+             <i class="fa fa-trash"></i> Quitar
+          </button>
+        </td>
+      <% end %>
+
+      <!-- 📦 Datos del Producto -->
+      <td style="vertical-align: middle; font-weight: 500;">
+         <%= item.name %>
+         <!-- 💡 Campo Oculto para enviar el item_id al Formulario de Guardado -->
+         <input type="hidden" name="item_ids[]" value="<%= item.id %>" class="items-to-save">
+      </td>
+      <td class="text-center" style="vertical-align: middle; font-weight: bold; color: #16a34a;"><%= number_to_currency(item.price_default, precision: 4) %></td>
+      <td class="text-center" style="vertical-align: middle; font-weight: bold; color: #0284c7;"><%= number_to_currency(item.price_default * exch_rate, unit: 'Bs. ', precision: 4) %></td>
+      <td class="text-center" style="vertical-align: middle;">
+          <input type="checkbox" checked onchange="toggleSingleRow(this, <%= item.id %>)">
+      </td>
+
+    </tr>
+  <% end %>
+</tbody>

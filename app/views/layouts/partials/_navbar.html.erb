@@ -1,56 +1,142 @@
-<nav class="navbar navbar-inverse navbar-fixed-top" style="height: 60px;">
- <div class="container-fluid">
-   <div class="navbar-header">
-     <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-       <span class="sr-only">Toggle navigation</span>
-       <span class="icon-bar"></span>
-       <span class="icon-bar"></span>
-       <span class="icon-bar"></span>
-     </button>
-     <a class="navbar-brand" href="#">IRON SYSTEM </a>
-   </div>
-   <div id="navbar" class="navbar-collapse collapse">
- <% if user_signed_in? %>
-     <%= render 'modulos/partial/modulos' %>
+<nav class="navbar navbar-fixed-top" style="height: 72px; background: #0b1120; border-bottom: 3px solid #06b6d4; box-shadow: 0 8px 30px rgba(6, 182, 212, 0.15); display: flex; align-items: center; padding: 0 2rem; transition: all 0.3s; z-index: 1030;">
+  <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+      
+      <!-- 1. Izquierda: Logo y Marca -->
+      <a href="/" style="display: flex; align-items: center; gap: 10px; text-decoration: none;">
+          <div style="background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%); width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 12px rgba(6, 182, 212, 0.35);">
+             <i class="fa fa-cubes" style="color: white; font-size: 1.1rem;"></i>
+          </div>
+          <span style="font-weight: 800; font-size: 1.4rem; color: #ffffff; letter-spacing: -0.5px; font-family: sans-serif;">IRON<span style="color: #06b6d4; text-shadow: 0 0 10px rgba(6, 182, 212, 0.3);">SYSTEM</span></span>
+          
+          <!-- 📍 Ubicación de Sucursal (Solo este en Rojo) -->
+          <% if user_signed_in? && current_user.branch.present? %>
+             <div id="branch-badge" style="background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 8px; padding: 5px 12px; display: flex; align-items: center; gap: 6px; margin-left: 10px; backdrop-filter: blur(5px); box-shadow: 0 0 10px rgba(239, 68, 68, 0.15);">
+                <i class="fa fa-map-marker-alt" style="color: #ef4444; font-size: 1.05rem;"></i>
+                <span style="color: #ffffff; font-weight: 800; font-size: 1.15rem; letter-spacing: 0.2px;"><%= current_user.branch.name %></span>
+             </div>
+          <% end %>
+      </a>
 
-<ul class="nav navbar-nav navbar-right">                                 
-   <li></li>
-      <li class="dropdown">
-          <a data-toggle="dropdown" href="#" aria-expanded="false" class="dropdown-toggle profile-pic" style="  padding-bottom: 9px;    padding-top: 9px;   ">    <%= image_tag(current_user.avatar.medium.url, :alt => "user-img", class: "img-circle",  width: "36",  height: "36") %><b class="hidden-xs">
-                            <%= current_user.email %></b><span class="caret"></span> </a>
-                      <ul class="dropdown-menu dropdown-user animated flipInY" style=" left: 13.484;  left: 15.484; left: 15px;
-">
-                            <li>
-                                <div class="dw-user-box">
-                                    <div class="u-img"><!-- <img src="https://wrappixel.com/ampleadmin/ampleadmin-html/plugins/images/users/varun.jpg" alt="user"> -->
-                                      <%= image_tag(current_user.avatar.medium.url, :alt => "user") %>
-                                    </div>
-                                    <div class="u-text">
-                                        <h4> <%= current_user.name %></h4>
-                                        <p class="text-muted"><%= current_user.rol.name %></p>
-                                        <%= button_to edit_user_path(current_user), {method: :get, class: "btn btn-rounded btn-danger btn-sm"} do %>
-                                        <span class="" aria-hidden="true">Editar Perfil </span> 
+      <!-- 2. Centro: Módulos (Renderizado) -->
+      <div id="modules-box" style="display: flex; align-items: center;">
+         <% if user_signed_in? %>
+            <%= render 'modulos/partial/modulos' %>
+         <% end %>
+      </div>
 
-                                    </div>
-                                </div>
-                            </li>
-                            <li role="separator" class="divider"></li>
-                            <li><a href="/users/<%= current_user.id %>"><i class="fa fa-user text-primary "></i> Mi Perfil</a>
-                            </li>
-                      <% end %>
-                           
-                            <li><a href="#"><i class="fa fa-envelope text-success"></i> Inbox</a></li>
-                         
-                            <li role="separator" class="divider"></li>
-                            <li><a href="#"></i>  <%= link_to "Salir", destroy_user_session_path, method: :delete %></a></li>
+      <!-- 3. Derecha: Menú de Usuario -->
+      <div style="display: flex; align-items: center; gap: 1rem;">
+         <!-- Theme Switcher Dots (Navbar Global) -->
+         <div style="display: flex; gap: 8px; background: rgba(255,255,255,0.05); padding: 5px 10px; border-radius: 18px; border: 1px solid rgba(255,255,255,0.08); backdrop-filter: blur(5px); align-items: center;">
+            <span style="font-size: 0.75rem; font-weight: 700; color: rgba(255,255,255,0.6); display: flex; align-items: center; margin-right: 2px;"><i class="fas fa-palette"></i></span>
+            <div class="nav-theme-dot" style="background: #ffffff; width: 14px; height: 14px; border-radius: 50%; cursor: pointer; border: 1px solid #e2e8f0; transition: transform 0.15s;" onclick="changeGlobalTheme('light')" title="Modo Claro" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'"></div>
+            <div class="nav-theme-dot" style="background: #faf7f2; width: 14px; height: 14px; border-radius: 50%; cursor: pointer; border: 1px solid #c9b09a; transition: transform 0.15s;" onclick="changeGlobalTheme('light-cream')" title="Marfil Crema" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'"></div>
+            <div class="nav-theme-dot" style="background: #e0f2fe; width: 14px; height: 14px; border-radius: 50%; cursor: pointer; border: 1px solid #7dd3fc; transition: transform 0.15s;" onclick="changeGlobalTheme('light-frost')" title="Nordic Frost" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'"></div>
+            <div class="nav-theme-dot" style="background: #1e293b; width: 14px; height: 14px; border-radius: 50%; cursor: pointer; border: 1px solid rgba(255,255,255,0.2); transition: transform 0.15s;" onclick="changeGlobalTheme('dark-slate')" title="Slate Dark" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'"></div>
+            <div class="nav-theme-dot" style="background: #111827; width: 14px; height: 14px; border-radius: 50%; cursor: pointer; border: 1px solid rgba(255,255,255,0.2); transition: transform 0.15s;" onclick="changeGlobalTheme('midnight')" title="Midnight Blue" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'"></div>
+            <div class="nav-theme-dot" style="background: #052e16; width: 14px; height: 14px; border-radius: 50%; cursor: pointer; border: 1px solid rgba(255,255,255,0.2); transition: transform 0.15s;" onclick="changeGlobalTheme('dark-green')" title="Verde Bosque" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'"></div>
+            <div class="nav-theme-dot" style="background: #2e1065; width: 14px; height: 14px; border-radius: 50%; cursor: pointer; border: 1px solid rgba(255,255,255,0.2); transition: transform 0.15s;" onclick="changeGlobalTheme('cyber-purple')" title="Violeta Místico" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'"></div>
+            <div class="nav-theme-dot" style="background: #0c4a6e; width: 14px; height: 14px; border-radius: 50%; cursor: pointer; border: 1px solid rgba(255,255,255,0.2); transition: transform 0.15s;" onclick="changeGlobalTheme('deep-space')" title="Deep Space" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'"></div>
+            <div class="nav-theme-dot" style="background: #701a35; width: 14px; height: 14px; border-radius: 50%; cursor: pointer; border: 1px solid rgba(255,255,255,0.2); transition: transform 0.15s;" onclick="changeGlobalTheme('dark-rose')" title="Carmesí Rosa" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'"></div>
+            <div class="nav-theme-dot" style="background: #fdf08a; width: 14px; height: 14px; border-radius: 50%; cursor: pointer; border: 1px solid #ca8a04; transition: transform 0.15s;" onclick="changeGlobalTheme('dark-gold')" title="Oro Obsidiana" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'"></div>
+            <div class="nav-theme-dot" style="background: #000000; width: 14px; height: 14px; border-radius: 50%; cursor: pointer; border: 2px solid #38bdf8; transition: transform 0.15s;" onclick="changeTheme('amoled')" title="AMOLED Black" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'"></div>
+         </div>
 
-                        </ul>
-                        <!-- /.dropdown-user -->
+         <script>
+         function changeGlobalTheme(themeName) {
+           // Remover todos los temas del body si existieran
+           document.body.classList.remove('theme-dark-slate', 'theme-dark-green', 'theme-cyber-purple', 'theme-deep-space', 'theme-midnight', 'theme-amoled', 'theme-light-cream', 'theme-light-frost', 'theme-dark-rose', 'theme-dark-gold');
+           if (themeName !== 'light') {
+              document.body.classList.add('theme-' + themeName);
+           }
+           localStorage.setItem('workspace-theme', themeName);
+           
+           // Si estamos en el workspace, actualizar su contenedor local también para que se gatillen variables
+           const workspace = document.getElementById('workspace-skin');
+           if (workspace) {
+              workspace.classList.remove('theme-dark-slate', 'theme-dark-green', 'theme-cyber-purple', 'theme-deep-space', 'theme-midnight', 'theme-amoled', 'theme-light-cream', 'theme-light-frost', 'theme-dark-rose', 'theme-dark-gold');
+              if (themeName !== 'light') {
+                 workspace.classList.add('theme-' + themeName);
+              }
+           }
+         }
+
+         // Autocargar tema al iniciar en el body (Soporta Turbolinks / Turbo)
+         function applySavedTheme() {
+             const saved = localStorage.getItem('workspace-theme');
+             if (saved) {
+                // Limpiar previos
+                document.body.classList.remove('theme-dark-slate', 'theme-dark-green', 'theme-cyber-purple', 'theme-deep-space', 'theme-midnight', 'theme-amoled');
+                if (saved !== 'light') {
+                   document.body.classList.add('theme-' + saved);
+                }
+                
+                // Forzar sincronización con Workspace si existe
+                const workspace = document.getElementById('workspace-skin');
+                if (workspace) {
+                   workspace.classList.remove('theme-dark-slate', 'theme-dark-green', 'theme-cyber-purple', 'theme-deep-space', 'theme-midnight', 'theme-amoled');
+                   if (saved !== 'light') workspace.classList.add('theme-' + saved);
+                }
+             }
+         }
+
+         document.addEventListener("DOMContentLoaded", applySavedTheme);
+         document.addEventListener("turbolinks:load", applySavedTheme);
+         document.addEventListener("turbo:load", applySavedTheme);
+         </script>
+
+         <% if user_signed_in? %>
+             <div class="dropdown">
+                <a href="#" data-toggle="dropdown" aria-expanded="false" class="dropdown-toggle" style="display: flex; align-items: center; gap: 10px; text-decoration: none; padding: 5px 12px; border-radius: 14px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); transition: background 0.2s;">
+                    <div style="width: 38px; height: 38px; border-radius: 10px; overflow: hidden; border: 2px solid #06b6d4; box-shadow: 0 0 12px rgba(6, 182, 212, 0.25);">
+                       <%= image_tag(current_user.avatar.medium.url, style: "width: 100%; height: 100%; object-fit: cover;") %>
+                    </div>
+                    <div class="hidden-xs" style="display: flex; flex-direction: column; text-align: left;">
+                       <span style="color: #ffffff; font-weight: 800; font-size: 0.9rem; line-height: 1.2;"><%= current_user.name.presence || current_user.email.split('@').first %></span>
+                       <small style="color: #06b6d4; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;"><%= current_user.rol&.name || "Usuario" %></small>
+                    </div>
+                </a>
+                
+                <ul class="dropdown-menu dropdown-menu-right" style="background: #0b1120; border: 1px solid rgba(6, 182, 212, 0.3); border-radius: 16px; box-shadow: 0 15px 40px rgba(0,0,0,0.5); padding: 0.8rem; width: 240px; margin-top: 12px;">
+                    <li style="padding: 10px; background: rgba(255,255,255,0.02); border-radius: 12px; margin-bottom: 8px; border: 1px solid rgba(255,255,255,0.03);">
+                        <span style="display: block; color: white; font-weight: 800; font-size: 0.88rem;"><%= current_user.name %></span>
+                        <small style="display: block; color: #94a3b8; font-size: 0.75rem; text-overflow: ellipsis; overflow: hidden;"><%= current_user.email %></small>
                     </li>
-       <% end %>
-     </ul>
+                    <li><%= link_to user_path(current_user), style: "color: #e2e8f0; font-weight: 700; padding: 8px 12px; display: block; text-decoration: none;" do %><i class="fa fa-user" style="color: #06b6d4; width: 16px; text-align: center;"></i> Mi Perfil<% end %></li>
+                    <li><%= link_to edit_user_path(current_user), style: "color: #e2e8f0; font-weight: 700; padding: 8px 12px; display: block; text-decoration: none;" do %><i class="fa fa-cog" style="color: #94a3b8; width: 16px; text-align: center;"></i> Ajustes<% end %></li>
+                    <li class="divider" style="background: rgba(255,255,255,0.08); margin: 6px 0;"></li>
+                    <li><%= link_to destroy_user_session_path, method: :delete, style: "background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%); color: white !important; font-weight: 800; border-radius: 10px; padding: 10px 12px; display: block; text-align: center; text-decoration: none; box-shadow: 0 4px 12px rgba(6, 182, 212, 0.25);" do %>Cerrar Sesión<% end %></li>
+                </ul>
+             </div>
+         <% end %>
+      </div>
+
   </div>
- </div>
 </nav>
 
-
+<style>
+  /* 🌟 Forzar Visibilidad de Letras en Encabezado (Pico Contraste) */
+  #modules-box a { 
+     color: #f8fafc !important; 
+     display: inline-flex !important; 
+     align-items: center !important; 
+     gap: 6px !important; 
+     text-decoration: none !important; 
+     padding: 8px 12px; 
+  }
+  #modules-box a .ajust { 
+     color: #ffffff !important; 
+     font-weight: 800 !important; 
+     font-size: 0.85rem !important; 
+     margin: 0 !important; 
+     text-shadow: 0 1px 3px rgba(0,0,0,0.6); 
+  }
+  #modules-box a i { 
+     color: #ffffff !important; 
+     font-size: 1.05rem !important; 
+     text-shadow: 0 1px 3px rgba(0,0,0,0.5); 
+  }
+  #modules-box a:hover .ajust, #modules-box a:hover i { 
+     color: #22d3ee !important; /* Cyan claro en hover */
+  }
+</style>

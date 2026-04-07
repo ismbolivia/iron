@@ -12,9 +12,9 @@
 	        	  
 	         		<div class="row">
 				            <table class="table product-overview table-bordered ">
-				              <thead class="conf-pdf">
+				              <thead class="conf-pdf" style="-webkit-print-color-adjust: exact;">
 				                <tr>
-                          <th colspan="8" style="background: #1e293b; color: #ffffff; padding: 15px; border: none; text-align: left;">
+                          <th colspan="8" style="background: #1e293b !important; color: #ffffff !important; padding: 15px; border: none; text-align: left; -webkit-print-color-adjust: exact;">
                             <div style="display: flex; align-items: center; gap: 20px;">
                               <% 
                                  # Aseguramos la existencia de @mycompany
@@ -23,19 +23,19 @@
                               <% if @mycompany&.logo&.url %>
                                 <%= wicked_pdf_image_tag(@mycompany.logo.url, style: "height: 50px; width: auto;") %>
                               <% end %>
-                              <h2 style="margin: 0; font-size: 1.5rem; color: #ffffff; display: inline-block; vertical-align: middle; margin-left: 15px;">LISTA DE PRODUCTOS</h2>
+                              <h2 style="margin: 0; font-size: 1.5rem; color: #ffffff !important; display: inline-block; vertical-align: middle; margin-left: 15px;">LISTA DE PRODUCTOS</h2>
                             </div>
 				                	</th>
 				                </tr>
 				                <tr>
-				                  <th class="center" style="background: #334155; color: white;">Código</th>
-				                  <th class="cenetr" style="background: #334155; color: white;">Nombre</th>
-				                  <th class="center" style="background: #334155; color: white;">Descripción</th>
-				                  <th class="center" style="background: #334155; color: white;">Imagen</th>
-				                  <th class="center" style="background: #334155; color: white;">Unidad</th>
-				                  <th class="center" style="background: #334155; color: white;">Stock</th>				                  
-				                  <th class="center" style="background: #334155; color: white;">Categoría</th>
-				                  <th style="background: #334155; color: white;">Precio</th>				                
+				                  <th class="center" style="background: #334155 !important; color: white !important; -webkit-print-color-adjust: exact;">Código</th>
+				                  <th class="cenetr" style="background: #334155 !important; color: white !important; -webkit-print-color-adjust: exact;">Nombre</th>
+				                  <th class="center" style="background: #334155 !important; color: white !important; -webkit-print-color-adjust: exact;">Descripción</th>
+				                  <th class="center" style="background: #334155 !important; color: white !important; -webkit-print-color-adjust: exact;">Imagen</th>
+				                  <th class="center" style="background: #334155 !important; color: white !important; -webkit-print-color-adjust: exact;">Unidad</th>
+				                  <th class="center" style="background: #334155 !important; color: white !important; -webkit-print-color-adjust: exact;">Stock</th>				                  
+				                  <th class="center" style="background: #334155 !important; color: white !important; -webkit-print-color-adjust: exact;">Categoría</th>
+				                  <th style="background: #334155 !important; color: white !important; -webkit-print-color-adjust: exact;">Precio</th>				                
 				                </tr>
 				              </thead>
 				              <tbody>

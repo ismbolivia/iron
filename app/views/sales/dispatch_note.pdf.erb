@@ -282,7 +282,7 @@
             </tr>
         </thead>
         <tbody>
-            <% @sale.sale_details.order(:priority).each_with_index do |detail, index| %>
+            <% @sale.sale_details.left_outer_joins(item: :category).order("categories.name ASC, items.priority ASC").each_with_index do |detail, index| %>
                 <tr class="<%= index % 2 == 0 ? '' : 'priority-row' %>">
                     <td style="text-align: center; color: #64748b; font-weight: bold;"><%= index + 1 %></td>
                     <td>

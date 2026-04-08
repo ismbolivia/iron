@@ -9,7 +9,7 @@ class ItemsController < ApplicationController
   # GET /items.json
   def index
        @list = nil  
-       @all_items =Item.all.order(:id)
+       @all_items = Item.left_outer_joins(:category).order("categories.name ASC, items.priority ASC")
        respond_to do |format|
         format.html
         format.csv { send_data Item.all.to_csv }

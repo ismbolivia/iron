@@ -47,7 +47,7 @@
                    </thead>
                 <tbody>
           <div id="sale-details-index">
-            <% @sale.sale_details.order(:priority).each do |detail| %>
+            <% @sale.sale_details.left_outer_joins(item: :category).order("categories.name ASC, items.priority ASC").each do |detail| %>
             <% if detail.todiscount%>          
             <tr>
               <td style="width:50px"><%= detail.get_qty_total %></td>
@@ -120,7 +120,7 @@
         <tbody>
 
           <div id="sale-details-index">
-            <% @sale.sale_details.order(:priority).each do |detail| %>
+            <% @sale.sale_details.left_outer_joins(item: :category).order("categories.name ASC, items.priority ASC").each do |detail| %>
              <% if !detail.todiscount%>    
             <tr>
               <td style="width:50px"><%= detail.get_qty_total %></td>

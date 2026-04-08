@@ -15,14 +15,15 @@ class ApplicationController < ActionController::Base
   end
 
   def configure_permitted_parameters
-			if User.count==0		
-				devise_parameter_sanitizer.permit(:sign_up,  keys: [:name, :rol_id, :avatar, :initials])
-        @rol = Rol.where(permision: 6).first.id
-			else
-				devise_parameter_sanitizer.permit(:sign_up, keys: [:name, :rol_id, :avatar, :initials])
-         @rol = Rol.where(permision: 0).first.id
-			end
-		end
+    devise_parameter_sanitizer.permit(:sign_up, keys: [:name, :rol_id, :avatar, :initials, :phone, :mobile])
+    devise_parameter_sanitizer.permit(:account_update, keys: [:name, :rol_id, :avatar, :initials, :phone, :mobile])
+    
+    if User.count == 0		
+      @rol = Rol.where(permision: 6).first.try(:id)
+    else
+      @rol = Rol.where(permision: 0).first.try(:id)
+    end
+  end
 
     def get_modulos_installed
       @modulos_intalled = Modulo.where(installed:true).order(:id)

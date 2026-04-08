@@ -51,30 +51,33 @@
 
         <!-- Right Side: Company & Vendor Info -->
         <div style="white-space: nowrap; margin-left: 20px; text-align: right; min-width: 150px; padding-left: 15px; border-left: 1px solid #1D2644;">
-            <div style="font-weight: bold; color: #fff; font-size: 1.1em; margin-bottom: 3px;"><%= @mycompany.name.titleize rescue 'Empresa' %></div>
+            <div style="font-weight: bold; color: #fff; font-size: 1.1em; margin-bottom: 2px;">
+                <%= @mycompany.name.upcase rescue 'EMPRESA' %> 
+            </div>
             <% if @sale.branch.present? %>
                 <div style="font-size: 0.85em; margin-bottom: 2px; color: #fff; font-weight: bold;">
-                    Sucursal: <span><%= @sale.branch.name %></span>
+                    Sucursal: <span><%= @sale.branch.name %> <%= "| Telf: #{@mycompany.phone}" if @sale.branch.name.upcase.include?("MATRIZ") %></span>
                 </div>
             <% end %>
-            <div style="font-size: 0.9em; margin-bottom: 1px; color: #ddd;">
+            <div style="font-size: 0.95em; margin-bottom: 1px; color: #ddd;">
                 Vendedor: <span style="color: #fff;"><%= @sale.user.name rescue '?' %></span>
             </div>
             <div style="font-size: 0.85em; color: #bbb;">
-                Contacto: <%= @mycompany.phone rescue '' %>
+                Contacto: <span style="color: #fff;"><%= @sale.user.mobile rescue 'S/N' %></span>
             </div>
         </div>
     </div>
 
     <!-- SECTION 1: ITEMS WITH DISCOUNT (todiscount = true) -->
-    <% discountable_items = @sale.sale_details.where(todiscount: true).order(:priority) %>
+    <% discountable_items = @sale.sale_details.left_outer_joins(item: :category).where(todiscount: true).order("categories.name ASC, items.priority ASC") %>
     <% if discountable_items.any? %>
     <div style="margin-bottom: 20px;">
         <table class="table table-condensed" style="margin-bottom: 0; font-size: 0.95em;">
             <thead>
                 <tr style="background-color: #1D2644; color: #fff;">
                     <th style="padding: 5px; border: 1px solid #1D2644;">Descripción</th>
-                    <th class="text-right" style="padding: 5px; width: 90px; border: 1px solid #1D2644;">Cantidad</th>
+                    <th class="text-right" style="padding: 5px; width: 60px; border: 1px solid #1D2644;">Cant.</th>
+                    <th class="text-center" style="padding: 5px; width: 40px; border: 1px solid #1D2644;">Un.</th>
                     <th class="text-right" style="padding: 5px; width: 80px; border: 1px solid #1D2644;">P.Unit.</th>
                     <th class="text-right" style="padding: 5px; width: 40px; border: 1px solid #1D2644;">Desc.</th>
                     <th class="text-right" style="padding: 5px; width: 80px; border: 1px solid #1D2644;">p.Venta</th>
@@ -98,7 +101,10 @@
                             <%= detail.item.name %>
                         </td>
                         <td class="text-right" style="padding: 4px; border: none; border-bottom: 1px solid #1D2644;">
-                            <%= detail.qty %> <small style="color:#777"><%= detail.item.unit.name rescue '' %></small>
+                            <%= detail.qty %>
+                        </td>
+                        <td class="text-center" style="padding: 4px; border: none; border-bottom: 1px solid #1D2644; color:#777">
+                            <%= detail.item.unit.name rescue '' %>
                         </td>
                         <td class="text-right" style="padding: 4px; border: none; border-bottom: 1px solid #1D2644;">
                             <%= number_to_currency(convert_price.call(detail.price, exch_rate), unit: display_symbol + ' ', precision: 4) %>
@@ -144,10 +150,21 @@
     <% end %>
 
     <!-- SECTION 2: ITEMS WITHOUT DISCOUNT (todiscount = false) -->
-    <% non_discountable_items = @sale.sale_details.where(todiscount: false).order(:priority) %>
+    <% non_discountable_items = @sale.sale_details.left_outer_joins(item: :category).where(todiscount: false).order("categories.name ASC, items.priority ASC") %>
     <% if non_discountable_items.any? %>
     <div style="margin-bottom: 10px;">
         <table class="table table-condensed" style="margin-bottom: 0; font-size: 0.95em;">
+            <thead>
+                <tr style="background-color: #1D2644; color: #fff;">
+                    <th style="padding: 5px; border: 1px solid #1D2644;">Descripción</th>
+                    <th class="text-right" style="padding: 5px; width: 60px; border: 1px solid #1D2644;">Cant.</th>
+                    <th class="text-center" style="padding: 5px; width: 40px; border: 1px solid #1D2644;">Un.</th>
+                    <th class="text-right" style="padding: 5px; width: 80px; border: 1px solid #1D2644;">P.Unit.</th>
+                    <th class="text-right" style="padding: 5px; width: 40px; border: 1px solid #1D2644;"></th>
+                    <th class="text-right" style="padding: 5px; width: 80px; border: 1px solid #1D2644;">p.Venta</th>
+                    <th class="text-right" style="padding: 5px; width: 90px; border: 1px solid #1D2644;">Total</th>
+                </tr>
+            </thead>
 
             <tbody>
                 <% subtotal_nondiscountable = 0 %>
@@ -161,7 +178,10 @@
                             <%= detail.item.name %>
                         </td>
                         <td class="text-right" style="padding: 4px; border: none; border-bottom: 1px solid #1D2644; width: 60px;">
-                            <%= detail.qty %> <small style="color:#777"><%= detail.item.unit.name rescue '' %></small>
+                            <%= detail.qty %>
+                        </td>
+                        <td class="text-center" style="padding: 4px; border: none; border-bottom: 1px solid #1D2644; width: 40px; color:#777">
+                            <%= detail.item.unit.name rescue '' %>
                         </td>
                         <td class="text-right" style="padding: 4px; border: none; border-bottom: 1px solid #1D2644; width: 80px;">
                             <%= number_to_currency(convert_price.call(detail.price, exch_rate), unit: display_symbol + ' ', precision: 4) %>

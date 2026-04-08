@@ -13,7 +13,7 @@
         <div class="new-login-box">
             <div class="white-box">
                 <h3 class="box-title m-b-0">Registro de </h3> <small>Usuarios</small>
-                <form class="form-horizontal new-lg-form" id="loginform" action="index.html">
+                <form class="forms-sample">
                    <div class="form-group ">
                         <div class="col-xs-12 col-md-12 col-sm-12">
                             
@@ -34,7 +34,19 @@
                              <%= f.label :email %><br />
                              <%= f.email_field :email, autofocus: false, autocomplete: "email", :class=>"form-control" %>
                        </div>
-                    </div>                                                                         
+                    </div>
+                    
+                    <div class="form-group ">
+                        <div class="col-xs-6">                            
+                             <%= f.label :phone, "Teléfono" %><br />
+                             <%= f.text_field :phone, :class=>"form-control" %>
+                       </div>
+                        <div class="col-xs-6">                            
+                             <%= f.label :mobile, "Celular (Móvil)" %><br />
+                             <%= f.text_field :mobile, :class=>"form-control" %>
+                       </div>
+                    </div>
+                    
                              <%= f.hidden_field :rol_id, autofocus: false, autocomplete: "", :class=>"form-control", value: @rol %>
                                         
                     <div class="form-group ">

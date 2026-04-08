@@ -105,12 +105,11 @@ class PosController < ApplicationController
     term = params[:term]
     category_id = params[:category_id]
     
-    # Removemos chequeo estricto de stock > 0 por ahora para depuración
-    # products = Item.where("stock > 0") 
-    products = Item.all
+    # Búsqueda base con join para ordenar por categoría y luego prioridad
+    products = Item.left_outer_joins(:category).order("categories.name ASC, items.priority ASC, items.name ASC")
     
     if term.present?
-      products = products.where("name ILIKE ? OR code ILIKE ?", "%#{term}%", "%#{term}%")
+      products = products.where("items.name ILIKE ? OR items.code ILIKE ?", "%#{term}%", "%#{term}%")
     end
     
     if category_id.present?

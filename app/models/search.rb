@@ -83,12 +83,13 @@ def brands_by_name
 
  # code for search items by description
   def items_by_description
+    base = Item.left_outer_joins(:category)
     if @keywords.present?
-        items = Item.where(description_condition).order(:name).offset(@offset).limit(@page_size)
-        @number_of_records = Item.where(description_condition).count
+        items = base.where(description_condition).order("categories.name ASC, items.priority ASC, items.name ASC").offset(@offset).limit(@page_size)
+        @number_of_records = base.where(description_condition).count
       else
-        items = Item.where(active: true).order(:description).offset(@offset).limit(@page_size)
-        @number_of_records = Item.where(active:true).count
+        items = base.where(active: true).order("categories.name ASC, items.priority ASC, items.description ASC").offset(@offset).limit(@page_size)
+        @number_of_records = base.where(active:true).count
       end
       
       return items, number_of_pages

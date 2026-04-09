@@ -91,4 +91,10 @@ Rails.application.configure do
 
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
+
+  # Cabeceras para habilitar IA (SharedArrayBuffer)
+  config.action_dispatch.default_headers = {
+    'Cross-Origin-Opener-Policy' => 'same-origin',
+    'Cross-Origin-Embedder-Policy' => 'require-corp'
+  }
 end

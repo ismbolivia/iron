@@ -87,10 +87,18 @@
        <div class="spinner"></div>
      </div>
    </div>
-</div> 
-
-<script type="module">
-import { removeBackground } from 'https://cdn.jsdelivr.net/npm/@imgly/background-removal@latest/+esm';
+</di<script type="module">
+let removeBackground;
+(async () => {
+  try {
+    const module = await import('https://cdn.jsdelivr.net/npm/@imgly/background-removal@latest/+esm');
+    removeBackground = module.removeBackground;
+  } catch (e) {
+    console.error("IA: Error al cargar librería", e);
+    // En producción, no queremos alertas intrusivas si no se usa el botón, 
+    // pero si falla la carga inicial, lo sabremos por consola.
+  }
+})();
 
 window.change_images_item = function() {
   var div_image = document.getElementById('image_uploader');
@@ -169,6 +177,11 @@ if (btnEditCurrent) {
 
 if (btnRemoveBg) {
   btnRemoveBg.onclick = async function() {
+    if (!removeBackground) {
+        alert("Error: La librería de IA no se cargó. Esto puede ser por bloqueos de red o seguridad (CORS).");
+        return;
+    }
+
     const sourceUrl = finalPreview.src;
     if (!sourceUrl || sourceUrl.includes('default_image')) return;
 
@@ -177,6 +190,10 @@ if (btnRemoveBg) {
     btnRemoveBg.disabled = true;
 
     try {
+      if (!window.crossOriginIsolated) {
+        console.warn("IA: Navegador no aislado. COOP/COEP podrían faltar.");
+      }
+
       const inputBlob = await getImageBlob(sourceUrl);
       const outputBlob = await removeBackground(inputBlob, {
         progress: (key, current, total) => {
@@ -196,7 +213,12 @@ if (btnRemoveBg) {
 
     } catch (e) {
       console.error("AI Error:", e);
-      alert("Error de IA: " + e.message);
+      let errorStr = e.message || "Error desconocido";
+      if (errorStr.includes('SharedArrayBuffer')) {
+          alert("Error de Producción: Se necesitan cabeceras COOP/COEP para habilitar SharedArrayBuffer.");
+      } else {
+          alert("Fallo en IA: " + errorStr);
+      }
     } finally {
       aiBtnText.innerText = '🪄 QUITAR FONDO';
       aiLoader.style.display = 'none';
@@ -242,4 +264,5 @@ if (btnCancel) {
     input.value = '';
   };
 }
+</script>
 </script>

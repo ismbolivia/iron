@@ -94,7 +94,6 @@ Rails.application.configure do
 
   # Cabeceras para habilitar IA (SharedArrayBuffer)
   config.action_dispatch.default_headers = {
-    'Cross-Origin-Opener-Policy' => 'same-origin',
-    'Cross-Origin-Embedder-Policy' => 'require-corp'
+    'Cross-Origin-Opener-Policy' => 'same-origin'
   }
 end

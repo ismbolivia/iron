@@ -42,8 +42,12 @@ module PurchasesV2
       has_diff = diff.abs > 0.0001
 
       # Validación: Si hay diferencia y NO se marcó el auto_adjust, lanzamos error
+      # Validación: Si hay diferencia y NO se marcó el auto_adjust, lanzamos error amigable
       if has_diff && !@auto_adjust
-        raise "Error de Cuadre: El stock original (#{available_qty} pzs) no coincide con la nueva clasificación (#{new_total_qty} pzs). Por favor, activa el ajuste automático o corrige las cantidades."
+        msg = "Error de Cuadre: El stock disponible es de #{available_qty} pzs, pero la nueva clasificación suma #{new_total_qty} pzs. "
+        msg += "Hay una diferencia de #{(available_qty - new_total_qty).abs} pzs. "
+        msg += "Por favor, activa 'Ajustar diferencia automáticamente' o corrige las cantidades."
+        raise msg
       end
 
       # Validación: Si hay diferencia y se marcó auto_adjust, DEBE haber un motivo
@@ -135,6 +139,9 @@ module PurchasesV2
       end
       
       { success: true, message: "Lote re-clasificado exitosamente." }
+    rescue ActiveRecord::RecordInvalid => e
+      # Captura errores de validación de base de datos (Ej: Stock no puede ser negativo)
+      { success: false, message: "Error de Validación: #{e.record.errors.full_messages.join(', ')}" }
     rescue => e
       { success: false, message: e.message }
     end

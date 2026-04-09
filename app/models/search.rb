@@ -88,7 +88,7 @@ def brands_by_name
         items = base.where(description_condition).order("categories.name ASC, items.priority ASC, items.name ASC").offset(@offset).limit(@page_size)
         @number_of_records = base.where(description_condition).count
       else
-        items = base.where(active: true).order("categories.name ASC, items.priority ASC, items.description ASC").offset(@offset).limit(@page_size)
+        items = base.where(active: true).order("categories.name ASC, items.priority ASC, items.name ASC").offset(@offset).limit(@page_size)
         @number_of_records = base.where(active:true).count
       end
       
@@ -97,11 +97,11 @@ def brands_by_name
   def price_list_item_by_name(pl)
     if @keywords.present?
         pattern = "%#{I18n.transliterate(@keywords.downcase)}%"
-        items =  pl.items.where("items.active = ? AND unaccent(lower(items.name)) LIKE ?", true, pattern).order(:name).offset(@offset).limit(@page_size)
+        items =  pl.items.where("items.active = ? AND unaccent(lower(items.name)) LIKE ?", true, pattern).order("items.name").offset(@offset).limit(@page_size)
         @number_of_records = pl.items.where("items.active = ? AND unaccent(lower(items.name)) LIKE ?", true, pattern).count
       else
-        items = pl.items.where(active: true).order(:name).offset(@offset).limit(@page_size)
-        @number_of_records = pl.items.where(active:true).count
+        items = pl.items.where(items: { active: true }).order("items.name").offset(@offset).limit(@page_size)
+        @number_of_records = pl.items.where(items: { active: true }).count
       end
       
       return items, number_of_pages
@@ -110,7 +110,7 @@ def brands_by_name
   def users_by_description
     if @keywords.present?
         users = User.where(name_condition).order(:name).offset(@offset).limit(@page_size)
-        @number_of_records = Item.where(name_condition).count
+        @number_of_records = User.where(name_condition).count
       else
         users = User.order(:name).offset(@offset).limit(@page_size)
         @number_of_records = User.count
@@ -332,7 +332,7 @@ private
 
   def description_condition
     pattern = "%#{I18n.transliterate(@keywords.downcase)}%"
-    ["unaccent(lower(code)) LIKE ? OR unaccent(lower(name)) LIKE ?", pattern, pattern]
+    ["unaccent(lower(items.code)) LIKE ? OR unaccent(lower(items.name)) LIKE ?", pattern, pattern]
   end
 
 

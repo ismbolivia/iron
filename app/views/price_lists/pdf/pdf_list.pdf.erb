@@ -29,11 +29,11 @@
 								   <% data.items.order(:name).limit(6).each_with_index do |item, index| %>
 								    	<% if index == 2 or index==3 %>
 								   		<th class="table_center">
-											<%= wicked_pdf_image_tag item.image.large.url, :alt => "imge-item", :style => "iwidth:100%; height:100px;" %>	
+											<%= wicked_pdf_image_tag item.image.large.url, :alt => "imge-item", :style => "width:100%; height:100px;" %>	
 									    </th>
 									  
 									    <% else %>
-										<th class="table_center"> <%= wicked_pdf_image_tag item.image.large.url, :alt => "imge-item", :style => "iwidth:100%; height:100px;" %></th>
+										<th class="table_center"> <%= wicked_pdf_image_tag item.image.large.url, :alt => "imge-item", :style => "width:100%; height:100px;" %></th>
 										<% end%>
 									   <%end%> 	    
 								   </tr>

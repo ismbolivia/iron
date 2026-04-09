@@ -80,18 +80,34 @@
   }
 
   .product-image-container {
-    background: white;
+    background: #f8fafc;
     border-radius: 16px;
-    padding: 1rem;
-    text-align: center;
+    height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
     border: 1px solid #f1f5f9;
   }
 
+  .blur-bg-detail {
+    position: absolute;
+    top: -20px; left: -20px; right: -20px; bottom: -20px;
+    background-size: cover;
+    background-position: center;
+    filter: blur(25px) opacity(0.35);
+    z-index: 1;
+  }
+
   .product-image-container img {
-    max-width: 100%;
-    max-height: 200px;
+    position: relative;
+    z-index: 2;
+    max-width: 90%;
+    max-height: 90%;
     object-fit: contain;
     border-radius: 8px;
+    transition: transform 0.4s ease;
   }
 
   /* Stats and Intelligence */
@@ -351,9 +367,10 @@
         <div class="item-card">
           <div class="product-image-container">
             <% if @item.image.present? %>
-              <%= image_tag(@item.image.midium.url, class: "img-responsive", alt: @item.name) %>
+              <div class="blur-bg-detail" style="background-image: url('<%= @item.image.large.url %>');"></div>
+              <%= image_tag(@item.image.midium.url, alt: @item.name, id: "item-image-#{@item.id}") %>
             <% else %>
-              <div style="height: 200px; display: flex; align-items: center; justify-content: center; background: #f8fafc; border-radius: 12px; overflow: hidden;">
+              <div style="height: 200px; display: flex; align-items: center; justify-content: center; background: #f8fafc; border-radius: 12px; overflow: hidden; position: relative; z-index: 2;">
                 <i class="fas fa-image fa-5x" style="color: #cbd5e1;"></i>
               </div>
             <% end %>

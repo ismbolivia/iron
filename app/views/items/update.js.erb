@@ -1,5 +1,11 @@
 
-
- var image = document.getElementById('<%= @item.id %>');
-  image.src = "<%= @item.image.large.url%>";
-  $("#new-pdf-modal").modal("hide");
+var image = document.getElementById('item-image-<%= @item.id %>');
+if (image) {
+   image.src = "<%= @item.image.midium.url %>?" + new Date().getTime();
+}
+$(".modal").modal("hide");
+if (typeof toastr !== 'undefined') {
+  toastr.success("Imagen actualizada correctamente");
+} else {
+  alert("Imagen actualizada correctamente");
+}

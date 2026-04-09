@@ -134,40 +134,52 @@ class ItemsController < ApplicationController
   def available_lots
     item = Item.find(params[:id])
     
-    # 1. Buscamos registros de stock con saldo, filtrando por almacén si viene en la petición
-    # Normalizamos el warehouse_id para evitar strings literales 'undefined' o 'null'
+    # 1. Obtenemos el warehouse_id
     warehouse_id = params[:warehouse_id].to_s.gsub(/undefined|null/i, '').presence
     
-    query = item.stocks.where("COALESCE(qty_in, 0) - COALESCE(qty_out, 0) > 0")
+    # 2. Consultamos movimientos de stock asociados
+    query = item.stocks
     query = query.where(warehouse_id: warehouse_id) if warehouse_id
     
-    stocks_with_balance = query.order(created_at: :asc)
+    # 3. Agrupamos por Lote (PO Line o String), Presentación y Almacén
+    # Esto asegura que los ajustes de stock se reflejen en la suma total del lote
+    raw_grouped = query.group_by { |s| [s.purchase_order_line_id, s.lote, s.presentation_id, s.warehouse_id] }
     
-    lots = stocks_with_balance.map do |s|
-      po_line = s.purchase_order_line # Evaluamos si existe PO
+    lots = raw_grouped.map do |key, stocks|
+      po_line_id, lote_str, pres_id, wh_id = key
       
-      # Generamos un nombre de lote amigable y rastreable, asegurando contra nulos
-      created_stamp = s.created_at ? s.created_at.strftime('%d%m%y') : Time.now.strftime('%d%m%y')
-      lote_display = s.lote.presence || 
-                     (po_line ? "OC-#{po_line.purchase_order_id}" : "SISTEMA-#{created_stamp}-#{s.id}")
+      total_balance = stocks.sum { |s| s.qty_in.to_f - s.qty_out.to_f }.round(2)
+      
+      # Solo mostramos lotes con saldo positivo
+      next if total_balance <= 0
+      
+      # Tomamos el registro más representativo (el primero/más antiguo) para metadatos
+      main_stock = stocks.min_by(&:created_at)
+      po_line = main_stock.purchase_order_line
+      
+      # Generamos nombre de lote amigable
+      created_stamp = main_stock.created_at ? main_stock.created_at.strftime('%d%m%y') : Time.now.strftime('%d%m%y')
+      lote_display = main_stock.lote.presence || 
+                     (po_line ? "OC-#{po_line.purchase_order_id}" : "SISTEMA-#{created_stamp}-#{main_stock.id}")
       
       {
-        id: po_line&.id, # Enviamos ID de PO si existe
-        stock_id: s.id,
+        id: po_line&.id,
+        stock_id: main_stock.id,
         lote: lote_display,
-        qty_available: (s.qty_in.to_f - s.qty_out.to_f).round(2)
+        qty_available: total_balance
       }
-    end
+    end.compact.sort_by { |l| l[:lote] }
 
-    # 2. Si no hay stock absoluto, permitimos crear un lote de entrada (opcional según flujo)
-    if lots.empty?
-      lots << { id: nil, stock_id: "", lote: "➕ INICIALIZAR LOTE NUEVO", qty_available: 0 }
-    end
+    # 4. Si no hay stock absoluto, permitimos crear un lote de entrada (opcional)
 
-    # 3. Incluimos las presentaciones para que viajen en el mismo paquete
+    # 3. Incluimos las presentaciones y los almacenes disponibles
     all_presentations = item.presentations.as_json(only: [:id, :name, :qty])
     
-    render json: { lots: lots, presentations: all_presentations }
+    # Calculamos en qué almacenes hay stock real para este producto
+    warehouse_ids = item.stocks.group(:warehouse_id).having("SUM(COALESCE(qty_in, 0) - COALESCE(qty_out, 0)) > 0.0001").pluck(:warehouse_id)
+    available_warehouses = Warehouse.where(id: warehouse_ids, active: true).order(:name).as_json(only: [:id, :name])
+
+    render json: { lots: lots, presentations: all_presentations, warehouses: available_warehouses }
   rescue => e
     # Captura general para evitar que peticiones AJAX mueran en silencio
     render json: { lots: [{ id: nil, stock_id: "", lote: "⚠️ Error al cargar: #{e.message}", qty_available: 0 }], presentations: [] }, status: :unprocessable_entity

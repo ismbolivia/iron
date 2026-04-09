@@ -127,7 +127,7 @@
 </div>
 
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener('turbolinks:load', function() {
     let currentLotQty = 0;
     let itemPresentations = [];
 
@@ -188,6 +188,25 @@
         dataType: 'json',
         success: function(data) {
           itemPresentations = data.presentations || [];
+
+          // --- ACTUALIZAR ALMACENES DINÁMICAMENTE ---
+          if (data.warehouses && data.warehouses.length > 0) {
+            const currentWh = warehouseSelector.val();
+            warehouseSelector.empty();
+            data.warehouses.forEach(w => {
+              warehouseSelector.append(`<option value="${w.id}" ${w.id == currentWh ? 'selected' : ''}>${w.name}</option>`);
+            });
+            
+            // Si el almacén cambió porque el anterior no era válido, relanzamos para traer los lotes correctos
+            if (warehouseSelector.val() !== currentWh) {
+              loadLots();
+              return;
+            }
+          } else if (warehouseId) {
+            // Si venía un almacén pero el servidor dice que no hay almacenes con stock
+            warehouseSelector.html('<option value="">⚠️ Sin stock en almacenes</option>');
+          }
+
           lotSelector.html('<option value="">-- Elige el lote a dividir --</option>');
           
           if (data.lots && data.lots.length > 0) {

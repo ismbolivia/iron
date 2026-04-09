@@ -15,8 +15,16 @@ module PurchasesV2
       @origin_stock = Stock.find(@stock_id)
       @item = Item.find(@item_id)
       
-      # 2. Calcular balance total (en piezas base)
-      available_qty = @origin_stock.total.to_f
+      # 2. Calcular balance total (considerando todos los movimientos del mismo lote)
+      @related_stocks = Stock.where(
+        item_id: @item_id,
+        warehouse_id: @warehouse_id,
+        presentation_id: @origin_stock.presentation_id,
+        purchase_order_line_id: @origin_stock.purchase_order_line_id,
+        lote: @origin_stock.lote
+      )
+      
+      available_qty = @related_stocks.sum { |s| s.qty_in.to_f - s.qty_out.to_f }.round(2)
       
       new_total_qty = 0
       @entries.each do |entry|
@@ -75,16 +83,19 @@ module PurchasesV2
           available_qty = new_total_qty
         end
 
-        # B. Vaciar el stock de origen (Salida) del lote tal como quedó tras el posible ajuste
-        @origin_stock.update!(qty_out: @origin_stock.qty_out + available_qty, state: :agotado)
+        # B. Vaciar el stock de origen del lote completo (Todos los registros relacionados)
+        @related_stocks.each do |s|
+          # Setteamos qty_out igual a qty_in para dejar el saldo de cada registro en cero
+          s.update!(qty_out: s.qty_in, state: :agotado)
+        end
         
-        # C. Registrar movimiento de salida en Kardex
+        # C. Registrar movimiento de salida en Kardex (consolidado)
         Movement.create!(
           stock_id: @origin_stock.id,
           qty_out: available_qty,
           qty_in: 0,
           user_id: @user&.id,
-          description: "Salida por Re-empaque / Clasificación Final de Lote"
+          description: "Salida por Re-empaque / Clasificación Final de Lote (Saldo Consolidado)"
         )
 
         # C. Crear los nuevos registros de Stock por cada presentación

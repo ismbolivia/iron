@@ -109,7 +109,8 @@ class PosController < ApplicationController
     products = Item.left_outer_joins(:category).order("categories.name ASC, items.priority ASC, items.name ASC")
     
     if term.present?
-      products = products.where("items.name ILIKE ? OR items.code ILIKE ?", "%#{term}%", "%#{term}%")
+      pattern = "%#{I18n.transliterate(term.downcase)}%"
+      products = products.where("unaccent(lower(items.name)) LIKE ? OR unaccent(lower(items.code)) LIKE ?", pattern, pattern)
     end
     
     if category_id.present?

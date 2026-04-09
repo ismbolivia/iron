@@ -1,197 +1,336 @@
+<!-- Activos para Select2 y FontAwesome (Buscador y Iconografía Premium) -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/js/select2.min.js" defer></script>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800;900&display=swap" rel="stylesheet">
+
 <style>
-  .adjustment-card { background: white; border-radius: 24px; padding: 2.5rem; box-shadow: 0 10px 40px rgba(0,0,0,0.04); border: 1px solid #e2e8f0; }
-  .field-group { margin-bottom: 1.5rem; background: #f8fafc; padding: 15px; border-radius: 16px; border: 1px solid #f1f5f9; transition: all 0.3s; }
-  .field-group:focus-within { border-color: #4f46e5; background: #fff; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.05); }
-  .field-label { font-weight: 800; color: #1e293b; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 8px; }
-  .modern-input { width: 100%; border: 2px solid transparent; background: transparent; font-weight: 700; color: #0f172a; font-size: 1rem; }
-  .modern-input:focus { outline: none; }
-  .btn-save-adjustment { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: none; padding: 18px; border-radius: 16px; font-weight: 900; font-size: 1.1rem; width: 100%; cursor: pointer; box-shadow: 0 10px 20px rgba(16, 185, 129, 0.2); margin-top: 1rem; }
-  .btn-save-adjustment:hover { transform: translateY(-2px); box-shadow: 0 15px 30px rgba(16, 185, 129, 0.3); }
+  :root {
+    --iron-primary: #1e293b;
+    --iron-accent: #3b82f6;
+    --iron-success: #10b981;
+    --iron-danger: #ef4444;
+    --iron-bg: #f8fafc;
+    --iron-card-bg: rgba(255, 255, 255, 0.9);
+  }
+
+  body { font-family: 'Outfit', sans-serif; background-color: var(--iron-bg); }
+
+  .adjustment-container { padding: 50px 0; min-height: 100vh; background: radial-gradient(circle at top right, #e2e8f0 0%, #f8fafc 100%); }
+  
+  .adjustment-card { 
+    background: var(--iron-card-bg); 
+    backdrop-filter: blur(10px);
+    border-radius: 24px; 
+    padding: 3rem; 
+    box-shadow: 0 20px 50px rgba(0,0,0,0.05); 
+    border: 1px solid rgba(255,255,255,0.7);
+    transition: transform 0.3s ease;
+  }
+
+  .header-badge {
+    background: #eff6ff;
+    color: var(--iron-accent);
+    padding: 8px 20px;
+    border-radius: 30px;
+    font-weight: 800;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    display: inline-block;
+    margin-bottom: 1rem;
+  }
+
+  .field-group { 
+    margin-bottom: 1.5rem; 
+    padding: 18px; 
+    border-radius: 20px; 
+    background: #ffffff;
+    border: 1px solid #e2e8f0; 
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+  }
+  
+  .field-group:focus-within { 
+    border-color: var(--iron-accent); 
+    box-shadow: 0 10px 20px rgba(59, 130, 246, 0.08);
+    transform: translateY(-2px);
+  }
+
+  .field-label { 
+    font-weight: 800; 
+    color: #64748b; 
+    font-size: 0.75rem; 
+    text-transform: uppercase; 
+    letter-spacing: 0.8px; 
+    display: block; 
+    margin-bottom: 10px; 
+  }
+
+  .modern-input { 
+    width: 100%; 
+    border: none; 
+    background: transparent; 
+    font-weight: 700; 
+    color: var(--iron-primary); 
+    font-size: 1.05rem; 
+    outline: none;
+  }
+
+  /* Personalización Select2 Theme IRON */
+  .select2-container--default .select2-selection--single {
+    height: 35px;
+    border: none !important;
+    background: transparent !important;
+    font-weight: 700;
+    font-size: 1.05rem;
+  }
+  .select2-container--default .select2-selection--single .select2-selection__rendered {
+    padding-left: 0 !important;
+    color: var(--iron-primary) !important;
+  }
+  .select2-dropdown {
+    border-radius: 16px !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.1) !important;
+    overflow: hidden;
+  }
+
+  .action-toggle {
+    display: flex;
+    background: #f1f5f9;
+    padding: 5px;
+    border-radius: 12px;
+    gap: 5px;
+  }
+  .action-btn {
+    flex: 1;
+    text-align: center;
+    padding: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 800;
+    transition: 0.2s;
+    user-select: none;
+  }
+  .action-btn.active.entrada { background: var(--iron-success); color: white; }
+  .action-btn.active.salida { background: var(--iron-danger); color: white; }
+  .action-btn:not(.active) { color: #94a3b8; }
+
+  .btn-save-adjustment { 
+    background: var(--iron-primary); 
+    color: white; 
+    border: none; 
+    padding: 20px; 
+    border-radius: 18px; 
+    font-weight: 900; 
+    font-size: 1.1rem; 
+    width: 100%; 
+    cursor: pointer; 
+    transition: all 0.3s;
+    box-shadow: 0 10px 25px rgba(30, 41, 59, 0.2);
+    margin-top: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+  }
+  
+  .btn-save-adjustment:hover { 
+    background: #0f172a;
+    transform: scale(1.02);
+    box-shadow: 0 15px 35px rgba(30, 41, 59, 0.3);
+  }
+
+  .preview-circle {
+    background: #f1f5f9;
+    padding: 15px;
+    border-radius: 15px;
+    text-align: center;
+    border: 2px dashed #cbd5e1;
+    transition: all 0.3s;
+  }
+  .preview-circle.active {
+    background: #eff6ff;
+    border-color: var(--iron-accent);
+    color: var(--iron-accent);
+  }
 </style>
 
-<div class="row" style="background: #f1f5f9; min-height: 100vh; padding: 40px 0;">
-  <div class="col-lg-3"></div>
-  <div class="col-lg-6">
-    <div class="adjustment-card">
-      <div style="text-align: center; margin-bottom: 2rem;">
-        <span style="background: #eff6ff; color: #2563eb; padding: 8px 16px; border-radius: 20px; font-weight: 800; font-size: 0.75rem; text-transform: uppercase;">Módulo de Inventario</span>
-        <h2 style="font-weight: 950; color: #0f172a; font-size: 2.2rem; margin-top: 10px;">⚙️ Ajuste de Lotes</h2>
-        <p style="color: #64748b; font-weight: 500;">Corrige inventario asociando el movimiento a un lote específico.</p>
+<div class="adjustment-container">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-7">
+        <div class="adjustment-card">
+          <div style="text-align: center; margin-bottom: 3rem;">
+            <span class="header-badge">Control de Inventario Avanzado</span>
+            <h1 style="font-weight: 950; color: var(--iron-primary); font-size: 2.5rem; margin: 10px 0;">⚙️ Ajuste de Lote</h1>
+            <p style="color: #64748b; font-weight: 500; font-size: 1.1rem;">Registra discrepancias asociando el movimiento a un lote origen.</p>
+          </div>
+
+          <%= form_for @stock_adjustment, id: "adjustment-form" do |f| %>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="field-group">
+                  <label class="field-label"><i class="fas fa-warehouse"></i> Almacén</label>
+                  <%= f.collection_select :warehouse_id, Warehouse.where(active: true), :id, :name, { prompt: 'Seleccionar...' }, class: 'modern-input', required: true %>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="field-group">
+                  <label class="field-label"><i class="fas fa-exchange-alt"></i> Tipo de Acción</label>
+                  <div class="action-toggle">
+                    <div class="action-btn entrada active" data-type="entrada">➕ ENTRADA</div>
+                    <div class="action-btn salida" data-type="salida">➖ SALIDA</div>
+                  </div>
+                  <%= f.hidden_field :adjustment_type, value: 'entrada', id: 'hidden-adj-type' %>
+                </div>
+              </div>
+            </div>
+
+            <div class="field-group">
+              <label class="field-label"><i class="fas fa-search"></i> 1. Buscar Producto</label>
+              <%= f.collection_select :item_id, Item.where(active: true).order(:name), :id, :name, { prompt: 'Escribe nombre o código...' }, class: 'modern-input select2-iron', id: 'adjustment_item_id', required: true %>
+            </div>
+
+            <div class="field-group" id="lot_section">
+              <label class="field-label"><i class="fas fa-tag"></i> 2. Lote / Recepción Afectada</label>
+              <%= f.select :purchase_order_line_id, [], { prompt: 'Primero selecciona un producto...' }, class: 'modern-input', id: 'adjustment_lot_id', required: true %>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6">
+                <div class="field-group">
+                  <label class="field-label"><i class="fas fa-box-open"></i> 3. Presentación</label>
+                  <%= f.select :presentation_id, [], { prompt: '...' }, class: 'modern-input', id: 'adjustment_presentation_id' %>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="field-group">
+                  <label class="field-label"><i class="fas fa-hashtag"></i> Cant.</label>
+                  <%= f.number_field :quantity, class: 'modern-input', id: 'adjustment_quantity', placeholder: '0', required: true, min: 1 %>
+                </div>
+              </div>
+              <div class="col-md-3">
+                 <div class="field-group" style="padding: 10px;">
+                    <label class="field-label">Total Gral</label>
+                    <div id="total_qty_preview" class="preview-circle">0 pzs</div>
+                 </div>
+              </div>
+            </div>
+
+            <div class="field-group">
+              <label class="field-label"><i class="fas fa-info-circle"></i> Motivo Formal del Ajuste</label>
+              <%= f.select :reason, options_for_select([['Merma por daño', 'merma'], ['Rotura de envase', 'rotura'], ['Producto Vencido', 'vencido'], ['Sobrante en conteo', 'sobrante'], ['Otro motivo', 'otro']]), { prompt: '¿Por qué se realiza este ajuste?' }, class: 'modern-input', required: true %>
+            </div>
+
+            <button type="submit" class="btn-save-adjustment">
+              <i class="fas fa-rocket"></i> PROCESAR MOVIMIENTO DE STOCK
+            </button>
+            
+            <div style="text-align: center; margin-top: 2rem;">
+              <%= link_to 'Cancelar y volver al inventario', stocks_path, style: "color: #94a3b8; font-weight: 700; text-decoration: none; font-size: 0.9rem; transition: 0.2s;" %>
+            </div>
+          <% end %>
+        </div>
       </div>
-      <hr style="border: 0; border-top: 2px solid #f1f5f9; margin-bottom: 2rem;">
-
-      <%= form_for @stock_adjustment do |f| %>
-        <div class="row">
-          <div class="col-md-6">
-            <div class="field-group">
-                <label class="field-label">🏢 Almacén Destino</label>
-                <%= f.collection_select :warehouse_id, Warehouse.where(active: true), :id, :name, { prompt: 'Selecciona...' }, class: 'modern-input', required: true %>
-            </div>
-          </div>
-          <div class="col-md-6">
-            <div class="field-group">
-                <label class="field-label">🧭 Acción</label>
-                <div style="display: flex; gap: 15px; margin-top: 5px;">
-                  <label style="cursor: pointer; font-weight: 700;">
-                    <%= f.radio_button :adjustment_type, 'entrada', checked: true %> ➕ Entrada
-                  </label>
-                  <label style="cursor: pointer; font-weight: 700;">
-                    <%= f.radio_button :adjustment_type, 'salida' %> ➖ Salida
-                  </label>
-                </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="field-group">
-          <label class="field-label">📦 Producto a Ajustar</label>
-          <%= f.collection_select :item_id, Item.where(active: true).order(:name), :id, :name, { prompt: 'Busca el producto...' }, class: 'modern-input select2', id: 'adjustment_item_id', required: true %>
-        </div>
-
-        <div class="field-group" id="lot_section" style="border-left: 4px solid #3b82f6;">
-          <label class="field-label">🏷️ Seleccionar Lote / Recepción</label>
-          <%= f.select :purchase_order_line_id, [], { prompt: 'Primero selecciona un producto...' }, class: 'modern-input', id: 'adjustment_lot_id', required: true %>
-          <small style="color: #3b82f6; font-weight: 600; display: block; margin-top: 5px;" id="lot_info">Elige el lote afectado por este ajuste.</small>
-        </div>
-
-        <div class="row">
-           <div class="col-md-5">
-              <div class="field-group">
-                <label class="field-label">🎁 Presentación (Unidad de ajuste)</label>
-                <%= f.select :presentation_id, [], { prompt: 'Cargando opciones...' }, class: 'modern-input', id: 'adjustment_presentation_id' %>
-              </div>
-           </div>
-           <div class="col-md-3">
-              <div class="field-group">
-                <label class="field-label">🔢 Cantidad</label>
-                <%= f.number_field :quantity, class: 'modern-input', id: 'adjustment_quantity', placeholder: '0', required: true, min: 1, style: "font-size: 1.2rem; color: #4f46e5;" %>
-              </div>
-           </div>
-           <div class="col-md-4">
-              <div class="field-group">
-                <label class="field-label" style="color: #4f46e5; font-weight: 800;"><i class="fas fa-calculator"></i> Total Piezas</label>
-                <div id="total_qty_preview" class="p-3 bg-light rounded text-center d-flex align-items-center justify-content-center" style="height: 48px; border: 2px dashed #4f46e5; color: #4f46e5; font-size: 1.1rem; font-weight: 900; background: #eef2ff !important; border-radius: 12px;">
-                   0 pzs
-                </div>
-              </div>
-           </div>
-        </div>
-
-        <div class="field-group">
-          <label class="field-label">📝 Motivo del Ajuste</label>
-          <%= f.select :reason, options_for_select([['Merma por daño', 'merma'], ['Rotura de envase', 'rotura'], ['Producto Vencido', 'vencido'], ['Sobrante en conteo', 'sobrante'], ['Otro motivo', 'otro']]), { prompt: 'Elige un motivo...' }, class: 'modern-input', required: true %>
-        </div>
-
-        <button type="submit" class="btn-save-adjustment">
-          💾 PROCESAR AJUSTE DE STOCK
-        </button>
-        <%= link_to 'Cancelar y volver', stocks_path, style: "display: block; text-align: center; color: #94a3b8; margin-top: 1.5rem; font-weight: 700; text-decoration: none;" %>
-      <% end %>
     </div>
   </div>
-  <div class="col-lg-3"></div>
 </div>
 
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    const itemSelect = document.getElementById('adjustment_item_id');
-    const warehouseSelect = document.querySelector('select[name="stock_adjustment[warehouse_id]"]');
-    const lotSelect = document.getElementById('adjustment_lot_id');
-    const presSelect = document.getElementById('adjustment_presentation_id');
-    const lotInfo = document.getElementById('lot_info');
-
-    // Función unificada para cargar lotes filtrados por almacén
-    function loadDataForItem(itemId, warehouseId) {
-      if (!itemId || itemId === "") return;
+  (function() {
+    const initPage = () => {
+      const itemSelect = $('#adjustment_item_id');
+      const whSelect = $('select[name="stock_adjustment[warehouse_id]"]');
+      const lotSelect = $('#adjustment_lot_id');
+      const presSelect = $('#adjustment_presentation_id');
+      const btnAdj = $('.action-btn');
       
-      const lotSelect = document.getElementById('adjustment_lot_id');
-      const presSelect = document.getElementById('adjustment_presentation_id');
-      const lotInfo = document.getElementById('lot_info');
+      // Iniciar Select2 con diseño IRON
+      itemSelect.select2({
+        width: '100%',
+        placeholder: "🔍 Busca por nombre o código del ítem...",
+        allowClear: true,
+        dropdownCssClass: 'iron-dropdown'
+      });
 
-      lotSelect.innerHTML = '<option value="">🚀 Cargando Lotes...</option>';
-      presSelect.innerHTML = '<option value="">⚙️ Cargando Presentaciones...</option>';
-      lotInfo.innerText = "Consultando base de datos...";
+      // Manejo de botones de acción
+      btnAdj.on('click', function() {
+        btnAdj.removeClass('active entrada salida');
+        const type = $(this).data('type');
+        $(this).addClass('active ' + type);
+        $('#hidden-adj-type').val(type);
+      });
 
-      const urlParams = new URLSearchParams({ warehouse_id: warehouseId });
-      fetch(`/items/${itemId}/available_lots?${urlParams.toString()}`)
-        .then(response => response.json())
-        .then(data => {
-            // 1. CARGAMOS LOTES
-            lotSelect.innerHTML = '<option value="">-- Selecciona el Lote --</option>';
-            data.lots.forEach(l => {
-                lotSelect.innerHTML += `<option value="${l.id}">LOTE: ${l.lote} (Stock: ${l.qty_available} pzas)</option>`;
-            });
-            lotInfo.innerText = data.lots.length > 0 ? `Datos cargados con éxito.` : "No hay stock en este almacén.";
+      // Lógica de carga de datos
+      const loadLots = () => {
+        const itemId = itemSelect.val();
+        const warehouseId = whSelect.val();
+        
+        if (!itemId) return;
 
-            // 2. CARGAMOS PRESENTACIONES EN EL MISMO ACTO
-            presSelect.innerHTML = '<option value="">Unidades Sueltas (Pzs)</option>';
-            if (data.presentations) {
-                data.presentations.forEach(p => {
-                    presSelect.innerHTML += `<option value="${p.id}">${p.name} (${p.qty} pzas)</option>`;
-                });
+        lotSelect.html('<option value="">⏳ Consultando...</option>');
+        presSelect.html('<option value="">⏳ ...</option>');
+
+        fetch(`/items/${itemId}/available_lots?warehouse_id=${warehouseId}`)
+          .then(r => r.json())
+          .then(data => {
+            // --- ACTUALIZAR ALMACENES DINÁMICAMENTE ---
+            if (data.warehouses && data.warehouses.length > 0) {
+              const currentWh = whSelect.val();
+              whSelect.empty();
+              data.warehouses.forEach(w => {
+                whSelect.append(`<option value="${w.id}" ${w.id == currentWh ? 'selected' : ''}>${w.name}</option>`);
+              });
+              
+              // Si el almacén cambió porque el anterior no era válido, relanzamos para traer los lotes correctos
+              if (whSelect.val() !== currentWh) {
+                loadLots();
+                return;
+              }
+            } else if (warehouseId) {
+              whSelect.html('<option value="">⚠️ Sin stock en almacenes</option>');
             }
-        })
-        .catch(err => {
-            lotSelect.innerHTML = '<option value="">❌ Error al cargar</option>';
-            presSelect.innerHTML = '<option value="">❌ Error</option>';
-        });
-    }
 
-    // Función para parámetros de URL
-    const getQueryParam = (name) => {
-        const urlParams = new URLSearchParams(window.location.search);
-        return urlParams.get(name);
-    };
+            lotSelect.html('<option value="">-- Elige el Lote --</option>');
+            data.lots.forEach(l => {
+              lotSelect.append(`<option value="${l.id}">${l.lote} (${l.qty_available} pzs)</option>`);
+            });
 
-    // Lanzador principal
-    const refreshTrigger = () => {
-       let itemVal = $('#adjustment_item_id').val();
-       if (!itemVal || itemVal === "") {
-           itemVal = getQueryParam('item_id');
-           if (itemVal && itemVal !== "") {
-               $('#adjustment_item_id').val(itemVal).trigger('change.select2');
-           }
-       }
+            presSelect.html('<option value="">U. Sueltas (Pzs)</option>');
+            if (data.presentations) {
+              data.presentations.forEach(p => {
+                presSelect.append(`<option value="${p.id}" data-factor="${p.qty}">${p.name} (x${p.qty} pzs)</option>`);
+              });
+            }
+            updatePreview();
+          });
+      };
 
-       const warehouseVal = $('select[name="stock_adjustment[warehouse_id]"]').val();
-       if(itemVal && itemVal !== "") {
-           loadDataForItem(itemVal, warehouseVal);
-       }
-    };
-
-    // Función para actualizar el cálculo total en tiempo real
-    const updateCalculatedTotal = () => {
+      const updatePreview = () => {
         const qty = parseFloat($('#adjustment_quantity').val()) || 0;
-        const presentationOption = $('#adjustment_presentation_id option:selected');
-        const factorText = presentationOption.text();
-        
-        // Buscamos el número entre paréntesis ej: "Caja (500 pzas)"
-        const match = factorText.match(/\((\d+)\s/);
-        const factor = match ? parseInt(match[1]) : 1;
-        
+        const factor = parseFloat(presSelect.find(':selected').data('factor')) || 1;
         const total = qty * factor;
-        const totalFormatted = total.toLocaleString();
         
-        $('#total_qty_preview').text(`${totalFormatted} pzs`);
+        const preview = $('#total_qty_preview');
+        preview.text(`${total.toLocaleString()} pzs`);
         
-        // Si el total es peligrosamente grande, avisamos
-        if (total >= 100000000) {
-            $('#total_qty_preview').css({'background': '#fee2e2', 'color': '#b91c1c', 'border-color': '#b91c1c'});
-            $('#total_qty_preview').attr('title', '¡ALERTA! El número excederá el límite de la base de datos.');
+        if (total > 0) {
+          preview.addClass('active');
         } else {
-            $('#total_qty_preview').css({'background': '#eef2ff', 'color': '#4f46e5', 'border-color': '#4f46e5'});
-            $('#total_qty_preview').removeAttr('title');
+          preview.removeClass('active');
         }
+      };
+
+      itemSelect.on('change', loadLots);
+      whSelect.on('change', loadLots);
+      $('#adjustment_quantity').on('input change', updatePreview);
+      presSelect.on('change', updatePreview);
     };
 
-    $('#adjustment_item_id').on('change select2:select', refreshTrigger);
-    $('select[name="stock_adjustment[warehouse_id]"]').on('change', refreshTrigger);
-    
-    // Escuchadores para la calculadora
-    $('#adjustment_quantity').on('input change', updateCalculatedTotal);
-    $('#adjustment_presentation_id').on('change', updateCalculatedTotal);
-
-    // Intentos de carga inicial
-    [100, 500, 1500].forEach(ms => { setTimeout(refreshTrigger, ms); });
-  });
+    // Ejecutar en cada carga de Turbolinks
+    document.addEventListener('turbolinks:load', initPage);
+    // Ejecutar inmediatamente si no es Turbolinks
+    if (document.readyState !== 'loading') initPage();
+  })();
 </script>

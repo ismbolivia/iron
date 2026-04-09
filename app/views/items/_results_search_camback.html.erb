@@ -17,16 +17,29 @@
   .product-img-wrapper {
     position: relative;
     height: 180px;
-    overflow: visible;
-    background: #f8fafc;
+    overflow: hidden;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
     border-bottom: 1px solid #f1f5f9;
     border-radius: 12px 12px 0 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .blur-bg {
+    position: absolute;
+    top: -10px; left: -10px; right: -10px; bottom: -10px;
+    background-size: cover;
+    background-position: center;
+    filter: blur(15px) opacity(0.4);
+    z-index: 1;
   }
   .product-img-wrapper img {
-    width: 100%;
-    height: 100%;
+    position: relative;
+    z-index: 2;
+    max-width: 100%;
+    max-height: 100%;
     object-fit: contain;
-    padding: 12px;
+    padding: 15px;
     transition: transform 0.5s;
   }
   .modern-item-card:hover .product-img-wrapper img {
@@ -148,14 +161,15 @@
       <div class="modern-item-card <%= 'stock-inactive' unless item.active %>">
         
         <div class="product-img-wrapper">
+          <div class="blur-bg" style="background-image: url('<%= item.image.large.url %>');"></div>
           <!-- Stock Pill (Top Left) -->
-          <span class="stock-pill <%= local_stock > 0 ? 'stock-positive' : 'stock-zero' %>" title="Stock Disponible">
+          <span class="stock-pill <%= local_stock > 0 ? 'stock-positive' : 'stock-zero' %>" title="Stock Disponible" style="z-index: 5;">
             <i class="fas <%= local_stock > 0 ? 'fa-box' : 'fa-exclamation-circle' %>"></i>
             Stock: <%= local_stock %>
           </span>
 
           <!-- Price Pill (Top Right) -->
-          <span class="price-pill">
+          <span class="price-pill" style="z-index: 5;">
             <%= @mycompany.get_current_currency.symbol %> <%= number_with_precision(item.price_default, precision: 2) %>
           </span>
           <%= image_tag(item.image.large.url, alt: item.name) %>

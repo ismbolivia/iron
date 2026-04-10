@@ -19,7 +19,7 @@
           <%= form.hidden_field :sale_detail_id %>
         <div class="col-xs-12">
         <div class="form-group">
-          <%= form.number_field :qty, autofocus: true, placeholder: "Cantidad", class: "form-control" %>
+          <%= form.number_field :qty, step: :any, autofocus: true, placeholder: "Cantidad", class: "form-control" %>
         </div>
         <div class="form-group">
           <%= form.text_area :obs, autofocus: true, placeholder: "Observación", class: "form-control" %>

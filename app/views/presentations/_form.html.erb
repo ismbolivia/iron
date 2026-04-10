@@ -69,7 +69,7 @@
         <div class="col-md-4">
           <div class="presentation-form-group">
             <label class="presentation-label">Cantidad Base</label>
-            <%= form.number_field :qty, placeholder: "Ej. 12", class: "presentation-input" %>
+            <%= form.number_field :qty, step: :any, placeholder: "Ej. 12", class: "presentation-input" %>
           </div>
         </div>
         <div class="col-md-8">
@@ -94,7 +94,7 @@
         <div class="col-md-4">
           <div class="presentation-form-group" style="margin-bottom: 0;">
             <label class="presentation-label" style="color: #4f46e5;">Cant. por Padre</label>
-            <%= form.number_field :qty_in_parent, placeholder: "Ej. 10", class: "presentation-input", style: "border-color: #c7d2fe;" %>
+            <%= form.number_field :qty_in_parent, step: :any, placeholder: "Ej. 10", class: "presentation-input", style: "border-color: #c7d2fe;" %>
           </div>
         </div>
       </div>

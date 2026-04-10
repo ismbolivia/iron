@@ -59,14 +59,14 @@ class Item < ApplicationRecord
      end
    res
  end
- def get_total_stock
-      stocks = self.stocks
-      totales = 0
-      stocks.flat_map do |e|
-        totales += e.total.to_i
-      end
-        totales
- end
+  def get_total_stock
+       stocks = self.stocks
+       totales = 0.0
+       stocks.each do |e|
+         totales += (e.qty_in.to_f - e.qty_out.to_f)
+       end
+       totales.round(3)
+  end
   def get_stock_by_branch(branch_id)
       return get_total_stock if branch_id.blank?
       
@@ -74,7 +74,7 @@ class Item < ApplicationRecord
       return 0 if warehouse_ids.empty?
       
       stocks_sub = self.stocks.where(warehouse_id: warehouse_ids)
-      stocks_sub.sum(:qty_in).to_i - stocks_sub.sum(:qty_out).to_i
+      (stocks_sub.sum(:qty_in).to_f - stocks_sub.sum(:qty_out).to_f).round(3)
   end
   def getTotalCostos
       purchaseOrderLines = self.purchase_order_lines.joins(:purchase_order).order('purchase_orders.created_at ASC')
@@ -139,11 +139,11 @@ class Item < ApplicationRecord
   def getQtSalesTotal
       # Considerar ventas confirmadas y canceladas (excluye cotizaciones, borradores y anulados)
       saledetailsTotal = self.sale_details.joins(:sale).where(sales: { state: [:confirmed, :canceled] })
-      totales = 0
-      saledetailsTotal.flat_map do |sd|
-        totales += sd.get_qty_total
+      totales = 0.0
+      saledetailsTotal.each do |sd|
+        totales += sd.get_qty_total.to_f
       end
-        totales
+      totales.round(3)
  end
 def my_prices(client_id)
   prices = []

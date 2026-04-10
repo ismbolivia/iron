@@ -312,6 +312,19 @@
               });
             }
             updatePreview();
+
+            // --- AJUSTE DINÁMICO DE DECIMALES (UX) ---
+            const qtyInput = $('#adjustment_quantity');
+            if (data.allow_decimals) {
+              qtyInput.attr('step', '0.1').attr('placeholder', '0.0');
+            } else {
+              qtyInput.attr('step', '1').attr('placeholder', '0');
+              // Redondeo visual si el ítem no permite decimales (evita errores de UX)
+              if (qtyInput.val()) {
+                qtyInput.val(Math.round(parseFloat(qtyInput.val())));
+                updatePreview();
+              }
+            }
           });
       };
 

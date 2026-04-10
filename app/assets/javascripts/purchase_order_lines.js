@@ -65,6 +65,17 @@ $(document).ready(function(){
                          $('#purchase_order_lines_price_unit').val(res["0"].price.toString());
                          $('#label_unit_id').text(res["0"].item_unit.toString());
 
+                         // --- AJUSTE DINÁMICO DE DECIMALES (UX) ---
+                         const qtyInput = $('#purchase_order_lines_item_qty');
+                         if (res["0"].allow_decimals) {
+                             qtyInput.attr('step', '0.1').attr('placeholder', '0.0');
+                         } else {
+                             qtyInput.attr('step', '1').attr('placeholder', '0');
+                             if (qtyInput.val()) {
+                                 qtyInput.val(Math.round(parseFloat(qtyInput.val())));
+                             }
+                         }
+
                          // $('#sale_details_price').val(res["0"].price.toString());
                          // $('#sale_details_discount').val(res["0"].discount.toString());
                          $('#purchase_order_lines_item').css('border-color', '#ccc');

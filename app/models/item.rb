@@ -289,4 +289,19 @@ end
     available_stocks_fifo.first&.total.to_f
   end
 
+  # 🔢 Formatea una cantidad según la configuración de decimales de la unidad del ítem
+  def format_qty(val)
+    return 0 if val.nil?
+    v = val.to_f
+    
+    if unit&.allow_decimals
+      # Formato con 2 decimales (ej: 1.50)
+      # Usamos sprintf para asegurar consistencia y sub para limpiar si termina en .00
+      sprintf("%.2f", v).sub(/\.00$/, '') 
+    else
+      # Formato entero (ej: 1)
+      v.to_i
+    end
+  end
+
 end

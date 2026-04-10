@@ -2,7 +2,7 @@
       <tr>
         <td><%= purchase_order_line.item.code %></td>
         <td><%= purchase_order_line.item.name %></td>
-        <td><%= number_with_precision(purchase_order_line.item_qty, precision: (purchase_order_line.item.unit.allow_decimals ? 2 : 0), strip_insignificant_zeros: !purchase_order_line.item.unit.allow_decimals) %></td>
+        <td><%= purchase_order_line.display_qty %></td>
         <td>
           <% if @purchase_order.draft? || @purchase_order.borrador? || @purchase_order.confirmed? %>
             <div style="display: flex; align-items: center; gap: 4px; background: #f8fafc; padding: 4px 8px; border-radius: 8px; border: 1px solid #e2e8f0; width: fit-content;">
@@ -36,7 +36,7 @@
           <% end %>
         </td>
 
-        <td><%= number_with_precision(purchase_order_line.qty_received, precision: (purchase_order_line.item.unit.allow_decimals ? 2 : 0), strip_insignificant_zeros: !purchase_order_line.item.unit.allow_decimals) %></td>
+        <td><%= purchase_order_line.display_qty_received %></td>
         <td  class=" text-right"><%= @mycompany.get_current_currency.symbol%> <%= number_with_precision(purchase_order_line.subtotal, precision: 4, delimiter: ',') %></td>
 
          <% if show_actions %>

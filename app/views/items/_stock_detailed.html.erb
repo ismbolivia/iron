@@ -3,7 +3,7 @@
         <div class="col-md-3">
             <div style="background: #f0f9ff; padding: 1.5rem; border-radius: 16px; border: 1px solid #bae6fd; text-align: center; position: relative;">
                 <span style="display: block; font-size: 0.75rem; font-weight: 800; color: #0369a1; text-transform: uppercase; letter-spacing: 1px;">Saldos Disponibles</span>
-                <strong style="font-size: 2rem; color: #0c4a6e;"><%= item.get_total_stock %></strong>
+                <strong style="font-size: 2rem; color: #0c4a6e;"><%= item.format_qty(item.get_total_stock) %></strong>
                 <div style="font-size: 0.75rem; color: #0ea5e9; font-weight: 600; margin-top: 4px;">UNIDADES <%= item.unit.name.upcase %>S</div>
                 
                 <div style="position: absolute; top: -10px; right: -10px;">
@@ -31,7 +31,7 @@
                     <span style="display: block; font-size: 0.75rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 1px;"><%= data[:name] %></span>
                     <strong style="font-size: 2rem; color: #0f172a;">
                         <% if id == 0 %>
-                           <%= data[:qty_total] %> - <%= item.unit.name.downcase %>s
+                           <%= item.format_qty(data[:qty_total]) %> - <%= item.unit.name.downcase %>s
                         <% else %>
                            <%= (data[:qty_total] / Presentation.find(id).qty.to_f).floor %> <small style="font-size: 0.8rem;">u.</small>
                         <% end %>
@@ -143,14 +143,14 @@
                                 <% end %>
                             </td>
                             <td style="padding: 1.2rem; text-align: center; color: #64748b; font-weight: 600;">
-                                <%= number_with_precision(total_in, precision: 2) %>
+                                <%= item.format_qty(total_in) %>
                             </td>
                             <td style="padding: 1.2rem; text-align: center; color: #94a3b8;">
-                                <%= number_with_precision(total_out, precision: 2) %>
+                                <%= item.format_qty(total_out) %>
                             </td>
                             <td style="padding: 1.2rem; text-align: right;">
                                 <strong style="font-size: 1.4rem; color: <%= balance > 0 ? '#0f172a' : '#94a3b8' %>; font-family: 'JetBrains Mono', monospace;">
-                                    <%= number_with_precision(balance, precision: 2) %>
+                                    <%= item.format_qty(balance) %>
                                 </strong>
                             </td>
                             <td style="padding: 1.2rem; text-align: right; vertical-align: middle;">
@@ -160,7 +160,7 @@
                                         <i class="fas fa-box-open"></i> <%= presentation.name %>
                                     </div>
                                     <div style="font-size: 0.75rem; color: #6366f1; margin-bottom: 6px; font-weight: 600;">
-                                        (Contiene <%= presentation.qty %> <%= item.unit.name %>s)
+                                        (Contiene <%= item.format_qty(presentation.qty) %> <%= item.unit.name %>s)
                                     </div>
                                     <% if balance > 0 %>
                                         <% 

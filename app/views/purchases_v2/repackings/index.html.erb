@@ -51,7 +51,7 @@
                    <div style="display: flex; flex-wrap: wrap; gap: 4px;">
                      <% repacking.result_stocks.each do |rs| %>
                         <span class="badge-iron" style="background: #f1f5f9; color: #1e293b;">
-                          <%= rs.total %> pzs (<%= rs.presentation&.name || 'Sueltas' %>)
+                          <%= rs.display_total %> pzs (<%= rs.presentation&.name || 'Sueltas' %>)
                         </span>
                      <% end %>
                    </div>

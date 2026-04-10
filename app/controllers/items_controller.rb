@@ -211,7 +211,8 @@ class ItemsController < ApplicationController
       available_warehouses = Warehouse.where(id: warehouse_ids, active: true).order(:name).as_json(only: [:id, :name])
     end
 
-    render json: { lots: lots, presentations: all_presentations, warehouses: available_warehouses }
+    allow_decimals = item.unit&.allow_decimals || false
+    render json: { lots: lots, presentations: all_presentations, warehouses: available_warehouses, allow_decimals: allow_decimals }
   rescue => e
     # Captura general para evitar que peticiones AJAX mueran en silencio
     render json: { lots: [{ id: nil, stock_id: "", lote: "⚠️ Error al cargar: #{e.message}", qty_available: 0 }], presentations: [] }, status: :unprocessable_entity

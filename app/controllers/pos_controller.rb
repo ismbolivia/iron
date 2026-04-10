@@ -62,6 +62,7 @@ class PosController < ApplicationController
           discount: sd.discount,
           stock: item.get_total_stock, # Current stock
           unit: (item.unit.name rescue ''),
+          allow_decimals: (item.unit&.allow_decimals || false),
           image: (item.image.url(:medium) rescue nil)
         }
       end.to_json
@@ -142,6 +143,7 @@ class PosController < ApplicationController
         code: p.code,
         category_id: p.category_id,
         unit: (p.unit.name rescue ''), 
+        allow_decimals: (p.unit&.allow_decimals || false),
         image_url: (p.image.url(:medium) rescue nil), 
         todiscount: p.todiscount,
         # Priorizamos mostrar las presentaciones que realmente tienen stock en lotes

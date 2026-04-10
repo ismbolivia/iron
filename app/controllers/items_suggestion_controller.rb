@@ -31,6 +31,6 @@ class ItemsSuggestionController < ApplicationController
 		end
 		@items ||= Item.none
 
-		render json: @items
+		render json: @items.as_json(include: { unit: { only: :allow_decimals } })
 	end
 end

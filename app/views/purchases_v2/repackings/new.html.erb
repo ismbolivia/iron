@@ -130,6 +130,7 @@
   document.addEventListener('turbolinks:load', function() {
     let currentLotQty = 0;
     let itemPresentations = [];
+    let allowDecimals = false;
 
     const itemSelector = $('#item-selector');
     const warehouseSelector = $('#warehouse-selector');
@@ -188,6 +189,7 @@
         dataType: 'json',
         success: function(data) {
           itemPresentations = data.presentations || [];
+          allowDecimals = data.allow_decimals || false;
 
           // --- ACTUALIZAR ALMACENES DINÁMICAMENTE ---
           if (data.warehouses && data.warehouses.length > 0) {
@@ -258,7 +260,7 @@
             </select>
           </td>
           <td>
-            <input type="number" name="entries[${rowId}][qty]" class="modern-input qty-input" value="1" min="1">
+            <input type="number" name="entries[${rowId}][qty]" class="modern-input qty-input" value="1" min="1" step="${allowDecimals ? '0.1' : '1'}">
           </td>
           <td class="row-total-pzs" style="font-weight: 800; color: #1e293b;">0 pzs</td>
           <td>

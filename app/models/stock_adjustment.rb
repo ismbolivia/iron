@@ -92,4 +92,8 @@ class StockAdjustment < ApplicationRecord
     # Al eliminar el ajuste, buscamos y eliminamos el stock generado
     Stock.find_by(id: self.stock_id)&.destroy
   end
+
+  def display_qty
+    item.format_qty(self.quantity)
+  end
 end

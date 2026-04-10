@@ -203,7 +203,7 @@
                              <% end %>
                           </td>
                           <td style="padding: 1.5rem 1.2rem; text-align: right; font-weight: 800; color: <%= adj.adjustment_type == 'entrada' ? '#166534' : '#b91c1c' %>; border-top: 1px solid #f1f5f9; border-bottom: 1px solid #f1f5f9;">
-                             <%= adj.quantity %> <small><%= @item.unit.name.downcase %>s</small>
+                             <%= adj.display_qty %> <small><%= @item.unit.name.downcase %>s</small>
                           </td>
                           <td style="padding: 1.5rem 1.2rem; color: #64748b; font-weight: 600; border-top: 1px solid #f1f5f9; border-bottom: 1px solid #f1f5f9;">
                              <%= adj.reason.titleize %>

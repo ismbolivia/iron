@@ -306,30 +306,30 @@
                              # Calcular instrucciones de surtido en base al empaque
                              if presentation && presentation.qty.to_f > 0
                                packs = (total_out / presentation.qty.to_f).floor
-                               remainder = total_out % presentation.qty.to_i
+                               remainder = total_out % presentation.qty.to_f
                                
                                if remainder > 0 && packs > 0
-                                 surtir_text = "#{packs} #{presentation.name.upcase} + #{remainder} #{detail.item.unit.name.upcase rescue 'PZS'}"
+                                 surtir_text = "#{packs} #{presentation.name.upcase} + #{detail.item.format_qty(remainder)} #{detail.item.unit.name.upcase rescue 'PZS'}"
                                elsif packs > 0
                                  surtir_text = "#{packs} #{presentation.name.upcase}"
                                else
-                                 surtir_text = "#{total_out} #{detail.item.unit.name.upcase rescue 'PZS'} (SUELTOS)"
+                                 surtir_text = "#{detail.item.format_qty(total_out)} #{detail.item.unit.name.upcase rescue 'PZS'} (SUELTOS)"
                                end
                              else
-                               surtir_text = "#{total_out} #{detail.item.unit.name.upcase rescue 'PZS'} (SUELTOS)"
+                               surtir_text = "#{detail.item.format_qty(total_out)} #{detail.item.unit.name.upcase rescue 'PZS'} (SUELTOS)"
                              end
                              surtir_texts_arr << surtir_text
                         %>
                             <div style="font-size: 9px; margin-top: 4px; color: #1e3a8a; font-weight: bold; background: #f8fafc; padding: 4px 6px; border: 1px dashed #cbd5e1; border-radius: 4px;">
                                 <img src="<%= asset_path('box_icon.png') rescue '' %>" style="width: 8px; margin-right: 4px;">
-                                SURTIR: <span style="color: #e11d48; font-size: 10px;"><%= surtir_text %></span>
+                                SURTIR: <span style="color: #e11d48; font-size: 10px;"><%= detail.item.format_qty(total_out) %> -> <%= surtir_text %></span>
                                 | LOTE: <%= lot_name %> <% if repacked %><span style="color: #8b5cf6;">(Re-empacado)</span><% end %> 
                                 | UBICACIÓN: <%= warehouse_name %>
                             </div>
                         <% end %>
                     </td>
                     <td class="qty-total">
-                        <%= detail.qty %> <br>
+                        <%= detail.display_qty %> <br>
                         <small style="font-size: 9px; font-weight: normal; color: #64748b;"><%= detail.item.unit.name.upcase rescue 'PZS' %></small>
                     </td>
                     <td>

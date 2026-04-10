@@ -50,7 +50,7 @@
             <% @sale.sale_details.order(:priority).each do |detail| %>
             <% if detail.todiscount%>          
             <tr>
-              <td style="width:50px"><%= detail.get_qty_total %></td>
+              <td style="width:50px"><%= detail.display_qty %></td>
               <td style="width:75px"><%= detail.item.unit.name %></td>           
               <td style="width:400px"><small><%= detail.item.name %> </small></td>
               <td style="width:100px"><%= @mycompany.get_current_currency.symbol%><%=detail.price %></td>
@@ -123,7 +123,7 @@
             <% @sale.sale_details.order(:priority).each do |detail| %>
              <% if !detail.todiscount%>    
             <tr>
-              <td style="width:50px"><%= detail.get_qty_total %></td>
+              <td style="width:50px"><%= detail.display_qty %></td>
               <td style="width:75px"><%= detail.item.unit.name %>
               </td>               
               <td style="width:250px"><small><%= detail.item.name %> </small></td>

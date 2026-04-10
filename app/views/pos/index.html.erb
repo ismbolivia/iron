@@ -1381,6 +1381,13 @@ input:checked + .slider:before {
         }
     }
 
+    // Helper for quantity formatting
+    function formatQty(val, allowDecimals) {
+        if (!allowDecimals) return Math.round(val);
+        var v = parseFloat(val);
+        return v.toFixed(2).replace(/\.00$/, '');
+    }
+
     function loadProducts(term = '', categoryId = '') {
         $('#product_grid').html('<div class="col-md-12 text-center"><i class="fa fa-spinner fa-spin fa-2x"></i></div>');
         
@@ -1421,7 +1428,7 @@ input:checked + .slider:before {
                             <!-- Lot Badge (Upper Right) -->
                             <div style="position: absolute; top: 10px; right: 10px;">
                                 <span class="badge" style="background: ${p.active_lot_stock > 0 ? 'var(--accent-green)' : 'var(--accent-red)'}; color: white; border: none; font-weight: 800; font-size: 0.75rem; padding: 4px 8px; border-radius: 6px;" title="Stock del Lote Actual">
-                                    LOTE: ${p.active_lot_stock} pzs
+                                    LOTE: ${formatQty(p.active_lot_stock, p.allow_decimals)} pzs
                                 </span>
                             </div>
                         </div>
@@ -1433,7 +1440,7 @@ input:checked + .slider:before {
                             <div class="product-presentations-chips" style="display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 8px; min-height: 24px;">
                                 ${p.presentations && p.presentations.length > 0 ? 
                                     p.presentations.map(pr => `
-                                        <div class="pres-chip" onclick="event.stopPropagation(); addToCart(${p.id}, '${p.name.replace(/'/g, "\\'")}', ${pr.price > 0 ? pr.price : p.price * pr.qty}, '${p.unit}', '${p.image_url}', ${JSON.stringify(p.presentations).replace(/"/g, '&quot;')}, ${pr.id}, ${JSON.stringify(p.available_lots).replace(/"/g, '&quot;')})" 
+                                        <div class="pres-chip" onclick="event.stopPropagation(); addToCart(${p.id}, '${p.name.replace(/'/g, "\\'")}', ${pr.price > 0 ? pr.price : p.price * pr.qty}, '${p.unit}', '${p.image_url}', ${JSON.stringify(p.presentations).replace(/"/g, '&quot;')}, ${pr.id}, ${JSON.stringify(p.available_lots).replace(/"/g, '&quot;')}, ${p.allow_decimals})" 
                                              style="font-size: 0.65rem; padding: 2px 6px; background: var(--bg-card); border: 1px solid var(--border-main); border-radius: 4px; font-weight: 800; cursor: pointer; color: var(--text-muted); transition: all 0.2s;">
                                             ${pr.name}
                                         </div>
@@ -1459,10 +1466,10 @@ input:checked + .slider:before {
     function addToCartByIndex(index) {
         var p = allProducts[index];
         if(!p) return;
-        addToCart(p.id, p.name, p.price, p.unit, p.image_url, p.presentations, null, p.available_lots);
+        addToCart(p.id, p.name, p.price, p.unit, p.image_url, p.presentations, null, p.available_lots, p.allow_decimals);
     }
 
-    function addToCart(id, name, price, unit, image, presentations = [], presentation_id = null, available_lots = []) {
+    function addToCart(id, name, price, unit, image, presentations = [], presentation_id = null, available_lots = [], allow_decimals = false) {
         var existing = currentCart.find(i => i.id === id && i.presentation_id === presentation_id);
         
         // Validación estricta de stock
@@ -1497,7 +1504,8 @@ input:checked + .slider:before {
                 image: image,
                 presentations: presentations,
                 presentation_id: presentation_id,
-                available_lots: available_lots
+                available_lots: available_lots,
+                allow_decimals: allow_decimals
             });
             
             // Validate coverage for the first added unit
@@ -1752,7 +1760,7 @@ input:checked + .slider:before {
                     <!-- QTY -->
                     <div class="cart-qty-wrapper" style="display: flex; height: 26px; border-radius: 4px; border: 1px solid var(--border-main); width: 115px; background: var(--bg-panel);" title="Cantidad">
                         <button class="btn-qty-mini" onclick="updateQty(${item.id}, -1)" tabindex="-1" style="width: 30px; border: none; background: transparent;"><i class="fas fa-minus" style="font-size: 0.75rem; color: var(--text-muted);"></i></button>
-                        <input type="number" value="${item.qty}" class="input-qty-mini" style="width: 50px; border: none; background: var(--bg-card); text-align: center; font-size: 1.05rem; font-weight: 800; padding: 0; color: var(--text-main);" oninput="updateQtyAbsolute(${item.id}, this.value)" onchange="updateQtyAbsolute(${item.id}, this.value)" onclick="this.select()">
+                        <input type="number" step="${item.allow_decimals ? '0.1' : '1'}" value="${formatQty(item.qty, item.allow_decimals)}" class="input-qty-mini" style="width: 50px; border: none; background: var(--bg-card); text-align: center; font-size: 1.05rem; font-weight: 800; padding: 0; color: var(--text-main);" oninput="updateQtyAbsolute(${item.id}, this.value)" onchange="updateQtyAbsolute(${item.id}, this.value)" onclick="this.select()">
                         <button class="btn-qty-mini" onclick="updateQty(${item.id}, 1)" tabindex="-1" style="width: 30px; border: none; background: transparent;"><i class="fas fa-plus" style="font-size: 0.75rem; color: var(--text-muted);"></i></button>
                     </div>
 

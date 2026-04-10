@@ -77,7 +77,7 @@
                 <tr style="background-color: #1D2644; color: #fff;">
                     <th style="padding: 5px; border: 1px solid #1D2644;">Descripción</th>
                     <th class="text-right" style="padding: 5px; width: 60px; border: 1px solid #1D2644;">Cant.</th>
-                    <th class="text-center" style="padding: 5px; width: 40px; border: 1px solid #1D2644;">Un.</th>
+                    <th class="text-center" style="padding: 5px; width: 60px; border: 1px solid #1D2644; white-space: nowrap;">Un.</th>
                     <th class="text-right" style="padding: 5px; width: 80px; border: 1px solid #1D2644;">P.Unit.</th>
                     <th class="text-right" style="padding: 5px; width: 40px; border: 1px solid #1D2644;">Desc.</th>
                     <th class="text-right" style="padding: 5px; width: 80px; border: 1px solid #1D2644;">p.Venta</th>
@@ -101,10 +101,10 @@
                             <%= detail.item.name %>
                         </td>
                         <td class="text-right" style="padding: 4px; border: none; border-bottom: 1px solid #1D2644;">
-                            <%= detail.qty %>
+                            <%= detail.display_qty %>
                         </td>
-                        <td class="text-center" style="padding: 4px; border: none; border-bottom: 1px solid #1D2644; color:#777">
-                            <%= detail.item.unit.name rescue '' %>
+                        <td class="text-center" style="padding: 4px; border: none; border-bottom: 1px solid #1D2644; color:#777; white-space: nowrap; width: 60px;">
+                            <%= detail.item.unit.name.upcase rescue '' %>
                         </td>
                         <td class="text-right" style="padding: 4px; border: none; border-bottom: 1px solid #1D2644;">
                             <%= number_to_currency(convert_price.call(detail.price, exch_rate), unit: display_symbol + ' ', precision: 4) %>
@@ -158,7 +158,7 @@
                 <tr style="background-color: #1D2644; color: #fff;">
                     <th style="padding: 5px; border: 1px solid #1D2644;">Descripción</th>
                     <th class="text-right" style="padding: 5px; width: 60px; border: 1px solid #1D2644;">Cant.</th>
-                    <th class="text-center" style="padding: 5px; width: 40px; border: 1px solid #1D2644;">Un.</th>
+                    <th class="text-center" style="padding: 5px; width: 60px; border: 1px solid #1D2644; white-space: nowrap;">Un.</th>
                     <th class="text-right" style="padding: 5px; width: 80px; border: 1px solid #1D2644;">P.Unit.</th>
                     <th class="text-right" style="padding: 5px; width: 40px; border: 1px solid #1D2644;"></th>
                     <th class="text-right" style="padding: 5px; width: 80px; border: 1px solid #1D2644;">p.Venta</th>
@@ -178,10 +178,10 @@
                             <%= detail.item.name %>
                         </td>
                         <td class="text-right" style="padding: 4px; border: none; border-bottom: 1px solid #1D2644; width: 60px;">
-                            <%= detail.qty %>
+                            <%= detail.display_qty %>
                         </td>
-                        <td class="text-center" style="padding: 4px; border: none; border-bottom: 1px solid #1D2644; width: 40px; color:#777">
-                            <%= detail.item.unit.name rescue '' %>
+                        <td class="text-center" style="padding: 4px; border: none; border-bottom: 1px solid #1D2644; width: 60px; color:#777; white-space: nowrap;">
+                            <%= detail.item.unit.name.upcase rescue '' %>
                         </td>
                         <td class="text-right" style="padding: 4px; border: none; border-bottom: 1px solid #1D2644; width: 80px;">
                             <%= number_to_currency(convert_price.call(detail.price, exch_rate), unit: display_symbol + ' ', precision: 4) %>

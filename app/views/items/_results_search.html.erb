@@ -63,12 +63,12 @@
                           branch = current_user.branch
                           warehouse_ids = branch ? branch.warehouses.pluck(:id) : Warehouse.pluck(:id)
                           lot_stocks = item.stocks.where(warehouse_id: warehouse_ids).where("qty_in - qty_out > 0").order(created_at: :asc)
-                          stock_total = lot_stocks.sum("qty_in - qty_out").to_i
-                          low_stock = stock_total <= item.min_stock.to_i
+                          stock_total = lot_stocks.sum("qty_in - qty_out")
+                          low_stock = stock_total <= item.min_stock.to_f
                        %>
                        <div style="margin-bottom: 8px;">
                          <span class="badge" style="padding: 6px 12px; font-weight: 900; font-size: 1.1rem; box-shadow: 0 2px 4px rgba(0,0,0,0.05); <%= low_stock ? 'background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca;' : 'background: #f0fdf4; color: #166534; border: 1px solid #dcfce7;' %>">
-                            <%= stock_total %> <small style="font-size: 0.75rem; text-transform: lowercase;"><%= item.unit&.name || 'unid' %>s</small>
+                            <%= item.format_qty(stock_total) %> <small style="font-size: 0.75rem; text-transform: lowercase;"><%= item.unit&.name || 'unid' %>s</small>
                          </span>
                        </div>
 
@@ -76,7 +76,7 @@
                          <div style="display: flex; flex-direction: column; gap: 3px; align-items: center;">
                            <% lot_stocks.group_by(&:purchase_order_line_id).each do |line_id, stocks| %>
                               <% 
-                                total_lot = stocks.sum { |s| s.qty_in.to_f - s.qty_out.to_f }.to_i 
+                                total_lot = stocks.sum { |s| s.qty_in.to_f - s.qty_out.to_f }
                                 first_stock = stocks.first
                                 lot_color = if first_stock.repacking_id.present?
                                               '#7c3aed' # Violeta
@@ -89,14 +89,14 @@
                                             end
                              %>
                              <div style="font-size: 0.75rem; background: #fff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 3px 10px; color: #475569; font-weight: 800; width: fit-content; cursor: help; border-left: 5px solid <%= lot_color %>; margin-bottom: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);" title="Fecha de Ingreso: <%= first_stock.created_at.strftime('%d/%m/%Y') %><%= " | Motivo: #{first_stock.stock_adjustment.reason}" if first_stock.stock_adjustment %>">
-                                <span style="color: <%= lot_color %>; text-transform: uppercase;"><%= first_stock.stock_adjustment ? 'AJUSTE' : (first_stock.repacking ? 'RE-EMP' : 'LOTE') %> #<%= first_stock.lote.presence || first_stock.id %></span>: <span style="color: #1e293b; font-size: 0.9rem;"><%= total_lot %></span>
+                                <span style="color: <%= lot_color %>; text-transform: uppercase;"><%= first_stock.stock_adjustment ? 'AJUSTE' : (first_stock.repacking ? 'RE-EMP' : 'LOTE') %> #<%= first_stock.lote.presence || first_stock.id %></span>: <span style="color: #1e293b; font-size: 0.9rem;"><%= item.format_qty(total_lot) %></span>
                              </div>
 <% end %>
                          </div>
 <% end %>
 
                        <% if low_stock %>
-                          <div style="font-size: 0.6rem; color: #ef4444; font-weight: 900; margin-top: 6px; text-transform: uppercase; letter-spacing: 0.5px;">🚩 REPOSICIÓN MÍN: <%= item.min_stock.to_i %></div>
+                          <div style="font-size: 0.6rem; color: #ef4444; font-weight: 900; margin-top: 6px; text-transform: uppercase; letter-spacing: 0.5px;">🚩 REPOSICIÓN MÍN: <%= item.format_qty(item.min_stock) %></div>
                        <% end %>
                     </td>
 

@@ -35,10 +35,10 @@
                 <table class="tables table-hover">
                     <thead>     
                       <tr>
-                        <th style="width:50px">Cant.</th>
-                        <th style="width:150px">Un.</th>      
-                        <th style="width:350px">Descripcción</th>
-                        <th style="width:50px">P/u</th>
+                        <th style="width:60px">Cant.</th>
+                        <th style="width:60px; white-space: nowrap;">Un.</th>      
+                        <th style="width:350px">Descripción</th>
+                        <th style="width:60px">P/u</th>
                         <th style="width:50px">Des.</th>
                         <th style="width:100px">P/v</th>
                            
@@ -50,8 +50,8 @@
             <% @sale.sale_details.left_outer_joins(item: :category).order("categories.name ASC, items.priority ASC").each do |detail| %>
             <% if detail.todiscount%>          
             <tr>
-              <td style="width:50px"><%= detail.get_qty_total %></td>
-              <td style="width:75px"><%= detail.item.unit.name %></td>           
+              <td style="width:60px"><%= detail.display_qty %></td>
+              <td style="width:60px; white-space: nowrap;"><%= detail.item.unit.name %></td>           
               <td style="width:400px"><small><%= detail.item.name %> </small></td>
               <td style="width:100px"><%= @mycompany.get_current_currency.symbol%><%=detail.price %></td>
               <td style="width:50px" ><%= number_to_percentage(detail.discount, precision: 0) %></td>
@@ -123,9 +123,8 @@
             <% @sale.sale_details.left_outer_joins(item: :category).order("categories.name ASC, items.priority ASC").each do |detail| %>
              <% if !detail.todiscount%>    
             <tr>
-              <td style="width:50px"><%= detail.get_qty_total %></td>
-              <td style="width:75px"><%= detail.item.unit.name %>
-              </td>               
+              <td style="width:60px"><%= detail.display_qty %></td>
+              <td style="width:60px; white-space: nowrap;"><%= detail.item.unit.name %></td>               
               <td style="width:250px"><small><%= detail.item.name %> </small></td>
               <td style="width:100px"><%= @mycompany.get_current_currency.symbol%><%=detail.price %></td>
               <td style="width:50px"><%= number_to_percentage(detail.discount, precision: 0) %></td>

@@ -17,9 +17,9 @@
   <tbody>
     <% @stocks.each do |stock| %>
       <tr>
-        <td><%= stock.qty_in %></td>
-        <td><%= stock.qty_out %></td>
-        <td><%= stock.total %></td>
+        <td><%= stock.display_qty_in %></td>
+        <td><%= stock.display_qty_out %></td>
+        <td><%= stock.display_total %></td>
         <td><%= stock.item.name rescue stock.item_id %></td>
         <td>
           <% if stock.repacking_id.present? %>

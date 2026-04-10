@@ -156,7 +156,7 @@
 
 <div class="row page-wrapper" style="margin-top: 15px;">
   <% @items.each do |item| %>
-    <% local_stock = item.get_stock_by_branch(current_user.branch_id).to_i %>
+    <% local_stock = item.get_stock_by_branch(current_user.branch_id) %>
     <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
       <div class="modern-item-card <%= 'stock-inactive' unless item.active %>">
         
@@ -165,7 +165,7 @@
           <!-- Stock Pill (Top Left) -->
           <span class="stock-pill <%= local_stock > 0 ? 'stock-positive' : 'stock-zero' %>" title="Stock Disponible" style="z-index: 5;">
             <i class="fas <%= local_stock > 0 ? 'fa-box' : 'fa-exclamation-circle' %>"></i>
-            Stock: <%= local_stock %>
+            Stock: <%= item.format_qty(local_stock) %>
           </span>
 
           <!-- Price Pill (Top Right) -->

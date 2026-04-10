@@ -29,6 +29,7 @@ class ValidateSuggestedItemController < ApplicationController
 					presentations: item.first.active_stock_presentations.as_json(only: [:id, :name, :qty]),
 					all_presentations: item.first.presentations.as_json(only: [:id, :name, :qty]),
 					my_unidad: item.first.unit.name,
+					allow_decimals: item.first.unit.allow_decimals,
 					price_sale_unit: item.first.price_sale_unit(params[:current_client_id]),
 					notice: 'Transacción exitosa'
 				}]
@@ -56,7 +57,7 @@ class ValidateSuggestedItemController < ApplicationController
       pp=item.first.purchase_order_lines.last.price_unit
     end
 		if !item.empty?
-			result = [valid: true, id: item.first.id, price: pp, discount: item.first.discount, item_unit: item.first.unit.name]
+			result = [valid: true, id: item.first.id, price: pp, discount: item.first.discount, item_unit: item.first.unit.name, allow_decimals: item.first.unit.allow_decimals]
 		else
 			result = [valid: false, id: 0]
 		end

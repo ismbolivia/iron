@@ -1,7 +1,7 @@
 <% @sale.sale_details.each do |detail| %>
   <tr>
     <td ><small><%= detail.number %></small></td>
-    <td class="text-right"><small><%= detail.qty %></small> </td>
+    <td class="text-right"><small><%= detail.display_qty %></small> </td>
     <td> <%= detail.item.unit.name %></td>
     <td width="450"><small><%= detail.item.item_description %></small> </td>
     <td class="text-right"> <small><%= @mycompany.get_current_currency.symbol%><%= number_with_precision(detail.price, precision: 4) %></small></td>
@@ -16,8 +16,8 @@
   <% detail.devolutions.each do |devolution| %>
     <tr  class="danger text-red"> 
       <td class=""><p><%= detail.number %></p></td>
-      <td class="text-right"><%= devolution.qty %></td>     
-      <td class="text-right"><%= devolution.sale_detail.item.unit.name %></td> 
+      <td class="text-right"><%= detail.item.format_qty(devolution.qty) %></td>     
+      <td class="text-right"><%= detail.item.unit.name %></td> 
       <td class="text-right"> DEVOLUCION: <%= devolution.sale_detail.item.item_description %> </td> 
       <td></td>
       <td></td>

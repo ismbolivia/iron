@@ -53,5 +53,13 @@ class PurchaseOrderLine < ApplicationRecord
 	 	 res = self.qty_received.to_i - self.get_total_warehouse_stock.to_i
 	 	 res < 0 ? 0 : res
 	 end
+
+	 def display_qty
+	 	item.format_qty(self.item_qty)
+	 end
+
+	 def display_qty_received
+	 	item.format_qty(self.qty_received)
+	 end
 		
 end

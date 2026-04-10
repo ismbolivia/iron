@@ -84,6 +84,10 @@ class SaleDetail < ApplicationRecord
 		total
 	end
 
+	def display_qty
+		item.format_qty(self.qty)
+	end
+
 	def dispatch_instructions
 		# Agrupamos movimientos por stock (lote y presentación) para un cálculo preciso
 		valid_movs = self.movements.select { |m| m.qty_out.to_f > 0 && m.stock }
@@ -103,14 +107,14 @@ class SaleDetail < ApplicationRecord
 				remainder = total_out % pres.qty.to_f
 				
 				if remainder > 0 && packs > 0
-					results << "#{packs} #{pres.name.upcase} + #{remainder} #{unit_name}#{repacked_label}"
+					results << "#{packs} #{pres.name.upcase} + #{item.format_qty(remainder)} #{unit_name}#{repacked_label}"
 				elsif packs > 0
 					results << "#{packs} #{pres.name.upcase}#{repacked_label}"
 				else
-					results << "#{total_out} #{unit_name}#{repacked_label}"
+					results << "#{item.format_qty(total_out)} #{unit_name}#{repacked_label}"
 				end
 			else
-				results << "#{total_out} #{unit_name}#{repacked_label}"
+				results << "#{item.format_qty(total_out)} #{unit_name}#{repacked_label}"
 			end
 		end
 
@@ -122,7 +126,7 @@ class SaleDetail < ApplicationRecord
 	def format_qty_with_presentations(total_qty, item, exclude_id: nil)
 		qty_val = total_qty.to_f
 		unit_name = item&.unit&.name&.upcase || 'PZS'
-		return "#{qty_val} #{unit_name}" if qty_val <= 0 || item.nil?
+		return "#{item.format_qty(qty_val)} #{unit_name}" if qty_val <= 0 || item.nil?
 		
 		# Buscar presentaciones del item de mayor a menor (ej. Caja -> Paquete)
 		available_pres = item.presentations.where("qty > 0").order(qty: :desc)
@@ -144,7 +148,7 @@ class SaleDetail < ApplicationRecord
 			end
 		end
 
-		parts << "#{remaining.round(3)} #{unit_name}" if remaining > 0
+		parts << "#{item.format_qty(remaining)} #{unit_name}" if remaining > 0
 		parts.join(" + ")
 	end
 	

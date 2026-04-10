@@ -10,6 +10,8 @@ class SaleDetail < ApplicationRecord
 
   before_save :validate_discount_rules
 
+  attr_accessor :skip_stock_recalculation
+
   private
 
   def validate_discount_rules
@@ -27,10 +29,10 @@ class SaleDetail < ApplicationRecord
 	accepts_nested_attributes_for :item
 
 	def subtotal
-		self.qty ? ((self.qty.to_i - qty_devolutions.to_i) * price_sale.to_f ).round(4) : 0
+		self.qty ? ((self.qty.to_d - qty_devolutions.to_d) * price_sale.to_d ).round(4) : 0
 	end
 	def sTotal
-		self.qty ? ((self.qty.to_i - qty_devolutions.to_i) * price.to_f ).round(4) : 0
+		self.qty ? ((self.qty.to_d - qty_devolutions.to_d) * price.to_d ).round(4) : 0
 	end
 
 	def unit_price
@@ -59,14 +61,14 @@ class SaleDetail < ApplicationRecord
 	end
 	def qty_devolutions
 		devolutions = self.devolutions
-		total = 0
+		total = 0.0
 			devolutions.flat_map do |d|
-				total += d.qty.to_i
+				total += d.qty.to_f
 			end
 		total
 	end
 	def get_qty_total
-		total = self.qty.to_i - self.qty_devolutions.to_i
+		total = self.qty.to_f - self.qty_devolutions.to_f
 	end
 	def getTotalDiscount
 		res = 0
@@ -74,7 +76,7 @@ class SaleDetail < ApplicationRecord
 
 	end
 	def getTotalSaleDetailsAmounto
-		total = self.qty.to_i * price_sale.to_f
+		total = self.qty.to_f * price_sale.to_f
 		dis = 1 - (self.sale.discount.to_f / 100)
 		if self.todiscount
 			total = total * dis
@@ -98,7 +100,7 @@ class SaleDetail < ApplicationRecord
 
 			if pres && pres.qty.to_f > 0
 				packs = (total_out / pres.qty.to_f).floor
-				remainder = total_out % pres.qty.to_i
+				remainder = total_out % pres.qty.to_f
 				
 				if remainder > 0 && packs > 0
 					results << "#{packs} #{pres.name.upcase} + #{remainder} #{unit_name}#{repacked_label}"
@@ -118,7 +120,7 @@ class SaleDetail < ApplicationRecord
 	private
 
 	def format_qty_with_presentations(total_qty, item, exclude_id: nil)
-		qty_val = total_qty.to_i
+		qty_val = total_qty.to_f
 		unit_name = item&.unit&.name&.upcase || 'PZS'
 		return "#{qty_val} #{unit_name}" if qty_val <= 0 || item.nil?
 		
@@ -132,24 +134,24 @@ class SaleDetail < ApplicationRecord
 		remaining = qty_val
 
 		available_pres.each do |pres|
-			pres_qty = pres.qty.to_i
+			pres_qty = pres.qty.to_f
 			next if pres_qty == 0
 			
-			num = (remaining / pres_qty)
+			num = (remaining / pres_qty).floor
 			if num > 0
 				parts << "#{num} #{pres.name.upcase}"
 				remaining %= pres_qty
 			end
 		end
 
-		parts << "#{remaining} #{unit_name}" if remaining > 0
+		parts << "#{remaining.round(3)} #{unit_name}" if remaining > 0
 		parts.join(" + ")
 	end
 	
-	after_save :trigger_stock_recalculation, if: -> { sale.confirmed? }
-	after_destroy :trigger_stock_recalculation, if: -> { sale.confirmed? }
-	after_save :update_sale_status_priority
-	after_destroy :update_sale_status_priority
+	after_save :trigger_stock_recalculation, if: -> { sale.confirmed? && !skip_stock_recalculation }
+	after_destroy :trigger_stock_recalculation, if: -> { sale.confirmed? && !skip_stock_recalculation }
+	after_save :update_sale_status_priority, unless: -> { skip_stock_recalculation }
+	after_destroy :update_sale_status_priority, unless: -> { skip_stock_recalculation }
 
 	private
 	

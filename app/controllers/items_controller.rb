@@ -170,6 +170,27 @@ class ItemsController < ApplicationController
       }
     end.compact.sort_by { |l| l[:lote] }
 
+    # 4. Si no hay stock absoluto, incluimos el último lote consumido para permitir ajustes
+    if lots.empty?
+      last_stock_query = item.stocks
+      last_stock_query = last_stock_query.where(warehouse_id: warehouse_id) if warehouse_id
+      last_stock = last_stock_query.order(created_at: :desc).first
+      
+      if last_stock
+        po_line = last_stock.purchase_order_line
+        created_stamp = last_stock.created_at ? last_stock.created_at.strftime('%d%m%y') : Time.now.strftime('%d%m%y')
+        lote_display = last_stock.lote.presence || 
+                       (po_line ? "OC-#{po_line.purchase_order_id}" : "SISTEMA-#{created_stamp}-#{last_stock.id}")
+        
+        lots << {
+          id: po_line&.id,
+          stock_id: last_stock.id,
+          lote: "#{lote_display} (Agotado)",
+          qty_available: 0
+        }
+      end
+    end
+
     # 4. Si no hay stock absoluto, permitimos crear un lote de entrada (opcional)
 
     # 3. Incluimos las presentaciones y los almacenes disponibles

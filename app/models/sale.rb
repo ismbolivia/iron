@@ -31,9 +31,11 @@ class Sale < ApplicationRecord
 	accepts_nested_attributes_for :sale_details, reject_if: :sale_detail_rejectable?,
 									allow_destroy: true
 	enum state: [:draft, :confirmed, :canceled, :annulled, :quoted, :observed]
+
+	attr_accessor :skip_stock_recalculation
 	enum invoiced: [:por_facturar, :facturado]
 
-	after_save :process_stock_changes, if: -> { saved_change_to_state? || confirmed? }
+	after_save :process_stock_changes, if: -> { (saved_change_to_state? || confirmed?) && !skip_stock_recalculation }
 	after_save :update_status_priority!
 	before_destroy :restore_all_stock
 	after_commit :clear_dashboard_cache
@@ -365,7 +367,8 @@ end
 	end
 
 	def self.deduct_stock(qty, item_id, sale_detail_id)
-		cantidad = qty.to_i
+		# Redondear para evitar errores de precisión infinitesimales
+		qty = qty.to_d.round(4)
 		
 		detail = SaleDetail.find(sale_detail_id)
 		sale = detail.sale
@@ -392,23 +395,26 @@ end
 		end
 		
 		stock_current = mystocks.first
+		
+		# Usar un margen mínimo para evitar errores de precisión de punto flotante
+		raise "Stock insuficiente e inesperado para el item #{Item.find(item_id).name} (detalle: #{sale_detail_id})" unless stock_current && stock_current.total >= -0.0001
+		
+		total_available = stock_current.total.to_d.round(4)
 
-		raise "Stock insuficiente e inesperado durante la transacción" unless stock_current
-
-		if stock_current.total > qty
-		  stock_current.qty_out += qty
+		if total_available > qty
+		  stock_current.qty_out = (stock_current.qty_out.to_d + qty).round(4)
 		  stock_current.save!
 		  Movement.create!(qty_out: qty, qty_in: 0, sale_detail_id: sale_detail_id, stock_id: stock_current.id)
 
-		elsif stock_current.total == qty
-		  stock_current.qty_out += qty
+		elsif total_available == qty
+		  stock_current.qty_out = (stock_current.qty_out.to_d + qty).round(4)
 		  stock_current.state = 'agotado' 
 		  stock_current.save!
 		  Movement.create!(qty_out: qty, qty_in: 0, sale_detail_id: sale_detail_id, stock_id: stock_current.id)
 
-		elsif stock_current.total < qty
-		  qty_current_movement = stock_current.total 
-		  new_qty = qty - stock_current.total
+		elsif total_available < qty
+		  qty_current_movement = total_available 
+		  new_qty = (qty - total_available).round(4)
 		  
 		  stock_current.qty_out += stock_current.total
 		  stock_current.state = 'agotado' 

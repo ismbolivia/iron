@@ -185,6 +185,7 @@ class PosController < ApplicationController
          @sale.destroy_sale_details_all 
          
          # 2. Update Attributes
+         @sale.skip_stock_recalculation = true
          @sale.update!(
             client_id: params[:client_id],
             date: params[:date] || Date.today,
@@ -198,7 +199,7 @@ class PosController < ApplicationController
          )
       else
           # CREATE NEW SALE
-          @sale = Sale.create!(
+          @sale = Sale.new(
             user: current_user,
             client_id: params[:client_id],
             date: params[:date] || Date.today,
@@ -212,6 +213,8 @@ class PosController < ApplicationController
             show_bs: params[:show_bs] == 'true' || params[:show_bs] == true,
             credit: params[:credit]
           )
+          @sale.skip_stock_recalculation = true
+          @sale.save!
       end
 
       # Crear Detalles y Descontar Stock
@@ -234,14 +237,14 @@ class PosController < ApplicationController
             # for SaleDetail consistency and correct inventory deduction.
             if presentation_id.present?
                 pres = Presentation.find_by(id: presentation_id)
-                if pres && pres.qty.to_i > 0
+                if pres && pres.qty.to_f > 0
                     actual_units_per_box = pres.qty.to_f
-                    qty_val = qty_val * actual_units_per_box
-                    price_val = price_val / actual_units_per_box # Store as unit price
+                    qty_val = (qty_val * actual_units_per_box).round(4)
+                    price_val = (price_val / actual_units_per_box).round(4) # Store as unit price
                 end
             end
 
-            detail = @sale.sale_details.create!(
+            detail = @sale.sale_details.build(
                 item_id: item_data[:id],
                 qty: qty_val,
                 price: price_val,
@@ -252,6 +255,8 @@ class PosController < ApplicationController
                 presentation_id: presentation_id,
                 priority: 1 # Default
             )
+            detail.skip_stock_recalculation = true
+            detail.save!
             
             # SOLO descontar si es venta confirmada
             # El descuento se hace automáticamente al llamar a recalculate_stock_fifo al final

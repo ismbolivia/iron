@@ -26,7 +26,7 @@ class Stock < ApplicationRecord
 	end
 
 	def total
-		total = self.qty_in.to_f - self.qty_out.to_f
+		total = self.qty_in.to_d - self.qty_out.to_d
 	end
 end
 

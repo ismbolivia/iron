@@ -256,8 +256,16 @@
 
       // Manejo de botones de acción
       btnAdj.on('click', function() {
-        btnAdj.removeClass('active entrada salida');
         const type = $(this).data('type');
+        const selectedLot = lotSelect.find(':selected');
+        const qtyAvailable = parseFloat(selectedLot.data('qty')) || 0;
+
+        if (type === 'salida' && qtyAvailable <= 0 && selectedLot.val() !== "") {
+          alert('⚠️ No puedes realizar un ajuste de SALIDA en un lote agotado. Solo se permiten ENTRADAS para corregir stock.');
+          return;
+        }
+
+        btnAdj.removeClass('active entrada salida');
         $(this).addClass('active ' + type);
         $('#hidden-adj-type').val(type);
       });
@@ -292,9 +300,9 @@
               whSelect.html('<option value="">⚠️ Sin stock en almacenes</option>');
             }
 
-            lotSelect.html('<option value="">-- Elige el Lote --</option>');
+            lotSelect.html('<option value="" data-qty="0">-- Elige el Lote --</option>');
             data.lots.forEach(l => {
-              lotSelect.append(`<option value="${l.id}">${l.lote} (${l.qty_available} pzs)</option>`);
+              lotSelect.append(`<option value="${l.id}" data-qty="${l.qty_available}">${l.lote} (${l.qty_available} pzs)</option>`);
             });
 
             presSelect.html('<option value="">U. Sueltas (Pzs)</option>');
@@ -326,6 +334,29 @@
       whSelect.on('change', loadLots);
       $('#adjustment_quantity').on('input change', updatePreview);
       presSelect.on('change', updatePreview);
+
+      // Validación al cambiar de lote
+      lotSelect.on('change', function() {
+        const qtyAvailable = parseFloat($(this).find(':selected').data('qty')) || 0;
+        const currentType = $('#hidden-adj-type').val();
+
+        if (qtyAvailable <= 0 && currentType === 'salida') {
+          // Forzar cambio a entrada si el lote está agotado
+          alert('⚠️ El lote seleccionado está AGOTADO. El tipo de ajuste se cambiará automáticamente a ENTRADA.');
+          btnAdj.filter('[data-type="entrada"]').click();
+        }
+      });
+
+      // Validación final al enviar
+      $('form').on('submit', function(e) {
+        const type = $('#hidden-adj-type').val();
+        const qtyAvailable = parseFloat(lotSelect.find(':selected').data('qty')) || 0;
+
+        if (type === 'salida' && qtyAvailable <= 0) {
+          alert('❌ Error: No se permiten ajustes de SALIDA en lotes agotados.');
+          e.preventDefault();
+        }
+      });
     };
 
     // Ejecutar en cada carga de Turbolinks

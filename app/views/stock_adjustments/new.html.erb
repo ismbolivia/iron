@@ -280,7 +280,7 @@
         lotSelect.html('<option value="">⏳ Consultando...</option>');
         presSelect.html('<option value="">⏳ ...</option>');
 
-        fetch(`/items/${itemId}/available_lots?warehouse_id=${warehouseId}`)
+        fetch(`/items/${itemId}/available_lots?warehouse_id=${warehouseId}&for_adjustment=1`)
           .then(r => r.json())
           .then(data => {
             // --- ACTUALIZAR ALMACENES DINÁMICAMENTE ---
@@ -357,11 +357,23 @@
           e.preventDefault();
         }
       });
+
+      // --- CARGA INICIAL (SOLUCIÓN TURBOLINKS) ---
+      // Si el ítem ya está seleccionado (ej: por params[:item_id]), cargamos los lotes inmediatamente
+      if (itemSelect.val()) {
+        loadLots();
+      }
     };
 
-    // Ejecutar en cada carga de Turbolinks
+    // Registrar eventos de ciclo de vida de Turbolinks
     document.addEventListener('turbolinks:load', initPage);
-    // Ejecutar inmediatamente si no es Turbolinks
+    
+    // Limpiar select2 antes de guardar en cache para evitar bugs de duplicación
+    document.addEventListener('turbolinks:before-cache', () => {
+      $('#adjustment_item_id').select2('destroy');
+    });
+
+    // Ejecutar inmediatamente si no es Turbolinks (primer carga)
     if (document.readyState !== 'loading') initPage();
   })();
 </script>

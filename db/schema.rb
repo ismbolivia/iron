@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2026_04_06_151739) do
+ActiveRecord::Schema.define(version: 2026_04_09_235506) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -304,7 +304,7 @@ ActiveRecord::Schema.define(version: 2026_04_06_151739) do
   create_table "devolutions", force: :cascade do |t|
     t.integer "sale_id"
     t.integer "sale_detail_id"
-    t.integer "qty"
+    t.decimal "qty", precision: 15, scale: 3
     t.decimal "mount"
     t.text "obs"
     t.datetime "created_at", null: false
@@ -340,7 +340,7 @@ ActiveRecord::Schema.define(version: 2026_04_06_151739) do
     t.string "name_warehouse"
     t.string "ref_warehouse"
     t.integer "warehouse_id"
-    t.integer "quantity"
+    t.decimal "quantity", precision: 15, scale: 3
     t.float "sales_value"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -353,15 +353,15 @@ ActiveRecord::Schema.define(version: 2026_04_06_151739) do
     t.string "code_item"
     t.string "name_item"
     t.string "description_item"
-    t.integer "quantity_product"
+    t.decimal "quantity_product", precision: 15, scale: 3
     t.float "price_purchase_total"
     t.float "price_sale_total"
     t.float "variance"
     t.integer "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "physical_quantity"
-    t.integer "quantity_variance"
+    t.decimal "physical_quantity", precision: 15, scale: 3
+    t.decimal "quantity_variance", precision: 15, scale: 3
   end
 
   create_table "items", force: :cascade do |t|
@@ -413,8 +413,8 @@ ActiveRecord::Schema.define(version: 2026_04_06_151739) do
   end
 
   create_table "movements", force: :cascade do |t|
-    t.integer "qty_in"
-    t.integer "qty_out"
+    t.decimal "qty_in", precision: 15, scale: 3
+    t.decimal "qty_out", precision: 15, scale: 3
     t.integer "sale_detail_id"
     t.integer "stock_id"
     t.datetime "created_at", null: false
@@ -484,14 +484,14 @@ ActiveRecord::Schema.define(version: 2026_04_06_151739) do
 
   create_table "presentations", force: :cascade do |t|
     t.string "name"
-    t.integer "qty"
+    t.decimal "qty", precision: 15, scale: 3
     t.integer "unit_id"
     t.integer "item_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "image_presentation"
     t.integer "parent_id"
-    t.integer "qty_in_parent"
+    t.decimal "qty_in_parent", precision: 15, scale: 3
   end
 
   create_table "price_lists", force: :cascade do |t|
@@ -622,7 +622,7 @@ ActiveRecord::Schema.define(version: 2026_04_06_151739) do
     t.integer "sale_id"
     t.integer "number"
     t.integer "item_id"
-    t.integer "qty"
+    t.decimal "qty", precision: 15, scale: 3
     t.decimal "price"
     t.integer "discount"
     t.integer "price_id"
@@ -677,7 +677,7 @@ ActiveRecord::Schema.define(version: 2026_04_06_151739) do
     t.integer "warehouse_id"
     t.integer "item_id"
     t.string "adjustment_type"
-    t.integer "quantity"
+    t.decimal "quantity", precision: 15, scale: 3
     t.string "reason"
     t.integer "user_id"
     t.datetime "created_at", null: false

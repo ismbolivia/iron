@@ -18,23 +18,30 @@ class StockAdjustment < ApplicationRecord
 
   def validate_stock_for_exit
     if adjustment_type == 'salida'
+      # Calcular factor de conversión para la validación exacta
+      factor = 1.0
+      if self.presentation_id.present?
+        pres = Presentation.find_by(id: self.presentation_id)
+        factor = pres.qty.to_d if pres
+      end
+      
+      requested_qty_base = (self.quantity.to_d * factor).round(4)
+      
       # Consultamos el stock actual del item en el almacén específico
-      # Si se seleccionó un lote (purchase_order_line_id), validamos el saldo de ese lote
       current_balance = 0
       if self.purchase_order_line_id.present?
         stocks = Stock.where(item_id: self.item_id, warehouse_id: self.warehouse_id, purchase_order_line_id: self.purchase_order_line_id)
-        current_balance = stocks.sum(:qty_in).to_d - stocks.sum(:qty_out).to_d
+        current_balance = (stocks.sum(:qty_in).to_d - stocks.sum(:qty_out).to_d).round(4)
       else
         # Fallback a stock general del almacén
         stocks = Stock.where(item_id: self.item_id, warehouse_id: self.warehouse_id)
-        current_balance = stocks.sum(:qty_in).to_d - stocks.sum(:qty_out).to_d
+        current_balance = (stocks.sum(:qty_in).to_d - stocks.sum(:qty_out).to_d).round(4)
       end
 
       if current_balance <= 0
-        errors.add(:base, "No se puede realizar un ajuste de salida: El stock actual es 0 o insuficiente.")
-      elsif self.quantity.to_d > current_balance
-        # Opcional: Impedir que el ajuste deje el lote en negativo
-        # errors.add(:quantity, "no puede ser mayor al stock disponible en el lote (#{current_balance})")
+        errors.add(:base, "No se puede realizar un ajuste de salida: El lote seleccionado no tiene stock.")
+      elsif requested_qty_base > current_balance
+        errors.add(:quantity, "la cantidad solicitada (#{self.quantity} uni. de presentación) excede el stock disponible en el lote (#{current_balance} uni. base).")
       end
     end
   end

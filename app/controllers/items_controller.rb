@@ -171,7 +171,7 @@ class ItemsController < ApplicationController
     end.compact.sort_by { |l| l[:lote] }
 
     # 4. Si no hay stock absoluto, incluimos el último lote consumido para permitir ajustes
-    if lots.empty?
+    if lots.empty? && params[:for_adjustment] == '1'
       last_stock_query = item.stocks
       last_stock_query = last_stock_query.where(warehouse_id: warehouse_id) if warehouse_id
       last_stock = last_stock_query.order(created_at: :desc).first
@@ -196,9 +196,20 @@ class ItemsController < ApplicationController
     # 3. Incluimos las presentaciones y los almacenes disponibles
     all_presentations = item.presentations.as_json(only: [:id, :name, :qty])
     
-    # Calculamos en qué almacenes hay stock real para este producto
-    warehouse_ids = item.stocks.group(:warehouse_id).having("SUM(COALESCE(qty_in, 0) - COALESCE(qty_out, 0)) > 0.0001").pluck(:warehouse_id)
-    available_warehouses = Warehouse.where(id: warehouse_ids, active: true).order(:name).as_json(only: [:id, :name])
+    # 5. Calculamos en qué almacenes hay stock para este producto
+    # Si es para ajuste, permitimos ver almacenes incluso si el saldo es 0
+    if params[:for_adjustment] == '1'
+      warehouse_ids = item.stocks.pluck(:warehouse_id).uniq
+      # Si no hay registros previos, mostramos todos los almacenes para el primer ajuste
+      if warehouse_ids.empty?
+        available_warehouses = Warehouse.where(active: true).order(:name).as_json(only: [:id, :name])
+      else
+        available_warehouses = Warehouse.where(id: warehouse_ids, active: true).order(:name).as_json(only: [:id, :name])
+      end
+    else
+      warehouse_ids = item.stocks.group(:warehouse_id).having("SUM(COALESCE(qty_in, 0) - COALESCE(qty_out, 0)) > 0.0001").pluck(:warehouse_id)
+      available_warehouses = Warehouse.where(id: warehouse_ids, active: true).order(:name).as_json(only: [:id, :name])
+    end
 
     render json: { lots: lots, presentations: all_presentations, warehouses: available_warehouses }
   rescue => e

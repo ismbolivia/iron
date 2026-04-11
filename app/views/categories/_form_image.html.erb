@@ -1,0 +1,232 @@
+<!-- Solo Cropper.js (Minimo) -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+
+<style>
+  #cropper-box-modal-cat { max-width: 100%; margin-top: 10px; display: none; text-align: center; background: #fff; padding: 10px; border: 1px solid #ddd; border-radius: 10px; }
+  .img-container-modal-cat { max-height: 400px; overflow: hidden; }
+  .btn-crop-modal-cat { background: #1e293b; color: white; border: none; padding: 12px 20px; border-radius: 10px; font-weight: 900; margin-top: 10px; width: 100%; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+  
+  .preview-wrapper-cat {
+    position: relative;
+    height: 350px;
+    background-color: #f1f5f9;
+    background-image: linear-gradient(45deg, #e2e8f0 25%, transparent 25%), 
+                      linear-gradient(-45deg, #e2e8f0 25%, transparent 25%), 
+                      linear-gradient(45deg, transparent 75%, #e2e8f0 75%), 
+                      linear-gradient(-45deg, transparent 75%, #e2e8f0 75%);
+    background-size: 20px 20px;
+    background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+    border-radius: 16px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px dashed #cbd5e1;
+    margin-bottom: 20px;
+  }
+  .blur-bg-form-cat {
+    position: absolute;
+    top: -20px; left: -20px; right: -20px; bottom: -20px;
+    background-size: cover;
+    background-position: center;
+    filter: blur(20px) opacity(0.5);
+    z-index: 1;
+  }
+</style>
+
+<div class="row">
+   <div class = "col-lg-12 col-md-12 col-sm-12 " id="image_uploader_cat" >      
+      <div class="preview-wrapper-cat">
+         <div id="blur-bg-preview-cat" class="blur-bg-form-cat" style="background-image: url('<%= category.pictures.large.url %>');"></div>
+         <%= image_tag(category.pictures.large.url, :alt => "img-category", :style =>"max-width: 90%; max-height: 90%; object-fit: contain; position: relative; z-index: 2;", id: "modal-preview-img-cat") %>
+      </div>
+      
+      <div id="cropper-box-modal-cat">
+         <div class="img-container-modal-cat">
+            <img id="image-to-crop-modal-cat" src="" style="max-width: 100%;">
+         </div>
+            <div class="d-flex justify-content-center gap-2 mb-2" style="display: flex; gap: 10px; justify-content: center; margin: 15px 0;">
+               <button type="button" class="btn btn-dark btn-sm" id="btn-rotate-l-cat" title="Girar Izquierda" style="border-radius: 8px; width: 50px; height: 45px;"><i class="fas fa-undo"></i></button>
+               <button type="button" class="btn btn-dark btn-sm" id="btn-rotate-r-cat" title="Girar Derecha" style="border-radius: 8px; width: 50px; height: 45px;"><i class="fas fa-redo"></i></button>
+            </div>
+            <button type="button" class="btn-crop-modal-cat" id="btn-do-crop-modal-cat">✅ GUARDAR RECORTE</button>
+         <button type="button" class="btn btn-sm btn-link text-muted mt-2" id="btn-cancel-crop-modal-cat">Cancelar</button>
+      </div>
+      
+      <div class="d-flex gap-2" style="display: flex; gap: 10px; margin-bottom: 20px;">
+        <div class="fileupload btn btn-info waves-effect waves-light" style="flex: 1; border-radius: 10px; font-weight: 800; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;">
+          <span><i class="ion-upload m-r-5"></i> NUEVA IMAGEN </span>
+          <%= f.file_field :pictures, :class =>"upload", style: "position: absolute; opacity: 0; right: 0; top: 0; cursor: pointer; height: 100%; width: 100%;" %>
+        </div>                   
+        <button type="button" class="btn btn-warning waves-effect waves-light" id="btn-edit-current-cat" style="flex: 1; border-radius: 10px; font-weight: 800; color: white;">
+          <i class="fas fa-magic"></i> EDITAR
+        </button>
+        <button type="button" class="btn btn-primary waves-effect waves-light" id="btn-remove-bg-cat" style="flex: 1; border-radius: 10px; font-weight: 800; background: #7c3aed; border: none;">
+          <span id="ai-btn-text-cat">🪄 QUITAR FONDO</span>
+          <div id="ai-loader-cat" class="hide" style="display: none; border: 2px solid #fff; border-top: 2px solid transparent; border-radius: 50%; width: 14px; height: 14px; animation: spin 0.8s linear infinite; margin-left: 5px;"></div>
+        </button>
+      </div>
+   </div>
+</div> 
+
+<script type="module">
+let removeBackground;
+(async () => {
+  try {
+    const module = await import('https://cdn.jsdelivr.net/npm/@imgly/background-removal@latest/+esm');
+    removeBackground = module.removeBackground;
+  } catch (e) {
+    console.error("IA: Error al cargar librería", e);
+  }
+})();
+
+let cropper;
+const input = document.getElementById('category_pictures');
+const box = document.getElementById('cropper-box-modal-cat');
+const img = document.getElementById('image-to-crop-modal-cat');
+const btnCrop = document.getElementById('btn-do-crop-modal-cat');
+const btnCancel = document.getElementById('btn-cancel-crop-modal-cat');
+const finalPreview = document.getElementById('modal-preview-img-cat');
+const blurBg = document.getElementById('blur-bg-preview-cat');
+const btnEditCurrent = document.getElementById('btn-edit-current-cat');
+const btnRemoveBg = document.getElementById('btn-remove-bg-cat');
+const aiBtnText = document.getElementById('ai-btn-text-cat');
+const aiLoader = document.getElementById('ai-loader-cat');
+const btnRotateL = document.getElementById('btn-rotate-l-cat');
+const btnRotateR = document.getElementById('btn-rotate-r-cat');
+
+const startCropper = (source) => {
+  img.src = source;
+  box.style.display = 'block';
+  finalPreview.parentElement.style.display = 'none';
+  if (cropper) cropper.destroy();
+  cropper = new Cropper(img, { 
+    aspectRatio: NaN, 
+    viewMode: 1,
+    dragMode: 'move',
+    autoCropArea: 0.8,
+    restore: false,
+    guides: true,
+    center: true,
+    highlight: false,
+    cropBoxMovable: true,
+    cropBoxResizable: true,
+    toggleDragModeOnDblclick: false,
+    background: false 
+  });
+};
+
+if (input) {
+  input.addEventListener('change', function(e) {
+    if (e.target.files && e.target.files[0]) {
+      const reader = new FileReader();
+      reader.onload = function(ev) {
+        startCropper(ev.target.result);
+      };
+      reader.readAsDataURL(e.target.files[0]);
+    }
+  });
+}
+
+const getImageBlob = async (url) => {
+  if (url.startsWith('data:') || url.startsWith('blob:')) {
+    const resp = await fetch(url);
+    return await resp.blob();
+  }
+  try {
+    const response = await fetch(url, { mode: 'cors' });
+    return await response.blob();
+  } catch (e) {
+    const resp = await fetch(url);
+    return await resp.blob();
+  }
+};
+
+if (btnEditCurrent) {
+  btnEditCurrent.onclick = function() {
+    startCropper(finalPreview.src);
+  };
+}
+
+if (btnRemoveBg) {
+  btnRemoveBg.onclick = async function() {
+    if (!removeBackground) {
+        alert("Error: La librería de IA no se cargó.");
+        return;
+    }
+
+    const sourceUrl = finalPreview.src;
+    if (!sourceUrl || sourceUrl.includes('default_image')) return;
+
+    aiBtnText.innerText = 'CARGANDO IA...';
+    aiLoader.style.display = 'inline-block';
+    btnRemoveBg.disabled = true;
+
+    try {
+      const inputBlob = await getImageBlob(sourceUrl);
+      const outputBlob = await removeBackground(inputBlob, {
+        progress: (key, current, total) => {
+           const percent = Math.round((current / total) * 100);
+           aiBtnText.innerText = `IA: ${percent}%`;
+        }
+      });
+      
+      const url = URL.createObjectURL(outputBlob);
+      finalPreview.src = url;
+      blurBg.style.backgroundImage = `url(${url})`;
+      
+      const file = new File([outputBlob], "cat_transparente.png", { type: "image/png" });
+      const dt = new DataTransfer();
+      dt.items.add(file);
+      input.files = dt.files;
+
+    } catch (e) {
+      console.error("AI Error:", e);
+      alert("Fallo en IA: " + (e.message || "Error desconocido"));
+    } finally {
+      aiBtnText.innerText = '🪄 QUITAR FONDO';
+      aiLoader.style.display = 'none';
+      btnRemoveBg.disabled = false;
+    }
+  };
+}
+
+if (btnCrop) {
+  btnCrop.onclick = function() {
+    if (!cropper) return;
+    const canvas = cropper.getCroppedCanvas(); 
+    canvas.toBlob(function(blob) {
+      const file = new File([blob], "cat_editada.png", { type: "image/png" });
+      const dt = new DataTransfer();
+      dt.items.add(file);
+      input.files = dt.files;
+      
+      const dataUrl = canvas.toDataURL('image/png');
+      finalPreview.src = dataUrl;
+      blurBg.style.backgroundImage = `url(${dataUrl})`;
+      
+      finalPreview.parentElement.style.display = 'flex';
+      box.style.display = 'none';
+      cropper.destroy();
+    }, 'image/png', 0.9);
+  };
+}
+
+if (btnRotateL) {
+  btnRotateL.onclick = () => cropper && cropper.rotate(-90);
+}
+
+if (btnRotateR) {
+  btnRotateR.onclick = () => cropper && cropper.rotate(90);
+}
+
+if (btnCancel) {
+  btnCancel.onclick = function() {
+    box.style.display = 'none';
+    finalPreview.parentElement.style.display = 'flex';
+    if (cropper) cropper.destroy();
+    input.value = '';
+  };
+}
+</script>

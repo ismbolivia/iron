@@ -396,9 +396,18 @@
         box-shadow: 0 10px 40px rgba(0,0,0,0.5);
         display: none;
         flex-direction: column;
-        overflow: hidden;
+        max-height: 350px;
+        overflow-y: auto;
         z-index: 100000;
         animation: popUp 0.2s ease-out;
+      }
+
+      .dropdown-options::-webkit-scrollbar {
+        width: 6px;
+      }
+      .dropdown-options::-webkit-scrollbar-thumb {
+        background: rgba(255,255,255,0.2);
+        border-radius: 10px;
       }
 
       @keyframes popUp {
@@ -430,6 +439,32 @@
       .dropdown-option i {
         color: #94a3b8;
       }
+
+      .dropdown-search-wrapper {
+        position: sticky;
+        top: 0;
+        background: #1e293b;
+        padding: 10px;
+        z-index: 10;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+      }
+
+      .dropdown-search-input {
+        width: 100%;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 8px;
+        padding: 8px 12px;
+        color: white;
+        font-size: 0.85rem;
+        outline: none;
+        transition: all 0.2s;
+      }
+
+      .dropdown-search-input:focus {
+        border-color: #2563eb;
+        background: rgba(255, 255, 255, 0.1);
+      }
     </style>
 
     <div class="custom-dropdown" id="custom-cat-dropdown">
@@ -438,6 +473,9 @@
         <i class="fas fa-chevron-up" style="font-size: 0.75rem; opacity: 0.8;"></i>
       </button>
       <div class="dropdown-options" id="dropdown-options">
+        <div class="dropdown-search-wrapper">
+          <input type="text" id="cat-search" class="dropdown-search-input" placeholder="Filtrar categorías..." onkeyup="filterOptions()" onclick="event.stopPropagation()">
+        </div>
         <div class="dropdown-option" onclick="selectOption('none', 'Sin Categoría')">
           <i class="far fa-folder"></i> Sin Categoría
         </div>
@@ -478,6 +516,21 @@ window.addEventListener('click', function(e) {
      }
   }
 });
+
+function filterOptions() {
+  const input = document.getElementById('cat-search');
+  const filter = input.value.toLowerCase();
+  const options = document.querySelectorAll('.dropdown-option');
+  
+  options.forEach(option => {
+    const text = option.innerText.toLowerCase();
+    if (text.includes(filter)) {
+      option.style.display = 'flex';
+    } else {
+      option.style.display = 'none';
+    }
+  });
+}
 </script>
 
 </div> <!-- Cierre premium-dashboard -->

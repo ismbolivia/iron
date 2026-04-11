@@ -177,28 +177,7 @@
     <div class="col-md-5">
       <div class="custom-form-field">
         <label class="custom-label">Imagen de la Categoría</label>
-        <div class="image-upload-wrapper">
-          <label for="category_pictures" class="image-preview-card">
-            <div class="image-preview-container" id="preview-box">
-              <% if category.pictures.present? && category.pictures.url.present? %>
-                <%= image_tag category.pictures.url, id: "preview-img" %>
-              <% else %>
-                <div style="text-align: center;" id="placeholder-box">
-                  <i class="fas fa-image" style="font-size: 3.5rem; color: #cbd5e1; margin-bottom: 8px;"></i>
-                  <p style="color: #94a3b8; font-size: 0.85rem; margin: 0;">Sin imagen cargada</p>
-                </div>
-              <% end %>
-              <div class="upload-overlay">
-                <i class="fas fa-camera mr-2" style="font-size: 1.2rem;"></i> Cambiar Imagen
-              </div>
-            </div>
-            
-            <%= f.file_field :pictures, multiple: false, style: "display: none;", onchange: "previewImage(this)", accept: "image/*" %>
-            <div class="btn-upload">
-              <i class="fas fa-folder-open"></i> Seleccionar Archivo
-            </div>
-          </label>
-        </div>
+        <%= render partial: 'form_image', locals: { f: f, category: category } %>
       </div>
     </div>
   </div>
@@ -208,35 +187,4 @@
     <%= link_to 'Cancelar', categories_path, class: "btn-cancel" %>
   </div>
 <% end %>
-
-<script>
-function previewImage(input) {
-  if (input.files && input.files[0]) {
-    var reader = new FileReader();
-    
-    reader.onload = function(e) {
-      const container = document.getElementById('preview-box');
-      let img = document.getElementById('preview-img');
-      const placeholder = document.getElementById('placeholder-box');
-      
-      if (!img) {
-         if (placeholder) placeholder.style.display = 'none';
-         img = document.createElement('img');
-         img.id = 'preview-img';
-         img.style.width = '100%';
-         img.style.height = '100%';
-         img.style.objectFit = 'cover';
-         container.appendChild(img);
-      } else {
-         img.style.display = 'block';
-         if (placeholder) placeholder.style.display = 'none';
-      }
-      
-      img.src = e.target.result;
-    }
-    
-    reader.readAsDataURL(input.files[0]);
-  }
-}
-</script>
 

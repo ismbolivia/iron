@@ -73,7 +73,7 @@ module PurchasesV2
           adj_qty = diff.abs
           
           # Nota: Aquí usamos el factor 1 porque la diferencia ya está en unidades base (piezas)
-          adjustment = StockAdjustment.create!(
+          adjustment = StockAdjustment.new(
             item_id: @item_id,
             warehouse_id: @warehouse_id,
             quantity: adj_qty, # En piezas sueltas
@@ -82,6 +82,8 @@ module PurchasesV2
             user_id: @user&.id,
             purchase_order_line_id: @origin_stock.purchase_order_line_id
           )
+          adjustment.skip_stock_change = true
+          adjustment.save!
           
           # Actualizamos el available_qty que usaremos para el movimiento de re-empaque
           available_qty = new_total_qty

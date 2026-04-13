@@ -358,6 +358,33 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <div class="col-md-4 col-sm-6">
+                                <div class="card action-glass-panel">
+                                    <div class="card-body" style="padding: 25px;">
+                                        <h5 style="font-weight: 700; color: #1e293b; margin-bottom: 20px; display: flex; align-items: center;">
+                                            <span class="panel-header-icon" style="background: #f0f9ff; color: #0369a1;"><i class="fas fa-chart-line"></i></span>
+                                            Reportes y Extractos
+                                        </h5>
+                                        
+                                        <a href="/sales_portfolio_report" class="action-pill-item">
+                                            <div class="action-pill-icon" style="background: #eff6ff; color: #2563eb;"><i class="fas fa-file-invoice"></i></div>
+                                            <div class="action-pill-info"><span class="title">Extracto de Ventas</span><span class="subtitle">Cartera detallada</span></div>
+                                            <i class="fas fa-chevron-right" style="margin-left: auto; color: #94a3b8; font-size: 0.8rem;"></i>
+                                        </a>
+                                        <a href="/get_payment_range_pdf?data_init=<%= Date.current.beginning_of_month %>&data_limit=<%= Date.current.end_of_month %>" class="action-pill-item">
+                                            <div class="action-pill-icon" style="background: #f0fdf4; color: #16a34a;"><i class="fas fa-hand-holding-usd"></i></div>
+                                            <div class="action-pill-info"><span class="title">Extracto de Pagos</span><span class="subtitle">Cobranzas del mes</span></div>
+                                            <i class="fas fa-chevron-right" style="margin-left: auto; color: #94a3b8; font-size: 0.8rem;"></i>
+                                        </a>
+                                        <a href="/sales_profitability_report" class="action-pill-item">
+                                            <div class="action-pill-icon" style="background: #fdf2f8; color: #db2777;"><i class="fas fa-balance-scale"></i></div>
+                                            <div class="action-pill-info"><span class="title">Rentabilidad</span><span class="subtitle">Análisis de resultados</span></div>
+                                            <i class="fas fa-chevron-right" style="margin-left: auto; color: #94a3b8; font-size: 0.8rem;"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     </div>

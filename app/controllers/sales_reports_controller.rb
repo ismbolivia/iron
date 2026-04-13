@@ -37,14 +37,19 @@ class SalesReportsController < ApplicationController
     @total_pagos  = @sales_list_all.sum { |s| s.total_pagos.to_f }.round(2)
     @total_deuda  = (@total_ventas - @total_pagos).round(2)
 
-    # 6. Paginación en memoria
+    # 6. Paginación en memoria (Solo para HTML para no saturar el navegador)
     @page_size = 50
     @page = (params[:page] || 0).to_i
     @number_of_records = @sales_list_all.size
     @number_of_pages = (@number_of_records % @page_size) == 0 ? (@number_of_records / @page_size) - 1 : (@number_of_records / @page_size)
     @number_of_pages = [@number_of_pages, 0].max
 
-    @sales_list = @sales_list_all[(@page * @page_size), @page_size] || []
+    # Si es PDF, mostramos TODO para un extracto completo. Si es HTML, paginamos.
+    if request.format.pdf?
+      @sales_list = @sales_list_all
+    else
+      @sales_list = @sales_list_all[(@page * @page_size), @page_size] || []
+    end
 
     # 4. Agrupación para la planilla detallada (por Cliente) alfabéticamente
     @grouped_sales = @sales_list.group_by { |s| s.client }

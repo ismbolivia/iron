@@ -113,7 +113,19 @@
           </div>
           <div class="col-md-6 mb-4">
              <div class="form-group">
-                <%= f.label :description, "Descripción" %>
+                <%= f.label :min_stock, "Stock Mínimo para Alerta" %>
+                <div class="pv2-input-group">
+                   <div class="pv2-input-group-addon"><i class="fas fa-bell"></i></div>
+                   <%= f.number_field :min_stock, placeholder: "0", class: "form-control" %>
+                </div>
+             </div>
+          </div>
+       </div>
+
+       <div class="row">
+          <div class="col-md-12 mb-4">
+             <div class="form-group">
+                <%= f.label :description, "Descripción General" %>
                 <%= f.text_area :description, class: "form-control pv2-form-control", rows: 2, placeholder: "Escriba una descripción corta..." %>
              </div>
           </div>

@@ -11,8 +11,13 @@ class StockAdjustment < ApplicationRecord
   validate :validate_stock_for_exit
 
   # Callbacks
-  after_create :apply_stock_change
-  before_destroy :reverse_stock_change
+  attr_accessor :skip_stock_change
+  after_create :apply_stock_change, unless: :skip_stock_change
+  before_destroy :reverse_stock_change, unless: :skip_stock_change
+
+  def display_qty
+    item.format_qty(self.quantity)
+  end
 
   private
 
@@ -93,7 +98,4 @@ class StockAdjustment < ApplicationRecord
     Stock.find_by(id: self.stock_id)&.destroy
   end
 
-  def display_qty
-    item.format_qty(self.quantity)
-  end
 end

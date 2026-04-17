@@ -28,7 +28,7 @@
     <div style="display: flex; align-items: center; gap: 15px; flex-grow: 1;">
       <% if @mycompany&.logo&.url %>
         <div style="flex-shrink: 0; background: white; padding: 4px; border-radius: 4px;">
-          <%= image_tag(@mycompany.logo.midium.url, style: "height: 65px; width: auto; max-width: 150px; object-fit: contain; display: block;") %>
+          <%= wicked_pdf_image_tag 'logo_pd.png', style: "height: 65px; width: auto; max-width: 150px; object-fit: contain; display: block;" %>
         </div>
       <% end %>
       <div>

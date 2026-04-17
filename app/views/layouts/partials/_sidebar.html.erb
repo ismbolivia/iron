@@ -15,12 +15,16 @@
   <div class="collapse navbar-collapse" id="bs-sidebar-navbar-collapse-1">
     <div class="dropdown user-pro-body">
      <div>
-       <%= image_tag(@mycompany.logo.medium.url, :alt => "user-img", :class => "") %>
+       <% if @mycompany.present? %>
+         <%= image_tag(@mycompany.logo_url(:midium), :alt => "user-img", :class => "") %>
+       <% end %>
       <!-- <img src="=" alt="user-img" > -->
     </div>
     <div class="text-center">
-      <h4><%= @mycompany.sigla %> </h4>
-      <p class="text-center"><small><strong><%= @mycompany.name %></strong></small></p>
+      <% if @mycompany.present? %>
+        <h4><%= @mycompany.sigla %> </h4>
+        <p class="text-center"><small><strong><%= @mycompany.name %></strong></small></p>
+      <% end %>
     </div>
 </div>
      <ul class="nav navbar-nav">

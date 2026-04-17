@@ -220,7 +220,7 @@ class ItemsController < ApplicationController
 
   def print_available_stocks
     @item = Item.find(params[:id])
-    
+    @mycompany = Company.where(mycompany: true).first
     # Same logic as the view: group by lote and presentation, select only available
     raw_grouped = @item.stocks.includes(:purchase_order_line => :purchase_order)
                               .group_by { |s| [s.purchase_order_line_id || "SISTEMA-#{s.lote}", s.presentation_id] }

@@ -24,7 +24,7 @@
         <div class="row">
             <% if current_user.id.equal? @user.id %>
              <div class="col-12" align="center">             
-                 <div class="product-img">                                      <%= image_tag(@user.avatar.medium.url, class: "col-sm-12") %><br>                   
+                 <div class="product-img">                                      <%= image_tag(@user.avatar.midium.url, class: "col-sm-12") %><br>                   
                       <div class="fileupload btn btn-info "><span><i class="ion-upload m-r-5"></i>Selecionar Imagen</span>                        
                            <%= form.file_field :avatar, class: "upload" %>
                       </div>

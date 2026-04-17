@@ -33,7 +33,7 @@ class LogoUploader < CarrierWave::Uploader::Base
      process resize_to_fit: [90, 90]
    end
 
-    version :medium do
+    version :midium do
     process resize_to_fit: [300, 300]
    end
    version :large do

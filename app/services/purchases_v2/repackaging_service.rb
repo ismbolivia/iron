@@ -91,8 +91,10 @@ module PurchasesV2
 
         # B. Vaciar el stock de origen del lote completo (Todos los registros relacionados)
         @related_stocks.each do |s|
-          # Setteamos qty_out igual a qty_in para dejar el saldo de cada registro en cero
-          s.update!(qty_out: s.qty_in, state: :agotado)
+          # Setteamos qty_out igual a qty_in para dejar el saldo de cada registro en cero.
+          # Saltamos si ya está en cero y agotado para evitar validaciones y ruido en DB.
+          next if s.qty_in.to_f == s.qty_out.to_f && s.agotado?
+          s.update_columns(qty_out: s.qty_in, state: 0) 
         end
         
         # C. Registrar movimiento de salida en Kardex (consolidado)

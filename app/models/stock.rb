@@ -11,6 +11,9 @@ class Stock < ApplicationRecord
 
 	def custom_validation_method_with_message	
 		if qty_out == 0	
+			# Permitimos 0/0 si el estado es agotado (limpieza administrativa de lotes o ajustes)
+			return if qty_in.to_f == 0 && agotado?
+
 			if !qty_in.present?	
 				errors.add(:_, "La cantidad debe existir")
 			end

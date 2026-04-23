@@ -25,7 +25,7 @@
     <!-- Client Section: Navy Blue Banner -->
     <div style="background-color: #1D2644; color: #fff; padding: 10px 15px; margin-bottom: 15px; border-radius: 4px; font-size: 0.9em; display: -webkit-box; display: -ms-flexbox; display: flex; -webkit-box-pack: justify; -ms-flex-pack: justify; justify-content: space-between; -webkit-box-align: start; -ms-flex-align: start; align-items: flex-start;">
         
-        <!-- Left Side: Client Details -->
+        <!-- Left Side: Client Details & Dates -->
         <div style="-webkit-box-flex: 1; -ms-flex-positive: 1; flex-grow: 1;">
             <div style="margin-bottom: 2px;">
                 <strong style="color: #ddd; text-transform: uppercase; font-size: 0.85em;">SEÑOR(ES):</strong> 
@@ -42,28 +42,46 @@
                 <%= @sale.client.address.get_direccion_cli.truncate(90) rescue '' %>
             </div>
             
-             <% if @sale.client.phone.present? || @sale.client.mobile.present? %>
-                <div style="color: #bbb;">
-                    <strong style="color: #ddd; font-size: 0.85em;">Telf:</strong> <%= [@sale.client.phone, @sale.client.mobile].reject(&:blank?).join(' / ') %>
+            <% if @sale.client.phone.present? || @sale.client.mobile.present? %>
+                <div style="color: #ccc; font-size: 0.85em; margin-bottom: 3px; margin-top: 5px;">
+                    <strong style="color: #ddd;">Telf. Cliente:</strong> <span style="color: #fff;"><%= [@sale.client.phone, @sale.client.mobile].reject(&:blank?).join(' / ') %></span>
                 </div>
             <% end %>
+
+            <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 4px; font-size: 0.85em;">
+                <strong style="color: #ddd;">EMISIÓN:</strong> <span style="color: #fff;"><%= @sale.date.strftime("%d/%m/%Y") rescue '' %></span>
+                <% if @sale.credit && @sale.credit_expiration.present? %>
+                    <span style="color: #666; margin: 0 5px;">|</span>
+                    <strong style="color: #ddd;">VENCE:</strong> <span style="color: #ffcccc; font-weight: bold;"><%= @sale.credit_expiration.strftime("%d/%m/%Y") rescue '' %></span>
+                <% end %>
+            </div>
         </div>
 
-        <!-- Right Side: Company & Vendor Info -->
-        <div style="white-space: nowrap; margin-left: 20px; text-align: right; min-width: 150px; padding-left: 15px; border-left: 1px solid #1D2644;">
+        <!-- Right Side: Branch & Vendor Contact -->
+        <div style="white-space: nowrap; margin-left: 20px; text-align: right; min-width: 150px; padding-left: 15px; border-left: 1px solid rgba(255,255,255,0.2);">
             <div style="font-weight: bold; color: #fff; font-size: 1.1em; margin-bottom: 2px;">
                 <%= @mycompany.name.upcase rescue 'EMPRESA' %> 
             </div>
-            <% if @sale.branch.present? %>
-                <div style="font-size: 0.85em; margin-bottom: 2px; color: #fff; font-weight: bold;">
-                    Sucursal: <span><%= @sale.branch.name %> <%= "| Telf: #{@mycompany.phone}" if @sale.branch.name.upcase.include?("MATRIZ") %></span>
+            
+            <% 
+               # Robust branch selection: Sale's branch > User's branch > First company branch
+               display_branch = @sale.branch || @sale.user.branch || @mycompany.branches.first 
+            %>
+            
+            <% if display_branch.present? %>
+                <div style="font-size: 0.9em; color: #fff; font-weight: bold; margin-bottom: 2px;">
+                    SUCURSAL: <%= display_branch.name.to_s.upcase %>
+                </div>
+                <div style="font-size: 0.85em; color: #ddd; margin-bottom: 3px;">
+                    Telf: <span style="color: #fff;"><%= display_branch.phone.presence || 'S/N' %></span>
                 </div>
             <% end %>
-            <div style="font-size: 0.95em; margin-bottom: 1px; color: #ddd;">
+
+            <div style="font-size: 0.85em; margin-bottom: 1px; color: #bbb; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 2px; margin-top: 2px;">
                 Vendedor: <span style="color: #fff;"><%= @sale.user.name rescue '?' %></span>
             </div>
             <div style="font-size: 0.85em; color: #bbb;">
-                Contacto: <span style="color: #fff;"><%= @sale.user.mobile rescue 'S/N' %></span>
+                Móvil: <span style="color: #fff;"><%= @sale.user.mobile rescue 'S/N' %></span>
             </div>
         </div>
     </div>

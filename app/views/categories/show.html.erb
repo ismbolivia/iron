@@ -140,6 +140,30 @@
   color: white;
   transform: scale(1.05);
 }
+
+.item-card.inactive {
+  border-color: #fecaca !important;
+  background: #fffefb;
+  opacity: 0.85;
+}
+
+.item-card.inactive .item-name {
+  color: #dc2626 !important;
+}
+
+.badge-inactive {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #ef4444;
+  color: white;
+  padding: 4px 10px;
+  border-radius: 10px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  z-index: 10;
+}
 </style>
 
 <div class="premium-dashboard">
@@ -164,15 +188,18 @@
     <h4 style="font-weight: 800; color: #1e3a8a; margin-bottom: 1rem; display: flex; align-items: center; gap: 8px; font-size: 1.1rem;">
       <i class="fas fa-boxes" style="color: #3b82f6;"></i> Productos en esta categoría 
       <span style="font-size: 0.8rem; background: #eff6ff; color: #2563eb; padding: 4px 10px; border-radius: 20px; font-weight: 700; margin-left: 5px;">
-        <%= @category.items.count %> artículos
+        <%= @items.count %> artículos
       </span>
     </h4>
 
-    <% if @category.items.any? %>
+    <% if @items.any? %>
       <div class="item-grid">
-        <% @category.items.each do |item| %>
-          <div class="item-card">
+        <% @items.each do |item| %>
+          <div class="item-card <%= 'inactive' unless item.active %>">
             <div class="item-img-container">
+              <% unless item.active %>
+                <div class="badge-inactive">Inactivo</div>
+              <% end %>
               <% if item.image.present? && item.image.url.present? %>
                 <%= image_tag item.image.url, class: "item-img" %>
               <% else %>

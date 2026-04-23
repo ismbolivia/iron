@@ -126,6 +126,26 @@ class CategoriesController < ApplicationController
     end
   end
 
+  def print_available_stocks
+    @category = Category.find(params[:id])
+    @mycompany = Company.where(mycompany: true).first
+    
+    # Recopilar items con su stock agrupado (similar a la lógica de ItemsController)
+    @items_data = @category.items.order(:priority, :name).map do |item|
+      raw_grouped = item.stocks.includes(:purchase_order_line => :purchase_order)
+                          .group_by { |s| [s.purchase_order_line_id || "SISTEMA-#{s.lote}", s.presentation_id] }
+      
+      available_stocks = raw_grouped.to_a.map do |lot_id, stocks|
+        balance = stocks.sum(&:qty_in) - stocks.sum(&:qty_out)
+        [stocks.min_by(&:created_at), balance, stocks.count]
+      end.select { |group| group[1] > 0.0001 }.sort_by { |group| group[0].created_at || Time.now }
+      
+      { item: item, stocks: available_stocks }
+    end.reject { |d| d[:stocks].empty? }
+
+    render layout: false
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_category

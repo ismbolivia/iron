@@ -157,6 +157,9 @@ Rails.application.routes.draw do
       post :assign_items
       post :update_item_field
     end
+    member do
+      get :print_available_stocks
+    end
   end
   resources :brands
   devise_for :users

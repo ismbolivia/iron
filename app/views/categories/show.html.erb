@@ -175,6 +175,9 @@
       <p class="m-0" style="color: rgba(255,255,255,0.9); font-size: 1.05rem; margin-top: 6px; font-weight: 500;">Detalles de la categoría y productos asociados.</p>
     </div>
     <div style="display: flex; gap: 8px;">
+      <%= link_to print_available_stocks_category_path(@category), class: "btn-premium-back", target: "_blank", style: "background: #10b981; border-color: #059669;" do %>
+           <i class="fas fa-print" style="font-size: 0.8rem;"></i> Existencias
+      <% end %>
       <%= link_to edit_category_path(@category), class: "btn-premium-back", style: "background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.25);" do %>
            <i class="fas fa-edit" style="font-size: 0.8rem;"></i> Editar
       <% end %>

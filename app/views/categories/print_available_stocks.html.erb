@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Inventario Categoría - <%= @category.name %></title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <style>
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 10mm; font-size: 10px; color: #1e293b; }
+    .page-break { page-break-after: always; }
+    table { width: 100%; border-collapse: collapse; margin-top: 5px; margin-bottom: 20px; }
+    th, td { border: 1px solid #cbd5e1; padding: 4px; text-align: left; }
+    th { background: #f8fafc; color: #1e293b; font-size: 8px; text-transform: uppercase; white-space: nowrap; }
+    .text-right { text-align: right; }
+    .text-center { text-align: center; }
+    .item-header { background: #1e293b; color: white; padding: 6px 10px; font-size: 12px; font-weight: 800; display: flex; justify-content: space-between; border-radius: 4px 4px 0 0; }
+    .no-print { display: none; }
+    @media print {
+      @page { size: Letter; margin: 10mm; }
+      .no-print { display: none; }
+      body { padding: 0; }
+    }
+  </style>
+</head>
+<body onload="window.print()">
+  <div class="no-print" style="margin-bottom: 20px; text-align: center;">
+    <button onclick="window.print()" style="padding: 12px 24px; font-size: 16px; cursor: pointer; background: #4f46e5; color: white; border: none; border-radius: 8px; font-weight: 800;"><i class="fas fa-print"></i> Imprimir Reporte de Categoría</button>
+    <button onclick="window.close()" style="padding: 12px 24px; font-size: 16px; cursor: pointer; background: #f1f5f9; color: #475569; border: none; border-radius: 8px; margin-left: 10px; font-weight: 800;"><i class="fas fa-times"></i> Cerrar</button>
+  </div>
+
+  <div style="margin-bottom: 25px; border-bottom: 3px solid #1e293b; padding-bottom: 15px; display: flex; align-items: center; justify-content: space-between;">
+    <div style="display: flex; align-items: center; gap: 20px;">
+      <% if @mycompany&.logo&.url %>
+        <div style="background: white; padding: 5px; border-radius: 6px; border: 1px solid #e2e8f0;">
+          <%= image_tag(@mycompany.logo.midium.url, style: "height: 60px; width: auto; max-width: 180px; object-fit: contain;") %>
+        </div>
+      <% end %>
+      <div>
+        <h1 style="margin: 0; font-size: 1.8rem; color: #0f172a; letter-spacing: -0.5px;"><%= @category.name %></h1>
+        <span style="color: #64748b; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">
+          <i class="fas fa-boxes"></i> Reporte de Stock Disponible &nbsp; | &nbsp; <i class="fas fa-calendar-alt"></i> <%= Time.now.strftime("%d/%m/%Y %H:%M") %>
+        </span>
+      </div>
+    </div>
+    <div style="text-align: right;">
+        <div style="font-size: 14px; font-weight: 900; color: #1e3a8a;"><%= @items_data.count %> PRODUCTOS</div>
+        <div style="font-size: 10px; color: #64748b;">CON EXISTENCIAS</div>
+    </div>
+  </div>
+
+  <% @items_data.each do |data| %>
+    <% item = data[:item] %>
+    <% stocks = data[:stocks] %>
+    
+    <div style="margin-bottom: 30px; page-break-inside: avoid;">
+      <div class="item-header">
+        <span><%= item.code %> - <%= item.name %></span>
+        <span><%= item.brand&.name || 'S/M' %></span>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th class="text-center" style="width: 30px;">#</th>
+            <th style="width: 80px;">Ingreso</th>
+            <th>Lote / Documento</th>
+            <th class="text-center" style="width: 60px;">Cant. Pre</th>
+            <th class="text-center">Presentación</th>
+            <th class="text-right" style="width: 80px;">Saldo (<%= item.unit.name %>)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% stocks.each_with_index do |(main_stock, balance, moves_count), idx| %>
+            <% 
+              lot_name = main_stock.lote.presence || (main_stock.purchase_order_line ? "OC-#{main_stock.purchase_order_line.purchase_order.name}" : "SISTEMA") 
+              pres = main_stock.presentation
+            %>
+            <tr>
+              <td class="text-center"><%= idx + 1 %></td>
+              <td><%= main_stock.created_at.strftime("%d/%m/%Y") %></td>
+              <td>
+                <strong style="font-size: 9px;"><%= lot_name %></strong>
+                <% if main_stock.respond_to?(:repacking_id) && main_stock.repacking_id.present? %>
+                  <br/><small style="color: #8b5cf6; font-size: 8px;"><i class="fas fa-box-open"></i> Re-empacado</small>
+                <% end %>
+              </td>
+              <td class="text-center" style="font-weight: 800; color: #4f46e5; font-size: 11px;">
+                <%= pres ? (balance.to_f / pres.qty).to_i : '-' %>
+              </td>
+              <td class="text-center">
+                <% if pres %>
+                  <strong><%= pres.name %></strong> <small>(<%= pres.qty %>)</small>
+                <% else %>
+                  <span style="color: #94a3b8;">Unidad</span>
+                <% end %>
+              </td>
+              <td class="text-right" style="font-weight: 800; font-size: 11px;">
+                <%= number_with_precision(balance, precision: 0) %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+        <tfoot>
+          <tr style="background: #f0fdf4;">
+            <td colspan="5" class="text-right" style="font-weight: 800; padding: 6px;">TOTAL <%= item.name.upcase %>:</td>
+            <td class="text-right" style="font-weight: 900; font-size: 12px; color: #166534;"><%= number_with_precision(stocks.sum { |s| s[1] }, precision: 0) %></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  <% end %>
+
+</body>
+</html>

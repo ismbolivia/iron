@@ -12,6 +12,7 @@
     .text-right { text-align: right; }
     .text-center { text-align: center; }
     .item-header { background: #1e293b; color: white; padding: 6px 10px; font-size: 12px; font-weight: 800; display: flex; justify-content: space-between; border-radius: 4px 4px 0 0; }
+    .item-header.inactive { background: #fee2e2; color: #dc2626; border: 1px solid #fecaca; }
     .no-print { display: none; }
     @media print {
       @page { size: Letter; margin: 10mm; }
@@ -34,7 +35,7 @@
         </div>
       <% end %>
       <div>
-        <h1 style="margin: 0; font-size: 1.8rem; color: #0f172a; letter-spacing: -0.5px;"><%= @category.name %></h1>
+        <h1 style="margin: 0; font-size: 1.8rem; color: #0f172a; letter-spacing: -0.5px;"><%= @title %></h1>
         <span style="color: #64748b; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">
           <i class="fas fa-boxes"></i> Reporte de Stock Disponible &nbsp; | &nbsp; <i class="fas fa-calendar-alt"></i> <%= Time.now.strftime("%d/%m/%Y %H:%M") %>
         </span>
@@ -51,8 +52,8 @@
     <% stocks = data[:stocks] %>
     
     <div style="margin-bottom: 30px; page-break-inside: avoid;">
-      <div class="item-header">
-        <span><%= item.code %> - <%= item.name %></span>
+      <div class="item-header <%= 'inactive' unless item.active %>">
+        <span><%= item.code %> - <%= item.name %> <%= '(INACTIVO)' unless item.active %></span>
         <span><%= item.brand&.name || 'S/M' %></span>
       </div>
       <table>

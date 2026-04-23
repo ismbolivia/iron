@@ -490,6 +490,10 @@
     <!-- Input oculto para mantener el ID de destino -->
     <input type="hidden" id="target-category" value="">
 
+    <button class="btn" onclick="printSelected()" style="border-radius: 14px; font-weight: 800; padding: 11px 20px; background: #6366f1; border: none; color: white; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 8px;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+      <i class="fas fa-print"></i> Imprimir
+    </button>
+
     <button class="btn btn-success" onclick="applyBulkAssign()" style="border-radius: 14px; font-weight: 800; padding: 11px 24px; background: #10b981; border: none; font-size: 0.95rem; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">Aplicar Cambios</button>
     <button class="btn btn-sm" onclick="clearSelection()" style="border-width: 0; background: transparent; color: #94a3b8; font-size: 1.25rem; padding: 6px; cursor: pointer; transition: color 0.2s;" onmouseover="this.style.color='white'" onmouseout="this.style.color='#94a3b8'"><i class="fas fa-times"></i></button>
   </div>
@@ -630,5 +634,15 @@ function applyBulkAssign() {
     }
   })
   .catch(err => showToast("Ocurrió un error al procesar la solicitud.", "error"));
+}
+
+function printSelected() {
+  if (selectedItems.length === 0) {
+    showToast("Por favor, seleccione al menos un producto para imprimir", "error");
+    return;
+  }
+  // Usamos el ID 0 como dummy ya que la acción ahora soporta item_ids por parámetro
+  const url = '<%= print_available_stocks_category_path(0) %>?item_ids=' + selectedItems.join(',');
+  window.open(url, '_blank');
 }
 </script>

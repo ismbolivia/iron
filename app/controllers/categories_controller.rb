@@ -127,11 +127,21 @@ class CategoriesController < ApplicationController
   end
 
   def print_available_stocks
-    @category = Category.find(params[:id])
     @mycompany = Company.where(mycompany: true).first
     
-    # Recopilar items con su stock agrupado (similar a la lógica de ItemsController)
-    @items_data = @category.items.order(:priority, :name).map do |item|
+    if params[:item_ids].present?
+      # Si viene de selección masiva (Workspace)
+      ids = params[:item_ids].is_a?(String) ? params[:item_ids].split(',') : params[:item_ids]
+      @items = Item.where(id: ids).order(:priority, :name)
+      @title = "Selección de Items"
+    else
+      @category = Category.find(params[:id])
+      @items = @category.items.order(:priority, :name)
+      @title = "Categoría: #{@category.name}"
+    end
+    
+    # Recopilar items con su stock agrupado
+    @items_data = @items.map do |item|
       raw_grouped = item.stocks.includes(:purchase_order_line => :purchase_order)
                           .group_by { |s| [s.purchase_order_line_id || "SISTEMA-#{s.lote}", s.presentation_id] }
       
